@@ -1,5 +1,8 @@
 <?php
+session_start();
 require_once __DIR__.'/lib/config.php';
+require_once __DIR__.'/lib/csrf.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -124,16 +127,33 @@ else if($_GET['site'] == "submit") {
                 <h1>Submit a new bot</h1>
                 <p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell use about it with the form below and we'll review the information.</p>
             </div>
+<?php if($_GET['success']) { ?>
+            <div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                <span class="sr-only">Success:</span>
+                Your submission has been saved. We will review it as soon as possible.
+            </div>
+<?php } ?>
+<?php if($_GET['error']) { ?>
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                Something went wrong while submitting.
+            </div>
+<?php } ?>
             <div class="panel panel-default">
-                <form class="panel-body" method="POST">
+                <form class="panel-body" method="post" action="lib/submit.php">
                     <div class="form-group">
                         <label for="username">Twitch Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Username">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
                     </div>
                     <div class="form-group">
                         <label for="type">Bot Type</label>
-                        <input type="text" class="form-control" id="type" placeholder="Type">
-                        <p class="help-block">Describe the type of the bot, normally the name of the software that runs it.</p>
+                        <input type="text" class="form-control" id="type" name="description" placeholder="Type">
+                        <p class="help-block">Describe the type of the bot, normally the name of the software that runs it and if possible a link to the website of it.</p>
+                    </div>
+                    <div hidden>
+                        <input type="text" value="<?php echo generate_token("submit"); ?>" name="token">
                     </div>
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
@@ -141,6 +161,7 @@ else if($_GET['site'] == "submit") {
         </div><? }
 else if($_GET['site'] == "api") {
 ?>        <div class="container" id="api">
+            <div class="alert alert-warning" role="alert">The API documented here is not yet implemented.</div>
             <div>
                 <h1>API Acess</h1>
                 <p>All the API endpoints are on the base URL <code>http://api.twitchbots.info/v1/</code>. All endpoints only accept GET requests. The API always returns JSON.</p>

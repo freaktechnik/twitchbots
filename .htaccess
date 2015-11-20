@@ -1,7 +1,7 @@
 RewriteEngine on
 
 RewriteRule ^$ index.php?site=index [QSA]
-RewriteRule ^([A-Za-z0-9_]+)$ index.php?site=$1
+RewriteRule ^([A-Za-z0-9_]+)$ index.php?site=$1 [QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
