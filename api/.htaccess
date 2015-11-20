@@ -7,4 +7,4 @@ RewriteEngine on
 RewriteRule ^$ index.json
 
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^.*$ 404.json [L]
+RewriteRule ^.*$ 404.json [R=404,NC]
