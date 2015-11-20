@@ -152,9 +152,7 @@ else if($_GET['site'] == "submit") {
                         <input type="text" class="form-control" id="type" name="description" placeholder="Type">
                         <p class="help-block">Describe the type of the bot, normally the name of the software that runs it and if possible a link to the website of it.</p>
                     </div>
-                    <div hidden>
-                        <input type="text" value="<?php echo generate_token("submit"); ?>" name="token">
-                    </div>
+                    <input type="hidden" value="<?php echo generate_token("submit"); ?>" name="token">
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
             </div>
