@@ -4,7 +4,10 @@ Options -Indexes
 
 RewriteEngine on
 
-RewriteRule ^$ index.json
+RewriteRule ^$ index.json [L]
+RewriteRule ^bot/all/?$ query.php?endpoint=bot/all [QSA,L]
+RewriteRule ^bot/([a-zA-Z0-9_]+)/?$ query.php?endpoint=bot&id=$1 [L]
+RewriteRule ^bot/?$ query.php?endpoint=bot [QSA,L]
+RewriteRule ^type/([0-9]+)/?$ query.php?endpoint=type&id=$1 [L]
 
-RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^.*$ 404.json [R=404,NC]

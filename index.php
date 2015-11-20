@@ -1,9 +1,3 @@
-<?php
-session_start();
-require_once __DIR__.'/lib/config.php';
-require_once __DIR__.'/lib/csrf.php';
-
-?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -40,7 +34,9 @@ require_once __DIR__.'/lib/csrf.php';
                     <ul class="nav navbar-nav">
                         <li<?php if($_GET['site'] == "index") { ?> class="active"<?php } ?>><a href="/">Known Bots <span class="sr-only">(current)</span></a></li>
                         <li<?php if($_GET['site'] == "submit") { ?> class="active"<?php } ?>><a href="/submit">Submit Bot</a></li>
+                        <li<?php if($_GET['site'] == "check") { ?> class="active"<?php } ?>><a href="/check">Check User</a></li>
                         <li<?php if($_GET['site'] == "api") { ?> class="active"<?php } ?>><a href="/api">API</a></li>
+                        <li<?php if($_GET['site'] == "about") { ?> class="active"<?php } ?>><a href="/about">About</a></li>
                     </ul>
                 </div>
             </div>
@@ -64,13 +60,8 @@ if($_GET['site'] == "index") {
                     </thead>
                     <tbody>
 <?php
-$page = 1;
-$pagesize = 100;
-if((int)$_GET['page'] > 1) {
-    $page = (int)$_GET['page'];
-}
-$offset = ($page-1) * $pagesize;
-$dbh = new PDO('mysql:host=localhost;dbname='.$db.';charset=utf8', $db_user, $db_pw);
+include_once __DIR__.'/lib/page.php';
+require_once __DIR__.'/lib/db.php';
 $getq = $dbh->prepare('SELECT * FROM list LIMIT :start,:stop');
 $getq->bindValue(":start", $offset, PDO::PARAM_INT);
 $getq->bindValue(":stop", $offset + $pagesize, PDO::PARAM_INT);
@@ -91,22 +82,19 @@ if(!is_null($result)) {
             </div>
             <nav class="text-center">
                 <?php
-                    $otherpages = 2;
-                    if($page > 1) {
-                    }
                     $getc = $dbh->prepare("SELECT count FROM count");
                     $getc->execute();
                     $itemcount = $getc->fetch(PDO::FETCH_OBJ);
                     $pagecount = ceil($itemcount->count / (float)$pagesize);
                 ?><ul class="pagination">
                     <li<?php if($page <= 1) echo ' class="disabled"'; ?>>
-                        <a href="?page=<?php echo $page-1; ?>" aria-label="Previous">
+                        <a href="?page=<?php echo $page > 1 ? $page-1 : "#"; ?>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <?php
                         for($i = $page - 1; $i > 0 && $i > $page - 3; --$i) {
-                            ?><li><a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a></li><?php
+                            ?><li><a href="?page=<?php echo $page - $i; ?>"><?php echo $page - $i; ?></a></li><?php
                         }
                         ?><li class="active"><a href="?page=<?php echo $page; ?>"><?php echo $page; ?> <span class="sr-only">(current)</span></a></li><?php
                         for($i = $page + 1; $i < $pagecount && $i < $page + 3; ++$i) {
@@ -114,7 +102,7 @@ if(!is_null($result)) {
                         }
                     ?>
                     <li<?php if($page >= $pagecount) echo ' class="disabled"'; ?>>
-                        <a href="?page=<?php echo $page+1; ?>" aria-label="Next">
+                        <a href="?page=<?php echo $page < $pagecount ? $page+1: "#"; ?>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -122,10 +110,12 @@ if(!is_null($result)) {
             </nav>
         </div><?php }
 else if($_GET['site'] == "submit") {
-?>        <div class="container" id="submit">
+session_start();
+require_once __DIR__.'/lib/csrf.php';?>
+        <div class="container" id="submit">
             <div>
                 <h1>Submit a new bot</h1>
-                <p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell use about it with the form below and we'll review the information.</p>
+                <p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell us about it with the form below and we'll review the information. If you have a bigger dataset to submit, please contact Martin.</p>
             </div>
 <?php if($_GET['success']) { ?>
             <div class="alert alert-success" role="alert">
@@ -150,16 +140,15 @@ else if($_GET['site'] == "submit") {
                     <div class="form-group">
                         <label for="type">Bot Type</label>
                         <input type="text" class="form-control" id="type" name="description" placeholder="Type">
-                        <p class="help-block">Describe the type of the bot, normally the name of the software that runs it and if possible a link to the website of it.</p>
+                        <p class="help-block">Describe the bot type, normally the name of the software that runs it and if possible a link to the website of it.</p>
                     </div>
                     <input type="hidden" value="<?php echo generate_token("submit"); ?>" name="token">
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
             </div>
         </div><? }
-else if($_GET['site'] == "api") {
-?>        <div class="container" id="api">
-            <div class="alert alert-warning" role="alert">The API documented here is not yet implemented.</div>
+else if($_GET['site'] == "api") { ?>
+        <div class="container" id="api">
             <div>
                 <h1>API Acess</h1>
                 <p>All the API endpoints are on the base URL <code>http://api.twitchbots.info/v1/</code>. All endpoints only accept GET requests. The API always returns JSON.</p>
@@ -204,6 +193,7 @@ else if($_GET['site'] == "api") {
             </div>
             <div>
                 <h2>/bot</h2>
+                <div class="alert alert-warning" role="alert">The API endpoint is not yet implemented.</div>
                 <p>Check multiple user's bot status.</p>
                 <h3>Parameters</h3>
                 <dl class="dl-horizontal">
@@ -244,6 +234,38 @@ else if($_GET['site'] == "api") {
 }</pre>
             </div>
         </div><? }
+else if($_GET['site'] == "about") {?>
+        <div class="container">
+            <div>
+                <h1>About this Service</h1>
+                <p class="lead">twitchbots.info is a service that tries to collect all moderator and other serivce bots used in chats on <a href="https://twitch.tv">Twitch</a>. It is ran independently and developed as a hobby project.</p>
+                <p>The main reason to collect accounts that are used as bots is to identify them as bots in Twitch chat clients. Another use case are bots that distribute points, which can ignore other bots using this directory.</p>
+                <p>This site uses cookies to prevent submissions other than from the form on this site.</p>
+            </div>
+        </div><? }
+else if($_GET['site'] == "check") { ?>
+        <div class="container">
+            <div>
+                <h1>Check a User</h1>
+                <p>Get the bot status for a specific username.</p>
+                <form class="input-group" id="checkform">
+                    <input type="text" class="form-control" placeholder="Username" id="checkuser">
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default">Check</button>
+                    </span>
+                </form>
+                <div class="alert" id="checkloading" hidden>
+                    Loading...
+                </div>
+                <div class="alert" id="botuser" hidden>
+                    <span class="name"></span> is a bot.
+                </div>
+                <div class="alert" id="realuser" hidden>
+                    <span class="name"></span> is not a bot.
+                </div>
+            </div>
+            <script src="js/check.js"></script>
+        </div><? }
 else {
 ?>
         <div class="container">
@@ -255,6 +277,7 @@ else {
 
         <footer class="footer">
             <div class="container">
+                <p class="text-muted">This is an independent site not run by Twitch.</p>
                 <p class="text-muted">Website by <a href="http://humanoids.be">Martin Giger</a> with Bootstrap. Source code lincensed under the MIT is available on <a href="https://github.com/freaktechnik/twitchbots/">GitHub</a>.</p>
             </div>
         </footer>
