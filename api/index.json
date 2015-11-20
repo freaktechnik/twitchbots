@@ -1,0 +1,6 @@
+{
+    "_links": {
+        "bot": "http://api.twitchbots.info/v1/bot",
+        "type": "http://api.twitchbots.info/v1/type"
+    }
+}

@@ -1,0 +1,10 @@
+Header set Content-Type 'application/json'
+Header set Access-Control-Allow-Origin '*'
+Options -Indexes
+
+RewriteEngine on
+
+RewriteRule ^$ index.json
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^.*$ 404.json [L]
