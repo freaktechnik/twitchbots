@@ -23,7 +23,6 @@ require_once __DIR__.'/lib/config.php';
     <body>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav" aria-expanded="false">
                         <span class="sr-only">Toggle navigation</span>
@@ -34,18 +33,17 @@ require_once __DIR__.'/lib/config.php';
                     <a class="navbar-brand" href="/">Twitch Bot Directory</a>
                 </div>
 
-                <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="main-nav">
                     <ul class="nav navbar-nav">
-                        <li<?php if($_GET['page'] == "index") { ?> class="active"<?php } ?>><a href="/">Known Bots <span class="sr-only">(current)</span></a></li>
-                        <li<?php if($_GET['page'] == "submit") { ?> class="active"<?php } ?>><a href="/submit">Submit Bot</a></li>
-                        <li<?php if($_GET['page'] == "api") { ?> class="active"<?php } ?>><a href="/api">API</a></li>
+                        <li<?php if($_GET['site'] == "index") { ?> class="active"<?php } ?>><a href="/">Known Bots <span class="sr-only">(current)</span></a></li>
+                        <li<?php if($_GET['site'] == "submit") { ?> class="active"<?php } ?>><a href="/submit">Submit Bot</a></li>
+                        <li<?php if($_GET['site'] == "api") { ?> class="active"<?php } ?>><a href="/api">API</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 <?php
-if($_GET['page'] == "index") {
+if($_GET['site'] == "index") {
 ?>        <div class="container">
             <div>
                 <h1>Find out if a Twitch user is a Chat Bot</h1>
@@ -63,9 +61,16 @@ if($_GET['page'] == "index") {
                     </thead>
                     <tbody>
 <?php
-//TODO pagination
+$page = 1;
+$pagesize = 100;
+if((int)$_GET['page'] > 1) {
+    $page = (int)$_GET['page'];
+}
+$offset = ($page-1) * $pagesize;
 $dbh = new PDO('mysql:host=localhost;dbname='.$db.';charset=utf8', $db_user, $db_pw);
-$getq = $dbh->prepare('SELECT bots.name, types.multichannel, types.url, types.name AS typename FROM bots LEFT JOIN types ON bots.type=types.id');
+$getq = $dbh->prepare('SELECT * FROM list LIMIT :start,:stop');
+$getq->bindValue(":start", $offset, PDO::PARAM_INT);
+$getq->bindValue(":stop", $offset + $pagesize, PDO::PARAM_INT);
 $getq->execute();
 $result = $getq->fetchAll(PDO::FETCH_OBJ);
 if(!is_null($result)) {
@@ -81,15 +86,46 @@ if(!is_null($result)) {
                     </tbody>
                 </table>
             </div>
+            <nav class="text-center">
+                <?php
+                    $otherpages = 2;
+                    if($page > 1) {
+                    }
+                    $getc = $dbh->prepare("SELECT count FROM count");
+                    $getc->execute();
+                    $itemcount = $getc->fetch(PDO::FETCH_OBJ);
+                    $pagecount = ceil($itemcount->count / (float)$pagesize);
+                ?><ul class="pagination">
+                    <li<?php if($page <= 1) echo ' class="disabled"'; ?>>
+                        <a href="?page=<?php echo $page-1; ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <?php
+                        for($i = $page - 1; $i > 0 && $i > $page - 3; --$i) {
+                            ?><li><a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a></li><?php
+                        }
+                        ?><li class="active"><a href="?page=<?php echo $page; ?>"><?php echo $page; ?> <span class="sr-only">(current)</span></a></li><?php
+                        for($i = $page + 1; $i < $pagecount && $i < $page + 3; ++$i) {
+                            ?><li><a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a></li><?php
+                        }
+                    ?>
+                    <li<?php if($page >= $pagecount) echo ' class="disabled"'; ?>>
+                        <a href="?page=<?php echo $page+1; ?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div><?php }
-else if($_GET['page'] == "submit") {
+else if($_GET['site'] == "submit") {
 ?>        <div class="container" id="submit">
             <div>
                 <h1>Submit a new bot</h1>
                 <p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell use about it with the form below and we'll review the information.</p>
             </div>
             <div class="panel panel-default">
-                <form class="panel-body">
+                <form class="panel-body" method="POST">
                     <div class="form-group">
                         <label for="username">Twitch Username</label>
                         <input type="text" class="form-control" id="username" placeholder="Username">
@@ -103,7 +139,7 @@ else if($_GET['page'] == "submit") {
                 </form>
             </div>
         </div><? }
-else if($_GET['page'] == "api") {
+else if($_GET['site'] == "api") {
 ?>        <div class="container" id="api">
             <div>
                 <h1>API Acess</h1>
