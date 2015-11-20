@@ -18,8 +18,8 @@ function jsonize_value($key, $value) {
 function set_link($value) {
     global $apiurl;
     $value['_link'] = $apiurl."bot/".$value['name'];
-    $value['username'] = $value['user'];
-    unset($value['user']);
+    $value['username'] = $value['name'];
+    unset($value['name']);
     return $value;
 }
 
