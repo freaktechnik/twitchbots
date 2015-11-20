@@ -212,8 +212,7 @@ else if($_GET['site'] == "api") { ?>
             "isBot": true,
             "type": 0,
             "_link": "http://api.twitchbots.info/v1/bot/nightbot"
-        },
-        ...
+        }
     ],
     "page": 1,
     "_next": null,
