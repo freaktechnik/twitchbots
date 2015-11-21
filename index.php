@@ -115,7 +115,7 @@ require_once __DIR__.'/lib/csrf.php';?>
         <div class="container" id="submit">
             <div>
                 <h1>Submit a new bot</h1>
-                <p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell us about it with the form below and we'll review the information. If you have a bigger dataset to submit, please contact Martin.</p>
+                <p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell us about it with the form below and we'll review the information. If you have a bigger dataset to submit, please contact us directly.</p>
             </div>
 <?php if($_GET['success']) { ?>
             <div class="alert alert-success" role="alert">
@@ -151,7 +151,7 @@ else if($_GET['site'] == "api") { ?>
         <div class="container" id="api">
             <div>
                 <h1>API Acess</h1>
-                <p>All the API endpoints are on the base URL <code>http://api.twitchbots.info/v1/</code>. All endpoints only accept GET requests. The API always returns JSON.</p>
+                <p>All the API endpoints are on the base URL <code>http://api.twitchbots.info/v1/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service.</p>
             </div>
             <div>
                 <h2>/bot/:name</h2>
@@ -163,7 +163,7 @@ else if($_GET['site'] == "api") { ?>
 {
     "username": "nightbot",
     "isBot": true,
-    "type": 0
+    "type": 1
 }</pre>
             </div>
             <div>
@@ -181,7 +181,7 @@ else if($_GET['site'] == "api") { ?>
     "bots: [
         {
             "username": "nightbot",
-            "type": 0,
+            "type": 1,
             "_link": "http://api.twitchbots.info/v1/bot/nightbot"
         },
         ...
@@ -210,7 +210,7 @@ else if($_GET['site'] == "api") { ?>
         {
             "username": "nightbot",
             "isBot": true,
-            "type": 0,
+            "type": 1,
             "_link": "http://api.twitchbots.info/v1/bot/nightbot"
         }
     ],
@@ -223,10 +223,10 @@ else if($_GET['site'] == "api") { ?>
                 <h2>/type/:id</h2>
                 <p>Replace <code>:id</code> with the id of the type you want to get.</p>
                 <h3>Response</h3>
-                <code>GET http://api.twitchbots.info/v1/type/0</code>
+                <code>GET http://api.twitchbots.info/v1/type/1</code>
                 <pre>
 {
-    "id": 0,
+    "id": 1,
     "name": "Nightbot",
     "multiChannel": true,
     "url": "https://www.nightbot.tv"
@@ -240,6 +240,7 @@ else if($_GET['site'] == "about") {?>
                 <p class="lead">twitchbots.info is a service that tries to collect all moderator and other serivce bots used in chats on <a href="https://twitch.tv">Twitch</a>. It is ran independently and developed as a hobby project.</p>
                 <p>The main reason to collect accounts that are used as bots is to identify them as bots in Twitch chat clients. Another use case are bots that distribute points, which can ignore other bots using this directory.</p>
                 <p>This site uses cookies to prevent submissions other than from the form on this site.</p>
+                <p>Website by <a href="http://humanoids.be">Martin Giger</a> with Bootstrap. Source code lincensed under the MIT is available on <a href="https://github.com/freaktechnik/twitchbots/">GitHub</a>.</p>
             </div>
         </div><? }
 else if($_GET['site'] == "check") { ?>
@@ -277,7 +278,6 @@ else {
         <footer class="footer">
             <div class="container">
                 <p class="text-muted">This is an independent site not run by Twitch.</p>
-                <p class="text-muted">Website by <a href="http://humanoids.be">Martin Giger</a> with Bootstrap. Source code lincensed under the MIT is available on <a href="https://github.com/freaktechnik/twitchbots/">GitHub</a>.</p>
             </div>
         </footer>
 
