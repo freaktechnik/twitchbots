@@ -62,12 +62,22 @@ if($_GET['site'] == "index") {
 <?php
 include_once __DIR__.'/lib/page.php';
 require_once __DIR__.'/lib/db.php';
-$getq = $dbh->prepare('SELECT * FROM list LIMIT :start,:stop');
-$getq->bindValue(":start", $offset, PDO::PARAM_INT);
-$getq->bindValue(":stop", $offset + $pagesize, PDO::PARAM_INT);
-$getq->execute();
-$result = $getq->fetchAll(PDO::FETCH_OBJ);
-if(!is_null($result)) {
+$getc = $dbh->prepare("SELECT count FROM count");
+$getc->execute();
+$itemcount = $getc->fetch(PDO::FETCH_OBJ);
+$pagecount = ceil($itemcount->count / (float)$pagesize);
+
+if($pagecount >= $page) {
+    $getq = $dbh->prepare('SELECT * FROM list LIMIT :start,:stop');
+    $getq->bindValue(":start", $offset, PDO::PARAM_INT);
+    $getq->bindValue(":stop", $offset + $pagesize, PDO::PARAM_INT);
+    $getq->execute();
+    $result = $getq->fetchAll(PDO::FETCH_OBJ);
+}
+else {
+    $result = array();
+}
+if(count($result) > 0) {
     foreach($result as $r) { ?>
                         <tr>
                             <td><?php echo $r->name; ?></td>
@@ -81,23 +91,28 @@ if(!is_null($result)) {
                 </table>
             </div>
             <nav class="text-center">
-                <?php
-                    $getc = $dbh->prepare("SELECT count FROM count");
-                    $getc->execute();
-                    $itemcount = $getc->fetch(PDO::FETCH_OBJ);
-                    $pagecount = ceil($itemcount->count / (float)$pagesize);
-                ?><ul class="pagination">
+                <ul class="pagination">
                     <li<?php if($page <= 1) echo ' class="disabled"'; ?>>
                         <a href="?page=<?php echo $page > 1 ? $page-1 : "#"; ?>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <?php
-                        for($i = $page - 1; $i > 0 && $i > $page - 3; --$i) {
-                            ?><li><a href="?page=<?php echo $page - $i; ?>"><?php echo $page - $i; ?></a></li><?php
+                        for($i = max($page - 3, 1); $i <= $pagecount && $i < $page; ++$i) {
+                            ?><li><a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a></li><?php
                         }
-                        ?><li class="active"><a href="?page=<?php echo $page; ?>"><?php echo $page; ?> <span class="sr-only">(current)</span></a></li><?php
-                        for($i = $page + 1; $i < $pagecount && $i < $page + 3; ++$i) {
+                        if($page <= $pagecount) { ?>
+                        <li class="active"><a href="?page=<?php echo $page; ?>">
+                            <?php echo $page; ?> <span class="sr-only">(current)</span>
+                        </a></li><?php
+                        }
+                        else { ?>
+                        <li class="disabled"><a href="?page=<?php echo $pagecount; ?>">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            <span class="sr-only">Invalid page</span>
+                        </a></li><?php
+                        }
+                        for($i = $page + 1; $i <= $pagecount && $i < $page + 3; ++$i) {
                             ?><li><a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a></li><?php
                         }
                     ?>
@@ -193,8 +208,7 @@ else if($_GET['site'] == "api") { ?>
             </div>
             <div>
                 <h2>/bot</h2>
-                <div class="alert alert-warning" role="alert">The API endpoint is not yet implemented.</div>
-                <p>Check multiple user's bot status.</p>
+                <p>Check multiple user's bot status. Only returns users that are registered as bots.</p>
                 <h3>Parameters</h3>
                 <dl class="dl-horizontal">
                     <dt><code>bots</code></dt>
@@ -203,13 +217,12 @@ else if($_GET['site'] == "api") { ?>
                     <dd>Page number, 1 by default</dd>
                 </dl>
                 <h3>Response</h3>
-                <code>GET http://api.twitchbots.info/bot?bots=nightbot</code>
+                <code>GET http://api.twitchbots.info/v1/bot?bots=nightbot</code>
                 <pre>
 {
     "bots: [
         {
             "username": "nightbot",
-            "isBot": true,
             "type": 1,
             "_link": "http://api.twitchbots.info/v1/bot/nightbot"
         }

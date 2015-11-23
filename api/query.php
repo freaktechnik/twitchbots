@@ -17,13 +17,13 @@ function jsonize_value($key, $value) {
 
 function set_link($value) {
     global $apiurl;
-    $value['_link'] = $apiurl."bot/".$value['name'];
     $value['username'] = $value['name'];
+    $value['_link'] = $apiurl."bot/".$value['name'];
     unset($value['name']);
     return $value;
 }
 
-function add_pagination_links($page, $pagesize, $baseurl, &$target) {
+function add_pagination_links($page, $pagecount, $baseurl, &$target) {
     $target['page'] = $page;
     if($page > 1)
         $target['_prev'] = $baseurl."page=".($page-1);
@@ -66,33 +66,48 @@ else if($_GET['endpoint'] == 'bot' && isset($_GET['id'])) {
 }
 else if($_GET['endpoint'] == 'bot/all') {
     require_once __DIR__.'/../../twitchbots/lib/page.php';
-    $getq = $dbh->prepare('SELECT * FROM bots LIMIT :start,:stop');
-    $getq->bindValue(":start", $offset, PDO::PARAM_INT);
-    $getq->bindValue(":stop", $offset + $pagesize, PDO::PARAM_INT);
-    $getq->execute();
-    $result = $getq->fetchAll(PDO::FETCH_ASSOC);
-    $target['bots'] = array_map("set_link", $result);
-
     $pagecount = get_pagecount();
+
+    if($pagecount >= $offset / $pagesize) {
+        $getq = $dbh->prepare('SELECT * FROM bots LIMIT :start,:stop');
+        $getq->bindValue(":start", $offset, PDO::PARAM_INT);
+        $getq->bindValue(":stop", $offset + $pagesize, PDO::PARAM_INT);
+        $getq->execute();
+        $result = $getq->fetchAll(PDO::FETCH_ASSOC);
+        $target['bots'] = array_map("set_link", $result);
+    }
+    else {
+        $target['bots'] = array();
+    }
+
     add_pagination_links($page, $pagecount, $apiurl."bot/all?", $target);
 }
 else if($_GET['endpoint'] == 'bot' && isset($_GET['bots'])) {
     require_once __DIR__.'/../../twitchbots/lib/page.php';
-    //TODO empty paramter?
     $names = explode(",", $_GET['bots']);
-    if(count($names) == 0) {
+    $namesCount = count($names);
+    $pagecount = ceil($namesCount / $pagesize);
+
+    if($namesCount <= ($page - 1) * $pagesize) {
         $target['bots'] = array();
-        $pagecount = 0;
     }
     else {
-        //TODO filter query?
-        $getq = $dbh->prepare('SELECT * FROM bots WHERE name=?');
+        $getq = $dbh->prepare('SELECT * FROM bots WHERE name IN ('.implode(',',array_fill(1, count($names),'?')).') LIMIT ?,?');
+        foreach($names as $i => $n) {
+            $getq->bindValue($i + 1, $n, PDO::PARAM_STR);
+        }
 
-        //TODO _link and isBot. if !isBot _link=null
+        $getq->bindValue($namesCount + 1, $offset, PDO::PARAM_INT);
+        $getq->bindValue($namesCount + 2, $offset + $pagesize, PDO::PARAM_INT);
+        $getq->execute();
 
-        $target['bots'] = array();
+        $result = $getq->fetchAll(PDO::FETCH_ASSOC);
 
-        $pagecount = 0; //TODO do it with the main query to speed things up?
+        $target['bots'] = array_map('set_link', $result);
+
+        // Wonky workaround to cut off the _next link if we're apparently on the last page.
+        if($getq->rowCount() < $pagesize && $page < $pagecount)
+            $pagecount = $page;
     }
     add_pagination_links($page, $pagecount, $apiurl."bot?bots=".$_GET['bots']."&", $target);
 }
