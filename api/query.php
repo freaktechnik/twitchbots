@@ -66,12 +66,14 @@ else if($_GET['endpoint'] == 'bot' && isset($_GET['id'])) {
 }
 else if($_GET['endpoint'] == 'bot/all') {
     require_once __DIR__.'/../../twitchbots/lib/page.php';
-    $pagecount = get_pagecount();
+    $pagecount = get_pagecount($_GET['type']);
 
     if($pagecount >= $offset / $pagesize) {
-        $getq = $dbh->prepare('SELECT * FROM bots LIMIT :start,:stop');
+        $getq = $dbh->prepare('SELECT * FROM bots '.(isset($_GET['type']) ? 'WHERE type=:type ': '').'LIMIT :start,:stop');
         $getq->bindValue(":start", $offset, PDO::PARAM_INT);
         $getq->bindValue(":stop", $offset + $pagesize, PDO::PARAM_INT);
+        if(isset($_GET['type']))
+            $getq->bindValue(":type", (int)$_GET['type'], PDO::PARAM_INT);
         $getq->execute();
         $result = $getq->fetchAll(PDO::FETCH_ASSOC);
         $target['bots'] = array_map("set_link", $result);

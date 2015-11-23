@@ -188,6 +188,8 @@ else if($_GET['site'] == "api") { ?>
                 <dl class="dl-horizontal">
                     <dt><code>page</code></dt>
                     <dd>Page number, 1 by default</dd>
+                    <dt><code>type</code></dt>
+                    <dd>Optionally only return bots of the given type ID</dd>
                 </dl>
                 <h3>Response</h3>
                 <code>GET http://api.twitchbots.info/v1/bot/all</code>
