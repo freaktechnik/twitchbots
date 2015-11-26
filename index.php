@@ -153,7 +153,7 @@ else if($_GET['site'] == "submit") {
                         <select class="form-control" name="existing_type" id="existingtype">
                             <option value="0">New type...</option><?php
         require_once __DIR__.'/lib/db.php';
-        $req = $dbh->prepare("SELECT * FROM types ORDER BY name");
+        $req = $dbh->prepare("SELECT id, name FROM types ORDER BY name");
         $req->execute();
         $result = $req->fetchAll(PDO::FETCH_OBJ);
         foreach($result as $r) { ?>
