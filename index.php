@@ -40,10 +40,9 @@
                     </ul>
                 </div>
             </div>
-        </nav>
-<?php
-if($_GET['site'] == "index") {
-?>        <div class="container">
+        </nav><?php
+if($_GET['site'] == "index") { ?>
+        <div class="container">
             <div>
                 <h1>Find out if a Twitch user is a Chat Bot</h1>
                 <p class="lead">Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots listed are service or moderator bots.</p>
@@ -58,8 +57,7 @@ if($_GET['site'] == "index") {
                             <th>Type</th>
                         </tr>
                     </thead>
-                    <tbody>
-<?php
+                    <tbody><?php
     include_once __DIR__.'/lib/page.php';
     require_once __DIR__.'/lib/db.php';
     $getc = $dbh->prepare("SELECT count FROM count");
@@ -126,7 +124,7 @@ if($_GET['site'] == "index") {
         </div><?php }
 else if($_GET['site'] == "submit") {
     session_start();
-    require_once __DIR__.'/lib/csrf.php';?>
+    require_once __DIR__.'/lib/csrf.php'; ?>
         <div class="container" id="submit">
             <div>
                 <h1>Submit a new bot</h1>
@@ -138,14 +136,13 @@ else if($_GET['site'] == "submit") {
                 <span class="sr-only">Success:</span>
                 Your submission has been saved. We will review it as soon as possible.
             </div>
-<?php } ?>
-<?php if($_GET['error']) { ?>
+<?php }
+    if($_GET['error']) { ?>
             <div class="alert alert-danger" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign aria-hidden="true"></span>
                 <span class="sr-only">Error:</span>
                 Something went wrong while submitting.
-            </div>
-<?php } ?>
+            </div><?php } ?>
             <div class="panel panel-default">
                 <form class="panel-body" method="post" action="lib/submit.php">
                     <div class="form-group">
@@ -161,7 +158,7 @@ else if($_GET['site'] == "submit") {
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
             </div>
-        </div><? }
+        </div><?php }
 else if($_GET['site'] == "api") { ?>
         <div class="container" id="api">
             <div>
@@ -247,7 +244,7 @@ else if($_GET['site'] == "api") { ?>
     "url": "https://www.nightbot.tv"
 }</pre>
             </div>
-        </div><? }
+        </div><?php }
 else if($_GET['site'] == "about") {?>
         <div class="container">
             <div>
@@ -257,7 +254,7 @@ else if($_GET['site'] == "about") {?>
                 <p>This site uses cookies to prevent submissions other than from the form on this site.</p>
                 <p>Website by <a href="http://humanoids.be">Martin Giger</a> with Bootstrap. Source code lincensed under the MIT is available on <a href="https://github.com/freaktechnik/twitchbots/">GitHub</a>.</p>
             </div>
-        </div><? }
+        </div><?php }
 else if($_GET['site'] == "check") { ?>
         <div class="container">
             <div>
@@ -280,7 +277,7 @@ else if($_GET['site'] == "check") { ?>
                 </div>
             </div>
             <script src="js/check.js"></script>
-        </div><? }
+        </div><?php }
 else if($_GET['site'] == "submissions") { ?>
         <div class="container">
             <h1>Submission Queue</h1>
@@ -295,7 +292,7 @@ else if($_GET['site'] == "submissions") { ?>
                 <dd><?php echo $r->description; ?></dd>
 <?php } ?>
             </dl>
-        </div><? }
+        </div><?php }
 else { ?>
         <div class="container">
             <div>
