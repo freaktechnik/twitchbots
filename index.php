@@ -293,12 +293,10 @@ else if($_GET['site'] == "submissions") { ?>
     foreach($result as $r) { ?>
                 <dt><?php echo $r->name; ?></dt>
                 <dd><?php echo $r->description; ?></dd>
-<?php }
-?>
+<?php } ?>
             </dl>
         </div><? }
-else {
-?>
+else { ?>
         <div class="container">
             <div>
                 <h1>This page doesn't exist</h1>
