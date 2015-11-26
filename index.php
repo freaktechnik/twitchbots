@@ -60,32 +60,32 @@ if($_GET['site'] == "index") {
                     </thead>
                     <tbody>
 <?php
-include_once __DIR__.'/lib/page.php';
-require_once __DIR__.'/lib/db.php';
-$getc = $dbh->prepare("SELECT count FROM count");
-$getc->execute();
-$itemcount = $getc->fetch(PDO::FETCH_OBJ);
-$pagecount = ceil($itemcount->count / (float)$pagesize);
+    include_once __DIR__.'/lib/page.php';
+    require_once __DIR__.'/lib/db.php';
+    $getc = $dbh->prepare("SELECT count FROM count");
+    $getc->execute();
+    $itemcount = $getc->fetch(PDO::FETCH_OBJ);
+    $pagecount = ceil($itemcount->count / (float)$pagesize);
 
-if($pagecount >= $page) {
-    $getq = $dbh->prepare('SELECT * FROM list LIMIT :start,:stop');
-    $getq->bindValue(":start", $offset, PDO::PARAM_INT);
-    $getq->bindValue(":stop", $offset + $pagesize, PDO::PARAM_INT);
-    $getq->execute();
-    $result = $getq->fetchAll(PDO::FETCH_OBJ);
-}
-else {
-    $result = array();
-}
-if(count($result) > 0) {
-    foreach($result as $r) { ?>
+    if($pagecount >= $page) {
+        $getq = $dbh->prepare('SELECT * FROM list LIMIT :start,:stop');
+        $getq->bindValue(":start", $offset, PDO::PARAM_INT);
+        $getq->bindValue(":stop", $offset + $pagesize, PDO::PARAM_INT);
+        $getq->execute();
+        $result = $getq->fetchAll(PDO::FETCH_OBJ);
+    }
+    else {
+        $result = array();
+    }
+    if(count($result) > 0) {
+        foreach($result as $r) { ?>
                         <tr>
                             <td><?php echo $r->name; ?></td>
                             <td><?php echo $r->multichannel == 1 ? "Yes": "No"; ?></td>
                             <td><a href="<?php echo $r->url; ?>"><?php echo $r->typename; ?></a></td>
                         </tr><?php
+        }
     }
-}
 ?>
                     </tbody>
                 </table>
@@ -125,8 +125,8 @@ if(count($result) > 0) {
             </nav>
         </div><?php }
 else if($_GET['site'] == "submit") {
-session_start();
-require_once __DIR__.'/lib/csrf.php';?>
+    session_start();
+    require_once __DIR__.'/lib/csrf.php';?>
         <div class="container" id="submit">
             <div>
                 <h1>Submit a new bot</h1>
@@ -280,6 +280,22 @@ else if($_GET['site'] == "check") { ?>
                 </div>
             </div>
             <script src="js/check.js"></script>
+        </div><? }
+else if($_GET['site'] == "submissions") { ?>
+        <div class="container">
+            <h1>Submission Queue</h1>
+            <dl class="dl-horizontal"><?php
+    require_once __DIR__.'/lib/db.php';
+    $req = $dbh->prepare("SELECT * FROM submissions");
+    $req->execute();
+    $result = $req->fetchAll(PDO::FETCH_OBJ);
+
+    foreach($result as $r) { ?>
+                <dt><?php echo $r->name; ?></dt>
+                <dd><?php echo $r->description; ?></dd>
+<?php }
+?>
+            </dl>
         </div><? }
 else {
 ?>
