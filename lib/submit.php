@@ -9,7 +9,7 @@ if(!validate_token("submit", $_POST['token']) ||
 else {
     require_once __DIR__.'/db.php';
     $req = $dbh->prepare("INSERT INTO submissions(name,description) VALUES (?,?)");
-    $req->execute(array($_POST['username'],$_POST['description']));
+    $req->execute(array($_POST['username'],$_POST['existing_type'] == 0 ? $_POST['description'] : $_POST['existing_type']));
     header('Location: http://twitchbots.info/submit?success=1');
 }
 

@@ -150,14 +150,26 @@ else if($_GET['site'] == "submit") {
                         <input type="text" class="form-control" id="username" name="username" placeholder="Username">
                     </div>
                     <div class="form-group">
-                        <label for="type">Bot Type</label>
+                        <select class="form-control" name="existing_type" id="existingtype">
+                            <option value="0">New type...</option><?php
+        require_once __DIR__.'/lib/db.php';
+        $req = $dbh->prepare("SELECT * FROM types ORDER BY name COLLATE ");
+        $req->execute();
+        $result = $req->fetchAll(PDO::FETCH_OBJ);
+        foreach($result as $r) { ?>
+                            <option value="<?php echo $r->id; ?>"><?php echo $r->name; ?></option><?php
+        } ?>
+                        </select>
+                    </div>
+                    <div class="form-group" id="bottype">
                         <input type="text" class="form-control" id="type" name="description" placeholder="Type">
                         <p class="help-block">Describe the bot type, normally the name of the software that runs it and if possible a link to the website of it.</p>
                     </div>
                     <input type="hidden" value="<?php echo generate_token("submit"); ?>" name="token">
-                    <button type="submit" class="btn btn-default">Submit</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
+            <script src="js/submit.js"></script>
         </div><?php }
 else if($_GET['site'] == "api") { ?>
         <div class="container" id="api">
@@ -263,7 +275,7 @@ else if($_GET['site'] == "check") { ?>
                 <form class="input-group" id="checkform">
                     <input type="text" class="form-control" placeholder="Username" id="checkuser">
                     <span class="input-group-btn">
-                        <button type="submit" class="btn btn-default">Check</button>
+                        <button type="submit" class="btn btn-primary">Check</button>
                     </span>
                 </form>
                 <div class="alert" id="checkloading" hidden>
@@ -287,10 +299,14 @@ else if($_GET['site'] == "submissions") { ?>
     $req->execute();
     $result = $req->fetchAll(PDO::FETCH_OBJ);
 
-    foreach($result as $r) { ?>
+    if(count($result) > 0) {
+        foreach($result as $r) { ?>
                 <dt><?php echo $r->name; ?></dt>
                 <dd><?php echo $r->description; ?></dd>
-<?php } ?>
+<?php   }
+    }
+    else { ?>
+                <dd><em>Empty</em></dd><?php } ?>
             </dl>
         </div><?php }
 else { ?>
