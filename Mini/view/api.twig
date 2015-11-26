@@ -1,0 +1,86 @@
+{% extends "_base.twig" %}
+{% block content %}
+<div>
+    <h1>API Acess</h1>
+    <p>All the API endpoints are on the base URL <code>http://api.twitchbots.info/v1/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service.</p>
+</div>
+<div>
+    <h2>/bot/:name</h2>
+    <p>Replace <code>:name</code> with the username of the Twitch user to check.</p>
+    <h3>Response</h3>
+    <p><code>type</code> is <code>null</code> if the user is not a bot.</p>
+    <code>GET http://api.twitchbots.info/v1/bot/nightbot</code>
+    <pre>
+{
+"username": "nightbot",
+"isBot": true,
+"type": 1
+}</pre>
+</div>
+<div>
+    <h2>/bot/all</h2>
+    <p>Returns all known bots.</p>
+    <h3>Parameters</h3>
+    <dl class="dl-horizontal">
+        <dt><code>page</code></dt>
+        <dd>Page number, 1 by default</dd>
+        <dt><code>type</code></dt>
+        <dd>Optionally only return bots of the given type ID</dd>
+    </dl>
+    <h3>Response</h3>
+    <code>GET http://api.twitchbots.info/v1/bot/all</code>
+    <pre>
+{
+"bots: [
+{
+"username": "nightbot",
+"type": 1,
+"_link": "http://api.twitchbots.info/v1/bot/nightbot"
+},
+...
+],
+"page": 1,
+"_next": "http://api.twitchbots.info/v1/bot/all?page=2",
+"_prev": null
+}</pre>
+</div>
+<div>
+    <h2>/bot</h2>
+    <p>Check multiple user's bot status. Only returns users that are registered as bots.</p>
+    <h3>Parameters</h3>
+    <dl class="dl-horizontal">
+        <dt><code>bots</code></dt>
+        <dd>Comma separated list of usernames to check</dd>
+        <dt><code>page</code></dt>
+        <dd>Page number, 1 by default</dd>
+    </dl>
+    <h3>Response</h3>
+    <code>GET http://api.twitchbots.info/v1/bot?bots=nightbot</code>
+    <pre>
+{
+"bots: [
+{
+"username": "nightbot",
+"type": 1,
+"_link": "http://api.twitchbots.info/v1/bot/nightbot"
+}
+],
+"page": 1,
+"_next": null,
+"_prev": null
+}</pre>
+</div>
+<div>
+    <h2>/type/:id</h2>
+    <p>Replace <code>:id</code> with the id of the type you want to get.</p>
+    <h3>Response</h3>
+    <code>GET http://api.twitchbots.info/v1/type/1</code>
+    <pre>
+{
+"id": 1,
+"name": "Nightbot",
+"multiChannel": true,
+"url": "https://www.nightbot.tv"
+}</pre>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "_base.twig" %}
+{% block content %}
+<div>
+    <h1>Check a User</h1>
+    <p>Get the bot status for a specific username.</p>
+    <form class="input-group" id="checkform">
+        <input type="text" class="form-control" placeholder="Username" id="checkuser">
+        <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary">Check</button>
+        </span>
+    </form>
+    <div class="alert" id="checkloading" hidden>
+        Loading&hellip;
+    </div>
+    <div class="alert" id="botuser" hidden>
+        <span class="name"></span> is a bot.
+    </div>
+    <div class="alert" id="realuser" hidden>
+        <span class="name"></span> is not a bot.
+    </div>
+</div>
+<script src="js/check.js"></script>
+{% endblock %}

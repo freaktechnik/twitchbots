@@ -1,8 +1,12 @@
-RewriteEngine on
+RewriteEngine On
 
-RewriteRule ^$ index.php?site=index [QSA]
-RewriteRule ^([A-Za-z0-9_]+)$ index.php?site=$1 [QSA]
+RewriteRule ^\.htaccess$ - [F]
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.*$ index.php [QSA, L]
+RewriteCond %{REQUEST_URI} = ""
+RewriteRule ^.*$ /public/index.php [NC,QSA,L]
+RewriteCond %{REQUEST_URI} !^/?public/.*$
+RewriteRule ^(.*)$ /public/$1
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^.*$ - [L]
+
+RewriteRule ^public/.*$ /public/index.php [NC,L,QSA]

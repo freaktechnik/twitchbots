@@ -1,4 +1,7 @@
 <?php
+    session_cache_limiter(false);
+    session_start();
+
     function store_in_session($key, $value) {
         if(isset($_SESSION))
             $_SESSION[$key] = $value;
