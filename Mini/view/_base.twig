@@ -1,3 +1,25 @@
+{% set navitems = [
+    {
+        "name": "Known Bots",
+        "url": "/"
+    },
+    {
+        "name": "Submit Bot",
+        "url": "/submit"
+    },
+    {
+        "name": "Check User",
+        "url": "/check"
+    },
+    {
+        "name": "API",
+        "url": "/api"
+    },
+    {
+        "name": "About",
+        "url": "/about"
+    }
+] %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -32,11 +54,15 @@
 
                 <div class="collapse navbar-collapse" id="main-nav">
                     <ul class="nav navbar-nav">
-                        <li><a href="/">Known Bots <span class="sr-only">(current)</span></a></li>
-                        <li><a href="/submit">Submit Bot</a></li>
-                        <li><a href="/check">Check User</a></li>
-                        <li><a href="/api">API</a></li>
-                        <li><a href="/about">About</a></li>
+                        {% for item in navitems %}
+                            <li {% if item.url = currentItem %} class="active"{% endif %}>
+                                <a href="{{ item.url }}">{{ item.name }}
+                                {% if item.url = currentItem %}
+                                    <span class="sr-only">(current)</span>
+                                {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
