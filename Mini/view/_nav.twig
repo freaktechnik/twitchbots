@@ -1,0 +1,12 @@
+{% macro build(currentURL) %}
+    {% set navitems = [ { "name": "Known Bots", "url": "/" }, { "name": "Submit Bot", "url": "/submit" }, { "name": "Check User", "url": "/check" }, { "name": "API", "url": "/api" }, { "name": "About", "url": "/about" } ] %}
+    {% for item in navitems %}
+        <li {% if item.url == currentURL %} class="active"{% endif %}>
+            <a href="{{ item.url }}">{{ item.name }}
+            {% if item.url == currentURL %}
+                <span class="sr-only">(current)</span>
+            {% endif %}
+            </a>
+        </li>
+    {% endfor %}
+{% endmacro %}

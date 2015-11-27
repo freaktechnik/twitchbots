@@ -1,5 +1,8 @@
-{% set currentItem = "/about" %}
 {% extends "_base.twig" %}
+{% import "_nav.twig" as navigation %}
+{% block nav %}
+    {{ navigation.build('/about') }}
+{% endblock %}
 {% block content %}
 <div>
     <h1>About this Service</h1>

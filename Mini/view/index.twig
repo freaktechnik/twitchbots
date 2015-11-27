@@ -1,7 +1,10 @@
-{% set currentItem = "/" %}
 {% extends "_base.twig" %}
+{% import "_nav.twig" as navigation %}
 {% set extremePagesLimit = 3 %}
 {% set nearbyPagesLimit = 2 %}
+{% block nav %}
+    {{ navigation.build('/') }}
+{% endblock %}
 {% block content %}
 <div>
     <h1>Find out if a Twitch user is a Chat Bot</h1>

@@ -10,7 +10,9 @@ $app = new \Slim\Slim();
 
 // and define the engine used for the view @see http://twig.sensiolabs.org
 $app->view = new \Slim\Views\Twig();
-$app->view->setTemplatesDirectory("../Mini/view");
+$app->view->setTemplatesDirectory("../Mini/view", [
+    "cache" => "../cache"
+]);
 
 /******************************************* THE CONFIGS *******************************************************/
 
@@ -19,7 +21,7 @@ $app->configureMode('development', function () use ($app) {
     // Set the configs for development environment
     include_once __DIR__.'/../lib/config.php';
     $app->config(array(
-        'debug' => false,
+        'debug' => true,
         'database' => array(
             'db_host' => 'localhost',
             'db_port' => '',

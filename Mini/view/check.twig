@@ -1,5 +1,8 @@
-{% set currentItem = "/check" %}
 {% extends "_base.twig" %}
+{% import "_nav.twig" as navigation %}
+{% block nav %}
+    {{ navigation.build('/check') }}
+{% endblock %}
 {% block content %}
 <div>
     <h1>Check a User</h1>
