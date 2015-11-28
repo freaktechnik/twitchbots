@@ -6,14 +6,12 @@
 require '../vendor/autoload.php';
 
 // Initialize Slim (the router/micro framework used)
-$app = new \Slim\Slim();
+$app = new \Slim\Slim(array(
+    'mode' => 'production'
+));
 $app->setName('api');
 
-// and define the engine used for the view @see http://twig.sensiolabs.org
-$app->view = new \Slim\Views\Twig();
-$app->view->setTemplatesDirectory("../Mini/view", array(
-    'cache' => '../cache'
-));
+// The API has no real view
 
 /******************************************* THE CONFIGS *******************************************************/
 
@@ -58,19 +56,24 @@ $model = new \Mini\Model\Model($app->config('model'));
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
-$apiUrl = function($path = null) use ($app) {
-    if($path == null)
-        $path = $app->request->getResourceUri();
-    return 'http://api.twichbots.info'.$path;
-};
+$app->group('/v1', function ()  use ($app, $model) {
+    $apiUrl = function($path = null) use ($app) {
+        if($path == null)
+            $path = $app->request->getResourceUri();
+        return $app->request->getUrl().$app->request->getRootUri().$path;
+    };
 
-$app->group('/v1', function ()  use ($app, $model, $apiUrl) {
+    $fullUrlFor = function($name, $params) use ($app) {
+        return $app->request->getUrl().$app->urlFor($name, $params);
+    };
+
     // This API only returns JSON
     $app->contentType('application/json;charset=utf8');
-    $app->response()->headers->set('Access-Control-Allow-Origin', '*');
+    $app->response->headers->set('Access-Control-Allow-Origin', '*');
 
     $app->get('/', function () use ($app, $apiUrl) {
-        $url = $apiUrl($app);
+        $app->lastModified(1448745064);
+        $url = $apiUrl();
         $index = array(
             '_links' => array(
                 'bot' => $url.'bot',
@@ -80,17 +83,15 @@ $app->group('/v1', function ()  use ($app, $model, $apiUrl) {
         echo json_encode($index);
     });
 
-    $root = "/v1/";
-
-    $app->group('/bot', function () use ($app, $model, $apiUrl, $root) {
-        $mapBot = function ($bot) use ($apiUrl, $app, $root) {
-            $url = $apiUrl($root);
+    $app->group('/bot', function () use ($app, $model, $apiUrl, $fullUrlFor) {
+        $mapBot = function ($bot) use ($fullUrlFor) {
             $bot->username = $bot->name;
             $bot->_links = array(
-                'self' => $url.'bot/'.$bot->name,
-                'type' => $url.'type/'.$bot->type
+                'self' => $fullUrlFor('bot', array('name' => $bot->name)),
+                'type' => $fullUrlFor('type', array('id' => $bot->type))
             );
             unset($bot->name);
+            unset($bot->date);
             return $bot;
         };
 
@@ -98,6 +99,7 @@ $app->group('/v1', function ()  use ($app, $model, $apiUrl) {
             $page = isset($_GET['page']) ? $_GET['page'] : 1;
             $names = explode(',', $_GET['bots']);
             $bots = $model->getBotsByNames($names, $page);
+            //TODO lastModified
             $url = $apiUrl();
             $json = array(
                 'bots' => array_map($mapBot, $bots),
@@ -116,7 +118,9 @@ $app->group('/v1', function ()  use ($app, $model, $apiUrl) {
 
             echo json_encode($json);
         });
-        $app->get('/all', function () use ($app, $model, $mapBot, $apiUrl, $root) {
+        $app->get('/all', function () use ($app, $model, $mapBot, $apiUrl, $fullUrlFor) {
+            $app->lastModified($model->getLastBotUpdate());
+
             $page = isset($_GET['page']) ? $_GET['page'] : 1;
             if(isset($_GET['type'])) {
                 $bots = $model->getBotsByType($_GET['type'], $page);
@@ -142,7 +146,7 @@ $app->group('/v1', function ()  use ($app, $model, $apiUrl) {
             );
 
             if(isset($_GET['type']))
-                $json['_links']['type'] = $apiUrl($root).'type/'.$_GET['type'];
+                $json['_links']['type'] = $fullUrlFor('type', array('id' => $_GET['type']));
 
             if($page < $pageCount)
                 $json['_links']['next'] = $url.'?page='.($page + 1).$typeParam;
@@ -150,11 +154,12 @@ $app->group('/v1', function ()  use ($app, $model, $apiUrl) {
                 $json['_links']['prev'] = $url.'?page='.($page - 1).$typeParam;
 
             echo json_encode($json);
-        });
-        $app->get('/:name', function ($name) use ($app, $model, $apiUrl, $root) {
+        })->name('allbots');
+        $app->get('/:name', function ($name) use ($app, $model, $apiUrl, $fullUrlFor) {
             $bot = $model->getBot($name);
 
             if(!$bot) {
+                $app->lastModified(time());
                 $bot = array(
                     'username' => $name,
                     'isBot' => false,
@@ -165,35 +170,41 @@ $app->group('/v1', function ()  use ($app, $model, $apiUrl) {
                 );
             }
             else {
+                $app->lastModified(strtotime($bot->date));
+                unset($bot->date);
+
                 $bot->username = $bot->name;
                 $bot->isBot = true;
                 $bot->_links = array(
                     'self' => $apiUrl(),
-                    'type' => $apiUrl($root).'type/'.$bot->type
+                    'type' => $fullUrlFor('type', array('id' => $bot->type))
                 );
                 unset($bot->name);
             }
 
             echo json_encode($bot);
-        })->conditions(array('name' => '[a-zA-Z0-9_\-]+'));
+        })->conditions(array('name' => '[a-zA-Z0-9_\-]+'))->name('bot');
     });
 
-    $app->get('/type/:id', function ($id) use ($app, $model, $apiUrl, $root) {
+    $app->get('/type/:id', function ($id) use ($app, $model, $apiUrl, $fullUrlFor) {
         $type = $model->getType($id);
         if(!$type) {
-            $app->halt(404, "Type not found");
+            $app->halt(404, '{ "error": "Type not found", "code": 404 }');
         }
 
-        $type->multiChannel = !!$type->multichannel;
+        $app->lastModified(strtotime($type->date));
+        unset($type->date);
+
+        $type->multiChannel = $type->multichannel == "1";
         unset($type->multichannel);
 
         $type->_links = array(
             'self' => $apiUrl(),
-            'bots' => $apiUrl($root).'bot/all?type='.$id
+            'bots' => $fullUrlFor('allbots').'?type='.$id
         );
 
         echo json_encode($type);
-    })->conditions(array('id' => '[1-9][0-9]*'));
+    })->conditions(array('id' => '[1-9][0-9]*'))->name('type');
 });
 
 /******************************************* RUN THE APP *******************************************************/

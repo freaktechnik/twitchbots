@@ -6,13 +6,20 @@
 require '../vendor/autoload.php';
 
 // Initialize Slim (the router/micro framework used)
-$app = new \Slim\Slim();
+$app = new \Slim\Slim(array(
+    'mode' => 'production'
+));
 
 // and define the engine used for the view @see http://twig.sensiolabs.org
 $app->view = new \Slim\Views\Twig();
-$app->view->setTemplatesDirectory("../Mini/view", [
-    "cache" => "../cache"
-]);
+$app->view->setTemplatesDirectory("../Mini/view");
+$app->view->parserOptions = array(
+    'cache' => '../cache'
+);
+
+$app->view->parserExtensions = array(
+    new \Slim\Views\TwigExtension(),
+);
 
 /******************************************* THE CONFIGS *******************************************************/
 
@@ -57,8 +64,12 @@ $model = new \Mini\Model\Model($app->config('database'));
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
-$app->get('/', function () use ($app, $model) {
-    $pageCount = $model->getBotPageCount();
+$lastUpdate = 1448745064;
+
+$app->get('/', function () use ($app, $model, $lastUpdate) {
+    $app->lastModified(max(array($lastUpdate, $model->getLastBotUpdate())));
+
+    $pageCount = $model->getPageCount();
     $page = 1;
     if(isset($_GET['page']))
         $page = $_GET['page'];
@@ -74,7 +85,9 @@ $app->get('/', function () use ($app, $model) {
         'bots' => $bots
     ));
 });
-$app->get('/submit', function () use ($app, $model) {
+$app->get('/submit', function () use ($app, $model, $lastUpdate) {
+    $app->lastModified($lastUpdate);
+
     $token = $model->getToken("submit");
     $types = $model->getAllTypes();
 
@@ -86,16 +99,25 @@ $app->get('/submit', function () use ($app, $model) {
     ));
 });
 $app->get('/check', function () use ($app) {
+    $app->lastModified($lastUpdate);
     $app->render('check.twig');
 });
-$app->get('/api', function () use ($app) {
+$app->get('/api', function () use ($app, $lastUpdate) {
+    $app->lastModified($lastUpdate);
     $app->render('api.twig');
 });
-$app->get('/about', function () use($app) {
+$app->get('/about', function () use($app, $lastUpdate) {
+    $app->lastModified($lastUpdate);
     $app->render('about.twig');
 });
-$app->get('/submissions', function () use($app, $model) {
+$app->get('/submissions', function () use($app, $model, $lastUpdate) {
     $submissions = $model->getSubmissions();
+    if(count($submissions) > 0) {
+        $app->lastModified(max(array($lastUpdate, strtotime($submissions[0]->date))));
+    }
+    else {
+        $app->lastModified(time());
+    }
 
     $app->render('submissions.twig', array(
         'submissions' => $submissions

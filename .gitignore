@@ -3,3 +3,4 @@ lib/config.php
 *~
 vendor/
 composer.phar
+public/assets/

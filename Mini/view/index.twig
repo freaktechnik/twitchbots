@@ -23,7 +23,7 @@
         <tbody>
         {% for bot in bots %}
             <tr>
-                <td>{{ bot.name|e }}</td>
+                <td><a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}">{{ bot.name|e }}</a></td>
                 <td>{% if bot.multichannel %}Yes{% else %}No{% endif %}</td>
                 <td><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a></td>
             </tr>

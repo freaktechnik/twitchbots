@@ -61,11 +61,20 @@ class Model
 
     public function getSubmissions()
     {
-        $sql = "SELECT name, description FROM submissions";
+        $sql = "SELECT name, description, date FROM submissions ORDER BY date DESC";
         $query = $this->db->prepare($sql);
         $query->execute();
 
         return $query->fetchAll();
+    }
+
+    public function getLastBotUpdate()
+    {
+        $sql = "SELECT date FROM bots ORDER BY date DESC LIMIT 1";
+        $query = $this->db->prepare($sql);
+        $query->execute();
+
+        return strtotime($query->fetch()->date);
     }
 
     public function getBotCount($type = 0)
@@ -182,7 +191,7 @@ class Model
 
     public function getAllTypes()
     {
-        $sql = "SELECT id,name FROM types";
+        $sql = "SELECT * FROM types";
         $query = $this->db->prepare($sql);
         $query->execute();
 
