@@ -98,7 +98,7 @@ $app->get('/submit', function () use ($app, $model, $lastUpdate) {
         'types' => $types
     ));
 });
-$app->get('/check', function () use ($app) {
+$app->get('/check', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->render('check.twig');
 });
