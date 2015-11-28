@@ -76,11 +76,13 @@ $app->get('/', function () use ($app, $model) {
 });
 $app->get('/submit', function () use ($app, $model) {
     $token = $model->getToken("submit");
+    $types = $model->getAllTypes();
 
     $app->render('submit.twig', array(
         'success' => $_GET['success'],
         'error' => $_GET['error'],
-        'token' => $token
+        'token' => $token,
+        'types' => $types
     ));
 });
 $app->get('/check', function () use ($app) {

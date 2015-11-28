@@ -80,18 +80,79 @@ class Model
         return $query->fetch()->count;
     }
 
-    public function getBotPageCount() {
-        return ceil($this->getBotCount() / (float)$this->pageSize);
+    public function getPageCount($count = null) {
+        if($count == null)
+            $count = $this->getBotCount();
+        return ceil($count / (float)$this->pageSize);
+    }
+
+    public function getOffset($page)
+    {
+        return ($page - 1) * $this->pageSize;
+    }
+
+    private function doPagination($query, $page, $start = ":start", $stop = ":stop")
+    {
+        $offset = $this->getOffset($page);
+        $query->bindValue($start, $offset, PDO::PARAM_INT);
+        $query->bindValue($stop, $offset + $this->pageSize, PDO::PARAM_INT);
     }
 
     public function getBots($page = 1)
     {
-        if($page <= $this->getBotPageCount()) {
-            $offset = ($page - 1) * $this->pageSize;
+        if($page <= $this->getPageCount()) {
             $sql = "SELECT * FROM list LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
-            $query->bindValue(":start", $offset, PDO::PARAM_INT);
-            $query->bindValue(":stop", $offset + $this->pageSize, PDO::PARAM_INT);
+            $this->doPagination($query, $page);
+            $query->execute();
+            return $query->fetchAll();
+        }
+        else {
+            return array();
+        }
+    }
+
+    public function getAllRawBots($page = 1)
+    {
+        if($page <= $this->getPageCount()) {
+            $sql = "SELECT * FROM bots LIMIT :start,:stop";
+            $query = $this->db->prepare($sql);
+            $this->doPagination($query, $page);
+            $query->execute();
+            return $query->fetchAll();
+        }
+        else {
+            return array();
+        }
+    }
+
+    public function getBotsByNames($names, $page = 1)
+    {
+        $namesCount = count($names);
+        $pageCount = $this->getPageCount($namesCount);
+        if($page <= $pageCount) {
+            $sql = 'SELECT * FROM bots WHERE name IN ('.implode(',', array_fill(1, $namesCount, '?')).') LIMIT ?,?';
+            $query = $this->db->prepare($sql);
+            foreach($names as $i => $n) {
+                $query->bindValue($i + 1, $n, PDO::PARAM_STR);
+            }
+            $this->doPagination($query, $page, $namesCount + 1, $namesCount + 2);
+            $query->execute();
+
+            return $query->fetchAll();
+        }
+        else {
+            return array();
+        }
+    }
+
+    public function getBotsByType($type, $page = 1)
+    {
+        if($page <= $this->getPageCount($this->getBotCount($type))) {
+            $sql = "SELECT * FROM bots WHERE type=:type LIMIT :start,:stop";
+            $query = $this->db->prepare($sql);
+            $this->doPagination($query, $page);
+            $query->bindValue(":type", $type, PDO::PARAM_INT);
             $query->execute();
             return $query->fetchAll();
         }
@@ -113,9 +174,18 @@ class Model
     {
         $sql = "SELECT * FROM types WHERE id=?";
         $query = $this->db->prepare($sql);
-        $query->bindValue(0, $id, PDO::PARAM_INT);
+        $query->bindValue(1, $id, PDO::PARAM_INT);
         $query->execute();
 
         return $query->fetch();
+    }
+
+    public function getAllTypes()
+    {
+        $sql = "SELECT id,name FROM types";
+        $query = $this->db->prepare($sql);
+        $query->execute();
+
+        return $query->fetchAll();
     }
 }

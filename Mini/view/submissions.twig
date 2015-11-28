@@ -7,8 +7,8 @@
 <h1>Submission Queue</h1>
 <dl class="dl-horizontal">
 {% for s in submissions %}
-    <dt>{{ s.name }}</dt>
-    <dd>{{ s.description }}</dd>
+    <dt>{{ s.name|e }}</dt>
+    <dd>{{ s.description|e }}</dd>
 {% endfor %}
 </dl>
 {% endblock %}

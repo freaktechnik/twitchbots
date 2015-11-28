@@ -16,9 +16,13 @@
     <code>GET http://api.twitchbots.info/v1/bot/nightbot</code>
     <pre>
 {
-"username": "nightbot",
-"isBot": true,
-"type": 1
+    "username": "nightbot",
+    "isBot": true,
+    "type": 1,
+    "_links": {
+        "self": "http://api.twitchbots.info/v1/bot/nightbot",
+        "type": "http://api.twitchbots.info/v1/type/1"
+    }
 }</pre>
 </div>
 <div>
@@ -35,17 +39,44 @@
     <code>GET http://api.twitchbots.info/v1/bot/all</code>
     <pre>
 {
-"bots: [
+    "bots: [
+        {
+            "username": "nightbot",
+            "type": 1,
+            "_links": {
+                "self": "http://api.twitchbots.info/v1/bot/nightbot"
+                "type": "http://api.twitchbots.info/v1/type/1"
+            }
+        },
+        ...
+    ],
+    "page": 1,
+    "_links": {
+        "next": "http://api.twitchbots.info/v1/bot/all?page=2",
+        "prev": null,
+        "self": "http://api.twitchbots.info/v1/bot/all?page=1"
+    }
+}</pre>
+    <code>GET http://api.twitchbots.info/v1/bot/all?type=1</code>
+    <pre>
 {
-"username": "nightbot",
-"type": 1,
-"_link": "http://api.twitchbots.info/v1/bot/nightbot"
-},
-...
-],
-"page": 1,
-"_next": "http://api.twitchbots.info/v1/bot/all?page=2",
-"_prev": null
+    "bots": [
+        {
+            "username": "nightbot",
+            "type": 1,
+            "_links": {
+                "self": "http://api.twitchbots.info/v1/bot/nightbot",
+                "type": "http://api.twitchbots.info/v1/type/1"
+            }
+        }
+    ],
+    "page": 1,
+    "_links": {
+        "next": "http://api.twitchbots.info/v1/bot/all?page=2&type=1",
+        "prev": null,
+        "self": "http://api.twitchbots.info/v1/bot/all?page=1&type=1",
+        "type": "http://api.twitchbots.info/v1/type/1"
+    }
 }</pre>
 </div>
 <div>
@@ -62,16 +93,22 @@
     <code>GET http://api.twitchbots.info/v1/bot?bots=nightbot</code>
     <pre>
 {
-"bots: [
-{
-"username": "nightbot",
-"type": 1,
-"_link": "http://api.twitchbots.info/v1/bot/nightbot"
-}
-],
-"page": 1,
-"_next": null,
-"_prev": null
+    "bots: [
+        {
+            "username": "nightbot",
+            "type": 1,
+            "_links": {
+                "self": "http://api.twitchbots.info/v1/bot/nightbot",
+                "type": "http://api.twitchbots.info/v1/type/1"
+            }
+        }
+    ],
+    "page": 1,
+    "_links": {
+        "next": null,
+        "prev": null,
+        "self": "http://api.twitchbots.info/v1/bot?bots=nightbot"
+    }
 }</pre>
 </div>
 <div>
@@ -81,10 +118,14 @@
     <code>GET http://api.twitchbots.info/v1/type/1</code>
     <pre>
 {
-"id": 1,
-"name": "Nightbot",
-"multiChannel": true,
-"url": "https://www.nightbot.tv"
+    "id": 1,
+    "name": "Nightbot",
+    "multiChannel": true,
+    "url": "https://www.nightbot.tv",
+    "_links": {
+        "self": "http://api.twitchbots.info/v1/type/1",
+        "bots": "http://api.twitchbots.info/v1/bot/all?type=1"
+    }
 }</pre>
 </div>
 {% endblock %}

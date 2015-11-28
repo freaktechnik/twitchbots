@@ -23,9 +23,9 @@
         <tbody>
         {% for bot in bots %}
             <tr>
-                <td>{{ bot.name }}</td>
+                <td>{{ bot.name|e }}</td>
                 <td>{% if bot.multichannel %}Yes{% else %}No{% endif %}</td>
-                <td><a href="{{ bot.url }}">{{ bot.typename }}</a></td>
+                <td><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a></td>
             </tr>
         {% endfor %}
         </tbody>

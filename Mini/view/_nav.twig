@@ -2,7 +2,7 @@
     {% set navitems = [ { "name": "Known Bots", "url": "/" }, { "name": "Submit Bot", "url": "/submit" }, { "name": "Check User", "url": "/check" }, { "name": "API", "url": "/api" }, { "name": "About", "url": "/about" } ] %}
     {% for item in navitems %}
         <li {% if item.url == currentURL %} class="active"{% endif %}>
-            <a href="{{ item.url }}">{{ item.name }}
+            <a href="{{ item.url|e('html_attr') }}">{{ item.name|e }}
             {% if item.url == currentURL %}
                 <span class="sr-only">(current)</span>
             {% endif %}
