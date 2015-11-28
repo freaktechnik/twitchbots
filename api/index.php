@@ -57,6 +57,8 @@ $model = new \Mini\Model\Model($app->config('model'));
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
 $app->group('/v1', function ()  use ($app, $model) {
+    $lastModified = 1448745064;
+
     $apiUrl = function($path = null) use ($app) {
         if($path == null)
             $path = $app->request->getResourceUri();
@@ -71,8 +73,8 @@ $app->group('/v1', function ()  use ($app, $model) {
     $app->contentType('application/json;charset=utf8');
     $app->response->headers->set('Access-Control-Allow-Origin', '*');
 
-    $app->get('/', function () use ($app, $apiUrl) {
-        $app->lastModified(1448745064);
+    $app->get('/', function () use ($app, $apiUrl, $lastModified) {
+        $app->lastModified($lastModified);
         $url = $apiUrl();
         $index = array(
             '_links' => array(
@@ -83,7 +85,7 @@ $app->group('/v1', function ()  use ($app, $model) {
         echo json_encode($index);
     });
 
-    $app->group('/bot', function () use ($app, $model, $apiUrl, $fullUrlFor) {
+    $app->group('/bot', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
         $mapBot = function ($bot) use ($fullUrlFor) {
             $bot->username = $bot->name;
             $bot->_links = array(
@@ -118,8 +120,8 @@ $app->group('/v1', function ()  use ($app, $model) {
 
             echo json_encode($json);
         });
-        $app->get('/all', function () use ($app, $model, $mapBot, $apiUrl, $fullUrlFor) {
-            $app->lastModified($model->getLastBotUpdate());
+        $app->get('/all', function () use ($app, $model, $mapBot, $apiUrl, $fullUrlFor, $lastModified) {
+            $app->lastModified(max(array($lastModified, $model->getLastUpdate())));
 
             $page = isset($_GET['page']) ? $_GET['page'] : 1;
             if(isset($_GET['type'])) {
@@ -155,7 +157,7 @@ $app->group('/v1', function ()  use ($app, $model) {
 
             echo json_encode($json);
         })->name('allbots');
-        $app->get('/:name', function ($name) use ($app, $model, $apiUrl, $fullUrlFor) {
+        $app->get('/:name', function ($name) use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
             $bot = $model->getBot($name);
 
             if(!$bot) {
@@ -170,7 +172,7 @@ $app->group('/v1', function ()  use ($app, $model) {
                 );
             }
             else {
-                $app->lastModified(strtotime($bot->date));
+                $app->lastModified(max(array($lastModified, strtotime($bot->date))));
                 unset($bot->date);
 
                 $bot->username = $bot->name;
@@ -186,13 +188,13 @@ $app->group('/v1', function ()  use ($app, $model) {
         })->conditions(array('name' => '[a-zA-Z0-9_\-]+'))->name('bot');
     });
 
-    $app->get('/type/:id', function ($id) use ($app, $model, $apiUrl, $fullUrlFor) {
+    $app->get('/type/:id', function ($id) use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
         $type = $model->getType($id);
         if(!$type) {
             $app->halt(404, '{ "error": "Type not found", "code": 404 }');
         }
 
-        $app->lastModified(strtotime($type->date));
+        $app->lastModified(max(array($lastModified, strtotime($type->date))));
         unset($type->date);
 
         $type->multiChannel = $type->multichannel == "1";

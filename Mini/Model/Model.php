@@ -68,9 +68,9 @@ class Model
         return $query->fetchAll();
     }
 
-    public function getLastBotUpdate()
+    public function getLastUpdate($table = "bots")
     {
-        $sql = "SELECT date FROM bots ORDER BY date DESC LIMIT 1";
+        $sql = "SELECT date FROM ".$table." ORDER BY date DESC LIMIT 1";
         $query = $this->db->prepare($sql);
         $query->execute();
 

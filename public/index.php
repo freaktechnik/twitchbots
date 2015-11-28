@@ -67,7 +67,7 @@ $model = new \Mini\Model\Model($app->config('database'));
 $lastUpdate = 1448745064;
 
 $app->get('/', function () use ($app, $model, $lastUpdate) {
-    $app->lastModified(max(array($lastUpdate, $model->getLastBotUpdate())));
+    $app->lastModified(max(array($lastUpdate, $model->getLastUpdate())));
 
     $pageCount = $model->getPageCount();
     $page = 1;
