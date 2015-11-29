@@ -1,7 +1,5 @@
 <?php
 
-require '../vendor/autoload.php';
-
 class ModelTest extends PHPUnit_Extensions_Database_TestCase
 {
     /**
