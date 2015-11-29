@@ -1,3 +1,4 @@
+{% set navitems = [ { "name": "Known Bots", "url": siteUrl("/") }, { "name": "Submit Bot", "url": siteUrl("/submit") }, { "name": "Check User", "url": siteUrl("/check") }, { "name": "API", "url": siteUrl("/api") }, { "name": "About", "url": siteUrl("/about") } ] %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -33,7 +34,16 @@
 
                 <div class="collapse navbar-collapse" id="main-nav">
                     <ul class="nav navbar-nav">
-                        {% block nav %}{% endblock %}
+                        {% for item in navitems %}
+                            {% set isCurrent = item.url == currentUrl(false) %}
+                            <li {% if isCurrent %} class="active"{% endif %}>
+                                <a href="{{ item.url|e('html_attr') }}">{{ item.name|e }}
+                                {% if isCurrent %}
+                                    <span class="sr-only">(current)</span>
+                                {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

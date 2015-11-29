@@ -64,7 +64,7 @@ $model = new \Mini\Model\Model($app->config('database'));
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
-$lastUpdate = 1448745064;
+$lastUpdate = 1448793493;
 
 $app->get('/', function () use ($app, $model, $lastUpdate) {
     $app->lastModified(max(array($lastUpdate, $model->getLastUpdate())));
