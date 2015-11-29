@@ -101,7 +101,6 @@ $app->group('/v1', function ()  use ($app, $model) {
             $page = isset($_GET['page']) ? $_GET['page'] : 1;
             $names = explode(',', $_GET['bots']);
             $bots = $model->getBotsByNames($names, $page);
-            //TODO lastModified
             $url = $apiUrl();
             $json = array(
                 'bots' => array_map($mapBot, $bots),
@@ -121,15 +120,15 @@ $app->group('/v1', function ()  use ($app, $model) {
             echo json_encode($json);
         });
         $app->get('/all', function () use ($app, $model, $mapBot, $apiUrl, $fullUrlFor, $lastModified) {
-            $app->lastModified(max(array($lastModified, $model->getLastUpdate())));
-
             $page = isset($_GET['page']) ? $_GET['page'] : 1;
             if(isset($_GET['type'])) {
+                $app->lastModified(max(array($lastModified, $model->getLastUpdate("bots", $_GET['type']))));
                 $bots = $model->getBotsByType($_GET['type'], $page);
                 $pageCount = $model->getPageCount($model->getBotCount($type));
                 $typeParam = '&type='.$_GET['type'];
             }
             else {
+                $app->lastModified(max(array($lastModified, $model->getLastUpdate())));
                 $bots = $model->getAllRawBots($page);
                 $pageCount = $model->getPageCount();
                 $typeParam = '';

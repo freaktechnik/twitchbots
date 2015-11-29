@@ -68,11 +68,14 @@ class Model
         return $query->fetchAll();
     }
 
-    public function getLastUpdate($table = "bots")
+    public function getLastUpdate($table = "bots", $type = 0)
     {
         $sql = "SELECT date FROM ".$table." ORDER BY date DESC LIMIT 1";
+        if($type != 0)
+            $sql .= "WHERE type=?";
+
         $query = $this->db->prepare($sql);
-        $query->execute();
+        $query->execute(array($type));
 
         return strtotime($query->fetch()->date);
     }
