@@ -1,7 +1,5 @@
 <?php
 
-//TODO test paginated functions
-
 class ModelTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -127,7 +125,14 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $submissions = $this->model->getSubmissions();
 
-        $this->assertEquals(count($submissions), $this->getConnection()->getRowCount('submissions'));
+        $this->assertCount($this->getConnection()->getRowCount('submissions'), $submissions);
+
+        foreach($submissions as $submission) {
+            $this->assertObjectHasAttribute("name", $submission);
+            $this->assertObjectHasAttribute("description", $submission);
+            $this->assertObjectHasAttribute("date", $submission);
+            $this->assertGreaterThanOrEqual(strtotime($submission->date), time());
+        }
 
         // Sort order is descending by timestamp
         //TODO test array?
@@ -184,9 +189,16 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $types = $this->model->getAllTypes();
 
-        $this->assertEquals(count($types), $this->getConnection()->getRowCount('types'));
+        $this->assertCount($this->getConnection()->getRowCount('types'), $types);
 
-        //TODO test properties of results
+        foreach($types as $type) {
+            $this->assertObjectHasAttribute("name", $type);
+            $this->assertObjectHasAttribute("id", $type);
+            $this->assertObjectHasAttribute("url", $type);
+            $this->assertObjectHasAttribute("multichannel", $type);
+            $this->assertObjectHasAttribute("date", $type);
+            $this->assertGreaterThanOrEqual(strtotime($type->date), time());
+        }
     }
 
     public function testGetBot()
@@ -195,6 +207,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->assertEquals("butler_of_ec0ke", $bot->name);
         $this->assertEquals(22, $bot->type);
+        $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
     }
 
     public function testGetNotExistingBot()
@@ -212,9 +225,20 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize
         );
 
-        $this->assertEquals(count($bots), $queryTable->getRowCount());
+        $this->assertCount($queryTable->getRowCount(), $bots);
 
-        //TODO test properties of results
+        foreach($bots as $bot) {
+            $this->assertObjectHasAttribute("name", $bot);
+            $this->assertObjectHasAttribute("type", $bot);
+            $this->assertObjectHasAttribute("date", $bot);
+            $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
+        }
+
+        $bots = $this->model->getBotsByType(22, 2);
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize.','.(2*self::pageSize)
+        );
+        $this->assertCount($queryTable->getRowCount(), $bots);
     }
 
     public function testGetBotCount()
@@ -238,9 +262,20 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             'bots', 'SELECT name FROM bots LIMIT '.self::pageSize
         );
 
-        $this->assertEquals(count($bots), $queryTable->getRowCount());
+        $this->assertCount($queryTable->getRowCount(), $bots);
 
-        //TODO test properties of results
+        foreach($bots as $bot) {
+            $this->assertObjectHasAttribute("name", $bot);
+            $this->assertObjectHasAttribute("url", $bot);
+            $this->assertObjectHasAttribute("multichannel", $bot);
+            $this->assertObjectHasAttribute("typename", $bot);
+        }
+
+        $bots = $this->model->getBots(2);
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.(2*self::pageSize)
+        );
+        $this->assertCount($queryTable->getRowCount(), $bots);
     }
 
     public function testGetAllRawBots()
@@ -251,9 +286,20 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             'bots', 'SELECT name FROM bots LIMIT '.self::pageSize
         );
 
-        $this->assertEquals(count($bots), $queryTable->getRowCount());
+        $this->assertCount($queryTable->getRowCount(), $bots);
 
-        //TODO test properties of results
+        foreach($bots as $bot) {
+            $this->assertObjectHasAttribute("name", $bot);
+            $this->assertObjectHasAttribute("type", $bot);
+            $this->assertObjectHasAttribute("date", $bot);
+            $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
+        }
+
+        $bots = $this->model->getAllRawBots(2);
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.(2*self::pageSize)
+        );
+        $this->assertCount($queryTable->getRowCount(), $bots);
     }
 
     public function testGetBotsByNames()
@@ -266,9 +312,14 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             "syntria"
         ));
 
-        $this->assertEquals(2, count($bots));
+        $this->assertCount(2, $bots);
 
-        //TODO test properties of results
+        foreach($bots as $bot) {
+            $this->assertObjectHasAttribute("name", $bot);
+            $this->assertObjectHasAttribute("type", $bot);
+            $this->assertObjectHasAttribute("date", $bot);
+            $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
+        }
 
         $bots = $this->model->getBotsByNames(array(
             "butler_of_ec0ke",
@@ -277,7 +328,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             "ec0ke",
             "syntria"
         ), 2);
-        $this->assertEquals(0, count($bots));
+        $this->assertEmpty($bots);
     }
 }
 ?>
