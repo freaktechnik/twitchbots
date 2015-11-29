@@ -5,7 +5,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @var \Mini\Model\Model
      */
-    private static $model;
+    private $model;
 
     public function __construct()
     {
