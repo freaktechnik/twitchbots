@@ -1,5 +1,7 @@
 <?php
 
+//TODO test paginated functions
+
 class ModelTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -178,5 +180,104 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertFalse($type);
     }
 
+    public function testGetAllTypes()
+    {
+        $types = $this->model->getAllTypes();
+
+        $this->assertEquals(count($types), $this->getConnection()->getRowCount('types'));
+
+        //TODO test properties of results
+    }
+
+    public function testGetBot()
+    {
+        $bot = $this->model->getBot("butler_of_ec0ke");
+
+        $this->assertEquals("butler_of_ec0ke", $bot->name);
+        $this->assertEquals(22, $bot->type);
+    }
+
+    public function testGetNotExistingBot()
+    {
+        $bot = $this->model->getBot("freaktechnik");
+
+        $this->assertFalse($bot);
+    }
+
+    public function testGetBotsByType()
+    {
+        $bots = $this->model->getBotsByType(22);
+
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize
+        );
+
+        $this->assertEquals(count($bots), $queryTable->getRowCount());
+
+        //TODO test properties of results
+    }
+
+    public function testGetBotCount()
+    {
+        $botCount = $this->model->getBotCount();
+        $this->assertEquals($botCount, $this->getConnection()->getRowCount('bots'));
+
+        $botCount = $this->model->getBotCount(22);
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', 'SELECT name FROM bots WHERE type=22'
+        );
+
+        $this->assertEquals($botCount, $queryTable->getRowCount());
+    }
+
+    public function testGetBots()
+    {
+        $bots = $this->model->getBots();
+
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize
+        );
+
+        $this->assertEquals(count($bots), $queryTable->getRowCount());
+
+        //TODO test properties of results
+    }
+
+    public function testGetAllRawBots()
+    {
+        $bots = $this->model->getAllRawBots();
+
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize
+        );
+
+        $this->assertEquals(count($bots), $queryTable->getRowCount());
+
+        //TODO test properties of results
+    }
+
+    public function testGetBotsByNames()
+    {
+        $bots = $this->model->getBotsByNames(array(
+            "butler_of_ec0ke",
+            "freaktechnik",
+            "nightbot",
+            "ec0ke",
+            "syntria"
+        ));
+
+        $this->assertEquals(2, count($bots));
+
+        //TODO test properties of results
+
+        $bots = $this->model->getBotsByNames(array(
+            "butler_of_ec0ke",
+            "freaktechnik",
+            "nightbot",
+            "ec0ke",
+            "syntria"
+        ), 2);
+        $this->assertEquals(0, count($bots));
+    }
 }
 ?>

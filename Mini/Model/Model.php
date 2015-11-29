@@ -105,7 +105,7 @@ class Model
     {
         $sql = "SELECT count FROM count";
         if($type != 0)
-            $sql .= " WHERE count=?";
+            $sql = "SELECT count(name) AS count FROM bots WHERE type=?";
 
         $query = $this->db->prepare($sql);
         $query->execute(array($type));
