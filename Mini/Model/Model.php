@@ -61,9 +61,9 @@ class Model
     /**
      * @param string $username
      * @param int $type
-     * @param string $description
+     * @param string $description = ""
      */
-    public function addSubmission($username, $type, $description)
+    public function addSubmission($username, $type, $description = "")
     {
         if($type == 0)
             $type = $description;
@@ -118,7 +118,7 @@ class Model
      * @return int
      */
     public function getPageCount($count = null) {
-        if($count == null)
+        if($count === null)
             $count = $this->getBotCount();
         return ceil($count / (float)$this->pageSize);
     }

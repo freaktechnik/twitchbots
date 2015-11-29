@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <table name="submissions">
+        <column>name</column>
+        <column>description</column>
+        <row>
+            <value>test</value>
+            <value>lorem ipsum</value>
+        </row>
+        <row>
+            <value>nightbot</value>
+            <value>1</value>
+        </row>
+    </table>
+</dataset>
