@@ -310,7 +310,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             "nightbot",
             "ec0ke",
             "syntria"
-        )
+        );
         $bots = $this->model->getBotsByNames($names);
 
         $this->assertCount(2, $bots);
