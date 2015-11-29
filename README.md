@@ -1,5 +1,6 @@
 # Twitch Bot Directory
 [![Build Status](https://travis-ci.org/freaktechnik/twitchbots.svg?branch=mini)](https://travis-ci.org/freaktechnik/twitchbots)
+
 A directory of twitch chat bot accounts.
 
 This is the code used for [twitchbots.info](http://twitchbots.info).
