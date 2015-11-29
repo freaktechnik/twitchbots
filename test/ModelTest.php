@@ -304,13 +304,14 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function testGetBotsByNames()
     {
-        $bots = $this->model->getBotsByNames(array(
+        $names = array(
             "butler_of_ec0ke",
             "freaktechnik",
             "nightbot",
             "ec0ke",
             "syntria"
-        ));
+        )
+        $bots = $this->model->getBotsByNames($names);
 
         $this->assertCount(2, $bots);
 
@@ -321,13 +322,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getBotsByNames(array(
-            "butler_of_ec0ke",
-            "freaktechnik",
-            "nightbot",
-            "ec0ke",
-            "syntria"
-        ), 2);
+        $bots = $this->model->getBotsByNames($names, 2);
         $this->assertEmpty($bots);
     }
 }
