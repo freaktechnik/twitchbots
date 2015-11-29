@@ -150,15 +150,33 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertEquals($expectedPageCount, $pageCount);
         }
     }
-    
+
     public function testGetOffset()
     {
         for($page = 1; $page < 4; ++$page) {
             $expectedOffset = ($page - 1) * self::pageSize;
             $offset = $this->model->getOffset($page);
-            
+
             $this->assertEquals($expectedOffset, $offset);
         }
     }
+
+    public function testGetType()
+    {
+        $type = $this->model->getType(1);
+
+        $this->assertEquals("Nightbot", $type->name);
+        $this->assertEquals(1, $type->id);
+        $this->assertEquals(true, $type->multichannel);
+        $this->assertEquals("https://www.nightbot.tv/", $type->url);
+    }
+
+    public function testGetNotExistingType()
+    {
+        $type = $this->model->getType(0);
+
+        $this->assertFalse($type);
+    }
+
 }
 ?>
