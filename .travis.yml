@@ -1,4 +1,5 @@
 language: php
 install:
   - composer install
+  - mysql -uroot -e "CREATE DATABASE twitchbots"
 script: phpunit --bootstrap vendor/autoload.php test
