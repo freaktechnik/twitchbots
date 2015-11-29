@@ -27,7 +27,7 @@ class Model
     function __construct($config)
     {
         // PDO db connection statement preparation
-        $dsn = 'mysql:host=' . $config['db_host'] . ';dbname='    . $config['db_name'] . ';port=' . $config['db_port'];
+        $dsn = 'mysql:host=' . $config['db_host'] . ';dbname=' . $config['db_name'] . ';port=' . $config['db_port'];
 
         // note the PDO::FETCH_OBJ, returning object ($result->id) instead of array ($result["id"])
         // @see http://php.net/manual/de/pdo.construct.php
@@ -39,16 +39,30 @@ class Model
         $this->pageSize = $config['page_size'];
 	}
 
+    /**
+     * @param string $formname
+     * @return string
+     */
 	public function getToken($formname)
 	{
 	    return generate_token($formname);
     }
 
+    /**
+     * @param string $formname
+     * @param string $token
+     * @return boolean
+     */
     public function checkToken($formname, $token)
     {
         return validate_token($formname, $token);
     }
 
+    /**
+     * @param string $username
+     * @param int $type
+     * @param string $description
+     */
     public function addSubmission($username, $type, $description)
     {
         if($type == 0)
@@ -68,6 +82,9 @@ class Model
         return $query->fetchAll();
     }
 
+    /**
+     * @return int
+     */
     public function getLastUpdate($table = "bots", $type = 0)
     {
         $sql = "SELECT date FROM ".$table." ORDER BY date DESC LIMIT 1";
@@ -80,6 +97,10 @@ class Model
         return strtotime($query->fetch()->date);
     }
 
+    /**
+     * @param int $type
+     * @return int
+     */
     public function getBotCount($type = 0)
     {
         $sql = "SELECT count FROM count";
@@ -92,12 +113,20 @@ class Model
         return $query->fetch()->count;
     }
 
+    /**
+     * @param int $count
+     * @return int
+     */
     public function getPageCount($count = null) {
         if($count == null)
             $count = $this->getBotCount();
         return ceil($count / (float)$this->pageSize);
     }
 
+    /**
+     * @param int $page
+     * @return int
+     */
     public function getOffset($page)
     {
         return ($page - 1) * $this->pageSize;
