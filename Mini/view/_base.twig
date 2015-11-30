@@ -29,7 +29,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="{{ baseUrl()|e('html_attr') }}">Twitch Bot Directory</a>
+                    <a class="navbar-brand" href="{{ baseUrl()|e('html_attr') }}" rel="home">Twitch Bot Directory</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="main-nav">
@@ -48,9 +48,9 @@
                 </div>
             </div>
         </nav>
-        <div class="container">
+        <main class="container">
             {% block content %}{% endblock %}
-        </div>
+        </main>
         <footer class="footer">
             <div class="container">
                 <p class="text-muted">This is an independent site not run by Twitch.</p>

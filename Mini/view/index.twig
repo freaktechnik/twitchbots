@@ -19,9 +19,9 @@
         <tbody>
         {% for bot in bots %}
             <tr>
-                <td><a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}">{{ bot.name|e }}</a></td>
+                <td><a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" rel="external">{{ bot.name|e }}</a></td>
                 <td>{% if bot.multichannel %}Yes{% else %}No{% endif %}</td>
-                <td><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a></td>
+                <td><a href="{{ bot.url|e('html_attr') }}" rel="external nofollow">{{ bot.typename|e }}</a></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -33,14 +33,14 @@
             {% spaceless %}
             {% if page > 1 %}
                 <li>
-                    <a href="?page={{ page-1 }}" aria-label="Previous">
+                    <a href="?page={{ page-1 }}" aria-label="Previous" rel="prev">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
 
                 {% for i in range(1, extremePagesLimit) if(i < page - nearbyPagesLimit) %}
                     <li>
-                        <a href="?page={{ i }}">{{ i }}</a>
+                        <a href="?page={{ i }}"{% if i == 1 %} rel="start"{% endif %}>{{ i }}</a>
                     </li>
                 {% endfor %}
 
@@ -50,7 +50,7 @@
 
                 {% for i in range(page-nearbyPagesLimit, page-1) if(i > 0) %}
                     <li>
-                        <a href="?page={{ i }}">{{ i }}</a>
+                        <a href="?page={{ i }}"{% if i == 1 %} rel="start"{% endif %}>{{ i }}</a>
                     </li>
                 {% endfor %}
             {% else %}
@@ -83,7 +83,7 @@
                 {% endfor %}
 
                 <li>
-                    <a href="?page={{ page+1 }}" aria-label="Next">
+                    <a href="?page={{ page+1 }}" aria-label="Next" rel="next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
