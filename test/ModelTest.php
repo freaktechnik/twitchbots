@@ -30,7 +30,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             UNIQUE KEY name (name)
-        ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=9');
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=9');
         $pdo->query('CREATE TABLE IF NOT EXISTS types (
             id int(10) unsigned NOT NULL AUTO_INCREMENT,
             name varchar(535) CHARACTER SET ascii NOT NULL,
