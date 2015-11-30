@@ -96,8 +96,13 @@ $app->group('/v1', function ()  use ($app, $model) {
             unset($bot->date);
             return $bot;
         };
+        
+        $checkPagination = function () use ($app) {
+            if(isset($_GET['page']) && !is_numeric($_GET['page']))
+                $app->halt(400, '{ "error": "Invalid page specified", "code": 400 }');
+        };
 
-        $app->get('/', function () use ($app, $model, $apiUrl, $mapBot) {
+        $app->get('/', $checkPagination, function () use ($app, $model, $apiUrl, $mapBot) {
             $page = isset($_GET['page']) ? $_GET['page'] : 1;
             $names = explode(',', $_GET['bots']);
             $bots = $model->getBotsByNames($names, $page);
@@ -119,7 +124,10 @@ $app->group('/v1', function ()  use ($app, $model) {
 
             echo json_encode($json);
         });
-        $app->get('/all', function () use ($app, $model, $mapBot, $apiUrl, $fullUrlFor, $lastModified) {
+        $app->get('/all', $checkPagination, function () use ($app, $model, $mapBot, $apiUrl, $fullUrlFor, $lastModified) {
+            if(isset($_GET['type']) && !is_numeric($_GET['type']))
+                $app->halt(400, '{ "error": "Invalid type speified", "code": 400 }');
+
             $page = isset($_GET['page']) ? $_GET['page'] : 1;
             if(isset($_GET['type'])) {
                 $app->lastModified(max(array($lastModified, $model->getLastUpdate("bots", $_GET['type']))));
@@ -160,28 +168,19 @@ $app->group('/v1', function ()  use ($app, $model) {
             $bot = $model->getBot($name);
 
             if(!$bot) {
-                $app->lastModified(time());
-                $bot = array(
-                    'username' => $name,
-                    'isBot' => false,
-                    'type' => null,
-                    '_links' => array(
-                        'self' => $apiUrl()
-                    )
-                );
+                $app->halt(404, '{ "error": "User not a bot", "code": 404 }');
             }
-            else {
-                $app->lastModified(max(array($lastModified, strtotime($bot->date))));
-                unset($bot->date);
 
-                $bot->username = $bot->name;
-                $bot->isBot = true;
-                $bot->_links = array(
-                    'self' => $apiUrl(),
-                    'type' => $fullUrlFor('type', array('id' => $bot->type))
-                );
-                unset($bot->name);
-            }
+            $app->lastModified(max(array($lastModified, strtotime($bot->date))));
+            $app->expires('+1 week');
+            unset($bot->date);
+
+            $bot->username = $bot->name;
+            $bot->_links = array(
+                'self' => $apiUrl(),
+                'type' => $fullUrlFor('type', array('id' => $bot->type))
+            );
+            unset($bot->name);
 
             echo json_encode($bot);
         })->conditions(array('name' => '[a-zA-Z0-9_\-]+'))->name('bot');
@@ -194,6 +193,7 @@ $app->group('/v1', function ()  use ($app, $model) {
         }
 
         $app->lastModified(max(array($lastModified, strtotime($type->date))));
+        $app->expires('+1 day');
         unset($type->date);
 
         $type->multiChannel = $type->multichannel == "1";

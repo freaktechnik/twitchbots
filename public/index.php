@@ -69,10 +69,11 @@ $lastUpdate = 1448793493;
 
 $app->get('/', function () use ($app, $model, $lastUpdate) {
     $app->lastModified(max(array($lastUpdate, $model->getLastUpdate())));
+    $app->expires('+1 day');
 
     $pageCount = $model->getPageCount();
     $page = 1;
-    if(isset($_GET['page']))
+    if(isset($_GET['page']) && is_numeric($_GET['page']))
         $page = $_GET['page'];
 
     if($page <= $pageCount && $page > 0)
@@ -82,12 +83,13 @@ $app->get('/', function () use ($app, $model, $lastUpdate) {
 
     $app->render('index.twig', array(
         'pageCount' => $pageCount,
-        'page' => $_['page'],
+        'page' => $page,
         'bots' => $bots
     ));
 });
 $app->get('/submit', function () use ($app, $model, $lastUpdate) {
     $app->lastModified($lastUpdate);
+    $app->expires('+1 week');
 
     $token = $model->getToken("submit");
     $types = $model->getAllTypes();
@@ -98,20 +100,24 @@ $app->get('/submit', function () use ($app, $model, $lastUpdate) {
         'token' => $token,
         'types' => $types
     ));
-});
+})->name('submit');
 $app->get('/check', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
+    $app->expires('+1 week');
     $app->render('check.twig');
 });
 $app->get('/api', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
+    $app->expires('+1 week');
     $app->render('api.twig');
 });
 $app->get('/about', function () use($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
+    $app->expires('+1 week');
     $app->render('about.twig');
 });
 $app->get('/submissions', function () use($app, $model, $lastUpdate) {
+    $app->expires('+1 minute');
     $submissions = $model->getSubmissions();
     if(count($submissions) > 0) {
         $app->lastModified(max(array($lastUpdate, strtotime($submissions[0]->date))));
@@ -125,13 +131,17 @@ $app->get('/submissions', function () use($app, $model, $lastUpdate) {
     ));
 });
 
-$app->post('/lib/submit', function () use($app, $model) {
-    if($model->checkToken("submit", $_POST['token'])) {
-        $model->addSubmission($_POST['username'], $_['type'], $_['description']);
-        $app->redirect('/submit?success=1');
+$app->put('/lib/submit', function () use($app, $model) {
+    if($model->checkToken("submit", $app->request->params('token'))) {
+        $model->addSubmission(
+            $app->request->params('username'),
+            $app->request->params('type'),
+            $app->request->params('description')
+        );
+        $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1');
     }
     else {
-        $app->redirect('/submit?error=1');
+        $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1');
     }
 });
 

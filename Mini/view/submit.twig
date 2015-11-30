@@ -38,6 +38,7 @@
             <p class="help-block">Describe the bot type, normally the name of the software that runs it and if possible a link to the website of it.</p>
         </div>
         <input type="hidden" value="{{ token|e('html_attr') }}" name="token">
+        <input type="hidden" value="PUT" name="_METHOD">
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
