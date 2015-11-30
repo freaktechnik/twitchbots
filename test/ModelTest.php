@@ -39,14 +39,14 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             UNIQUE KEY name (name)
-        ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=37');
+        ) ENGINE=InnoDB DEFAULT CHARSET=ascii AUTO_INCREMENT=37');
         $pdo->query('CREATE TABLE IF NOT EXISTS bots (
             name varchar(535) CHARACTER SET ascii NOT NULL,
             type int(10) unsigned NOT NULL,
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (name),
             FOREIGN KEY (type) REFERENCES types(id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
+        ) ENGINE=InnoDB DEFAULT CHARSET=ascii');
         $pdo->query('CREATE OR REPLACE VIEW count AS SELECT count(name) AS count FROM bots');
         $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, multichannel, url, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
 
