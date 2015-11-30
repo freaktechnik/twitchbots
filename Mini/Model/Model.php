@@ -142,7 +142,7 @@ class Model
     public function getBots($page = 1)
     {
         if($page <= $this->getPageCount()) {
-            $sql = "SELECT * FROM list ORDER BY name ASC LIMIT :start,:stop";
+            $sql = "SELECT * FROM list LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
             $this->doPagination($query, $page);
             $query->execute();

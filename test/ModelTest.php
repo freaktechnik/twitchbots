@@ -48,7 +48,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             FOREIGN KEY (type) REFERENCES types(id)
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1');
         $pdo->query('CREATE OR REPLACE VIEW count AS SELECT count(name) AS count FROM bots');
-        $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, multichannel, url, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id');
+        $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, multichannel, url, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
 
         parent::__construct();
     }
