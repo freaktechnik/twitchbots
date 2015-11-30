@@ -13,9 +13,6 @@ $app = new \Slim\Slim(array(
 // and define the engine used for the view @see http://twig.sensiolabs.org
 $app->view = new \Slim\Views\Twig();
 $app->view->setTemplatesDirectory("../Mini/view");
-$app->view->parserOptions = array(
-    'cache' => '../cache'
-);
 
 $app->view->parserExtensions = array(
     new \Slim\Views\TwigExtension(),
@@ -55,6 +52,10 @@ $app->configureMode('production', function () use ($app) {
             'page_size' => 50
         )
     ));
+
+    $app->view->parserOptions = array(
+        'cache' => '../cache'
+    );
 });
 
 /******************************************** THE MODEL ********************************************************/
