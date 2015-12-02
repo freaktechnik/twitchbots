@@ -112,7 +112,8 @@ $app->group('/v1', function ()  use ($app, $model) {
 
         $app->get('/', $checkPagination, function () use ($app, $model, $apiUrl, $mapBot) {
             $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
-            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : $app->config('model')['page_size'];
+            $maxLimit = $app->config('model')['page_size'];
+            $limit = isset($_GET['limit']) ? min((int)$_GET['limit'], $maxLimit) : $maxLimit;
             $names = explode(',', $_GET['bots']);
             $bots = $model->getBotsByNames($names, $offset, $limit);
             $url = $apiUrl();
@@ -139,7 +140,8 @@ $app->group('/v1', function ()  use ($app, $model) {
                 $app->halt(400, '{ "error": "Invalid type speified", "code": 400 }');
 
             $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
-            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : $app->config('model')['page_size'];
+            $maxLimit = $app->config('model')['page_size'];
+            $limit = isset($_GET['limit']) ? min((int)$_GET['limit'], $maxLimit) : $maxLimit;
             if(isset($_GET['type'])) {
                 $app->lastModified(max(array($lastModified, $model->getLastUpdate("bots", $_GET['type']))));
                 $bots = $model->getBotsByType($_GET['type'], $offset, $limit);
