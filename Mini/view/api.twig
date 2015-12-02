@@ -3,7 +3,11 @@
 {% block content %}
 <h1>API Access</h1>
 <p>All the API endpoints are on the base URL <code>http://api.twitchbots.info/v1/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service. All endpoints with a more or less static dataset send an expiration header indicating how long the data is at least expected to be valid. These will be adjusted according to real-world values. If you HTTP library does not honor the <code>Expires</code> header, please honor it manually.</p>
-
+<div class="alert alert-warning" role="alert">
+    <span class="glyphicon glyphicon-alert aria-hidden="true"></span>
+    <span class="sr-only">Warning:</span>
+    The API pagination has switched from using page numbering to offset & limit. All the meta links have been moved into one property, too.
+</div>
 <section>
     <h2>Errors</h2>
     <p>The API returns error codes whenever appropriate, like for example invalid parameters. If there are special cases where errors get thrown that's documented in the "Response" section of an endpoint. Some errors will return JSON specifying what went wrong in the following form:</p>

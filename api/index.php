@@ -57,6 +57,7 @@ $model = new \Mini\Model\Model($app->config('model'));
 
 $app->group('/v1', function ()  use ($app, $model) {
     $lastModified = 1448745064;
+    $docsUrl = 'http://twitchbots.info/api';
 
     $apiUrl = function($path = null) use ($app) {
         if($path == null)
@@ -72,13 +73,15 @@ $app->group('/v1', function ()  use ($app, $model) {
     $app->contentType('application/json;charset=utf8');
     $app->response->headers->set('Access-Control-Allow-Origin', '*');
 
-    $app->get('/', function () use ($app, $apiUrl, $lastModified) {
+    $app->get('/', function () use ($app, $apiUrl, $lastModified, $docsUrl) {
         $app->lastModified($lastModified);
         $url = $apiUrl();
         $index = array(
             '_links' => array(
-                'bot' => $url.'bot',
-                'type' => $url.'type'
+                'bot' => $url.'bot/',
+                'type' => $url.'type/',
+                'self' => $url,
+                'documentation' => $docsUrl
             )
         );
         echo json_encode($index);
@@ -194,26 +197,42 @@ $app->group('/v1', function ()  use ($app, $model) {
         })->conditions(array('name' => '[a-zA-Z0-9_\-]+'))->name('bot');
     });
 
-    $app->get('/type/:id', function ($id) use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
-        $type = $model->getType($id);
-        if(!$type) {
-            $app->halt(404, '{ "error": "Type not found", "code": 404 }');
-        }
+    $app->group('/type', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified, $docsUrl) {
+        $app->get('/', function () use ($app, $apiUrl, $fullUrlFor, $lastModified, $docsUrl) {
+            $app->lastModified($lastModified);
 
-        $app->lastModified(max(array($lastModified, strtotime($type->date))));
-        $app->expires('+1 day');
-        unset($type->date);
+            $json = array(
+                '_links' => array(
+                    'type' => $fullUrlFor('type', array('id' => '{id}')),
+                    'self' => $apiUrl(),
+                    'documentation' => $docsUrl
+                )
+            );
 
-        $type->multiChannel = $type->multichannel == "1";
-        unset($type->multichannel);
+            echo json_encode($json);
+        });
 
-        $type->_links = array(
-            'self' => $apiUrl(),
-            'bots' => $fullUrlFor('allbots').'?type='.$id
-        );
+        $app->get('/:id', function ($id) use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
+            $type = $model->getType($id);
+            if(!$type) {
+                $app->halt(404, '{ "error": "Type not found", "code": 404 }');
+            }
 
-        echo json_encode($type);
-    })->conditions(array('id' => '[1-9][0-9]*'))->name('type');
+            $app->lastModified(max(array($lastModified, strtotime($type->date))));
+            $app->expires('+1 day');
+            unset($type->date);
+
+            $type->multiChannel = $type->multichannel == "1";
+            unset($type->multichannel);
+
+            $type->_links = array(
+                'self' => $apiUrl(),
+                'bots' => $fullUrlFor('allbots').'?type='.$id
+            );
+
+            echo json_encode($type);
+        })->conditions(array('id' => '[1-9][0-9]*'))->name('type');
+    });
 });
 
 /******************************************* RUN THE APP *******************************************************/
