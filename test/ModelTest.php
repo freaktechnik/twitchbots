@@ -234,9 +234,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getBotsByType(22, 2);
+        $bots = $this->model->getBotsByType(22, self::pageSize);
         $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize.','.(2*self::pageSize)
+            'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize.','.self::pageSize
         );
         $this->assertCount($queryTable->getRowCount(), $bots);
     }
@@ -271,9 +271,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertObjectHasAttribute("typename", $bot);
         }
 
-        $bots = $this->model->getBots(2);
+        $bots = $this->model->getBots(self::pageSize);
         $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.(2*self::pageSize)
+            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.self::pageSize
         );
         $this->assertCount($queryTable->getRowCount(), $bots);
     }
@@ -295,9 +295,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getAllRawBots(2);
+        $bots = $this->model->getAllRawBots(self::pageSize);
         $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.(2*self::pageSize)
+            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.self::pageSize
         );
         $this->assertCount($queryTable->getRowCount(), $bots);
     }
@@ -322,7 +322,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getBotsByNames($names, 2);
+        $bots = $this->model->getBotsByNames($names, self::pageSize);
         $this->assertEmpty($bots);
     }
 }
