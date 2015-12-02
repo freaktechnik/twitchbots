@@ -97,9 +97,11 @@ $app->group('/v1', function ()  use ($app, $model) {
         };
 
         $checkPagination = function () use ($app) {
-            if(isset($_GET['limit']) && !is_numeric($_GET['limit']))
+            if(isset($_GET['limit']) &&
+               (!is_numeric($_GET['limit']) || (int)$_GET['limit'] <= 0))
                 $app->halt(400, '{ "error": "Invalid limit specified", "code": 400 }');
-            if(isset($_GET['offset'])  && !is_numeric($_GET['offset']))
+            if(isset($_GET['offset'])  &&
+               (!is_numeric($_GET['offset']) || (int)$_GET['offset'] < 0))
                 $app->halt(400, '{ "error": "Invalid offset specified", "code": 400 }');
         };
 

@@ -152,7 +152,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         for($count = 0; $count < self::pageSize * 4; ++$count) {
             $expectedPageCount = ceil($count / (float)self::pageSize);
-            $pageCount = $this->model->getPageCount($count);
+            $pageCount = $this->model->getPageCount(self::pageSize, $count);
 
             $this->assertEquals($expectedPageCount, $pageCount);
         }
@@ -219,7 +219,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function testGetBotsByType()
     {
-        $bots = $this->model->getBotsByType(22);
+        $bots = $this->model->getBotsByType(22, 0, self::pageSize);
 
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize
@@ -234,7 +234,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getBotsByType(22, self::pageSize);
+        $bots = $this->model->getBotsByType(22, self::pageSize, self::pageSize);
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize.','.self::pageSize
         );
@@ -271,7 +271,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertObjectHasAttribute("typename", $bot);
         }
 
-        $bots = $this->model->getBots(self::pageSize);
+        $bots = $this->model->getBots(2);
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.self::pageSize
         );
@@ -280,7 +280,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function testGetAllRawBots()
     {
-        $bots = $this->model->getAllRawBots();
+        $bots = $this->model->getAllRawBots(0, self::pageSize);
 
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots LIMIT '.self::pageSize
@@ -295,7 +295,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getAllRawBots(self::pageSize);
+        $bots = $this->model->getAllRawBots(self::pageSize, self::pageSize);
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.self::pageSize
         );
@@ -311,7 +311,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             "ec0ke",
             "syntria"
         );
-        $bots = $this->model->getBotsByNames($names);
+        $bots = $this->model->getBotsByNames($names, 0, self::pageSize);
 
         $this->assertCount(2, $bots);
 
@@ -322,7 +322,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getBotsByNames($names, self::pageSize);
+        $bots = $this->model->getBotsByNames($names, self::pageSize, self::pageSize);
         $this->assertEmpty($bots);
     }
 }

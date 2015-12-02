@@ -121,7 +121,10 @@ class Model
         $limit = isset($limit) ? $limit : $this->pageSize;
         if($count === null)
             $count = $this->getBotCount();
-        return ceil($count / (float)$limit);
+        if($limit > 0)
+            return ceil($count / (float)$limit);
+        else
+            return 0;
     }
 
     /**
@@ -133,17 +136,17 @@ class Model
         return ($page - 1) * $this->pageSize;
     }
 
-    private function doPagination($query, $offset, $limit, $start = ":start", $stop = ":stop")
+    private function doPagination($query, $offset, $limit = null, $start = ":start", $stop = ":stop")
     {
         $offset = isset($offset) ? $offset : 0;
-        $limit = isset($limit) ? $limit : $this->pageSize;
+        $limit = $limit !== null ? $limit : $this->pageSize;
         $query->bindValue($start, $offset, PDO::PARAM_INT);
         $query->bindValue($stop, $limit, PDO::PARAM_INT);
     }
 
     public function getBots($page = 1)
     {
-        if($page <= $this->getPageCount()) {
+        if($page <= $this->getPageCount($this->pageSize)) {
             $sql = "SELECT * FROM list LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
             $this->doPagination($query, $this->getOffset($page));
@@ -158,7 +161,7 @@ class Model
     public function getAllRawBots($offset, $limit)
     {
         $limit = isset($limit) ? $limit : $this->pageCount;
-        if($offset <= $this->getBotCount()) {
+        if($limit > 0 && $offset < $this->getBotCount()) {
             $sql = "SELECT * FROM bots LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
             $this->doPagination($query, $offset, $limit);
@@ -174,7 +177,7 @@ class Model
     {
         $limit = isset($limit) ? $limit : $this->pageCount;
         $namesCount = count($names);
-        if($offset <= $namesCount) {
+        if($limit > 0 && $offset < $namesCount) {
             $sql = 'SELECT * FROM bots WHERE name IN ('.implode(',', array_fill(1, $namesCount, '?')).') LIMIT ?,?';
             $query = $this->db->prepare($sql);
             foreach($names as $i => $n) {
@@ -193,7 +196,7 @@ class Model
     public function getBotsByType($type, $offset, $limit)
     {
         $limit = isset($limit) ? $limit : $this->pageCount;
-        if($offset + $limit <= $this->getBotCount($type)) {
+        if($limit > 0 && $offset < $this->getBotCount($type)) {
             $sql = "SELECT * FROM bots WHERE type=:type LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
             $this->doPagination($query, $offset, $limit);
