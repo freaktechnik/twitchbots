@@ -117,10 +117,9 @@ class Model
      * @param int $count
      * @return int
      */
-    public function getPageCount($limit, $count = null) {
-        $limit = isset($limit) ? $limit : $this->pageSize;
-        if($count === null)
-            $count = $this->getBotCount();
+    public function getPageCount($limit = null, $count = null) {
+        $limit = $limit !== null ? $limit : $this->pageSize;
+        $count = $count !== null ? $count : $this->getBotCount();
         if($limit > 0)
             return ceil($count / (float)$limit);
         else
@@ -136,9 +135,8 @@ class Model
         return ($page - 1) * $this->pageSize;
     }
 
-    private function doPagination($query, $offset, $limit = null, $start = ":start", $stop = ":stop")
+    private function doPagination($query, $offset = 0, $limit = null, $start = ":start", $stop = ":stop")
     {
-        $offset = isset($offset) ? $offset : 0;
         $limit = $limit !== null ? $limit : $this->pageSize;
         $query->bindValue($start, $offset, PDO::PARAM_INT);
         $query->bindValue($stop, $limit, PDO::PARAM_INT);
@@ -158,9 +156,9 @@ class Model
         }
     }
 
-    public function getAllRawBots($offset, $limit)
+    public function getAllRawBots($offset = 0, $limit = null)
     {
-        $limit = isset($limit) ? $limit : $this->pageCount;
+        $limit = $limit !== null ? $limit : $this->pageSize;
         if($limit > 0 && $offset < $this->getBotCount()) {
             $sql = "SELECT * FROM bots LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
@@ -173,9 +171,9 @@ class Model
         }
     }
 
-    public function getBotsByNames($names, $offset, $limit)
+    public function getBotsByNames($names, $offset = 0, $limit = null)
     {
-        $limit = isset($limit) ? $limit : $this->pageCount;
+        $limit = $limit !== null ? $limit : $this->pageSize;
         $namesCount = count($names);
         if($limit > 0 && $offset < $namesCount) {
             $sql = 'SELECT * FROM bots WHERE name IN ('.implode(',', array_fill(1, $namesCount, '?')).') LIMIT ?,?';
@@ -193,9 +191,9 @@ class Model
         }
     }
 
-    public function getBotsByType($type, $offset, $limit)
+    public function getBotsByType($type, $offset = 0, $limit = null)
     {
-        $limit = isset($limit) ? $limit : $this->pageCount;
+        $limit = $limit !== null ? $limit : $this->pageSize;
         if($limit > 0 && $offset < $this->getBotCount($type)) {
             $sql = "SELECT * FROM bots WHERE type=:type LIMIT :start,:stop";
             $query = $this->db->prepare($sql);

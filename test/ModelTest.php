@@ -219,7 +219,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function testGetBotsByType()
     {
-        $bots = $this->model->getBotsByType(22, 0, self::pageSize);
+        $bots = $this->model->getBotsByType(22);
 
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize
@@ -234,7 +234,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getBotsByType(22, self::pageSize, self::pageSize);
+        $bots = $this->model->getBotsByType(22, self::pageSize);
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize.','.self::pageSize
         );
@@ -280,7 +280,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function testGetAllRawBots()
     {
-        $bots = $this->model->getAllRawBots(0, self::pageSize);
+        $bots = $this->model->getAllRawBots();
 
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots LIMIT '.self::pageSize
@@ -295,7 +295,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getAllRawBots(self::pageSize, self::pageSize);
+        $bots = $this->model->getAllRawBots(self::pageSize);
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.self::pageSize
         );
@@ -311,7 +311,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             "ec0ke",
             "syntria"
         );
-        $bots = $this->model->getBotsByNames($names, 0, self::pageSize);
+        $bots = $this->model->getBotsByNames($names);
 
         $this->assertCount(2, $bots);
 
@@ -322,7 +322,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
-        $bots = $this->model->getBotsByNames($names, self::pageSize, self::pageSize);
+        $bots = $this->model->getBotsByNames($names, self::pageSize);
         $this->assertEmpty($bots);
     }
 }
