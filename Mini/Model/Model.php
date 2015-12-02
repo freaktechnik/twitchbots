@@ -15,7 +15,7 @@ class Model
 	private $db;
 
 	/**
-	 * The page size
+	 * The default page size
 	 * @var int
 	 */
 	private $pageSize;
@@ -110,17 +110,18 @@ class Model
         $query = $this->db->prepare($sql);
         $query->execute(array($type));
 
-        return $query->fetch()->count;
+        return (int)$query->fetch()->count;
     }
 
     /**
      * @param int $count
      * @return int
      */
-    public function getPageCount($count = null) {
+    public function getPageCount($limit, $count = null) {
+        $limit = isset($limit) ? $limit : $this->pageSize;
         if($count === null)
             $count = $this->getBotCount();
-        return ceil($count / (float)$this->pageSize);
+        return ceil($count / (float)$limit);
     }
 
     /**
@@ -132,11 +133,12 @@ class Model
         return ($page - 1) * $this->pageSize;
     }
 
-    private function doPagination($query, $page, $start = ":start", $stop = ":stop")
+    private function doPagination($query, $offset, $limit, $start = ":start", $stop = ":stop")
     {
-        $offset = $this->getOffset($page);
+        $offset = isset($offset) ? $offset : 0;
+        $limit = isset($limit) ? $limit : $this->pageSize;
         $query->bindValue($start, $offset, PDO::PARAM_INT);
-        $query->bindValue($stop, $offset + $this->pageSize, PDO::PARAM_INT);
+        $query->bindValue($stop, $limit, PDO::PARAM_INT);
     }
 
     public function getBots($page = 1)
@@ -144,7 +146,7 @@ class Model
         if($page <= $this->getPageCount()) {
             $sql = "SELECT * FROM list LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
-            $this->doPagination($query, $page);
+            $this->doPagination($query, $this->getOffset($page));
             $query->execute();
             return $query->fetchAll();
         }
@@ -153,12 +155,13 @@ class Model
         }
     }
 
-    public function getAllRawBots($page = 1)
+    public function getAllRawBots($offset, $limit)
     {
-        if($page <= $this->getPageCount()) {
+        $limit = isset($limit) ? $limit : $this->pageCount;
+        if($offset <= $this->getBotCount()) {
             $sql = "SELECT * FROM bots LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
-            $this->doPagination($query, $page);
+            $this->doPagination($query, $offset, $limit);
             $query->execute();
             return $query->fetchAll();
         }
@@ -167,17 +170,17 @@ class Model
         }
     }
 
-    public function getBotsByNames($names, $page = 1)
+    public function getBotsByNames($names, $offset, $limit)
     {
+        $limit = isset($limit) ? $limit : $this->pageCount;
         $namesCount = count($names);
-        $pageCount = $this->getPageCount($namesCount);
-        if($page <= $pageCount) {
+        if($offset <= $namesCount) {
             $sql = 'SELECT * FROM bots WHERE name IN ('.implode(',', array_fill(1, $namesCount, '?')).') LIMIT ?,?';
             $query = $this->db->prepare($sql);
             foreach($names as $i => $n) {
                 $query->bindValue($i + 1, $n, PDO::PARAM_STR);
             }
-            $this->doPagination($query, $page, $namesCount + 1, $namesCount + 2);
+            $this->doPagination($query, $offset, $limit, $namesCount + 1, $namesCount + 2);
             $query->execute();
 
             return $query->fetchAll();
@@ -187,12 +190,13 @@ class Model
         }
     }
 
-    public function getBotsByType($type, $page = 1)
+    public function getBotsByType($type, $offset, $limit)
     {
-        if($page <= $this->getPageCount($this->getBotCount($type))) {
+        $limit = isset($limit) ? $limit : $this->pageCount;
+        if($offset + $limit <= $this->getBotCount($type)) {
             $sql = "SELECT * FROM bots WHERE type=:type LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
-            $this->doPagination($query, $page);
+            $this->doPagination($query, $offset, $limit);
             $query->bindValue(":type", $type, PDO::PARAM_INT);
             $query->execute();
             return $query->fetchAll();

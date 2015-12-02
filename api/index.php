@@ -14,7 +14,6 @@ $app->setName('api');
 // The API has no real view
 
 /******************************************* THE CONFIGS *******************************************************/
-
 // Configs for mode "development" (Slim's default), see the GitHub readme for details on setting the environment
 $app->configureMode('development', function () use ($app) {
     // Set the configs for development environment
@@ -96,31 +95,34 @@ $app->group('/v1', function ()  use ($app, $model) {
             unset($bot->date);
             return $bot;
         };
-        
+
         $checkPagination = function () use ($app) {
-            if(isset($_GET['page']) && !is_numeric($_GET['page']))
+            if((isset($_GET['limit']) && !is_numeric($_GET['limit'])) ||
+               (isset($_GET['offset']) && !is_numeric($_GET['offset'])))
                 $app->halt(400, '{ "error": "Invalid page specified", "code": 400 }');
         };
 
         $app->get('/', $checkPagination, function () use ($app, $model, $apiUrl, $mapBot) {
-            $page = isset($_GET['page']) ? $_GET['page'] : 1;
+            $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
+            $limit = isset($_GET['limit']) ? $_GET['limit'] : $app->config('model')['page_size'];
             $names = explode(',', $_GET['bots']);
-            $bots = $model->getBotsByNames($names, $page);
+            $bots = $model->getBotsByNames($names, $offset, $limit);
             $url = $apiUrl();
             $json = array(
                 'bots' => array_map($mapBot, $bots),
-                'page' => $page,
+                'offset' => $offset,
+                'limit' => $limit,
                 '_links' => array(
                     'next' => null,
                     'prev' => null,
-                    'self' => $url.'?bots='.$_GET['bots'].'&page='.$page
+                    'self' => $url.'?bots='.$_GET['bots'].'&offset='.$offset.'&limit='.$limit
                 )
             );
 
-            if($page < $model->getPageCount(count($names)))
-                $json['_links']['next'] = $url.'?bots='.$_GET['bots'].'&page='.($page + 1);
-            if($page > 1)
-                $json['_links']['prev'] = $url.'?bots='.$_GET['bots'].'&page='.($page - 1);
+            if($limit == count($bots) && $offset + $limit < count($names))
+                $json['_links']['next'] = $url.'?bots='.$_GET['bots'].'&offset='.($offset + $limit).'&limit='.$limit;
+            if($offset > 0)
+                $json['_links']['prev'] = $url.'?bots='.$_GET['bots'].'&offset='.max($offset - $limit, 0).'&limit='.$limit;
 
             echo json_encode($json);
         });
@@ -128,17 +130,18 @@ $app->group('/v1', function ()  use ($app, $model) {
             if(isset($_GET['type']) && !is_numeric($_GET['type']))
                 $app->halt(400, '{ "error": "Invalid type speified", "code": 400 }');
 
-            $page = isset($_GET['page']) ? $_GET['page'] : 1;
+            $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : $app->config('model')['page_size'];
             if(isset($_GET['type'])) {
                 $app->lastModified(max(array($lastModified, $model->getLastUpdate("bots", $_GET['type']))));
-                $bots = $model->getBotsByType($_GET['type'], $page);
-                $pageCount = $model->getPageCount($model->getBotCount($type));
+                $bots = $model->getBotsByType($_GET['type'], $offset, $limit);
+                $botCount = $model->getBotCount($_GET['type']);
                 $typeParam = '&type='.$_GET['type'];
             }
             else {
                 $app->lastModified(max(array($lastModified, $model->getLastUpdate())));
-                $bots = $model->getAllRawBots($page);
-                $pageCount = $model->getPageCount();
+                $bots = $model->getAllRawBots($offset, $limit);
+                $botCount = $model->getBotCount();
                 $typeParam = '';
             }
 
@@ -146,21 +149,23 @@ $app->group('/v1', function ()  use ($app, $model) {
 
             $json = array(
                 'bots' => array_map($mapBot, $bots),
-                'page' => $page,
+                'offset' => $offset,
+                'limit' => $limit,
+                'total' => $botCount,
                 '_links' => array(
                     'next' => null,
                     'prev' => null,
-                    'self' => $url.'?page='.$page.$typeParam
+                    'self' => $url.'?offset='.$offset.'&limit='.$limit.$typeParam
                 )
             );
 
             if(isset($_GET['type']))
                 $json['_links']['type'] = $fullUrlFor('type', array('id' => $_GET['type']));
 
-            if($page < $pageCount)
-                $json['_links']['next'] = $url.'?page='.($page + 1).$typeParam;
-            if($page > 1)
-                $json['_links']['prev'] = $url.'?page='.($page - 1).$typeParam;
+            if($offset + $limit < $botCount)
+                $json['_links']['next'] = $url.'?offset='.($offset + $limit).'&limit='.$limit.$typeParam;
+            if($offset > 0)
+                $json['_links']['prev'] = $url.'?offset='.max($offset - $limit, 0).'&limit='.$limit.$typeParam;
 
             echo json_encode($json);
         })->name('allbots');

@@ -2,7 +2,7 @@
 {% block title %}API{% endblock %}
 {% block content %}
 <h1>API Access</h1>
-<p>All the API endpoints are on the base URL <code>http://api.twitchbots.info/v1/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service.</p>
+<p>All the API endpoints are on the base URL <code>http://api.twitchbots.info/v1/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service. All endpoints with a more or less static dataset send an expiration header indicating how long the data is at least expected to be valid. These will be adjusted according to real-world values. If you HTTP library does not honor the <code>Expires</code> header, please honor it manually.</p>
 
 <section>
     <h2>Errors</h2>
@@ -34,8 +34,10 @@
         <section>
             <h4>Parameters</h4>
             <dl class="dl-horizontal">
-                <dt><code>page</code></dt>
-                <dd>Page number, 1 by default</dd>
+                <dt><code>offset</code></dt>
+                <dd>Offset of items, 0 by default</dd>
+                <dt><code>limit</code></dt>
+                <dd>Maximum amount of items to return, 100 by default</dd>
                 <dt><code>type</code></dt>
                 <dd>Optionally only return bots of the given type ID</dd>
             </dl>
@@ -56,11 +58,13 @@
         },
         ...
     ],
-    "page": 1,
+    "offset": 0,
+    "limit": 100,
+    "total": 130,
     "_links": {
-        "next": "http://api.twitchbots.info/v1/bot/all?page=2",
+        "next": "http://api.twitchbots.info/v1/bot/all?offset=100&limit=100",
         "prev": null,
-        "self": "http://api.twitchbots.info/v1/bot/all?page=1"
+        "self": "http://api.twitchbots.info/v1/bot/all?offset=0&limit=100"
     }
 }</pre>
             <code>GET http://api.twitchbots.info/v1/bot/all?type=1</code>
@@ -76,11 +80,13 @@
             }
         }
     ],
-    "page": 1,
+    "offset": 0,
+    "limit": 100,
+    "total": 1,
     "_links": {
-        "next": "http://api.twitchbots.info/v1/bot/all?page=2&type=1",
+        "next": null,
         "prev": null,
-        "self": "http://api.twitchbots.info/v1/bot/all?page=1&type=1",
+        "self": "http://api.twitchbots.info/v1/bot/all?offset=0&limit=100&type=1",
         "type": "http://api.twitchbots.info/v1/type/1"
     }
 }</pre>
@@ -94,8 +100,10 @@
             <dl class="dl-horizontal">
                 <dt><code>bots</code></dt>
                 <dd>Comma separated list of usernames to check</dd>
-                <dt><code>page</code></dt>
-                <dd>Page number, 1 by default</dd>
+                <dt><code>offset</code></dt>
+                <dd>Offset of items, 0 by default</dd>
+                <dt><code>limit</code></dt>
+                <dd>Maximum amount of items to return, 100 by default</dd>
             </dl>
         </section>
         <section>
@@ -113,11 +121,12 @@
             }
         }
     ],
-    "page": 1,
+    "offset": 0,
+    "limit": 100,
     "_links": {
         "next": null,
         "prev": null,
-        "self": "http://api.twitchbots.info/v1/bot?bots=nightbot"
+        "self": "http://api.twitchbots.info/v1/bot?bots=nightbot&offset=0&limit=100"
     }
 }</pre>
         </section>
