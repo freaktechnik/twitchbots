@@ -251,4 +251,58 @@ class Model
         }
         return true;
     }
+
+    public function removeBot($username)
+    {
+        $sql = "DELETE FROM bots WHERE name=?";
+        $query = $this->db->prepare($sql);
+        $query->execute(array($username));
+    }
+
+    public function removeBots($usernames)
+    {
+        $sql = 'DELETE FROM bots WHERE name IN ('.implode(',', array_fill(1, count($usernames), '?')).')';
+        $query = $this->db->prepare($sql);
+        $query->execute($usernames);
+    }
+
+    public function checkRunning()
+    {
+        $sql = "SELECT value FROM config WHERE name='lock'";
+        $query = $this->db->prepare($sql);
+        $query->execute();
+
+        if((int)$query->fetch()->value == 1)
+            return true;
+
+        $sql = "UPDATE config SET value=? WHERE name='lock'";
+        $query = $this->db->prepare($sql);
+        $query->execute(array(1));
+
+        return false;
+    }
+
+    public function checkDone()
+    {
+        $sql = "UPDATE config SET value=? WHERE name='lock'";
+        $query = $this->db->prepare($sql);
+        $query->execute(array(0));
+    }
+
+    public function getLastCheckOffset($step)
+    {
+        $sql = "SELECT value FROM config WHERE name='update_offset'";
+        $query = $this->db->prepare($sql);
+        $query->execute();
+
+        $lastOffset = (int)$query->fetch()->value;
+
+        $newOffset = ($lastOffset + $step) % $this->getBotCount();
+
+        $sql = "UPDATE config SET value=? WHERE name='update_offset'";
+        $query = $this->db->prepare($sql);
+        $query->execute(array($newOffset));
+
+        return $lastOffset;
+    }
 }

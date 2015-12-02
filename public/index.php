@@ -134,27 +134,57 @@ $app->get('/submissions', function () use($app, $model, $lastUpdate) {
     ));
 });
 
-$app->put('/lib/submit', function () use($app, $model, $twitch) {
-    if($model->checkToken("submit", $app->request->params('token'))) {
-        $channel = $twitch->channelGet($app->request->params('username'));
-        if($channel->status == 404) {
-            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2');
-        }
-        else if($model->userSubmitted($app->request->params('username'))) {
-            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=3');
+$app->group('/lib', function ()  use ($app, $model, $twitch) {
+    $app->get('/check', function ()  use ($app, $model, $twitch) {
+        if($model->checkRunning()) {
+            $app->halt(500, "Check already running");
         }
         else {
-            $model->addSubmission(
-                $app->request->params('username'),
-                $app->request->params('type'),
-                $app->request->params('description')
-            );
-            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1');
+            $step = 10;
+            $offset = $model->getLastCheckOffset($step);
+            echo 'Checking '.$step.' bots starting at '.$offset."\n";
+            $bots = $model->getAllRawBots($offset, $step);
+
+            $bots = array_filter($bots, function($bot) use ($twitch) {
+                $channel = $twitch->channelGet($bot->name);
+                return $channel->status == 404;
+            });
+
+            if(count($bots) > 1) {
+                $model->removeBots(array_map(function($bot) {
+                    return $bot->name;
+                }, $bots));
+            }
+            else if(count($bots) == 1) {
+                $model->removeBot($bots[0]);
+            }
+            $model->checkDone();
+            echo 'Done';
         }
-    }
-    else {
-        $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1');
-    }
+    });
+
+    $app->put('/submit', function () use ($app, $model, $twitch) {
+        if($model->checkToken("submit", $app->request->params('token'))) {
+            $channel = $twitch->channelGet($app->request->params('username'));
+            if($channel->status == 404) {
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2');
+            }
+            else if($model->userSubmitted($app->request->params('username'))) {
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=3');
+            }
+            else {
+                $model->addSubmission(
+                    $app->request->params('username'),
+                    $app->request->params('type'),
+                    $app->request->params('description')
+                );
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1');
+            }
+        }
+        else {
+            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1');
+        }
+    });
 });
 
 /******************************************* RUN THE APP *******************************************************/

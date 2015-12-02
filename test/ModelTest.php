@@ -30,7 +30,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             UNIQUE KEY name (name)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=9');
+        ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=9');
         $pdo->query('CREATE TABLE IF NOT EXISTS types (
             id int(10) unsigned NOT NULL AUTO_INCREMENT,
             name varchar(535) CHARACTER SET ascii NOT NULL,
@@ -39,14 +39,19 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             UNIQUE KEY name (name)
-        ) ENGINE=InnoDB DEFAULT CHARSET=ascii AUTO_INCREMENT=37');
+        ) DEFAULT CHARSET=ascii AUTO_INCREMENT=37');
         $pdo->query('CREATE TABLE IF NOT EXISTS bots (
             name varchar(535) CHARACTER SET ascii NOT NULL,
             type int(10) unsigned NOT NULL,
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (name),
             FOREIGN KEY (type) REFERENCES types(id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=ascii');
+        ) DEFAULT CHARSET=ascii');
+        $pdo->query('CREATE TABLE IF NOT EXISTS config (
+            name varchar(120) CHARACTER SET ascii NOT NULL,
+            value varchar(100) CHARACTER SET ascii DEFAULT NULL,
+            PRIMARY KEY (name)
+        ) DEFAULT CHARSET=ascii');
         $pdo->query('CREATE OR REPLACE VIEW count AS SELECT count(name) AS count FROM bots');
         $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, multichannel, url, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
 
@@ -332,6 +337,50 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertFalse($this->model->userSubmitted('freaktechnik'));
         $this->model->addSubmission('freaktechnik', 1);
         $this->assertTrue($this->model->userSubmitted('freaktechnik'));
+    }
+
+    public function testLock()
+    {
+        $this->assertFalse($this->model->checkRunning());
+        $this->assertTrue($this->model->checkRunning());
+        $this->model->checkDone();
+        $this->assertFalse($this->model->checkRunning());
+    }
+
+    public function testGetLastCheckOffset()
+    {
+        $botCount = $this->model->getBotCount();
+        $halfCount = ceil($botCount / 2);
+        $this->assertEquals(0, $this->model->getLastCheckOffset($halfCount));
+        $this->assertEquals($halfCount, $this->model->getLastCheckOffset(0));
+        $this->assertEquals($halfCount, $this->model->getLastCheckOffset($botCount + 1));
+        $this->assertEquals($halfCount + 1, $this->model->getLastCheckOffset(0));
+    }
+
+    public function testRemoveBot()
+    {
+        $initialCount = $this->model->getBotCount();
+        $this->model->removeBot('ackbot');
+
+        $this->assertEquals($initialCount - 1, $this->model->getBotCount());
+
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots0', "SELECT * FROM bots WHERE name='ackbot'"
+        );
+        $this->assertEquals(0, $queryTable->getRowCount());
+    }
+
+    public function testRemoveBots()
+    {
+        $initialCount = $this->model->getBotCount();
+        $this->model->removeBots(array('ackbot', 'nightbot'));
+
+        $this->assertEquals($initialCount - 2, $this->model->getBotCount());
+
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', "SELECT * FROM bots WHERE name IN ('ackbot','nightbot')"
+        );
+        $this->assertEquals(0, $queryTable->getRowCount());
     }
 }
 ?>

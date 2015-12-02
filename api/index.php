@@ -55,6 +55,8 @@ $model = new \Mini\Model\Model($app->config('model'));
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
+//TODO ensure max limit
+
 $app->group('/v1', function ()  use ($app, $model) {
     $lastModified = 1448745064;
     $docsUrl = 'http://twitchbots.info/api';
