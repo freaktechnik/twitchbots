@@ -325,5 +325,13 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $bots = $this->model->getBotsByNames($names, self::pageSize);
         $this->assertEmpty($bots);
     }
+
+    public function testUserSubmitted()
+    {
+        $this->assertTrue($this->model->userSubmitted('butler_of_ec0ke'));
+        $this->assertFalse($this->model->userSubmitted('freaktechnik'));
+        $this->model->addSubmission('freaktechnik', 1);
+        $this->assertTrue($this->model->userSubmitted('freaktechnik'));
+    }
 }
 ?>
