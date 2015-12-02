@@ -7,7 +7,7 @@
 <section>
     <h2>Errors</h2>
     <p>The API returns error codes whenever appropriate, like for example invalid parameters. If there are special cases where errors get thrown that's documented in the "Response" section of an endpoint. Some errors will return JSON specifying what went wrong in the following form:</p>
-    <pre>{ "error": "Invalid page specified", "code": 400 }</pre>
+    <pre>{ "error": "Invalid offset specified", "code": 400 }</pre>
 </section>
 <section>
     <h2>Endpoints</h2>
@@ -16,7 +16,7 @@
         <p>Replace <code>:name</code> with the username of the Twitch user to check.</p>
         <section>
             <h4>Response</h4>
-            <p>Respons with a 404 error if the user is not a bot.</p>
+            <p>Responds with a 404 error if the user is not a bot.</p>
             <code>GET http://api.twitchbots.info/v1/bot/nightbot</code>
             <pre>
 {
@@ -108,6 +108,7 @@
         </section>
         <section>
             <h4>Response</h4>
+            <p>Note that the <code>next</code> link is not always <code>null</code> when there is no next page, simply because the back-end doesn't know how many results there will be in total.</p>
             <code>GET http://api.twitchbots.info/v1/bot?bots=nightbot</code>
             <pre>
 {

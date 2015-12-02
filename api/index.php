@@ -97,14 +97,15 @@ $app->group('/v1', function ()  use ($app, $model) {
         };
 
         $checkPagination = function () use ($app) {
-            if((isset($_GET['limit']) && !is_numeric($_GET['limit'])) ||
-               (isset($_GET['offset']) && !is_numeric($_GET['offset'])))
-                $app->halt(400, '{ "error": "Invalid page specified", "code": 400 }');
+            if(isset($_GET['limit']) && !is_numeric($_GET['limit']))
+                $app->halt(400, '{ "error": "Invalid limit specified", "code": 400 }');
+            if(isset($_GET['offset'])  && !is_numeric($_GET['offset']))
+                $app->halt(400, '{ "error": "Invalid offset specified", "code": 400 }');
         };
 
         $app->get('/', $checkPagination, function () use ($app, $model, $apiUrl, $mapBot) {
-            $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
-            $limit = isset($_GET['limit']) ? $_GET['limit'] : $app->config('model')['page_size'];
+            $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : $app->config('model')['page_size'];
             $names = explode(',', $_GET['bots']);
             $bots = $model->getBotsByNames($names, $offset, $limit);
             $url = $apiUrl();
