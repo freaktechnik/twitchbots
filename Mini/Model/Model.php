@@ -234,4 +234,21 @@ class Model
 
         return $query->fetchAll();
     }
+
+    public function userSubmitted($username)
+    {
+        $sql = "SELECT * FROM submissions WHERE name=?";
+        $query = $this->db->prepare($sql);
+        $query->execute(array($username));
+
+        // This is basicly an OR, but the second query gets executed lazily.
+        if(!$query->fetch()) {
+            $sql = "SELECT * FROM bots WHERE name=?";
+            $query_two = $this->db->prepare($sql);
+            $query_two->execute(array($username));
+            if(!$query_two->fetch())
+                return false;
+        }
+        return true;
+    }
 }

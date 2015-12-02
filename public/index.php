@@ -63,6 +63,8 @@ $app->configureMode('production', function () use ($app) {
 // Initialize the model, pass the database configs. $model can now perform all methods from Mini\model\model.php
 $model = new \Mini\Model\Model($app->config('database'));
 
+$twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
+
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
 $lastUpdate = 1448793493;
@@ -97,7 +99,7 @@ $app->get('/submit', function () use ($app, $model, $lastUpdate) {
 
     $app->render('submit.twig', array(
         'success' => $_GET['success'],
-        'error' => $_GET['error'],
+        'error' => (int)$_GET['error'],
         'token' => $token,
         'types' => $types
     ));
@@ -132,14 +134,23 @@ $app->get('/submissions', function () use($app, $model, $lastUpdate) {
     ));
 });
 
-$app->put('/lib/submit', function () use($app, $model) {
+$app->put('/lib/submit', function () use($app, $model, $twitch) {
     if($model->checkToken("submit", $app->request->params('token'))) {
-        $model->addSubmission(
-            $app->request->params('username'),
-            $app->request->params('type'),
-            $app->request->params('description')
-        );
-        $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1');
+        $channel = $twitch->channelGet($app->request->params('username'));
+        if($channel->status == 404) {
+            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2');
+        }
+        else if($model->userSubmitted($app->request->params('username'))) {
+            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=3');
+        }
+        else {
+            $model->addSubmission(
+                $app->request->params('username'),
+                $app->request->params('type'),
+                $app->request->params('description')
+            );
+            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1');
+        }
     }
     else {
         $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1');

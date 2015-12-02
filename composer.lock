@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cf9abd293b68c3c29622ede4aa9d8891",
-    "content-hash": "af7a95aa5632a27990de6bd31f3aeb35",
+    "hash": "178442cc887c3b58b42e7478fa424371",
+    "content-hash": "a5ab6abc865d1086a96a23027c0ac882",
     "packages": [
         {
             "name": "components/bootstrap",
@@ -494,6 +494,51 @@
                 "scss"
             ],
             "time": "2014-09-08 18:18:05"
+        },
+        {
+            "name": "ritero/twitch-sdk",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jofner/Twitch-SDK.git",
+                "reference": "be35517a47ecd33c641a3430a4af18325c1d9129"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jofner/Twitch-SDK/zipball/be35517a47ecd33c641a3430a4af18325c1d9129",
+                "reference": "be35517a47ecd33c641a3430a4af18325c1d9129",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ritero\\SDK\\TwitchTV": "src/"
+                },
+                "classmap": [
+                    "src/ritero/SDK/TwitchTV/TwitchSDK.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT License"
+            ],
+            "authors": [
+                {
+                    "name": "Josef Ohnheiser",
+                    "homepage": "http://www.ritero.cz"
+                }
+            ],
+            "description": "TwitchTV API SDK for PHP",
+            "homepage": "https://github.com/jofner/Twitch-SDK",
+            "keywords": [
+                "api",
+                "sdk",
+                "twitch"
+            ],
+            "time": "2015-06-08 14:19:44"
         },
         {
             "name": "robloach/component-installer",

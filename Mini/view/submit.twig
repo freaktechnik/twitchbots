@@ -12,11 +12,23 @@
         Your submission has been saved. We will review it as soon as possible.
     </div>
 {% endif %}
-{% if error %}
+{% if error == 1 %}
     <div class="alert alert-danger" role="alert">
-        <span class="glyphicon glyphicon-exclamation-sign aria-hidden="true"></span>
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
         <span class="sr-only">Error:</span>
         Something went wrong while submitting.
+    </div>
+{% elseif error == 2 %}
+    <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        The specified username isn't a registered account on Twitch.
+    </div>
+{% else %}
+    <div class="alert alert-info" role="alert">
+        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+        <span class="sr-only">Info:</span>
+        This user has already been submitted. Thank you for submitting it again, though!
     </div>
 {% endif %}
 <div class="panel panel-default">

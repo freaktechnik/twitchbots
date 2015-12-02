@@ -29,7 +29,7 @@
     </table>
 </div>
 <nav class="text-center">
-    {% if pageCount > 1 and page < pageCount %}
+    {% if pageCount > 1 and page <= pageCount %}
         <ul class="pagination">
             {% spaceless %}
             {% if page > 1 %}
