@@ -3,7 +3,7 @@
 
 A directory of twitch chat bot accounts.
 
-This is the code used for [twitchbots.info](http://twitchbots.info).
+This is the code used for [twitchbots.info](https://twitchbots.info).
 
 Thanks to [Mini2](https://github.com/panique/mini2) for the great base template.
 

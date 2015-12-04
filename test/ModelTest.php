@@ -28,8 +28,8 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             name varchar(535) CHARACTER SET ascii NOT NULL,
             description text NOT NULL,
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY name (name)
+            type int(1) unsigned NOT NULL DEFAULT 0,
+            PRIMARY KEY (id)
         ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=9');
         $pdo->query('CREATE TABLE IF NOT EXISTS types (
             id int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -42,7 +42,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         ) DEFAULT CHARSET=ascii AUTO_INCREMENT=37');
         $pdo->query('CREATE TABLE IF NOT EXISTS bots (
             name varchar(535) CHARACTER SET ascii NOT NULL,
-            type int(10) unsigned NOT NULL,
+            type int(10) unsigned DEFAULT NULL,
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (name),
             FOREIGN KEY (type) REFERENCES types(id)
@@ -331,12 +331,13 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEmpty($bots);
     }
 
-    public function testUserSubmitted()
+    public function testBotSubmitted()
     {
-        $this->assertTrue($this->model->userSubmitted('butler_of_ec0ke'));
-        $this->assertFalse($this->model->userSubmitted('freaktechnik'));
+        $this->model->addCorrection('freaktechnik', 2);
+        $this->assertTrue($this->model->botSubmitted('butler_of_ec0ke'));
+        $this->assertFalse($this->model->botSubmitted('freaktechnik'));
         $this->model->addSubmission('freaktechnik', 1);
-        $this->assertTrue($this->model->userSubmitted('freaktechnik'));
+        $this->assertTrue($this->model->botSubmitted('freaktechnik'));
     }
 
     public function testLock()

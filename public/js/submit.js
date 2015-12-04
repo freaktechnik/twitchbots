@@ -1,4 +1,4 @@
-var select = document.getElementById('existingtype');
+var select = document.getElementById('existing-type');
 var input = document.getElementById("bottype");
 select.addEventListener("change", function() {
     if(select.value == 0)

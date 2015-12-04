@@ -68,7 +68,7 @@ class Model
         if($type == 0)
             $type = $description;
 
-        $sql = "INSERT INTO submissions(name,description) VALUES (?,?)";
+        $sql = "INSERT INTO submissions(name,description,type) VALUES (?,?,0)";
         $query = $this->db->prepare($sql);
         $query->execute(array($username, $type));
     }
@@ -194,6 +194,7 @@ class Model
     public function getBotsByType($type, $offset = 0, $limit = null)
     {
         $limit = $limit !== null ? $limit : $this->pageSize;
+        //TODO should these bounds checks be in the controller?
         if($limit > 0 && $offset < $this->getBotCount($type)) {
             $sql = "SELECT * FROM bots WHERE type=:type LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
@@ -235,9 +236,9 @@ class Model
         return $query->fetchAll();
     }
 
-    public function userSubmitted($username)
+    public function botSubmitted($username)
     {
-        $sql = "SELECT * FROM submissions WHERE name=?";
+        $sql = "SELECT * FROM submissions WHERE name=? AND type=0";
         $query = $this->db->prepare($sql);
         $query->execute(array($username));
 
@@ -304,5 +305,15 @@ class Model
         $query->execute(array($newOffset));
 
         return $lastOffset;
+    }
+
+    public function addCorrection($username, $type, $description = "")
+    {
+        if($type == 0)
+            $type = $description;
+
+        $sql = "INSERT INTO submissions(name,description,type) VALUES (?,?,1)";
+        $query = $this->db->prepare($sql);
+        $query->execute(array($username, $type));
     }
 }

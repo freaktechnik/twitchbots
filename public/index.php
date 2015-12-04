@@ -98,10 +98,12 @@ $app->get('/submit', function () use ($app, $model, $lastUpdate) {
     $types = $model->getAllTypes();
 
     $app->render('submit.twig', array(
-        'success' => $_GET['success'],
+        'success' => (boolean)$_GET['success'],
         'error' => (int)$_GET['error'],
         'token' => $token,
-        'types' => $types
+        'types' => $types,
+        'correction' => isset($_GET['correction']),
+        'username' => $_GET['username']
     ));
 })->name('submit');
 $app->get('/check', function () use ($app, $lastUpdate) {
@@ -164,25 +166,42 @@ $app->group('/lib', function ()  use ($app, $model, $twitch) {
     });
 
     $app->put('/submit', function () use ($app, $model, $twitch) {
+        //TODO should some of these checks be in the model?
         if($model->checkToken("submit", $app->request->params('token'))) {
-            $channel = $twitch->channelGet($app->request->params('username'));
-            if($channel->status == 404) {
-                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2');
-            }
-            else if($model->userSubmitted($app->request->params('username'))) {
-                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=3');
+            if((boolean)$app->request->params('submission-type')) {
+                if($model->botSubmitted($app->request->params('username'))) {
+                    $model->addCorrection(
+                        $app->request->params('username'),
+                        $app->request->params('type'),
+                        $app->request->params('description')
+                    );
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1&correction');
+                }
+                else {
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=4&correction&username='.$app->request->params('username'));
+                }
             }
             else {
-                $model->addSubmission(
-                    $app->request->params('username'),
-                    $app->request->params('type'),
-                    $app->request->params('description')
-                );
-                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1');
+                $channel = $twitch->channelGet($app->request->params('username'));
+                if($channel->status == 404) {
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2&username='.$app->request->params('username'));
+                }
+                else if($model->botSubmitted($app->request->params('username'))) {
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=3&username='.$app->request->params('username'));
+                }
+                else {
+                    $model->addSubmission(
+                        $app->request->params('username'),
+                        $app->request->params('type'),
+                        $app->request->params('description')
+                    );
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1');
+                }
             }
         }
         else {
-            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1');
+            $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
+            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1&username='.$app->request->params('username').$correction);
         }
     });
 });

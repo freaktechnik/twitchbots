@@ -5,11 +5,12 @@
 {% block content %}
 <div>
     <h1>Find out if a Twitch user is a chat bot</h1>
-    <p class="lead">Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots listed are service or moderator bots.</p>
+    <p class="lead">Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots listed are service or moderator bots. Please <a href="{{ urlFor('submit') }}?correction">submit a correction</a> if you spot something wrong.</p>
 </div>
 
 <div class="table-responsive">
     <table class="table">
+        <caption>Please not that "Mulit-channel" doesn't mean the bot is in multiple twitch channel's chat but just that it could be in multiple chats at once.</caption>
         <thead>
             <tr>
                 <th>Username</th>
