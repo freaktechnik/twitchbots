@@ -1,4 +1,4 @@
-Header set Strict-Transport-Security "max-age=10886400", includeSubDomains; preload
+Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
 
 RewriteEngine On
 
