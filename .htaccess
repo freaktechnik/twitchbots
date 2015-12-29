@@ -1,5 +1,7 @@
+Header set Strict-Transport-Security "max-age=3600"
+
 RewriteEngine On
 
 RewriteCond %{HTTP_HOST} ^humanoids\.be$ [OR]
 RewriteCond %{HTTP_HOST} ^www\.humanoids\.be$
-RewriteRule ([a-zA-Z0-9_]*)$ "http://twitchbots.info/$1" [R=301,L,QSA]
+RewriteRule ([a-zA-Z0-9_]*)$ "https://twitchbots.info/$1" [R=301,L,QSA]
