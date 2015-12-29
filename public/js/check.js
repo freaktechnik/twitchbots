@@ -3,7 +3,7 @@ document.getElementById("checkform").addEventListener("submit", function(e) {
     document.getElementById("checkloading").removeAttribute("hidden");
     var xhr = new XMLHttpRequest();
     var username = document.getElementById("checkuser").value;
-    xhr.open("GET", "http://api.twitchbots.info/v1/bot/"+username);
+    xhr.open("GET", "https://api.twitchbots.info/v1/bot/"+username);
     xhr.onreadystatechange = function() {
         if(xhr.readyState == 4) {
             document.getElementById("checkloading").setAttribute("hidden", true);
