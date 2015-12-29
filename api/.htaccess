@@ -1,5 +1,10 @@
+Header set Strict-Transport-Security "max-age=10886400"
+
 Options -Indexes
 RewriteEngine On
+
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://api.twitchbots.info/$1 [QSA,R=301,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA,L]
