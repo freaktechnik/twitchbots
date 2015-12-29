@@ -1,4 +1,5 @@
 Header set Strict-Transport-Security "max-age=3600"
+Options -Indexes
 
 RewriteEngine On
 
