@@ -1,6 +1,10 @@
 Header set Strict-Transport-Security "max-age=10886400"
 
 Options -Indexes
+
+SetEnv MODE development
+SetEnvIf HTTP_HOST ^api.twitchbots.info$ MODE=production
+
 RewriteEngine On
 
 RewriteCond %{HTTPS} off

@@ -7,7 +7,7 @@ require '../vendor/autoload.php';
 
 // Initialize Slim (the router/micro framework used)
 $app = new \Slim\Slim(array(
-    'mode' => 'production'
+    'mode' => $_SERVER['MODE']
 ));
 $app->setName('api');
 

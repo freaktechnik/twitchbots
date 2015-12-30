@@ -69,6 +69,14 @@ $twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
 
 $lastUpdate = 1448793493;
 
+$app->notFound(function () use ($app) {
+    $app->render('error.twig', array(
+        'code' => 404,
+        'name' => 'Page Not Found',
+        'message' => 'The page you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly.'
+    ));
+});
+
 $app->get('/', function () use ($app, $model, $lastUpdate) {
     $app->lastModified(max(array($lastUpdate, $model->getLastUpdate())));
     $app->expires('+1 day');
