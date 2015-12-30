@@ -75,7 +75,7 @@
                 {% endfor %}
 
                 {% if (pageCount - extremePagesLimit) > (page - nearbyPagesLimit) %}
-                    <li class="disabled">&hellip;</li>
+                    <li class="disabled"><a href="#">&hellip;</a></li>
                 {% endif %}
 
                 {% for i in range(pageCount-extremePagesLimit+1, pageCount) if(i > page+nearbyPagesLimit) %}
