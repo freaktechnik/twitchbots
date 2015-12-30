@@ -1,11 +1,11 @@
 <If "%{HTTP_HOST} =~ /^(www\.)?twitchbots.info$/">
     SetEnv MODE production
     Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
-    Header set Content-Security-Policy "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self; font-src 'self'; frame-ancestors 'none'; connect-src https://api.twitchbots.info; base-uri https://twitchbots.info; reflected-xss block; form-action 'self'"
+    Header set Content-Security-Policy "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; frame-ancestors 'none'; connect-src https://api.twitchbots.info; base-uri https://twitchbots.info; reflected-xss block; form-action 'self'"
 </If>
 <Else>
     SetEnv MODE development
-    Header set Content-Security-Policy "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'"
+    Header set Content-Security-Policy "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'"
 </Else>
 
 RewriteEngine On
