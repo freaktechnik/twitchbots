@@ -32,7 +32,7 @@ $app->configureMode('development', function () use ($app) {
             'db_name' => $db,
             'db_user' => $db_user,
             'db_pass' => $db_pw,
-            'page_size' => 20
+            'page_size' => 2
         )
     ));
 });
