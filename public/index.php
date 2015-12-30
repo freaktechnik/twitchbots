@@ -73,7 +73,7 @@ $app->notFound(function () use ($app) {
     $app->render('error.twig', array(
         'code' => 404,
         'name' => 'Page Not Found',
-        'message' => 'The page you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly.'
+        'message' => 'The page you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly. Click a link above to go back to an existing page.'
     ));
 });
 
