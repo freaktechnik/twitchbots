@@ -7,7 +7,7 @@ require '../vendor/autoload.php';
 
 // Initialize Slim (the router/micro framework used)
 $app = new \Slim\Slim(array(
-    'mode' => 'production'
+    'mode' => $_SERVER['MODE']
 ));
 
 // and define the engine used for the view @see http://twig.sensiolabs.org
@@ -32,7 +32,7 @@ $app->configureMode('development', function () use ($app) {
             'db_name' => $db,
             'db_user' => $db_user,
             'db_pass' => $db_pw,
-            'page_size' => 50
+            'page_size' => 20
         )
     ));
 });
