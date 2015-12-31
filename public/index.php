@@ -148,7 +148,8 @@ $app->group('/lib', function ()  use ($app, $model) {
             $app->halt(500, "Check already running");
         }
         else {
-           print_r($model->checkBots());
+            echo 'Checked bots. Removed:';
+            print_r($model->checkBots());
         }
     });
 
