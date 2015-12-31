@@ -4,7 +4,7 @@ namespace Mini\Model;
 
 use PDO;
 
-require '../vendor/autoload.php';
+require '../../vendor/autoload.php';
 include_once 'csrf.php';
 
 class Model
