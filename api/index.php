@@ -77,6 +77,7 @@ $app->group('/v1', function ()  use ($app, $model) {
 
     $app->get('/', function () use ($app, $apiUrl, $lastModified, $docsUrl) {
         $app->lastModified($lastModified);
+        $app->expires('+1 month');
         $url = $apiUrl();
         $index = array(
             '_links' => array(
