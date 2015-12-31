@@ -68,15 +68,6 @@ $twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
 $lastUpdate = 1448793493;
-echo "routing";
-
-$app->notFound(function () use ($app) {
-    $app->render('error.twig', array(
-        'code' => 404,
-        'name' => 'Page Not Found',
-        'message' => 'The page you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly. Click a link above to go back to an existing page.'
-    ));
-});
 
 $app->get('/', function () use ($app, $model, $lastUpdate) {
     $app->lastModified(max(array($lastUpdate, $model->getLastUpdate())));
@@ -213,6 +204,14 @@ $app->group('/lib', function ()  use ($app, $model, $twitch) {
             $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1&username='.$app->request->params('username').$correction);
         }
     });
+});
+
+$app->notFound(function () use ($app) {
+    $app->render('error.twig', array(
+        'code' => 404,
+        'name' => 'Page Not Found',
+        'message' => 'The page you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly. Click a link above to go back to an existing page.'
+    ));
 });
 
 /******************************************* RUN THE APP *******************************************************/
