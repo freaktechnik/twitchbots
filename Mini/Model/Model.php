@@ -4,6 +4,7 @@ namespace Mini\Model;
 
 use PDO;
 
+require '../vendor/autoload.php';
 include_once 'csrf.php';
 
 class Model
@@ -37,6 +38,8 @@ class Model
         $this->db = new PDO($dsn, $config['db_user'], $config['db_pass'], $options);
 
         $this->pageSize = $config['page_size'];
+
+        $this->twitch = $twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
 	}
 
     /**
@@ -315,5 +318,32 @@ class Model
         $sql = "INSERT INTO submissions(name,description,type) VALUES (?,?,1)";
         $query = $this->db->prepare($sql);
         $query->execute(array($username, $type));
+    }
+
+    public function twitchUserExists($name) {
+        $channel = $this->twitch->channelGet($name);
+        return $channel->status != 404;
+    }
+
+    public function checkBots() {
+        $step = 10;
+        $offset = $this->getLastCheckOffset($step);
+        $bots = $this->getAllRawBots($offset, $step);
+
+        $bots = array_filter($bots, function($bot) use ($this) {
+            return !$this->twitchUserExists($bot->name);
+        });
+
+        if(count($bots) > 1) {
+            $this->removeBots(array_map(function($bot) {
+                return $bot->name;
+            }, $bots));
+        }
+        else if(count($bots) == 1) {
+            $this->removeBot($bots[0]);
+        }
+        $this->checkDone();
+
+        return $bots;
     }
 }

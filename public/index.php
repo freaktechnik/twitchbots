@@ -63,8 +63,6 @@ $app->configureMode('production', function () use ($app) {
 // Initialize the model, pass the database configs. $model can now perform all methods from Mini\model\model.php
 $model = new \Mini\Model\Model($app->config('database'));
 
-$twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
-
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
 $lastUpdate = 1451564411;
@@ -144,36 +142,17 @@ $app->get('/submissions', function () use($app, $model, $lastUpdate) {
     ));
 });
 
-$app->group('/lib', function ()  use ($app, $model, $twitch) {
-    $app->get('/check', function ()  use ($app, $model, $twitch) {
+$app->group('/lib', function ()  use ($app, $model) {
+    $app->get('/check', function ()  use ($app, $model) {
         if($model->checkRunning()) {
             $app->halt(500, "Check already running");
         }
         else {
-            $step = 10;
-            $offset = $model->getLastCheckOffset($step);
-            echo 'Checking '.$step.' bots starting at '.$offset."\n";
-            $bots = $model->getAllRawBots($offset, $step);
-
-            $bots = array_filter($bots, function($bot) use ($twitch) {
-                $channel = $twitch->channelGet($bot->name);
-                return $channel->status == 404;
-            });
-
-            if(count($bots) > 1) {
-                $model->removeBots(array_map(function($bot) {
-                    return $bot->name;
-                }, $bots));
-            }
-            else if(count($bots) == 1) {
-                $model->removeBot($bots[0]);
-            }
-            $model->checkDone();
-            echo 'Done';
+           print_r($model->checkBots());
         }
     });
 
-    $app->put('/submit', function () use ($app, $model, $twitch) {
+    $app->put('/submit', function () use ($app, $model) {
         //TODO should some of these checks be in the model?
         if($model->checkToken("submit", $app->request->params('token'))) {
             if((boolean)$app->request->params('submission-type')) {
@@ -190,8 +169,7 @@ $app->group('/lib', function ()  use ($app, $model, $twitch) {
                 }
             }
             else {
-                $channel = $twitch->channelGet($app->request->params('username'));
-                if($channel->status == 404) {
+                if(!$model->twitchUserExists($app->request->params('username')) {
                     $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2&username='.$app->request->params('username'), 303);
                 }
                 else if($model->botSubmitted($app->request->params('username'))) {
