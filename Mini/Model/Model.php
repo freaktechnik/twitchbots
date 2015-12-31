@@ -329,11 +329,9 @@ class Model
         $step = 10;
         $offset = $this->getLastCheckOffset($step);
         $bots = $this->getAllRawBots($offset, $step);
-        
-        $checkUser = $this->twitchUserExists;
 
-        $bots = array_filter($bots, function($bot) use ($checkUser) {
-            return !$checkUser($bot->name);
+        $bots = array_filter($bots, function($bot) {
+            return !$this->twitchUserExists($bot->name);
         });
 
         if(count($bots) > 1) {
