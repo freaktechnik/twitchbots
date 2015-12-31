@@ -15,7 +15,7 @@ $app->view = new \Slim\Views\Twig();
 $app->view->setTemplatesDirectory("../Mini/view");
 
 $app->view->parserExtensions = array(
-    new \Slim\Views\TwigExtension(),
+    new \Slim\Views\TwigExtension()
 );
 
 /******************************************* THE CONFIGS *******************************************************/
@@ -67,7 +67,7 @@ $twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
-$lastUpdate = 1448793493;
+$lastUpdate = 1451564411;
 
 $app->get('/', function () use ($app, $model, $lastUpdate) {
     $app->lastModified(max(array($lastUpdate, $model->getLastUpdate())));
@@ -119,7 +119,7 @@ $app->get('/api', function () use ($app, $lastUpdate) {
 $app->get('/about', function () use($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->expires('+1 week');
-    $app->render('about.twig');
+    $app->render('api.twig');
 });
 $app->get('/submissions', function () use($app, $model, $lastUpdate) {
     $app->expires('+1 minute');
