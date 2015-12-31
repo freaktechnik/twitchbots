@@ -1,3 +1,6 @@
+Header set X-Content-Type-Options "nosniff"
+Header set X-XSS-Protection "1; mode=block"
+Header set X-Frame-Options "DENY"
 <If "%{HTTP_HOST} =~ /^(www\.)?twitchbots.info$/">
     SetEnv MODE production
     Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
@@ -5,7 +8,7 @@
 </If>
 <Else>
     SetEnv MODE development
-    Header set Content-Security-Policy "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'"
+    Header set Content-Security-Policy "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block"
 </Else>
 
 RewriteEngine On
