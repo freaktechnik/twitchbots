@@ -183,19 +183,19 @@ $app->group('/lib', function ()  use ($app, $model, $twitch) {
                         $app->request->params('type'),
                         $app->request->params('description')
                     );
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1&correction');
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1&correction', 303);
                 }
                 else {
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=4&correction&username='.$app->request->params('username'));
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=4&correction&username='.$app->request->params('username'), 303);
                 }
             }
             else {
                 $channel = $twitch->channelGet($app->request->params('username'));
                 if($channel->status == 404) {
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2&username='.$app->request->params('username'));
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2&username='.$app->request->params('username'), 303);
                 }
                 else if($model->botSubmitted($app->request->params('username'))) {
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=3&username='.$app->request->params('username'));
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=3&username='.$app->request->params('username'), 303);
                 }
                 else {
                     $model->addSubmission(
@@ -203,7 +203,7 @@ $app->group('/lib', function ()  use ($app, $model, $twitch) {
                         $app->request->params('type'),
                         $app->request->params('description')
                     );
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1');
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1', 303);
                 }
             }
         }
