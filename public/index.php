@@ -170,7 +170,7 @@ $app->group('/lib', function ()  use ($app, $model) {
                 }
             }
             else {
-                if(!$model->twitchUserExists($app->request->params('username')) {
+                if(!$model->twitchUserExists($app->request->params('username'))) {
                     $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2&username='.$app->request->params('username'), 303);
                 }
                 else if($model->botSubmitted($app->request->params('username'))) {
