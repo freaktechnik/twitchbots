@@ -119,7 +119,7 @@ $app->get('/api', function () use ($app, $lastUpdate) {
 $app->get('/about', function () use($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->expires('+1 week');
-    $app->render('api.twig');
+    $app->render('about.twig');
 });
 $app->get('/submissions', function () use($app, $model, $lastUpdate) {
     $app->expires('+1 minute');
