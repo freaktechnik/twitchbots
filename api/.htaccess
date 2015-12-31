@@ -1,9 +1,12 @@
-Header set Strict-Transport-Security "max-age=10886400"
-
 Options -Indexes
 
-SetEnv MODE development
-SetEnvIf HTTP_HOST ^api.twitchbots.info$ MODE=production
+<If "%{HTTP_HOST} =~ /^(www\.)?twitchbots.info$/">
+    SetEnv MODE production
+    Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
+</If>
+<Else>
+    SetEnv MODE development
+</Else>
 
 RewriteEngine On
 

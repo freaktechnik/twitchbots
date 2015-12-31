@@ -68,6 +68,7 @@ $twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
 $lastUpdate = 1448793493;
+echo "routing";
 
 $app->notFound(function () use ($app) {
     $app->render('error.twig', array(
