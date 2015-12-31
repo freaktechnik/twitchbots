@@ -58,8 +58,8 @@ $model = new \Mini\Model\Model($app->config('model'));
 //TODO ensure max limit
 
 $app->group('/v1', function ()  use ($app, $model) {
-    $lastModified = 1448745064;
-    $docsUrl = 'http://twitchbots.info/api';
+    $lastModified = 1451582891;
+    $docsUrl = 'https://twitchbots.info/api';
 
     $apiUrl = function($path = null) use ($app) {
         if($path == null)
