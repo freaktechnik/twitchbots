@@ -35,7 +35,7 @@ $app->configureMode('development', function () use ($app) {
             'page_size' => 50
         ),
         'csp' => "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block",
-        'apiUrl' => $app->request->getUrl().realpath($app->request->getRootUri().'../api')
+        'apiUrl' => $app->request->getUrl().dirname($app->request->getRootUri(), 1).'/api'
     ));
 });
 

@@ -28,7 +28,7 @@ $app->configureMode('development', function () use ($app) {
             'db_pass' => $db_pw,
             'page_size' => 100
         ),
-        'docsUrl' => $app->request->getUrl().realpath($app->request->getRootUri().'../public/api')
+        'docsUrl' => $app->request->getUrl().dirname($app->request->getRootUri(), 1).'/public/api'
     ));
 });
 
