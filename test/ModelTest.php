@@ -90,7 +90,8 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             'db_name' => $GLOBALS['DB_NAME'],
             'db_user' => $GLOBALS['DB_USER'],
             'db_pass' => $GLOBALS['DB_PASSWD'],
-            'page_size' => self::pageSize
+            'page_size' => self::pageSize,
+            'testing' => true
         ));
         parent::setUp();
     }

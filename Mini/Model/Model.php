@@ -21,6 +21,12 @@ class Model
 	 */
 	private $pageSize;
 
+	/**
+	 * The twitch API wrapper
+	 * @var \ritero\SDK\TwitchTV\TwitchSDK
+	 */
+    private $twitch;
+
     /**
      * When creating the model, the configs for database connection creation are needed
      * @param $config
@@ -39,7 +45,12 @@ class Model
 
         $this->pageSize = $config['page_size'];
 
-        $this->twitch = $twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
+        if(array_key_exists('testing', $config) && $config['testing']) {
+            $this->twitch = new MockTwitch;
+        }
+        else {
+            $this->twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
+        }
 	}
 
     /**
