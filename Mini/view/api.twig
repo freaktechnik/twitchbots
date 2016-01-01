@@ -2,7 +2,7 @@
 {% block title %}API{% endblock %}
 {% block content %}
 <h1>API Access</h1>
-<p>All the API endpoints are on the base URL <code>https://api.twitchbots.info/v1/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service. All endpoints with a more or less static dataset send an expiration header indicating how long the data is at least expected to be valid. These will be adjusted according to real-world values. If you HTTP library does not honor the <code>Expires</code> header, please honor it manually.</p>
+<p>All the API endpoints are on the base URL <code>{{apiUrl}}/v1/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service. All endpoints with a more or less static dataset send an expiration header indicating how long the data is at least expected to be valid. These will be adjusted according to real-world values. If you HTTP library does not honor the <code>Expires</code> header, please honor it manually.</p>
 <div class="alert alert-warning" role="alert">
     <span class="glyphicon glyphicon-alert aria-hidden="true"></span>
     <span class="sr-only">Warning:</span>
@@ -21,14 +21,14 @@
         <section>
             <h4>Response</h4>
             <p>Responds with a 404 error if the user is not a bot.</p>
-            <code>GET https://api.twitchbots.info/v1/bot/nightbot</code>
+            <code>GET {{apiUrl}}/v1/bot/nightbot</code>
             <pre>
 {
     "username": "nightbot",
     "type": 1,
     "_links": {
-        "self": "https://api.twitchbots.info/v1/bot/nightbot",
-        "type": "https://api.twitchbots.info/v1/type/1"
+        "self": "{{apiUrl}}/v1/bot/nightbot",
+        "type": "{{apiUrl}}/v1/type/1"
     }
 }</pre>
         </section>
@@ -48,7 +48,7 @@
         </section>
         <section>
             <h4>Response</h4>
-            <code>GET https://api.twitchbots.info/v1/bot/all</code>
+            <code>GET {{apiUrl}}/v1/bot/all</code>
             <pre>
 {
     "bots: [
@@ -56,8 +56,8 @@
             "username": "nightbot",
             "type": 1,
             "_links": {
-                "self": "https://api.twitchbots.info/v1/bot/nightbot"
-                "type": "https://api.twitchbots.info/v1/type/1"
+                "self": "{{apiUrl}}/v1/bot/nightbot"
+                "type": "{{apiUrl}}/v1/type/1"
             }
         },
         ...
@@ -66,12 +66,12 @@
     "limit": 100,
     "total": 130,
     "_links": {
-        "next": "https://api.twitchbots.info/v1/bot/all?offset=100&limit=100",
+        "next": "{{apiUrl}}/v1/bot/all?offset=100&limit=100",
         "prev": null,
-        "self": "https://api.twitchbots.info/v1/bot/all?offset=0&limit=100"
+        "self": "{{apiUrl}}/v1/bot/all?offset=0&limit=100"
     }
 }</pre>
-            <code>GET https://api.twitchbots.info/v1/bot/all?type=1</code>
+            <code>GET {{apiUrl}}/v1/bot/all?type=1</code>
             <pre>
 {
     "bots": [
@@ -79,8 +79,8 @@
             "username": "nightbot",
             "type": 1,
             "_links": {
-                "self": "https://api.twitchbots.info/v1/bot/nightbot",
-                "type": "https://api.twitchbots.info/v1/type/1"
+                "self": "{{apiUrl}}/v1/bot/nightbot",
+                "type": "{{apiUrl}}/v1/type/1"
             }
         }
     ],
@@ -90,8 +90,8 @@
     "_links": {
         "next": null,
         "prev": null,
-        "self": "https://api.twitchbots.info/v1/bot/all?offset=0&limit=100&type=1",
-        "type": "https://api.twitchbots.info/v1/type/1"
+        "self": "{{apiUrl}}/v1/bot/all?offset=0&limit=100&type=1",
+        "type": "{{apiUrl}}/v1/type/1"
     }
 }</pre>
         </section>
@@ -113,7 +113,7 @@
         <section>
             <h4>Response</h4>
             <p>Note that the <code>next</code> link is not always <code>null</code> when there is no next page, simply because the back-end doesn't know how many results there will be in total.</p>
-            <code>GET https://api.twitchbots.info/v1/bot?bots=nightbot</code>
+            <code>GET {{apiUrl}}/v1/bot?bots=nightbot</code>
             <pre>
 {
     "bots: [
@@ -121,8 +121,8 @@
             "username": "nightbot",
             "type": 1,
             "_links": {
-                "self": "https://api.twitchbots.info/v1/bot/nightbot",
-                "type": "https://api.twitchbots.info/v1/type/1"
+                "self": "{{apiUrl}}/v1/bot/nightbot",
+                "type": "{{apiUrl}}/v1/type/1"
             }
         }
     ],
@@ -131,7 +131,7 @@
     "_links": {
         "next": null,
         "prev": null,
-        "self": "https://api.twitchbots.info/v1/bot?bots=nightbot&offset=0&limit=100"
+        "self": "{{apiUrl}}/v1/bot?bots=nightbot&offset=0&limit=100"
     }
 }</pre>
         </section>
@@ -141,7 +141,7 @@
         <p>Replace <code>:id</code> with the id of the type you want to get.</p>
         <section>
             <h4>Response</h4>
-            <code>GET https://api.twitchbots.info/v1/type/1</code>
+            <code>GET {{apiUrl}}/v1/type/1</code>
             <pre>
 {
     "id": 1,
@@ -149,8 +149,8 @@
     "multiChannel": true,
     "url": "https://www.nightbot.tv",
     "_links": {
-        "self": "https://api.twitchbots.info/v1/type/1",
-        "bots": "https://api.twitchbots.info/v1/bot/all?type=1"
+        "self": "{{apiUrl}}/v1/type/1",
+        "bots": "{{apiUrl}}/v1/bot/all?type=1"
     }
 }</pre>
         </section>

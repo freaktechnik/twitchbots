@@ -27,7 +27,8 @@ $app->configureMode('development', function () use ($app) {
             'db_user' => $db_user,
             'db_pass' => $db_pw,
             'page_size' => 100
-        )
+        ),
+        'docsUrl' => $app->request->getUrl().realpath($app->request->getRootUri().'../public/api')
     ));
 });
 
@@ -44,7 +45,8 @@ $app->configureMode('production', function () use ($app) {
             'db_user' => $db_user,
             'db_pass' => $db_pw,
             'page_size' => 100
-        )
+        ),
+        'docsUrl' => $app->request->getScheme().'://twitchbots.info/api'
     ));
 });
 
@@ -59,7 +61,6 @@ $model = new \Mini\Model\Model($app->config('model'));
 
 $app->group('/v1', function ()  use ($app, $model) {
     $lastModified = 1451582891;
-    $docsUrl = 'https://twitchbots.info/api';
 
     $apiUrl = function($path = null) use ($app) {
         if($path == null)
@@ -75,7 +76,7 @@ $app->group('/v1', function ()  use ($app, $model) {
     $app->contentType('application/json;charset=utf8');
     $app->response->headers->set('Access-Control-Allow-Origin', '*');
 
-    $app->get('/', function () use ($app, $apiUrl, $lastModified, $docsUrl) {
+    $app->get('/', function () use ($app, $apiUrl, $lastModified) {
         $app->lastModified($lastModified);
         $app->expires('+1 month');
         $url = $apiUrl();
@@ -84,7 +85,7 @@ $app->group('/v1', function ()  use ($app, $model) {
                 'bot' => $url.'bot/',
                 'type' => $url.'type/',
                 'self' => $url,
-                'documentation' => $docsUrl
+                'documentation' => $app->config('docsUrl')
             )
         );
         echo json_encode($index);
@@ -202,15 +203,15 @@ $app->group('/v1', function ()  use ($app, $model) {
         })->conditions(array('name' => '[a-zA-Z0-9_\-]+'))->name('bot');
     });
 
-    $app->group('/type', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified, $docsUrl) {
-        $app->get('/', function () use ($app, $apiUrl, $fullUrlFor, $lastModified, $docsUrl) {
+    $app->group('/type', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
+        $app->get('/', function () use ($app, $apiUrl, $fullUrlFor, $lastModified) {
             $app->lastModified($lastModified);
 
             $json = array(
                 '_links' => array(
                     'type' => $fullUrlFor('type', array('id' => '{id}')),
                     'self' => $apiUrl(),
-                    'documentation' => $docsUrl
+                    'documentation' => $app->config('docsUrl');
                 )
             );
 

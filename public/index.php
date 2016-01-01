@@ -34,7 +34,8 @@ $app->configureMode('development', function () use ($app) {
             'db_pass' => $db_pw,
             'page_size' => 50
         ),
-        'csp' => "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block"
+        'csp' => "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block",
+        'apiUrl' => $app->request->getUrl().realpath($app->request->getRootUri().'../api')
     ));
 });
 
@@ -52,7 +53,8 @@ $app->configureMode('production', function () use ($app) {
             'db_pass' => $db_pw,
             'page_size' => 50
         ),
-        'csp' => "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block; base-uri twitchbots.info www.twitchbots.info; referrer no-referrer-when-downgrade"
+        'csp' => "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block; base-uri twitchbots.info www.twitchbots.info; referrer no-referrer-when-downgrade",
+        'apiUrl' => $app->request->getScheme().'://api.'.$app->request->getHostWithPort()
     ));
 
     $app->view->parserOptions = array(
@@ -124,7 +126,9 @@ $app->get('/check', function () use ($app, $lastUpdate) {
 $app->get('/api', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->expires('+1 week');
-    $app->render('api.twig');
+    $app->render('api.twig', array(
+        'apiUrl' => $app->config('apiUrl')
+    ));
 });
 $app->get('/about', function () use($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
@@ -149,10 +153,10 @@ $app->get('/submissions', function () use($app, $model, $lastUpdate) {
 $app->group('/lib', function ()  use ($app, $model) {
     $app->get('/check', function ()  use ($app, $model) {
         if($model->checkRunning()) {
-            $app->halt(500, "Check already running");
+            $app->halt(500, 'Check already running');
         }
         else {
-            echo 'Checked bots. Removed:';
+            echo 'Checked bots. Removed: ';
             print_r($model->checkBots());
         }
     });
