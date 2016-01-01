@@ -33,7 +33,8 @@ $app->configureMode('development', function () use ($app) {
             'db_user' => $db_user,
             'db_pass' => $db_pw,
             'page_size' => 50
-        )
+        ),
+        'csp' => "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block"
     ));
 });
 
@@ -50,7 +51,8 @@ $app->configureMode('production', function () use ($app) {
             'db_user' => $db_user,
             'db_pass' => $db_pw,
             'page_size' => 50
-        )
+        ),
+        'csp' => "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block; base-uri twitchbots.info www.twitchbots.info; referrer no-referrer-when-downgrade"
     ));
 
     $app->view->parserOptions = array(
@@ -66,6 +68,8 @@ $model = new \Mini\Model\Model($app->config('database'));
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
 $lastUpdate = 1451564411;
+
+$app->response->headers->set('Content-Security-Policy', $app->config('csp'));
 
 $app->notFound(function () use ($app) {
     $app->render('error.twig', array(
