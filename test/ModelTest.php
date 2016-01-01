@@ -83,7 +83,6 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function setUp()
     {
-        $this->pageSize = 100;
         $this->model = new \Mini\Model\Model(array(
             'db_host' => $GLOBALS['DB_HOST'],
             'db_port' => $GLOBALS['DB_PORT'],
