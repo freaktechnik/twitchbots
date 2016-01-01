@@ -340,7 +340,7 @@ class Model
             }, $bots));
         }
         else if(count($bots) == 1) {
-            $this->removeBot($bots[0]);
+            $this->removeBot($bots[0]->name);
         }
         $this->checkDone();
 
