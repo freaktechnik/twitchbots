@@ -34,7 +34,7 @@ $app->configureMode('development', function () use ($app) {
             'db_pass' => $db_pw,
             'page_size' => 50
         ),
-        'csp' => "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block",
+        'csp' => "default-src 'none'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block",
         'apiUrl' => $app->request->getUrl().dirname($app->request->getRootUri(), 1).'/api'
     ));
 });
@@ -53,7 +53,7 @@ $app->configureMode('production', function () use ($app) {
             'db_pass' => $db_pw,
             'page_size' => 50
         ),
-        'csp' => "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block; base-uri twitchbots.info www.twitchbots.info; referrer no-referrer-when-downgrade",
+        'csp' => "default-src 'none'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block; base-uri twitchbots.info www.twitchbots.info; referrer no-referrer-when-downgrade",
         'apiUrl' => $app->request->getScheme().'://api.'.$app->request->getHostWithPort()
     ));
 
