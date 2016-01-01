@@ -211,7 +211,7 @@ $app->group('/v1', function ()  use ($app, $model) {
                 '_links' => array(
                     'type' => $fullUrlFor('type', array('id' => '{id}')),
                     'self' => $apiUrl(),
-                    'documentation' => $app->config('docsUrl');
+                    'documentation' => $app->config('docsUrl')
                 )
             );
 
