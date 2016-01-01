@@ -383,5 +383,13 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         );
         $this->assertEquals(0, $queryTable->getRowCount());
     }
+    
+    public function testCheckBots()
+    {
+        $initialCount = $this->model->getBotCount();
+        $bots = $this->model->checkBots($initialCount);
+        
+        $this->assertEquals($initialCount - count($bots), $this->model->getBotCount());
+    }
 }
 ?>

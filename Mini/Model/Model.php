@@ -322,17 +322,16 @@ class Model
 
     public function twitchUserExists($name) {
         $channel = $this->twitch->channelGet($name);
-        return $channel->status != 404;
+        return $channel !== null && $channel->status != 404;
     }
 
-    public function checkBots() {
-        $step = 10;
+    public function checkBots($step = 10) {
         $offset = $this->getLastCheckOffset($step);
         $bots = $this->getAllRawBots($offset, $step);
 
-        $bots = array_filter($bots, function($bot) {
+        $bots = array_values(array_filter($bots, function($bot) {
             return !$this->twitchUserExists($bot->name);
-        });
+        }));
 
         if(count($bots) > 1) {
             $this->removeBots(array_map(function($bot) {
