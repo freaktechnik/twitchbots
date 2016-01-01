@@ -392,5 +392,12 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         
         $this->assertEquals($initialCount - count($bots), $this->model->getBotCount());
     }
+    
+    public function testTwitchUserExists()
+    {
+        $this->assertTrue($this->model->twitchUserExists('butler_of_ec0ke'));
+        $this->assertTrue($this->model->twitchUserExists('xanbot'));
+        $this->assertFalse($this->model->twitchUserExists('zeldbot'));
+    }
 }
 ?>
