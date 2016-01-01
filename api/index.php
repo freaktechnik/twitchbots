@@ -36,6 +36,9 @@ $app->configureMode('development', function () use ($app) {
 $app->configureMode('production', function () use ($app) {
     // Set the configs for production environment
     include_once __DIR__.'/../lib/config.php';
+
+    preg_match("/api\.(.*)/", $app->request->getHostWithPort(), $m);
+
     $app->config(array(
         'debug' => false,
         'model' => array(
@@ -46,7 +49,7 @@ $app->configureMode('production', function () use ($app) {
             'db_pass' => $db_pw,
             'page_size' => 100
         ),
-        'docsUrl' => $app->request->getScheme().'://twitchbots.info/api'
+        'docsUrl' => $app->request->getScheme().'://'.$m[1].'/api'
     ));
 });
 
