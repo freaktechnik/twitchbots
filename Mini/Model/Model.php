@@ -322,7 +322,8 @@ class Model
 
     public function twitchUserExists($name) {
         $channel = $this->twitch->channelGet($name);
-        return $channel !== null && $channel->status != 404;
+        echo $name.': '.$channel->status;
+        return $channel === null || $channel->status != 404;
     }
 
     public function checkBots($step = 10) {
