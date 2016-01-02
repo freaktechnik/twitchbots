@@ -6,13 +6,7 @@ RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA]
-
-<If "%{IS_SUBREQ} == 'false'">
-    <If "%{HTTP_HOST} =~ /^(www\.)?twitchbots.info$/">
-        SetEnv MODE production
-        Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
-    </If>
-    <Else>
-        SetEnv MODE development
-    </Else>
+<If "%{HTTP_HOST} =~ /^(www\.)?twitchbots.info$/">
+    SetEnv MODE production
+    Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
 </If>

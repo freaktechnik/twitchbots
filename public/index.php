@@ -5,12 +5,17 @@
 // Load Composer's PSR-4 autoloader (necessary to load Slim, Mini etc.)
 require '../vendor/autoload.php';
 
+$mode = 'development';
+if(isset($_SERVER['MODE']))
+    $mode = $_SERVER['MODE'];
+
+
 // Initialize Slim (the router/micro framework used)
 $app = new \Slim\Slim(array(
-    'mode' => $_SERVER['MODE']
+    'mode' => $mode
 ));
 
-echo $_SERVER['MODE'];
+echo $mode;
 
 // and define the engine used for the view @see http://twig.sensiolabs.org
 $app->view = new \Slim\Views\Twig();
