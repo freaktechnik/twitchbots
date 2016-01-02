@@ -6,7 +6,7 @@ Header set X-Frame-Options "DENY"
     Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
 </If>
 <Else>
-    SetEnv MODE development
+#    SetEnv MODE development
 </Else>
 
 RewriteEngine On
