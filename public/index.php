@@ -212,13 +212,14 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
 
     $app->contentType('application/xml;charset=utf8');
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
-    
+
     $url = $sitemap->addChild('url');
     $url->addChild('loc', 'https://twitchbots.info');
     $url->addChild('changefreq', 'daily');
     $lastMod = $getLastMod($model->getLastUpdate());
     $url->addChild('lastmod', $lastMod);
-    
+    $url->addChild('priority', '1.0');
+
     $pageCount = $model->getPageCount();
     if($pageCount > 1) {
         for($i = 2; $i <= $pageCount; $i++) {
@@ -226,29 +227,35 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
             $url->addChild('loc', 'https://twitchbots.info/?page='.$i);
             $url->addChild('changefreq', 'daily');
             $url->addChild('lastmod', $lastMod);
+            $url->addChild('priority', '1.0');
         }
     }
-    
+
     $url = $sitemap->addChild('url');
     $url->addChild('loc', 'https://twitchbots.info/submit');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod());
-    
+
     $url = $sitemap->addChild('url');
     $url->addChild('loc', 'https://twitchbots.info/check');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod());
-    
+
     $url = $sitemap->addChild('url');
     $url->addChild('loc', 'https://twitchbots.info/api');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod());
-    
+
     $url = $sitemap->addChild('url');
     $url->addChild('loc', 'https://twitchbots.info/about');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod());
-    
+
+    $url = $sitemap->addChild('url');
+    $url->addChild('loc', 'https://twitchbots.info/submissions');
+    $url->addChild('changefreq', 'daily');
+    $url->addChild('priority', '0.2');
+
     echo $sitemap->asXML();
 });
 
