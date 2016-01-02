@@ -17,7 +17,7 @@
 
 <div class="table-responsive">
     <table class="table table-striped">
-        <caption>Note that "Multi-channel" doesn't mean the bot is in multiple Twitch channel chats, only that it could be in multiple chats at once.</caption>
+        <caption>"Multi-channel" doesn't mean the bot is in multiple Twitch channel chats, only that it could be in multiple chats at once.</caption>
         <thead>
             <tr>
                 <th>Username</th>
@@ -76,7 +76,7 @@
             {% endif %}
 
             <li class="active">
-                <a href="?page={{ page }}">{{ page }}<span class="sr-only">(current)</span></a>
+                <a href="?page={{ page }}" {% if page == 1 %} rel="start"{% endif %}>{{ page }}<span class="sr-only">(current)</span></a>
             </li>
 
             {% if page < pageCount %}
