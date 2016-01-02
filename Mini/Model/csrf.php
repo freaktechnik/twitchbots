@@ -20,10 +20,7 @@
     }
 
     function generate_token($form_name) {
-        if(function_exists("random_bytes"))
-            $token = hash("sha512", random_bytes(512));
-        else
-            $token = hash("sha512", mt_rand(0, mt_getrandmax()));
+        $token = hash("sha512", random_bytes(512));
         store_in_session($form_name, $token);
         return $token;
     }
