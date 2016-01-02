@@ -2,11 +2,10 @@ Header set X-Content-Type-Options "nosniff"
 Header set X-XSS-Protection "1; mode=block"
 Header set X-Frame-Options "DENY"
 
+SetEnvIf HTTP_HOST ^(www\.)?twitchbots.info$ MODE production
+Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload" env=MODE
+
 RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA]
-<If "%{HTTP_HOST} =~ /^(www\.)?twitchbots.info$/">
-    SetEnv MODE production
-    Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload"
-</If>
