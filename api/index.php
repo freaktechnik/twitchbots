@@ -64,7 +64,26 @@ $model = new \Mini\Model\Model($app->config('model'));
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
-$app->group('/v1', function ()  use ($app, $model) {
+// This API only returns JSON
+$app->contentType('application/json;charset=utf8');
+$app->response->headers->set('Access-Control-Allow-Origin', '*');
+
+$returnError = function($code, $msg) {
+    return json_encode(array(
+        'error' => $msg,
+        'code' => $code
+    ));
+};
+
+$app->notFound(function () use ($returnError) {
+    echo $returnError(404, 'Endpoint not found');
+});
+
+$app->error(function ()  use ($returnError) {
+    echo $returnError(500, 'Internal server error');
+});
+
+$app->group('/v1', function ()  use ($app, $model, $returnError) {
     $lastModified = 1451582891;
 
     $apiUrl = function($path = null) use ($app) {
@@ -76,10 +95,6 @@ $app->group('/v1', function ()  use ($app, $model) {
     $fullUrlFor = function($name, $params) use ($app) {
         return $app->request->getUrl().$app->urlFor($name, $params);
     };
-
-    // This API only returns JSON
-    $app->contentType('application/json;charset=utf8');
-    $app->response->headers->set('Access-Control-Allow-Origin', '*');
 
     $app->get('/', function () use ($app, $apiUrl, $lastModified) {
         $app->lastModified($lastModified);
@@ -96,7 +111,7 @@ $app->group('/v1', function ()  use ($app, $model) {
         echo json_encode($index);
     });
 
-    $app->group('/bot', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
+    $app->group('/bot', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified, $returnError) {
         $mapBot = function ($bot) use ($fullUrlFor) {
             $bot->username = $bot->name;
             $bot->_links = array(
@@ -108,13 +123,13 @@ $app->group('/v1', function ()  use ($app, $model) {
             return $bot;
         };
 
-        $checkPagination = function () use ($app) {
+        $checkPagination = function () use ($app, $returnError) {
             if(isset($_GET['limit']) &&
                (!is_numeric($_GET['limit']) || (int)$_GET['limit'] <= 0))
-                $app->halt(400, '{ "error": "Invalid limit specified", "code": 400 }');
+                $app->halt(400, $returnError(400, 'Invalid limit specified'));
             if(isset($_GET['offset'])  &&
                (!is_numeric($_GET['offset']) || (int)$_GET['offset'] < 0))
-                $app->halt(400, '{ "error": "Invalid offset specified", "code": 400 }');
+                $app->halt(400, $returnError(400, 'Invalid offset specified'));
         };
 
         $app->get('/', $checkPagination, function () use ($app, $model, $apiUrl, $mapBot) {
@@ -142,9 +157,9 @@ $app->group('/v1', function ()  use ($app, $model) {
 
             echo json_encode($json);
         });
-        $app->get('/all', $checkPagination, function () use ($app, $model, $mapBot, $apiUrl, $fullUrlFor, $lastModified) {
+        $app->get('/all', $checkPagination, function () use ($app, $model, $mapBot, $apiUrl, $fullUrlFor, $lastModified, $returnError) {
             if(isset($_GET['type']) && !is_numeric($_GET['type']))
-                $app->halt(400, '{ "error": "Invalid type speified", "code": 400 }');
+                $app->halt(400, $returnError(400, 'Invalid type speified'));
 
             $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
             $maxLimit = $app->config('model')['page_size'];
@@ -190,7 +205,7 @@ $app->group('/v1', function ()  use ($app, $model) {
             $bot = $model->getBot($name);
 
             if(!$bot) {
-                $app->halt(404, '{ "error": "User not a bot", "code": 404 }');
+                $app->notFound();
             }
 
             $app->lastModified(max(array($lastModified, strtotime($bot->date))));
@@ -226,7 +241,7 @@ $app->group('/v1', function ()  use ($app, $model) {
         $app->get('/:id', function ($id) use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
             $type = $model->getType($id);
             if(!$type) {
-                $app->halt(404, '{ "error": "Type not found", "code": 404 }');
+                $app->notFound();
             }
 
             $app->lastModified(max(array($lastModified, strtotime($type->date))));
