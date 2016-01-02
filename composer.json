@@ -10,7 +10,8 @@
         "matthiasmullie/minify": "~1.3",
         "components/bootstrap-default": "^3.3",
         "robloach/component-installer": "^0.2.3",
-        "ritero/twitch-sdk": "^1.0"
+        "ritero/twitch-sdk": "^1.0",
+        "symfony/console": "^3.0"
     },
     "autoload": {
         "psr-4": {
