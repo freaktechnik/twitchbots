@@ -117,7 +117,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             $bot->_links = array(
                 'self' => $fullUrlFor('bot', array('name' => $bot->name))
             );
-            if(!empty($bot->type))
+            if(isset($bot->type))
                 $bot->_links['type'] = $fullUrlFor('type', array('id' => $bot->type));
 
             unset($bot->name);
@@ -218,7 +218,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             $bot->_links = array(
                 'self' => $apiUrl()
             );
-            if(!empty($bot->type))
+            if(isset($bot->type))
                 $bot->_links['type'] = $fullUrlFor('type', array('id' => $bot->type));
             unset($bot->name);
 
