@@ -115,9 +115,11 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
         $mapBot = function ($bot) use ($fullUrlFor) {
             $bot->username = $bot->name;
             $bot->_links = array(
-                'self' => $fullUrlFor('bot', array('name' => $bot->name)),
-                'type' => $fullUrlFor('type', array('id' => $bot->type))
+                'self' => $fullUrlFor('bot', array('name' => $bot->name))
             );
+            if($bot->type != null)
+                $bot->_links['type'] = $fullUrlFor('type', array('id' => $bot->type));
+
             unset($bot->name);
             unset($bot->date);
             return $bot;
@@ -214,9 +216,10 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
 
             $bot->username = $bot->name;
             $bot->_links = array(
-                'self' => $apiUrl(),
-                'type' => $fullUrlFor('type', array('id' => $bot->type))
+                'self' => $apiUrl()
             );
+            if($bot->type != null)
+                $bot->_links['type'] = $fullUrlFor('type', array('id' => $bot->type));
             unset($bot->name);
 
             echo json_encode($bot);
