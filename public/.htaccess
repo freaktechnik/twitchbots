@@ -2,6 +2,7 @@ Header set X-Content-Type-Options "nosniff"
 Header set X-XSS-Protection "1; mode=block"
 Header set X-Frame-Options "DENY"
 
+UnsetEnv MODE
 SetEnvIf HTTP_HOST ^(www\.)?twitchbots\.info$ MODE production
 Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload" "expr=%{MODE} == 'production'"
 
