@@ -1,7 +1,8 @@
+#!/usr/bin/env php
 <?php
 
 // Load all the things
-require '../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 include_once __DIR__.'/../lib/config.php';
 
 use Symfony\Component\Console\Application;
