@@ -27,7 +27,7 @@
                 <td><a href="{{ bot.url|e('html_attr') }}" rel="external nofollow">{{ bot.typename|e }}</a></td>
                 {% else %}
                 <td>?</td>
-                <td><a href="{{ urlFor('submit')|e('html_attr') }}?correction&username={{ bot.name|e('url')|e('html_attr') }}">Unknown (click to correct)</a></td>
+                <td><a href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Unknown (click to correct)</a></td>
                 {% endif %}
             </tr>
         {% endfor %}
