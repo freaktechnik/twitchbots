@@ -58,7 +58,7 @@ $app->configureMode('production', function () use ($app) {
             'page_size' => 50
         ),
         'csp' => "default-src 'none'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block; base-uri twitchbots.info www.twitchbots.info; referrer no-referrer-when-downgrade",
-        'apiUrl' => $app->request->getScheme().'://api.'.$app->request->getHostWithPort()
+        'apiUrl' => $app->request->getScheme().'://api.'.$app->request->getHost()
     ));
 
     $app->view->parserOptions = array(
