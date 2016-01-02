@@ -19,6 +19,10 @@ To install all the dependencies get [Composer](https://getcomposer.org/download)
 and then run `composer install` or `php composer.phar install`, depending on how
 you installed it. This will then download all the deps and set them up.
 
+It is recommended to set up a cronjob that runs `php Mini/console.php check`
+every so often. The job removes any bots whose account has since been deleted on
+twitch.
+
 ### Run tests
 After installing Composer you can run the unit tests:
 ```bash
