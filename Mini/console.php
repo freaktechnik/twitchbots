@@ -27,7 +27,7 @@ $console
         new InputArgument('amount', InputArgument::OPTIONAL, 'Number of bots to check', 10)
     ))
     ->setDescription('Check a set of stored bots if they are still registered on twitch.')
-    ->setCode(function($input, $output) {
+    ->setCode(function ($input, $output) use ($model) {
         $amount = $input->getArgument('amount');
         $bots = $model->checkBots($amount);
 
