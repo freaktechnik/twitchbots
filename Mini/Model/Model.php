@@ -31,7 +31,7 @@ class Model
      * When creating the model, the configs for database connection creation are needed
      * @param $config
      */
-    function __construct($config)
+    function __construct(array $config)
     {
         // PDO db connection statement preparation
         $dsn = 'mysql:host=' . $config['db_host'] . ';dbname=' . $config['db_name'] . ';port=' . $config['db_port'];
@@ -57,7 +57,7 @@ class Model
      * @param string $formname
      * @return string
      */
-	public function getToken($formname)
+	public function getToken(string $formname)
 	{
 	    return generate_token($formname);
     }
@@ -67,7 +67,7 @@ class Model
      * @param string $token
      * @return boolean
      */
-    public function checkToken($formname, $token)
+    public function checkToken(string $formname, string $token)
     {
         return validate_token($formname, $token);
     }
@@ -77,7 +77,7 @@ class Model
      * @param int $type
      * @param string $description = ""
      */
-    public function addSubmission($username, $type, $description = "")
+    public function addSubmission(string $username, int $type, $description = "")
     {
         if($type == 0)
             $type = $description;
@@ -144,12 +144,12 @@ class Model
      * @param int $page
      * @return int
      */
-    public function getOffset($page)
+    public function getOffset(int $page)
     {
         return ($page - 1) * $this->pageSize;
     }
 
-    private function doPagination($query, $offset = 0, $limit = null, $start = ":start", $stop = ":stop")
+    private function doPagination(PDOStatement $query, $offset = 0, $limit = null, $start = ":start", $stop = ":stop")
     {
         $limit = $limit !== null ? $limit : $this->pageSize;
         $query->bindValue($start, $offset, PDO::PARAM_INT);
@@ -185,7 +185,7 @@ class Model
         }
     }
 
-    public function getBotsByNames($names, $offset = 0, $limit = null)
+    public function getBotsByNames(array $names, $offset = 0, $limit = null)
     {
         $limit = $limit !== null ? $limit : $this->pageSize;
         $namesCount = count($names);
@@ -205,7 +205,7 @@ class Model
         }
     }
 
-    public function getBotsByType($type, $offset = 0, $limit = null)
+    public function getBotsByType(int $type, $offset = 0, $limit = null)
     {
         $limit = $limit !== null ? $limit : $this->pageSize;
         //TODO should these bounds checks be in the controller?
@@ -222,7 +222,7 @@ class Model
         }
     }
 
-    public function getBot($name)
+    public function getBot(string $name)
     {
         $sql = "SELECT * FROM bots WHERE name=?";
         $query = $this->db->prepare($sql);
@@ -231,7 +231,7 @@ class Model
         return $query->fetch();
     }
 
-    public function getType($id)
+    public function getType(int $id)
     {
         $sql = "SELECT * FROM types WHERE id=?";
         $query = $this->db->prepare($sql);
@@ -250,7 +250,7 @@ class Model
         return $query->fetchAll();
     }
 
-    public function botSubmitted($username)
+    public function botSubmitted(string $username)
     {
         $sql = "SELECT * FROM submissions WHERE name=? AND type=0";
         $query = $this->db->prepare($sql);
@@ -267,14 +267,14 @@ class Model
         return true;
     }
 
-    public function removeBot($username)
+    public function removeBot(string $username)
     {
         $sql = "DELETE FROM bots WHERE name=?";
         $query = $this->db->prepare($sql);
         $query->execute(array($username));
     }
 
-    public function removeBots($usernames)
+    public function removeBots(string $usernames)
     {
         $sql = 'DELETE FROM bots WHERE name IN ('.implode(',', array_fill(1, count($usernames), '?')).')';
         $query = $this->db->prepare($sql);
@@ -304,7 +304,7 @@ class Model
         $query->execute(array(0));
     }
 
-    public function getLastCheckOffset($step)
+    public function getLastCheckOffset(int $step)
     {
         $sql = "SELECT value FROM config WHERE name='update_offset'";
         $query = $this->db->prepare($sql);
@@ -321,7 +321,7 @@ class Model
         return $lastOffset;
     }
 
-    public function addCorrection($username, $type, $description = "")
+    public function addCorrection(string $username, int $type, $description = "")
     {
         if($type == 0)
             $type = $description;
@@ -331,7 +331,7 @@ class Model
         $query->execute(array($username, $type));
     }
 
-    public function twitchUserExists($name) {
+    public function twitchUserExists(string $name) {
         $channel = $this->twitch->channelGet($name);
         return $this->twitch->http_code != 404;
     }
