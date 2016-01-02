@@ -205,6 +205,53 @@ $app->group('/lib', function ()  use ($app, $model) {
     });
 });
 
+$app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
+    $getLastMod = function($timestamp = 0) use ($lastUpdate) {
+        return date('c', max(array($lastUpdate, $timestamp)));
+    };
+
+    $app->contentType('application/xml;charset=utf8');
+    $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+    
+    $url = $sitemap->addChild('url');
+    $url->addChild('loc', 'https://twitchbots.info');
+    $url->addChild('changefreq', 'daily');
+    $lastMod = $getLastMod($model->getLastUpdate());
+    $url->addChild('lastmod', $lastMod);
+    
+    $pageCount = $model->getPageCount();
+    if($pageCount > 1) {
+        for($i = 2; $i <= $pageCount; $i++) {
+            $url = $sitemap->addChild('url');
+            $url->addChild('loc', 'https://twitchbots.info/?page='.$i);
+            $url->addChild('changefreq', 'daily');
+            $url->addChild('lastmod', $lastMod);
+        }
+    }
+    
+    $url = $sitemap->addChild('url');
+    $url->addChild('loc', 'https://twitchbots.info/submit');
+    $url->addChild('changefreq', 'weekly');
+    $url->addChild('lastmod', $getLastMod());
+    
+    $url = $sitemap->addChild('url');
+    $url->addChild('loc', 'https://twitchbots.info/check');
+    $url->addChild('changefreq', 'weekly');
+    $url->addChild('lastmod', $getLastMod());
+    
+    $url = $sitemap->addChild('url');
+    $url->addChild('loc', 'https://twitchbots.info/api');
+    $url->addChild('changefreq', 'weekly');
+    $url->addChild('lastmod', $getLastMod());
+    
+    $url = $sitemap->addChild('url');
+    $url->addChild('loc', 'https://twitchbots.info/about');
+    $url->addChild('changefreq', 'weekly');
+    $url->addChild('lastmod', $getLastMod());
+    
+    echo $sitemap->asXML();
+});
+
 /******************************************* RUN THE APP *******************************************************/
 
 $app->run();
