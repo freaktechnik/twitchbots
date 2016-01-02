@@ -275,7 +275,7 @@ class Model
         $query->execute(array($username));
     }
 
-    public function removeBots(string $usernames)
+    public function removeBots(array $usernames)
     {
         $sql = 'DELETE FROM bots WHERE name IN ('.implode(',', array_fill(1, count($usernames), '?')).')';
         $query = $this->db->prepare($sql);
