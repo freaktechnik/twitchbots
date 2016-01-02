@@ -68,7 +68,7 @@ $model = new \Mini\Model\Model($app->config('model'));
 $app->contentType('application/json;charset=utf8');
 $app->response->headers->set('Access-Control-Allow-Origin', '*');
 
-$returnError = function($code, $msg) {
+$returnError = function(int $code, string $msg) {
     return json_encode(array(
         'error' => $msg,
         'code' => $code
@@ -92,7 +92,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
         return $app->request->getUrl().$app->request->getRootUri().$path;
     };
 
-    $fullUrlFor = function($name, $params) use ($app) {
+    $fullUrlFor = function(string $name, array $params) use ($app) {
         return $app->request->getUrl().$app->urlFor($name, $params);
     };
 
