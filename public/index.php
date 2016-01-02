@@ -8,8 +8,6 @@ require '../vendor/autoload.php';
 $mode = 'development';
 if(isset($_SERVER['MODE']))
     $mode = $_SERVER['MODE'];
-    
-echo $_SERVER['MODE']." ".$mode;
 
 // Initialize Slim (the router/micro framework used)
 $app = new \Slim\Slim(array(
