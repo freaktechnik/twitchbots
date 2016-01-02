@@ -41,7 +41,7 @@ $app->configureMode('production', function () use ($app) {
     // Set the configs for production environment
     include_once __DIR__.'/../lib/config.php';
 
-    preg_match("/api\.(.*)/", $app->request->getHostWithPort(), $m);
+    preg_match("/api\.(.*)/", $app->request->getHost(), $m);
 
     $app->config(array(
         'debug' => false,
@@ -63,8 +63,6 @@ $app->configureMode('production', function () use ($app) {
 $model = new \Mini\Model\Model($app->config('model'));
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
-
-//TODO ensure max limit
 
 $app->group('/v1', function ()  use ($app, $model) {
     $lastModified = 1451582891;
