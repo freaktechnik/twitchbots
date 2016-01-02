@@ -10,6 +10,8 @@ $app = new \Slim\Slim(array(
     'mode' => $_SERVER['MODE']
 ));
 
+echo $_SERVER['MODE'];
+
 // and define the engine used for the view @see http://twig.sensiolabs.org
 $app->view = new \Slim\Views\Twig();
 $app->view->setTemplatesDirectory("../Mini/view");
