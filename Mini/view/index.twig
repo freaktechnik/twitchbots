@@ -22,10 +22,11 @@
         {% for bot in bots %}
             <tr>
                 <td><a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" rel="external">{{ bot.name|e }}</a></td>
+                {% if bot.typename is not empty %}
                 <td>{% if bot.multichannel %}Yes{% else %}No{% endif %}</td>
-                {% if bot.type is not null %}
                 <td><a href="{{ bot.url|e('html_attr') }}" rel="external nofollow">{{ bot.typename|e }}</a></td>
                 {% else %}
+                <td>?</td>
                 <td><a href="{{ urlFor('submit')|e('html_attr') }}?correction&username={{ bot.name|e('url')|e('html_attr') }}">Unknown (click to correct)</a></td>
                 {% endif %}
             </tr>
