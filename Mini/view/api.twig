@@ -12,6 +12,18 @@
     The API pagination has switched from using page numbering to offset & limit. All the meta links have been moved into one property, too.
 </div>
 <section>
+    <h2>Libraries</h2>
+    <p>For back-end JS developers there are a few pre-built packages on NPM to use this API with:</p>
+    <dl>
+        <dt><a href="https://www.npmjs.com/package/twitchbots-base">twitchbots-base</a></dt>
+        <dd>A very basic API implementation with caching.</dd>
+        <dt><a href="https://www.npmjs.com/package/jetpack-twitchbots">jetpack-twitchbots</a></dt>
+        <dd>Module for the Firefox Add-on SDK.</dd>
+        <dt><a href="https://www.npmjs.com/package/twitchbots-node">twitchbots-node</a></dt>
+        <dd>Ready sto use API consumer for node projects.</dd>
+    </dl>
+</section>
+<section>
     <h2>Errors</h2>
     <p>The API returns error codes whenever appropriate, like for example invalid parameters. If there are special cases where errors get thrown that's documented in the "Response" section of an endpoint. Some errors will return JSON specifying what went wrong in the following form:</p>
     <pre>{ "error": "Invalid offset specified", "code": 400 }</pre>
