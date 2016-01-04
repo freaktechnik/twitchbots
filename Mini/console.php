@@ -29,13 +29,13 @@ $console
     ->setDescription('Check a set of stored bots if they are still registered on twitch.')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model) {
         if($model->checkRunning()) {
-            $output->writeln("Check aready running. No action taken");
+            $output->writeln('Check aready running. No action taken.');
         }
         else {
             $amount = (int)$input->getArgument('amount');
             $bots = $model->checkBots($amount);
 
-            $output->writeln("Checked ".$amount." bots. Removed ".count($bots));
+            $output->writeln('Checked '.$amount.' bots. Removed '.count($bots));
         }
     });
 

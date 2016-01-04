@@ -53,6 +53,21 @@ class Model
             $this->twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
         }
 	}
+	
+	private function getConfig(string $key)
+	{
+	    $sql = "SELECT value FROM config where name=?";
+	    $query = $this->db->prepare($sql);
+	    $query->execute(array($key));
+	    return $query->fetch()->value;
+	}
+	
+	private function setConfig(string $key, string $value)
+	{
+	    $sql = "UPDATE config SET value=? WHERE name=?";
+	    $query = $this->db->prepare($sql);
+	    $query->execute(array($value, $key));
+	}
 
     /**
      * @param string $formname
@@ -284,40 +299,25 @@ class Model
 
     public function checkRunning()
     {
-        $sql = "SELECT value FROM config WHERE name='lock'";
-        $query = $this->db->prepare($sql);
-        $query->execute();
-
-        if((int)$query->fetch()->value == 1)
+        if((int)$this->getConfig('lock') == 1)
             return true;
 
-        $sql = "UPDATE config SET value=? WHERE name='lock'";
-        $query = $this->db->prepare($sql);
-        $query->execute(array(1));
-
+        $this->setConfig('lock', '1');
         return false;
     }
 
     public function checkDone()
     {
-        $sql = "UPDATE config SET value=? WHERE name='lock'";
-        $query = $this->db->prepare($sql);
-        $query->execute(array(0));
+        $this->setConfig('lock', '0');
     }
 
     public function getLastCheckOffset(int $step)
     {
-        $sql = "SELECT value FROM config WHERE name='update_offset'";
-        $query = $this->db->prepare($sql);
-        $query->execute();
-
-        $lastOffset = (int)$query->fetch()->value;
+        $lastOffset = (int)$this->getConfig('update_offset');
 
         $newOffset = ($lastOffset + $step) % $this->getBotCount();
 
-        $sql = "UPDATE config SET value=? WHERE name='update_offset'";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($newOffset));
+        $this->setConfig('update_offset', $newOffset);
 
         return $lastOffset;
     }
