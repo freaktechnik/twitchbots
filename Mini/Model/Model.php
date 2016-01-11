@@ -83,7 +83,7 @@ class Model
      * @param string $token
      * @return boolean
      */
-    public function checkToken(string $formname, string $token): string
+    public function checkToken(string $formname, string $token): bool
     {
         return validate_token($formname, $token);
     }

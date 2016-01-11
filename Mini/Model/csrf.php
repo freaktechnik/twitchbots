@@ -25,7 +25,7 @@
         return $token;
     }
 
-    function validate_token(string $form_name, string $token_value): string {
+    function validate_token(string $form_name, string $token_value): bool {
         $token = get_from_session($form_name);
         unset_session($form_name);
         return $token === $token_value;
