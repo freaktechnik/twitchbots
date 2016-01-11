@@ -9,7 +9,7 @@ class MockTwitch
     public function __construct() {
     }
 
-    public function channelGet($username) {
+    public function channelGet(string $username) {
         if($username == "zeldbot")
             $this->http_code = 404;
         else if($username == "xanbot")

@@ -5,9 +5,7 @@
 // Load Composer's PSR-4 autoloader (necessary to load Slim, Mini etc.)
 require '../vendor/autoload.php';
 
-$mode = 'development';
-if(isset($_SERVER['MODE']))
-    $mode = $_SERVER['MODE'];
+$mode = $_SERVER['MODE'] ?? 'development';
 
 // Initialize Slim (the router/micro framework used)
 $app = new \Slim\Slim(array(
@@ -135,7 +133,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
         };
 
         $app->get('/', $checkPagination, function () use ($app, $model, $apiUrl, $mapBot) {
-            $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+            $offset = (int)($_GET['offset'] ?? 0);
             $maxLimit = $app->config('model')['page_size'];
             $limit = isset($_GET['limit']) ? min((int)$_GET['limit'], $maxLimit) : $maxLimit;
             $names = explode(',', $_GET['bots']);
@@ -163,7 +161,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             if(isset($_GET['type']) && !is_numeric($_GET['type']))
                 $app->halt(400, $returnError(400, 'Invalid type speified'));
 
-            $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+            $offset = (int)($_GET['offset'] ?? 0);
             $maxLimit = $app->config('model')['page_size'];
             $limit = isset($_GET['limit']) ? min((int)$_GET['limit'], $maxLimit) : $maxLimit;
             if(isset($_GET['type'])) {

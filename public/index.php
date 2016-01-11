@@ -5,9 +5,7 @@
 // Load Composer's PSR-4 autoloader (necessary to load Slim, Mini etc.)
 require '../vendor/autoload.php';
 
-$mode = 'development';
-if(isset($_SERVER['MODE']))
-    $mode = $_SERVER['MODE'];
+$mode = $_SERVER['MODE'] ?? 'development';
 
 // Initialize Slim (the router/micro framework used)
 $app = new \Slim\Slim(array(
@@ -90,9 +88,9 @@ $app->get('/', function () use ($app, $model, $lastUpdate) {
     $app->expires('+1 day');
 
     $pageCount = $model->getPageCount();
-    $page = 1;
-    if(isset($_GET['page']) && is_numeric($_GET['page']))
-        $page = $_GET['page'];
+    $page = $_GET['page'] ?? 1;
+    if(!is_numeric($page))
+        $page = 1;
 
     if($page <= $pageCount && $page > 0)
         $bots = $model->getBots($page);

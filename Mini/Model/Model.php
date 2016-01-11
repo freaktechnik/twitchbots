@@ -53,15 +53,15 @@ class Model
             $this->twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
         }
 	}
-	
-	private function getConfig(string $key)
+
+	private function getConfig(string $key): string
 	{
 	    $sql = "SELECT value FROM config where name=?";
 	    $query = $this->db->prepare($sql);
 	    $query->execute(array($key));
 	    return $query->fetch()->value;
 	}
-	
+
 	private function setConfig(string $key, string $value)
 	{
 	    $sql = "UPDATE config SET value=? WHERE name=?";
@@ -73,7 +73,7 @@ class Model
      * @param string $formname
      * @return string
      */
-	public function getToken(string $formname)
+	public function getToken(string $formname): string
 	{
 	    return generate_token($formname);
     }
@@ -83,7 +83,7 @@ class Model
      * @param string $token
      * @return boolean
      */
-    public function checkToken(string $formname, string $token)
+    public function checkToken(string $formname, string $token): string
     {
         return validate_token($formname, $token);
     }
@@ -103,7 +103,7 @@ class Model
         $query->execute(array($username, $type));
     }
 
-    public function getSubmissions()
+    public function getSubmissions(): array
     {
         $sql = "SELECT name, description, date FROM submissions ORDER BY date DESC";
         $query = $this->db->prepare($sql);
@@ -115,7 +115,7 @@ class Model
     /**
      * @return int
      */
-    public function getLastUpdate($table = "bots", $type = 0)
+    public function getLastUpdate($table = "bots", $type = 0): int
     {
         $sql = "SELECT date FROM ".$table." ORDER BY date DESC LIMIT 1";
         if($type != 0)
@@ -131,7 +131,7 @@ class Model
      * @param int $type
      * @return int
      */
-    public function getBotCount($type = 0)
+    public function getBotCount($type = 0): int
     {
         $sql = "SELECT count FROM count";
         if($type != 0)
@@ -147,7 +147,8 @@ class Model
      * @param int $count
      * @return int
      */
-    public function getPageCount($limit = null, $count = null) {
+    public function getPageCount($limit = null, $count = null): int
+    {
         $limit = $limit !== null ? $limit : $this->pageSize;
         $count = $count !== null ? $count : $this->getBotCount();
         if($limit > 0)
@@ -160,7 +161,7 @@ class Model
      * @param int $page
      * @return int
      */
-    public function getOffset(int $page)
+    public function getOffset(int $page): int
     {
         return ($page - 1) * $this->pageSize;
     }
@@ -172,7 +173,7 @@ class Model
         $query->bindValue($stop, $limit, PDO::PARAM_INT);
     }
 
-    public function getBots($page = 1)
+    public function getBots($page = 1): array
     {
         if($page <= $this->getPageCount($this->pageSize)) {
             $sql = "SELECT * FROM list LIMIT :start,:stop";
@@ -186,7 +187,7 @@ class Model
         }
     }
 
-    public function getAllRawBots($offset = 0, $limit = null)
+    public function getAllRawBots($offset = 0, $limit = null): array
     {
         $limit = $limit !== null ? $limit : $this->pageSize;
         if($limit > 0 && $offset < $this->getBotCount()) {
@@ -201,7 +202,7 @@ class Model
         }
     }
 
-    public function getBotsByNames(array $names, $offset = 0, $limit = null)
+    public function getBotsByNames(array $names, $offset = 0, $limit = null): array
     {
         $limit = $limit !== null ? $limit : $this->pageSize;
         $namesCount = count($names);
@@ -221,7 +222,7 @@ class Model
         }
     }
 
-    public function getBotsByType(int $type, $offset = 0, $limit = null)
+    public function getBotsByType(int $type, $offset = 0, $limit = null): array
     {
         $limit = $limit !== null ? $limit : $this->pageSize;
         //TODO should these bounds checks be in the controller?
@@ -257,7 +258,7 @@ class Model
         return $query->fetch();
     }
 
-    public function getAllTypes()
+    public function getAllTypes(): array
     {
         $sql = "SELECT * FROM types ORDER BY name ASC";
         $query = $this->db->prepare($sql);
@@ -266,7 +267,7 @@ class Model
         return $query->fetchAll();
     }
 
-    public function botSubmitted(string $username)
+    public function botSubmitted(string $username): bool
     {
         $sql = "SELECT * FROM submissions WHERE name=? AND type=0";
         $query = $this->db->prepare($sql);
@@ -297,7 +298,7 @@ class Model
         $query->execute($usernames);
     }
 
-    public function checkRunning()
+    public function checkRunning(): bool
     {
         if((int)$this->getConfig('lock') == 1)
             return true;
@@ -311,7 +312,7 @@ class Model
         $this->setConfig('lock', '0');
     }
 
-    public function getLastCheckOffset(int $step)
+    public function getLastCheckOffset(int $step): int
     {
         $lastOffset = (int)$this->getConfig('update_offset');
 
@@ -332,12 +333,14 @@ class Model
         $query->execute(array($username, $type));
     }
 
-    public function twitchUserExists(string $name) {
+    public function twitchUserExists(string $name): bool
+    {
         $channel = $this->twitch->channelGet($name);
         return $this->twitch->http_code != 404;
     }
 
-    public function checkBots($step = 10) {
+    public function checkBots($step = 10): array
+    {
         $offset = $this->getLastCheckOffset($step);
         $bots = $this->getAllRawBots($offset, $step);
 
