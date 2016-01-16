@@ -7,7 +7,7 @@
 <h1>Submission Queue</h1>
 <dl class="dl-horizontal">
 {% for s in submissions %}
-    <dt><a href="http://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external">{{ s.name|e }}</a></dt>
+    <dt><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external">{{ s.name|e }}</a></dt>
     <dd>{{ s.description|e }}</dd>
 {% endfor %}
 </dl>
