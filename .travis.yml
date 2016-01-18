@@ -3,9 +3,6 @@ php:
  - '7.0'
 services:
   - mysql
-global:
-  env:
-    - "DEPLOY_USER=humanoid"
 install:
   - composer install
   - mysql -e "CREATE DATABASE twitchbots"
@@ -18,4 +15,4 @@ after_success:
  - openssl aes-256-cbc -K $encrypted_a666911b0f49_key -iv $encrypted_a666911b0f49_iv -in .travis/id_rsa.enc -out .travis/id_rsa -d
  - chmod 600 .travis/id_rsa
  - ssh-add .travis/id_rsa
- - ssh $DEPLOY_USER@humanoids.be 'cd dev/twitchbots && git pull'
+ - ssh humanoid@humanoids.be 'cd dev/twitchbots && git pull'
