@@ -125,7 +125,7 @@ $app->map('/check', function () use ($app, $model, $lastUpdate) {
     $app->expires('+1 week');
 
     $bot = null;
-    if(isset($app->request->params('username'))) {
+    if(null !== $app->request->params('username')) {
         $bot = $model->getBot($app->request->params('username'));
         if($bot && $bot->type) {
             $type = $model->getType($bot->type);
