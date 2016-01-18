@@ -1,17 +1,19 @@
 {% macro bot(bot) %}
 <section class="panel panel-default">
+    <div class="panel-heading">
+        <h2 class="panel-title">{{ bot.name|e }}</h2>
+    </div>
     <div class="panel-body">
-        <h2>{{ bot.name|e }}</h2>
-        <a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" title="{{ bot.name|e('html_attr') }} on Twitch">twitch.tv/{{ bot.name|e }}</a>
+        <a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" title="{{ bot.name|e('html_attr') }} on Twitch">twitch.tv/{{ bot.name|e }}</a><br>
         {% if bot.typename is not empty %}
-        <dl>
+        <dl class="dl-horizontal">
             <dt>Bot type</dt>
             <dd><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a></dd>
             <dt>Multi channel capable</dt>
             <dd>{% if bot.multichannel %}Yes{% else %}No{% endif %}</dd>
         </dl>
         {% else %}
-        <dl>
+        <dl class="dl-horizontal">
             <dt>Bot type</dt>
             <dd>Unknown</dd>
             <dt>Mutli channel capable</dt>
