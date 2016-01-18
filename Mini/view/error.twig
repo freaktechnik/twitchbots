@@ -1,8 +1,8 @@
 {% extends "_base.twig" %}
 {% block title %}Error {{code}}: {{name}}{% endblock %}
 {% block content %}
-<div>
+<div class="page-header">
     <h1>Error: {{code}} {{name}}</h1>
-    <p class="lead">{{message}}</p>
 </div>
+<p class="lead">{{message}}</p>
 {% endblock %}

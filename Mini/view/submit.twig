@@ -5,41 +5,42 @@
 <link rel="canonical" href="https://twitchbots.info/submit">
 {% endblock %}
 {% block content %}
-<div>
+<div class="page-header">
     <h1>Submit a new bot</h1>
-    <p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell us about it with the form below and we'll review the information. If we've got wrong date, please switch to "Correction and report what's right. If you have a bigger dataset to submit, please contact us directly.</p>
+</div>
+<p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell us about it with the form below and we'll review the information. If we've got wrong date, please switch to "Correction and report what's right. If you have a bigger dataset to submit, please contact us directly.</p>
 </div>
 {% if success %}
-    <div class="alert alert-success" role="alert">
-        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-        <span class="sr-only">Success:</span>
-        Your {% if correction %}correction{% else %}submission{% endif %} has been saved. We will review it as soon as possible.
-    </div>
+<div class="alert alert-success" role="alert">
+    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+    <span class="sr-only">Success:</span>
+    Your {% if correction %}correction{% else %}submission{% endif %} has been saved. We will review it as soon as possible.
+</div>
 {% endif %}
 {% if error == 1 %}
-    <div class="alert alert-danger" role="alert">
-        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        <span class="sr-only">Error:</span>
-        Something went wrong while submitting.
-    </div>
+<div class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    Something went wrong while submitting.
+</div>
 {% elseif error == 2 %}
-    <div class="alert alert-danger" role="alert">
-        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        <span class="sr-only">Error:</span>
-        The specified bot {{ username }} isn't a registered account on Twitch.
-    </div>
+<div class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    The specified bot {{ username }} isn't a registered account on Twitch.
+</div>
 {% elseif error == 3 %}
-    <div class="alert alert-info" role="alert">
-        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-        <span class="sr-only">Info:</span>
-        The bot {{ username }} has already been submitted. Thank you for submitting it again, though!
-    </div>
+<div class="alert alert-info" role="alert">
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    <span class="sr-only">Info:</span>
+    The bot {{ username }} has already been submitted. Thank you for submitting it again, though!
+</div>
 {% elseif error == 4 %}
-    <div class="alert alert-danger" role="alert">
-        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        <span class="sr-only">Error:</span>
-        The bot {{ username }} isn't in our database.
-    </div>
+<div class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    The bot {{ username }} isn't in our database.
+</div>
 {% endif %}
 <div class="panel panel-default">
     <div class="panel-body">

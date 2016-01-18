@@ -10,9 +10,10 @@
 {% endif %}
 {% endblock %}
 {% block content %}
-<div>
+<div class="page-header">
     <h1>Find out if a Twitch user is a chat bot</h1>
-    <p class="lead">Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots listed are service or moderator bots. Please <a href="{{ urlFor('submit')|e('html_attr') }}?correction">submit a correction</a> if you spot something wrong.</p>
+</div>
+<p class="lead">Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots listed are service or moderator bots. Please <a href="{{ urlFor('submit')|e('html_attr') }}?correction">submit a correction</a> if you spot something wrong.</p>
 </div>
 
 <div class="table-responsive">

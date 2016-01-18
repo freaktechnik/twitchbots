@@ -4,7 +4,9 @@
 <link rel="canonical" href="https://twitchbots.info/about">
 {% endblock %}
 {% block content %}
-<h1>API Access</h1>
+<div class="page-header">
+    <h1>API Access</h1>
+</div>
 <p>All the API endpoints are on the base URL <code>{{apiUrl}}/v1/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service. All endpoints with a more or less static dataset send an expiration header indicating how long the data is at least expected to be valid. These will be adjusted according to real-world values. If you HTTP library does not honor the <code>Expires</code> header, please honor it manually.</p>
 <div class="alert alert-warning" role="alert">
     <span class="glyphicon glyphicon-alert aria-hidden="true"></span>

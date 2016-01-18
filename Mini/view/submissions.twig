@@ -4,7 +4,9 @@
 <link rel="canonical" href="https://twitchbots.info/submissions">
 {% endblock %}
 {%block content %}
-<h1>Submission Queue</h1>
+<div class="page-header">
+    <h1>Submission Queue</h1>
+</div>
 <dl class="dl-horizontal">
 {% for s in submissions %}
     <dt><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external">{{ s.name|e }}</a></dt>
