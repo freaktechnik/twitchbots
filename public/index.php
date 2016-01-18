@@ -139,7 +139,7 @@ $app->map('/check', function () use ($app, $model, $lastUpdate) {
         'username' => $app->request->params('username'),
         'bot' => $bot
     ));
-});
+})->via('GET', 'POST');
 $app->get('/api', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->expires('+1 week');
