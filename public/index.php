@@ -121,18 +121,27 @@ $app->get('/submit', function () use ($app, $model, $lastUpdate) {
     ));
 })->name('submit');
 $app->map('/check', function () use ($app, $model, $lastUpdate) {
-    $app->lastModified($lastUpdate);
-    $app->expires('+1 week');
-
     $bot = null;
     if(null !== $app->request->params('username')) {
         $bot = $model->getBot($app->request->params('username'));
-        if($bot && $bot->type) {
-            $type = $model->getType($bot->type);
-            $bot->typename = $type->name;
-            $bot->url = $type->url;
-            $bot->multichannel = $type->multichannel;
+        if($bot) {
+            $app->lastModified(max(array($lastModified, strtotime($bot->date))));
+            $app->expires('+1 week');
+            if($bot->type) {
+                $type = $model->getType($bot->type);
+                $bot->typename = $type->name;
+                $bot->url = $type->url;
+                $bot->multichannel = $type->multichannel;
+            }
         }
+        else {
+            $app->lastModified($lastUpdate);
+            $app->expires('+1 day');
+        }
+    }
+    else {
+        $app->lastModified($lastUpdate);
+        $app->expires('+1 week');
     }
 
     $app->render('check.twig', array(
