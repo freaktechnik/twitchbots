@@ -6,13 +6,17 @@
 {% endblock %}
 {% block content %}
 <div>
-    <h1>Check a user</h1>
+    <div class="page-header">
+        <h1>Check a user</h1>
+    </div>
     <p>Get the bot status for a specific username.</p>
-    <form class="input-group" method="POST">
-        <input type="text" class="form-control" placeholder="Username" name="username"{% if username is not empty %} value="{{ username|e }}"{% endif %}>
-        <span class="input-group-btn">
-            <button type="submit" class="btn btn-primary">Check</button>
-        </span>
+    <form method="POST">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Username" name="username"{% if username is not empty %} value="{{ username|e }}"{% endif %}>
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary">Check</button>
+            </span>
+        </div>
     </form>
     {% if username is not empty %}
         {% if bot is not empty %}
