@@ -120,10 +120,25 @@ $app->get('/submit', function () use ($app, $model, $lastUpdate) {
         'username' => $_GET['username']
     ));
 })->name('submit');
-$app->get('/check', function () use ($app, $lastUpdate) {
+$app->map('/check', function () use ($app, $model, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->expires('+1 week');
-    $app->render('check.twig');
+
+    $bot = null;
+    if(isset($app->request->params('username'))) {
+        $bot = $model->getBot($app->request->params('username'));
+        if($bot && $bot->type) {
+            $type = $model->getType($bot->type);
+            $bot->typename = $type->name;
+            $bot->url = $type->url;
+            $bot->multichannel = $type->multichannel;
+        }
+    }
+
+    $app->render('check.twig', array(
+        'username' => $app->request->params('username'),
+        'bot' => $bot
+    ));
 });
 $app->get('/api', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);

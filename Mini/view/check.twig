@@ -1,3 +1,4 @@
+{% import "_panels.twig" as panels %}
 {% extends "_base.twig" %}
 {% block title %}Check a user{% endblock %}
 {% block extraresources %}
@@ -7,21 +8,18 @@
 <div>
     <h1>Check a user</h1>
     <p>Get the bot status for a specific username.</p>
-    <form class="input-group" id="checkform">
-        <input type="text" class="form-control" placeholder="Username" id="checkuser">
+    <form class="input-group" method="POST">
+        <input type="text" class="form-control" placeholder="Username" name="username"{% if username is not empty %} value="{{ username|e"{% endif %}>
         <span class="input-group-btn">
             <button type="submit" class="btn btn-primary">Check</button>
         </span>
     </form>
-    <div class="alert" id="checkloading" hidden>
-        Loading&hellip;
-    </div>
-    <div class="alert" id="botuser" hidden>
-        <span class="name"></span> is a bot.
-    </div>
-    <div class="alert" id="realuser" hidden>
-        <span class="name"></span> is not a bot.
-    </div>
+    {% if username is not empty %}
+        {% if bot is not empty %}
+            {{ panels.bot(bot) }}
+        {% else %}
+            {{ panels.nobot(username) }}
+        {% endif %}
+    {% endif %}
 </div>
-<script src="js/check.js"></script>
 {% endblock %}

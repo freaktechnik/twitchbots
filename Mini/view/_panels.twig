@@ -1,0 +1,33 @@
+{% macro bot(bot) %}
+<section class="panel panel-default">
+    <div class="panel-body">
+        <h2>{{ bot.name|e }}</h2>
+        <a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" title="{{ bot.name|e('html_attr') }} on Twitch">twitch.tv/{{ bot.name|e }}</a>
+        {% if bot.typename is not empty %}
+        <dl>
+            <dt>Bot type</dt>
+            <dd><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a></dd>
+            <dt>Multi channel capable</dt>
+            <dd>{% if bot.multichannel %}Yes{% else %}No{% endif %}</dd>
+        </dl>
+        {% else %}
+        <dl>
+            <dt>Bot type</dt>
+            <dd>Unknown</dd>
+            <dt>Mutli channel capable</dt>
+            <dd>Unknown</dd>
+        </dl>
+        <a href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Report type</a>
+        {% endif %}
+    </div>
+</section>
+{% endmacro %}
+{% macro nobot(name) %}
+<section class="panel panel-default">
+    <div class="panel-body">
+        <h2>{{ name |e }}</h2>
+        <a href="https://twitch.tv/{{ name|e('url')|e('html_attr') }}" title="{{ name|e('html_attr') }} on Twitch">twitch.tv/{{ name|e }}</a>
+        {{ name|e }} is not known to be a bot. <a href="{{ urlFor('submit')|e('html_attr') }}?username={{ name|e('url')|e('html_attr') }}">Submit as new bot</a>.
+    </div>
+</section>
+{% endmacro %}
