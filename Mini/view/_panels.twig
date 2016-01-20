@@ -1,5 +1,5 @@
 {% macro bot(bot) %}
-<section class="panel panel-default">
+<section class="panel panel-success">
     <div class="panel-heading">
         <h2 class="panel-title">{{ bot.name|e }}</h2>
     </div>
@@ -13,10 +13,10 @@
             <dd>{% if bot.multichannel %}Yes{% else %}No{% endif %}</dd>
         </dl>
         {% else %}
-        <dl class="dl-horizontal">
-            <dt>Bot type</dt>
+        <dl class="dl-horizontal list-group">
+            <dt class="list-group-item">Bot type</dt>
             <dd>Unknown</dd>
-            <dt>Mutli channel capable</dt>
+            <dt class="list-group-item">Mutli channel capable</dt>
             <dd>Unknown</dd>
         </dl>
         <a href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Report type</a>
@@ -25,7 +25,7 @@
 </section>
 {% endmacro %}
 {% macro nobot(name) %}
-<section class="panel panel-default">
+<section class="panel panel-info">
     <div class="panel-heading">
         <h2 class="panel-title">{{ name |e }}</h2>
     </div>
