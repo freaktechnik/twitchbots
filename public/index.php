@@ -123,6 +123,11 @@ $app->get('/submit', function () use ($app, $model, $lastUpdate) {
 $app->map('/check', function () use ($app, $model, $lastUpdate) {
     $bot = null;
     if(null !== $app->request->params('username')) {
+        if($app->request->isPost()
+           && $app->request->get('username') !== null
+           && $app->request->post('username') != $app->request->get('username'))
+            $app->redirect($app->request->getUrl().$app->urlFor('check').'?username='.$app->request->post('username'), 303);
+
         $bot = $model->getBot($app->request->params('username'));
         if($bot) {
             $app->lastModified(max(array($lastModified, strtotime($bot->date))));
@@ -148,7 +153,7 @@ $app->map('/check', function () use ($app, $model, $lastUpdate) {
         'username' => $app->request->params('username'),
         'bot' => $bot
     ));
-})->via('GET', 'POST');
+})->via('GET', 'POST')->name('check');
 $app->get('/api', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->expires('+1 week');
