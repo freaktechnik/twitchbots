@@ -3,10 +3,7 @@
 {% block title %}Check a user{% endblock %}
 {% block extraresources %}
 {% spaceless %}
-    <link
-     rel="canonical"
-     href="https://twitchbots.info/check{% if username is not empty %}?username={{ username }}{% endif %}"
-    >
+<link rel="canonical" href="https://twitchbots.info/check{% if username is not empty %}?username={{ username|e('html_attr') }}{% endif %}">
 {% endspaceless %}
 {% endblock %}
 {% block content %}
