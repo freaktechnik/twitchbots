@@ -126,7 +126,7 @@ $app->map('/check', function () use ($app, $model, $lastUpdate) {
         if($app->request->isPost()
            && $app->request->get('username') !== null
            && $app->request->post('username') != $app->request->get('username'))
-            $app->redirect($app->request->getUrl().$app->urlFor('check').'?username='.$app->request->post('username'), 303);
+            $app->redirect($app->request->getUrl().$app->urlFor('check').'?username='.strtolower($app->request->post('username')), 303);
 
         $bot = $model->getBot($app->request->params('username'));
         if($bot) {
