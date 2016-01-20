@@ -2,7 +2,12 @@
 {% extends "_base.twig" %}
 {% block title %}Check a user{% endblock %}
 {% block extraresources %}
-<link rel="canonical" href="https://twitchbots.info/check">
+{% spaceless %}
+    <link
+     rel="canonical"
+     href="https://twitchbots.info/check{% if username is not empty %}?username={{ username }}{% endif %}"
+    >
+{% endspaceless %}
 {% endblock %}
 {% block content %}
 <div class="page-header">
