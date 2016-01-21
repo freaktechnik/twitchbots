@@ -4,4 +4,5 @@ openssl aes-256-cbc -K $encrypted_a666911b0f49_key -iv $encrypted_a666911b0f49_i
 chmod 600 .travis/id_rsa
 ssh-add .travis/id_rsa
 ssh-keyscan -H humanoids.be >> ~/.ssh/known_hosts
-ssh humanoid@humanoids.be 'cd www/twitchbots && git pull'
+# TODO update vendor deps
+ssh humanoid@humanoids.be 'cd www/twitchbots && git pull && rm -rf cache'
