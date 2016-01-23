@@ -16,7 +16,7 @@ after_success:
  - chmod 600 .travis/id_rsa
  - ssh-add .travis/id_rsa
  - ssh-keyscan -H humanoids.be >> ~/.ssh/known_hosts
- - ssh humanoid@humanoids.be 'cd dev/twitchbots && git pull'
+ - ssh humanoid@humanoids.be 'cd dev/twitchbots && git pull && php composer.phar install'
 deploy:
   provider: script
   script: .travis/deploy.sh
