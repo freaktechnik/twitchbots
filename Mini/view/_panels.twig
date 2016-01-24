@@ -21,7 +21,7 @@
                 <a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a>
             {% else %}
                 {{ bot.typename|default("Unknown")|e }}
-            { %endif %}</dd>
+            {% endif %}</dd>
             <dt>Multi channel capable</dt>
             <dd>{{ multichannel|default("Unknown")|e }}</dd>
         </dl>
