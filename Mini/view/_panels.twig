@@ -11,7 +11,8 @@
             <dd><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a></dd>
             <dt>Multi channel capable</dt>
             <dd>{% if bot.multichannel %}Yes{% else %}No{% endif %}</dd>
-            <a class="btn btn-default btn-sm text-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Correct</a>
+        </dl>
+        <a class="btn btn-default btn-sm text-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Correct</a>
         </dl>
         {% else %}
         <dl class="dl-horizontal">
