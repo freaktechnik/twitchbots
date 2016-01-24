@@ -71,7 +71,7 @@ $model = new \Mini\Model\Model($app->config('database'));
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
-$lastUpdate = 1451663778;
+$lastUpdate = 1453643919;
 
 $app->response->headers->set('Content-Security-Policy', $app->config('csp'));
 
