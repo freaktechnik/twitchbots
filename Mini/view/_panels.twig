@@ -1,9 +1,9 @@
 {% macro bot(bot) %}
 {% if bot.typename is not empty %}
     {% if bot.multichannel %}
-        {% set bot.multichannel = "Yes" %}
+        {% set multichannel = "Yes" %}
     {% else %}
-        {% set bot.multichannel = "No" %}
+        {% set multichannel = "No" %}
     {% endif %}
     {% set btntext = "Correct" %}
 {% else %}
@@ -19,7 +19,7 @@
             <dt>Bot type</dt>
             <dd><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|default("Unknown")|e }}</a></dd>
             <dt>Multi channel capable</dt>
-            <dd>{{ bot.multichannel|default("Unknown")|e }}</dd>
+            <dd>{{ multichannel|default("Unknown")|e }}</dd>
         </dl>
         <a class="btn btn-default btn-sm pull-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">{{ btntext }}</a>
     </div>
