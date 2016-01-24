@@ -11,6 +11,7 @@
             <dd><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a></dd>
             <dt>Multi channel capable</dt>
             <dd>{% if bot.multichannel %}Yes{% else %}No{% endif %}</dd>
+            <a class="btn btn-default btn-sm text-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Correct</a>
         </dl>
         {% else %}
         <dl class="dl-horizontal">
@@ -19,7 +20,7 @@
             <dt>Mutli channel capable</dt>
             <dd>Unknown</dd>
         </dl>
-        <a href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Report type</a>
+        <a class="btn btn-default btn-sm text-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Report type</a>
         {% endif %}
     </div>
 </section>
@@ -31,7 +32,8 @@
     </div>
     <div class="panel-body">
         <a href="https://twitch.tv/{{ name|e('url')|e('html_attr') }}" title="{{ name|e('html_attr') }} on Twitch">twitch.tv/{{ name|e }}</a><br>
-        {{ name|e }} is not known to be a bot. <a href="{{ urlFor('submit')|e('html_attr') }}?username={{ name|e('url')|e('html_attr') }}">Submit as new bot</a>.
+        {{ name|e }} is not known to be a bot.
+        <a class="btn btn-default btn-sm text-right" href="{{ urlFor('submit')|e('html_attr') }}?username={{ name|e('url')|e('html_attr') }}">Submit</a>
     </div>
 </section>
 {% endmacro %}
