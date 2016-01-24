@@ -1,28 +1,27 @@
 {% macro bot(bot) %}
+{% if bot.typename is not empty %}
+    {% if bot.multichannel %}
+        {% set bot.multichannel = "Yes" %}
+    {% else %}
+        {% set bot.multichannel = "No" %}
+    {% endif %}
+    {% set btntext = "Correct" %}
+{% else %}
+    {% set btntext = "Report type" %}
+{% endif %}
 <section class="panel panel-success">
     <div class="panel-heading">
         <h2 class="panel-title">{{ bot.name|e }}</h2>
     </div>
     <div class="panel-body">
         <a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" title="{{ bot.name|e('html_attr') }} on Twitch">twitch.tv/{{ bot.name|e }}</a><br>
-        {% if bot.typename is not empty %}
         <dl class="dl-horizontal">
             <dt>Bot type</dt>
-            <dd><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a></dd>
+            <dd><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|default("Unknown")|e }}</a></dd>
             <dt>Multi channel capable</dt>
-            <dd>{% if bot.multichannel %}Yes{% else %}No{% endif %}</dd>
+            <dd>{{ bot.multichannel|default("Unknown")|e }}</dd>
         </dl>
-        <a class="btn btn-default btn-sm text-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Correct</a>
-        </dl>
-        {% else %}
-        <dl class="dl-horizontal">
-            <dt>Bot type</dt>
-            <dd>Unknown</dd>
-            <dt>Mutli channel capable</dt>
-            <dd>Unknown</dd>
-        </dl>
-        <a class="btn btn-default btn-sm text-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Report type</a>
-        {% endif %}
+        <a class="btn btn-default btn-sm pull-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">{{ btntext }}</a>
     </div>
 </section>
 {% endmacro %}
@@ -34,7 +33,7 @@
     <div class="panel-body">
         <a href="https://twitch.tv/{{ name|e('url')|e('html_attr') }}" title="{{ name|e('html_attr') }} on Twitch">twitch.tv/{{ name|e }}</a><br>
         {{ name|e }} is not known to be a bot.
-        <a class="btn btn-default btn-sm text-right" href="{{ urlFor('submit')|e('html_attr') }}?username={{ name|e('url')|e('html_attr') }}">Submit</a>
+        <a class="btn btn-default btn-sm pull-right" href="{{ urlFor('submit')|e('html_attr') }}?username={{ name|e('url')|e('html_attr') }}">Submit as bot</a>
     </div>
 </section>
 {% endmacro %}
