@@ -1,0 +1,29 @@
+{
+    "name": "Twitch Bot Directory",
+    "description": "A directory of Twitch chat bot accounts.",
+    "repository": {
+        "url": "https://github.com/freaktechnik/twitchbots",
+        "license": "MPL-2.0",
+        "type": "git",
+        "tests": "https://travis-ci.org/freaktechnik/twitchbots",
+        "clone": "https://github.com/freaktechnik/twitchbots.git"
+    },
+    "url": {
+        "prod": "https://twitchbots.info",
+        "dev": "https://lab.humanoids.be/twitchbots/public"
+    },
+    "bugs": {
+        "list": "https://github.com/freaktechnik/twitchbots/issues",
+        "report": "https://github.com/freaktechnik/twitchbots/issues/new"
+    }
+    "keywords": [
+        "Mini2",
+        "slim",
+        "php",
+        "js",
+        "Twitch",
+        "RESTful",
+        "composer",
+        "bootstrap"
+    ]
+}
