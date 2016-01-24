@@ -17,7 +17,11 @@
         <a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" title="{{ bot.name|e('html_attr') }} on Twitch">twitch.tv/{{ bot.name|e }}</a><br>
         <dl class="dl-horizontal">
             <dt>Bot type</dt>
-            <dd><a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|default("Unknown")|e }}</a></dd>
+            <dd>{% if bot.url %}
+                <a href="{{ bot.url|e('html_attr') }}">{{ bot.typename|e }}</a>
+            {% else %}
+                {{ bot.typename|default("Unknown")|e }}
+            { %endif %}</dd>
             <dt>Multi channel capable</dt>
             <dd>{{ multichannel|default("Unknown")|e }}</dd>
         </dl>
