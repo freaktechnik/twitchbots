@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c85b6f9bf49be6d77d70454d6f6ae2a4",
-    "content-hash": "982d9d079bb0e7844d4d613628e92ed1",
+    "hash": "1a13de5864391a7cff79a629159500e8",
+    "content-hash": "3ca1877c550be1866e78cd953879861d",
     "packages": [
         {
             "name": "components/bootstrap",
@@ -130,16 +130,16 @@
         },
         {
             "name": "components/jquery",
-            "version": "2.1.4",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/components/jquery.git",
-                "reference": "7b1d1104656a092423fbfba13c5920e9bbba290c"
+                "reference": "d8b2ac0c1978e9ed8602789123976b1c7161ef96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/components/jquery/zipball/7b1d1104656a092423fbfba13c5920e9bbba290c",
-                "reference": "7b1d1104656a092423fbfba13c5920e9bbba290c",
+                "url": "https://api.github.com/repos/components/jquery/zipball/d8b2ac0c1978e9ed8602789123976b1c7161ef96",
+                "reference": "d8b2ac0c1978e9ed8602789123976b1c7161ef96",
                 "shasum": ""
             },
             "type": "component",
@@ -168,7 +168,7 @@
             ],
             "description": "jQuery JavaScript Library",
             "homepage": "http://jquery.com",
-            "time": "2015-05-08 05:04:47"
+            "time": "2016-01-08 23:29:41"
         },
         {
             "name": "kriswallsmith/assetic",
@@ -304,16 +304,16 @@
         },
         {
             "name": "matthiasmullie/minify",
-            "version": "1.3.29",
+            "version": "1.3.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthiasmullie/minify.git",
-                "reference": "58fa692aeffa9cbafacdd1e7b3c5b0e65cd76108"
+                "reference": "140c714688908afcecde87338c8309233bdc2519"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/58fa692aeffa9cbafacdd1e7b3c5b0e65cd76108",
-                "reference": "58fa692aeffa9cbafacdd1e7b3c5b0e65cd76108",
+                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/140c714688908afcecde87338c8309233bdc2519",
+                "reference": "140c714688908afcecde87338c8309233bdc2519",
                 "shasum": ""
             },
             "require": {
@@ -324,7 +324,7 @@
             "require-dev": {
                 "matthiasmullie/scrapbook": "~1.0",
                 "phpunit/phpunit": "~4.8",
-                "satooshi/php-coveralls": "dev-master"
+                "satooshi/php-coveralls": "~1.0"
             },
             "bin": [
                 "bin/minifycss",
@@ -357,20 +357,20 @@
                 "minifier",
                 "minify"
             ],
-            "time": "2015-12-17 21:38:16"
+            "time": "2016-01-11 02:10:11"
         },
         {
             "name": "matthiasmullie/path-converter",
-            "version": "1.0.5",
+            "version": "1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthiasmullie/path-converter.git",
-                "reference": "b1e31c51e8c207ad6114f5b4ac4e652bc936c380"
+                "reference": "83609c1bb251b2540eba912615571a501a0a06a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matthiasmullie/path-converter/zipball/b1e31c51e8c207ad6114f5b4ac4e652bc936c380",
-                "reference": "b1e31c51e8c207ad6114f5b4ac4e652bc936c380",
+                "url": "https://api.github.com/repos/matthiasmullie/path-converter/zipball/83609c1bb251b2540eba912615571a501a0a06a6",
+                "reference": "83609c1bb251b2540eba912615571a501a0a06a6",
                 "shasum": ""
             },
             "require": {
@@ -378,8 +378,8 @@
                 "php": ">=5.3.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.3.*",
-                "satooshi/php-coveralls": "dev-master"
+                "phpunit/phpunit": "~4.8",
+                "satooshi/php-coveralls": "~1.0"
             },
             "type": "library",
             "autoload": {
@@ -407,7 +407,7 @@
                 "paths",
                 "relative"
             ],
-            "time": "2015-06-01 15:20:30"
+            "time": "2016-01-07 00:41:13"
         },
         {
             "name": "panique/pdo-debug",
@@ -749,16 +749,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.0.1",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "49ff736bd5d41f45240cec77b44967d76e0c3d25"
+                "reference": "1289d16209491b584839022f29257ad859b8532d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/49ff736bd5d41f45240cec77b44967d76e0c3d25",
-                "reference": "49ff736bd5d41f45240cec77b44967d76e0c3d25",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/1289d16209491b584839022f29257ad859b8532d",
+                "reference": "1289d16209491b584839022f29257ad859b8532d",
                 "shasum": ""
             },
             "require": {
@@ -770,7 +770,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -804,7 +804,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2015-11-20 09:19:13"
+            "time": "2016-01-20 09:13:37"
         },
         {
             "name": "symfony/process",
@@ -857,16 +857,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.23.1",
+            "version": "v1.23.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "d9b6333ae8dd2c8e3fd256e127548def0bc614c6"
+                "reference": "ae53fc2c312fdee63773b75cb570304f85388b08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/d9b6333ae8dd2c8e3fd256e127548def0bc614c6",
-                "reference": "d9b6333ae8dd2c8e3fd256e127548def0bc614c6",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ae53fc2c312fdee63773b75cb570304f85388b08",
+                "reference": "ae53fc2c312fdee63773b75cb570304f85388b08",
                 "shasum": ""
             },
             "require": {
@@ -914,7 +914,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-11-05 12:49:06"
+            "time": "2016-01-11 14:02:19"
         }
     ],
     "packages-dev": [
@@ -1931,7 +1931,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.0"
+        "php": ">=7.0.0"
     },
     "platform-dev": []
 }
