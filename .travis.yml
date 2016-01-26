@@ -12,7 +12,7 @@ script:
  - phpunit --bootstrap vendor/autoload.php test
 after_success:
  - source .travis/trust-server.sh
- - ssh humanoid@humanoids.be 'cd dev/twitchbots && git pull && php composer.phar install --no-dev --optimize-autoloader'
+ - ssh humanoid@humanoids.be 'cd dev/twitchbots && git pull && php70 composer.phar install --no-dev --optimize-autoloader'
 deploy:
   provider: script
   script: .travis/deploy.sh
