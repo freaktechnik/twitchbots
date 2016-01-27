@@ -23,7 +23,7 @@ class Model
 	private $pageSize;
 
 	/**
-	 * The twitch API wrapper
+	 * The Twitch API wrapper
 	 * @var \ritero\SDK\TwitchTV\TwitchSDK
 	 */
     private $twitch;
