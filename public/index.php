@@ -104,10 +104,6 @@ $app->get('/', function () use ($app, $model, $lastUpdate) {
     ));
 });
 $app->get('/submit', function () use ($app, $model, $lastUpdate) {
-    $app->lastModified($lastUpdate);
-    // 1 day expiration because of the types list
-    $app->expires('+1 day');
-
     $token = $model->getToken("submit");
     $types = $model->getAllTypes();
 
