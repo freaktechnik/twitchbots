@@ -1,7 +1,7 @@
 var select = document.getElementById('existing-type');
 var input = document.getElementById("bottype");
 function update() {
-    if(select.value == 0)
+    if(parseInt(select.value, 10) == 0)
         input.removeAttribute("hidden");
     else
         input.setAttribute("hidden", true);
