@@ -193,12 +193,17 @@ $app->group('/lib', function ()  use ($app, $model) {
         if($model->checkToken("submit", $app->request->params('token'))) {
             if((boolean)$app->request->params('submission-type')) {
                 if($model->botSubmitted($app->request->params('username'))) {
-                    $model->addCorrection(
-                        $app->request->params('username'),
-                        $app->request->params('type'),
-                        $app->request->params('description')
-                    );
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1&correction', 303);
+                    if($model->getBot($app->request->params('username'))->type == $app->request->params('type')) {
+                        $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=5&correction&username='.$app->request->params('username'), 303);
+                    }
+                    else {
+                        $model->addCorrection(
+                            $app->request->params('username'),
+                            $app->request->params('type'),
+                            $app->request->params('description')
+                        );
+                        $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1&correction', 303);
+                    }
                 }
                 else {
                     $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=4&correction&username='.$app->request->params('username'), 303);

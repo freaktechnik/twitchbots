@@ -1,3 +1,28 @@
+{% import "_alerts.twig" as alerts %}
+{% if success %}
+    {% set level = 'success' %}
+    {% if correction %}
+        {% set message = 'Your correction has been saved. We will review it as soon as possible.' %}
+    {% else %}
+        {% set message = 'Your submission has been saved. We will review it as soon as possible.' %}
+    {% endif %}
+{% endif %}
+{% if error == 1 %}
+    {% set level = 'danger' %}
+    {% set message = 'Something went wrong while submitting.' %}
+{% elseif error == 2 %}
+    {% set level = 'danger' %}
+    {% set message = 'The specified bot ' + username + ' isn't a registered account on Twitch.' %}
+{% elseif error == 3 %}
+    {% set level = 'info' %}
+    {% set message = 'The bot ' + username + ' has already been submitted. Thank you for submitting it again, though!' %}
+{% elseif error == 4 %}
+    {% set level = 'danger' %}
+    {% set message = 'The bot ' + username + ' isn't in our database.' %}
+{% else if error == 5 %}
+    {% set level = 'danger' %}
+    {% set message = 'Type matches the current type if the bot ' + username %}
+{% endif %}
 {% extends "_base.twig" %}
 {% block title %}Submit bot{% endblock %}
 {% block extraresources %}
@@ -10,38 +35,7 @@
 </div>
 <p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell us about it with the form below and we'll review the information. If we've got wrong date, please switch to "Correction and report what's right. If you have a bigger dataset to submit, please contact us directly.</p>
 </div>
-{% if success %}
-<div class="alert alert-success" role="alert">
-    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-    <span class="sr-only">Success:</span>
-    Your {% if correction %}correction{% else %}submission{% endif %} has been saved. We will review it as soon as possible.
-</div>
-{% endif %}
-{% if error == 1 %}
-<div class="alert alert-danger" role="alert">
-    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    <span class="sr-only">Error:</span>
-    Something went wrong while submitting.
-</div>
-{% elseif error == 2 %}
-<div class="alert alert-danger" role="alert">
-    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    <span class="sr-only">Error:</span>
-    The specified bot {{ username }} isn't a registered account on Twitch.
-</div>
-{% elseif error == 3 %}
-<div class="alert alert-info" role="alert">
-    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-    <span class="sr-only">Info:</span>
-    The bot {{ username }} has already been submitted. Thank you for submitting it again, though!
-</div>
-{% elseif error == 4 %}
-<div class="alert alert-danger" role="alert">
-    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    <span class="sr-only">Error:</span>
-    The bot {{ username }} isn't in our database.
-</div>
-{% endif %}
+{{ alerts.alert(level, message) }}
 <div class="panel panel-default">
     <div class="panel-body">
         <form class="form-horizontal" method="post" action="lib/submit">
