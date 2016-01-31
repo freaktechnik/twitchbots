@@ -12,9 +12,11 @@
         {% set glyph = 'alert' %}
         {% set sr = 'Warning' %}
     {% endif %}
+    {% if level %}
 <div class="alert alert-{{ level }}" role="alert">
     <span class="glyphicon glyphicon-{{ glyph }}" aria-hidden="true"></span>
     <span class="sr-only">{{ sr }}:</span>
     {{ message }}
 </div>
+{% endif %}
 {% endmacro %}
