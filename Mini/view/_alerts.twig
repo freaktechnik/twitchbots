@@ -8,6 +8,9 @@
     {% elseif level == 'info' %}
         {% set glyph = 'info-sign' %}
         {% set sr = 'Info' %}
+    {% elseif level == 'warning' %}
+        {% set glyph = 'alert' %}
+        {% set sr = 'Warning' %}
     {% endif %}
 <div class="alert alert-{{ level }}" role="alert">
     <span class="glyphicon glyphicon-{{ glyph }}" aria-hidden="true"></span>
