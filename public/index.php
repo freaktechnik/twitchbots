@@ -176,7 +176,7 @@ $app->get('/submissions', function () use ($app, $model, $lastUpdate) {
         'submissions' => $submissions
     ));
 });
-$app->get('type/:id', function ($id) use ($app, $model, $lastUpdate) {
+$app->get('/type/:id', function ($id) use ($app, $model, $lastUpdate) {
     $app->expires('+1 day');
 
     $type = $model->getType($id);
