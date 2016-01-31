@@ -1,23 +1,23 @@
 {% import "_alerts.twig" as alerts %}
 {% if success %}
     {% set level = 'success' %}
-    {% set message = 'Your ' ~(correction ? 'correction' : 'submission') ~ ' has been saved. We will review it as soon as possible.' %}
+    {% set message = "Your #{correction ? 'correction' : 'submission'} has been saved. We will review it as soon as possible." %}
 {% endif %}
 {% if error == 1 %}
     {% set level = 'danger' %}
     {% set message = 'Something went wrong while submitting.' %}
 {% elseif error == 2 %}
     {% set level = 'danger' %}
-    {% set message = 'The specified bot ' ~ username ~ ' isn't a registered account on Twitch.' %}
+    {% set message = "The specified bot #{username|e} isn't a registered account on Twitch." %}
 {% elseif error == 3 %}
     {% set level = 'info' %}
-    {% set message = 'The bot ' ~ username ~ ' has already been submitted. Thank you for submitting it again, though!' %}
+    {% set message = "The bot #{username|e} has already been submitted. Thank you for submitting it again, though!" %}
 {% elseif error == 4 %}
     {% set level = 'danger' %}
-    {% set message = 'The bot ' ~ username ~ ' isn't in our database.' %}
+    {% set message = "The bot #{username|e} isn't in our database." %}
 {% else if error == 5 %}
     {% set level = 'danger' %}
-    {% set message = 'Type matches the current type if the bot ' ~ username %}
+    {% set message = "Type matches the current type if the bot #{username|e}" %}
 {% endif %}
 {% extends "_base.twig" %}
 {% block title %}Submit bot{% endblock %}
