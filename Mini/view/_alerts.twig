@@ -1,11 +1,11 @@
 {% macro alert(level, message) %}
-    {% if level === 'success' %}
+    {% if level == 'success' %}
         {% set glyph = 'ok' %}
         {% set sr = 'Success' %}
-    {% else if level === 'danger' %}
+    {% else if level == 'danger' %}
         {% set glyph = 'exclamation-sign' %}
         {% set sr = 'Error' %}
-    {% else if level === 'info' %}
+    {% else if level == 'info' %}
         {% set glyph = 'info-sign' %}
         {% set sr = 'Info' %}
     {% endif %}
