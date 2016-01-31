@@ -180,16 +180,18 @@ $app->get('type/:id', function ($id) use ($app, $model, $lastUpdate) {
     $app->expires('+1 day');
 
     $type = $model->getType($id);
+    if(!$type)
+        $app->notFound();
 
     $pageCount = $model->getPageCount($id);
     $page = $_GET['page'] ?? 1;
     if(!is_numeric($page))
         $page = 1;
 
-    if($page <= $pageCount && $page > 0)
-        $bots = $model->getBotsByType($id, $model->getOffset($page));
-    else
-        $bots = array();
+    if($page > $pageCount || $page < 0)
+        $app->notFound();
+
+    $bots = $model->getBotsByType($id, $model->getOffset($page));
 
     $app->lastModified(max(array($lastUpdate, $type->date, max(array_map(function($bot) { return $bot->date; }, $bots)))));
     $app->render('type.twig', array(
