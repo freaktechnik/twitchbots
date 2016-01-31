@@ -2,10 +2,10 @@
     {% if level == 'success' %}
         {% set glyph = 'ok' %}
         {% set sr = 'Success' %}
-    {% else if level == 'danger' %}
+    {% elseif level == 'danger' %}
         {% set glyph = 'exclamation-sign' %}
         {% set sr = 'Error' %}
-    {% else if level == 'info' %}
+    {% elseif level == 'info' %}
         {% set glyph = 'info-sign' %}
         {% set sr = 'Info' %}
     {% endif %}
