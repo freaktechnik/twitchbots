@@ -57,9 +57,9 @@
                 <label for="existing-type" class="col-sm-2 control-label">Bot Type</label>
                 <div class="col-sm-10">
                     <select class="form-control" name="type" id="existing-type">
-                        <option value="0">New type&hellip;</option>
-                        {% for type in types %}
-                            <option value="{{ type.id|e('html_attr') }}">{{ type.name|e }}</option>
+                        <option value="0"{% if type == 0 %} selected{% endif %}>New type&hellip;</option>
+                        {% for t in types %}
+                            <option value="{{ t.id|e('html_attr') }}"{% if type == t.id %} selected{% endif %}>{{ t.name|e }}</option>
                         {% endfor %}
                     </select>
                 </div>

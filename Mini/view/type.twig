@@ -12,4 +12,5 @@
     {% endfor %}
 </div>
 {{ pagination.print(page, pageCount, 3, 2) }}
+<p>This list is missing a bot? <a href="{{ urlFor('submit') }}?type={{ type.id|e('url')|e('html_attr') }}">Submit a bot of this type</a>.</p>
 {% endblock %}

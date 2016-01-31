@@ -113,7 +113,8 @@ $app->get('/submit', function () use ($app, $model, $lastUpdate) {
         'token' => $token,
         'types' => $types,
         'correction' => isset($_GET['correction']),
-        'username' => $_GET['username']
+        'username' => $_GET['username'],
+        'type' => $_GET['type']
     ));
 })->name('submit');
 $app->map('/check', function () use ($app, $model, $lastUpdate) {
