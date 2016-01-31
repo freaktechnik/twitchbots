@@ -200,7 +200,7 @@ $app->get('/type/:id', function ($id) use ($app, $model, $lastUpdate) {
         'page' => $page,
         'pageCount' => $pageCount
     ));
-});
+})->name('type');
 
 $app->group('/lib', function ()  use ($app, $model) {
     $app->get('/check', function ()  use ($app, $model) {
