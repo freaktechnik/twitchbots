@@ -265,12 +265,15 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
     };
 
     $app->contentType('application/xml;charset=utf8');
+    $lastUpdate = $model->getLastUpdate();
+    $subLastUpdate = $model->getLastUpdate('submissions');
+    $app->lastModified(max(array($lastUpdate, $subLastUpdate, $model->getLastUpdate('types'))));
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
     $url = $sitemap->addChild('url');
     $url->addChild('loc', 'https://twitchbots.info');
     $url->addChild('changefreq', 'daily');
-    $lastMod = $getLastMod($model->getLastUpdate());
+    $lastMod = $getLastMod($lastUpdate);
     $url->addChild('lastmod', $lastMod);
     $url->addChild('priority', '1.0');
 
@@ -291,6 +294,7 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
         $url->addChild('loc', 'https://twitchbots.info/type/'.$type->id);
         $url->addChild('changefreq', 'daily');
         $url->addChild('priority', '0.3');
+        $url->addChild('lastmod', $getLastMod(max(array($type->date, $model->getLastUpdate('bots', $type->id)))));
     }
 
     $url = $sitemap->addChild('url');
@@ -317,6 +321,7 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
     $url->addChild('loc', 'https://twitchbots.info/submissions');
     $url->addChild('changefreq', 'daily');
     $url->addChild('priority', '0.2');
+    $url->addChild('lastmod', $getLastMod($subLastUpdate));
 
     echo $sitemap->asXML();
 });
