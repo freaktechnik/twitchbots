@@ -232,12 +232,12 @@ $app->group('/lib', function ()  use ($app, $model) {
                     }
                 }
                 else {
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=4&correction&username='.$app->request->params('username'), 303);
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=4&correction&username='.$app->request->params('username').'&type='.$app->request->params('type'), 303);
                 }
             }
             else {
                 if(!$model->twitchUserExists($app->request->params('username'))) {
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2&username='.$app->request->params('username'), 303);
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2&username='.$app->request->params('username').'&type='.$app->request->params('type'), 303);
                 }
                 else if($model->botSubmitted($app->request->params('username'))) {
                     $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=3&username='.$app->request->params('username'), 303);
@@ -254,7 +254,7 @@ $app->group('/lib', function ()  use ($app, $model) {
         }
         else {
             $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
-            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1&username='.$app->request->params('username').$correction);
+            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1&username='.$app->request->params('username').'&type='.$app->request->params('type').$correction);
         }
     });
 });
