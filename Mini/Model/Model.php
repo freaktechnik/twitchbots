@@ -149,8 +149,8 @@ class Model
      */
     public function getPageCount($limit = null, $count = null): int
     {
-        $limit = $limit !== null ? $limit : $this->pageSize;
-        $count = $count !== null ? $count : $this->getBotCount();
+        $limit = $limit ?? $this->pageSize;
+        $count = $count ?? $this->getBotCount();
         if($limit > 0)
             return ceil($count / (float)$limit);
         else
@@ -168,7 +168,7 @@ class Model
 
     private function doPagination(PDOStatement $query, $offset = 0, $limit = null, $start = ":start", $stop = ":stop")
     {
-        $limit = $limit !== null ? $limit : $this->pageSize;
+        $limit = $limit ?? $this->pageSize;
         $query->bindValue($start, $offset, PDO::PARAM_INT);
         $query->bindValue($stop, $limit, PDO::PARAM_INT);
     }
@@ -189,7 +189,7 @@ class Model
 
     public function getAllRawBots($offset = 0, $limit = null): array
     {
-        $limit = $limit !== null ? $limit : $this->pageSize;
+        $limit = $limit ?? $this->pageSize;
         if($limit > 0 && $offset < $this->getBotCount()) {
             $sql = "SELECT * FROM bots LIMIT :start,:stop";
             $query = $this->db->prepare($sql);
@@ -204,7 +204,7 @@ class Model
 
     public function getBotsByNames(array $names, $offset = 0, $limit = null): array
     {
-        $limit = $limit !== null ? $limit : $this->pageSize;
+        $limit = $limit ?? $this->pageSize;
         $namesCount = count($names);
         if($limit > 0 && $offset < $namesCount) {
             $sql = 'SELECT * FROM bots WHERE name IN ('.implode(',', array_fill(1, $namesCount, '?')).') LIMIT ?,?';
@@ -224,7 +224,7 @@ class Model
 
     public function getBotsByType(int $type, $offset = 0, $limit = null): array
     {
-        $limit = $limit !== null ? $limit : $this->pageSize;
+        $limit = $limit ?? $this->pageSize;
         //TODO should these bounds checks be in the controller?
         if($limit > 0 && $offset < $this->getBotCount($type)) {
             $sql = "SELECT * FROM bots WHERE type=:type LIMIT :start,:stop";

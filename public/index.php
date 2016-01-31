@@ -183,7 +183,7 @@ $app->get('/type/:id', function ($id) use ($app, $model, $lastUpdate) {
     if(!$type)
         $app->notFound();
 
-    $pageCount = $model->getPageCount(null, $id);
+    $pageCount = $model->getPageCount(null, $model->getBotCount($id));
     $page = $_GET['page'] ?? 1;
     if(!is_numeric($page))
         $page = 1;
