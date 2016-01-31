@@ -284,6 +284,14 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
         }
     }
 
+    $types = $model->getAllTypes();
+    foreach($types as $type) {
+        $url = $sitemap->addChild('url');
+        $url->addChild('loc', 'https://twitchbots.info/type/'.$type->id);
+        $url->addChild('changefreq', 'daily');
+        $url->addChild('priority', '0.3');
+    }
+
     $url = $sitemap->addChild('url');
     $url->addChild('loc', 'https://twitchbots.info/submit');
     $url->addChild('changefreq', 'weekly');
