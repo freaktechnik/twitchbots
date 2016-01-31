@@ -1,0 +1,17 @@
+{% macro alert(level, message) %}
+    {% if level === 'success' %}
+        {% set glyph = 'ok' %}
+        {% set sr = 'Success' %}
+    {% else if level === 'danger' %}
+        {% set glyph = 'exclamation-sign' %}
+        {% set sr = 'Error' %}
+    {% else if level === 'info' %}
+        {% set glyph = 'info-sign' %}
+        {% set sr = 'Info' %}
+    {% endif %}
+<div class="alert alert-{{ level }}" role="alert">
+    <span class="glyphicon glyphicon-{{ glyph }}" aria-hidden="true"></span>
+    <span class="sr-only">{{ sr }}:</span>
+    {{ message }}
+</div>
+{% endmacro %}
