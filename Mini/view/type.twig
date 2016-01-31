@@ -1,0 +1,15 @@
+{% import "_pagination.twig" as pagination %}
+{% extends "_base.twig" %}
+{% block title %}{{ type.name|e }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>{{ type.name|e }} and bots running it</h1>
+</div>
+<p class="lead"><a href="{{ type.url|('html_attr') }}">{{ type.name|e }}</a> is a Twitch bot type that {% if type.multichannel %}supports{% elseif %}doesn't support{% endif %} being in multiple channels at once. The following users are known to be ran by this bot:</p>
+<div class="list-group">
+    {% for bot in bots %}
+    <a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" class="list-group-item">{{ bot.name|e }}</a>
+    {% endfor %}
+</div>
+{{ pagination.print(page, pageCount, 3, 2) }}
+{% endblock %}

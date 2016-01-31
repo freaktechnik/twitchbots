@@ -71,7 +71,7 @@ $model = new \Mini\Model\Model($app->config('database'));
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
-$lastUpdate = 1453643919;
+$lastUpdate = 1454245011;
 
 $app->response->headers->set('Content-Security-Policy', $app->config('csp'));
 
@@ -157,12 +157,12 @@ $app->get('/api', function () use ($app, $lastUpdate) {
         'apiUrl' => $app->config('apiUrl')
     ));
 });
-$app->get('/about', function () use($app, $lastUpdate) {
+$app->get('/about', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->expires('+1 week');
     $app->render('about.twig');
 });
-$app->get('/submissions', function () use($app, $model, $lastUpdate) {
+$app->get('/submissions', function () use ($app, $model, $lastUpdate) {
     $app->expires('+1 minute');
     $submissions = $model->getSubmissions();
     if(count($submissions) > 0) {
@@ -174,6 +174,29 @@ $app->get('/submissions', function () use($app, $model, $lastUpdate) {
 
     $app->render('submissions.twig', array(
         'submissions' => $submissions
+    ));
+});
+$app->get('type/:id', function ($id) use ($app, $model, $lastUpdate) {
+    $app->expires('+1 day');
+
+    $type = $model->getType($id);
+
+    $pageCount = $model->getPageCount($id);
+    $page = $_GET['page'] ?? 1;
+    if(!is_numeric($page))
+        $page = 1;
+
+    if($page <= $pageCount && $page > 0)
+        $bots = $model->getBotsByType($id, $model->getOffset($page));
+    else
+        $bots = array();
+
+    $app->lastModified(max(array($lastUpdate, $type->date, max(array_map(function($bot) { return $bot->date; }, $bots)))));
+    $app->render('type.twig', array(
+        'type' => $type,
+        'bots' => $bots,
+        'page' => $page,
+        'pageCount' => $pageCount
     ));
 });
 
