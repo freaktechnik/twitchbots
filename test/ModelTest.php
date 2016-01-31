@@ -53,7 +53,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             PRIMARY KEY (name)
         ) DEFAULT CHARSET=ascii');
         $pdo->query('CREATE OR REPLACE VIEW count AS SELECT count(name) AS count FROM bots');
-        $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, multichannel, url, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
+        $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, type, multichannel, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
 
         parent::__construct();
     }
@@ -271,7 +271,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         foreach($bots as $bot) {
             $this->assertObjectHasAttribute("name", $bot);
-            $this->assertObjectHasAttribute("url", $bot);
+            $this->assertObjectHasAttribute("type", $bot);
             $this->assertObjectHasAttribute("multichannel", $bot);
             $this->assertObjectHasAttribute("typename", $bot);
         }
