@@ -2,8 +2,7 @@
 {% if success %}
     {% set level = 'success' %}
     {% set message = "Your #{correction ? 'correction' : 'submission'} has been saved. We will review it as soon as possible." %}
-{% endif %}
-{% if error == 1 %}
+{% elseif error == 1 %}
     {% set level = 'danger' %}
     {% set message = 'Something went wrong while submitting.' %}
 {% elseif error == 2 %}
@@ -15,7 +14,7 @@
 {% elseif error == 4 %}
     {% set level = 'danger' %}
     {% set message = "The bot #{username|e} isn't in our database." %}
-{% else if error == 5 %}
+{% elseif error == 5 %}
     {% set level = 'danger' %}
     {% set message = "Type matches the current type if the bot #{username|e}" %}
 {% endif %}
