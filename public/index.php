@@ -267,7 +267,7 @@ $app->group('/bots', function () use ($app, $model, $lastUpdate, $getLastMod) {
             $url = $sitemap->addChild('url');
             $url->addChild('loc', 'https://twitchbots.info/bots/'.$bot->name);
             $url->addChild('changefreq', 'weekly');
-            $url->addChild('lastmod', $getLastMod($bot->date));
+            $url->addChild('lastmod', $getLastMod(strtotime($bot->date)));
             $url->addChild('priority', '0.8');
         }
 
@@ -287,7 +287,7 @@ $app->group('/bots', function () use ($app, $model, $lastUpdate, $getLastMod) {
         }
 
         $app->expires('+1 week');
-        $app->lastModified(max($lastUpdate, $bot->date));
+        $app->lastModified(max($lastUpdate, strtotime($bot->date)));
         $app->render('bot.twig', array(
             'bot' => $bot
         ));
