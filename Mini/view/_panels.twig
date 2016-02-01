@@ -1,4 +1,4 @@
-{% macro bot(bot) %}
+{% macro bot(bot, heading) %}
 {% if bot.typename is not empty %}
     {% if bot.multichannel %}
         {% set multichannel = "Yes" %}
@@ -11,7 +11,7 @@
 {% endif %}
 <section class="panel panel-success">
     <div class="panel-heading">
-        <h2 class="panel-title">{{ bot.name|e }}</h2>
+        <h{{ heading|default('2') }} class="panel-title">{{ bot.name|e }}</h{{ heading|default('2') }}>
     </div>
     <div class="panel-body">
         <dl class="dl-horizontal">
