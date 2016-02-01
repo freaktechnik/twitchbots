@@ -17,6 +17,9 @@
 {% elseif error == 5 %}
     {% set level = 'danger' %}
     {% set message = "Type matches the current type if the bot &quot;#{username|e}&quot;" %}
+{% elseif error == 6 %}
+    {% set level = 'danger' %}
+    {% set message = "The specified channel &quot;#{channel|e}&quot; isn't a registered account on Twitch." %}
 {% endif %}
 {% extends "_base.twig" %}
 {% block title %}Submit bot{% endblock %}
@@ -71,6 +74,12 @@
                     <p class="help-block">Describe the bot type, normally the name of the software that runs it and if possible a link to the website of it. In case of a bot hosted by a thirdparty this is the name and URL of their site.</p>
                 </div>
             </div>
+            <div class="form-group">
+                <lable for="channel" class="col-sm-2 control-label">Example Channel (optional)</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control col-sm-10" id="channel" name="channel" placeholder="Channel Name"  value="{{ channel|e('html_attr') }}">
+                    <p class="help-block">A channel in whose chat this bot is usually in.</p>
+                </div>
             <div class="form-group" hidden>
                 <input type="hidden" value="{{ token|e('html_attr') }}" name="token">
                 <input type="hidden" value="PUT" name="_METHOD">

@@ -93,19 +93,19 @@ class Model
      * @param int $type
      * @param string $description = ""
      */
-    public function addSubmission(string $username, int $type, $description = "")
+    public function addSubmission(string $username, int $type, $description = "", $channel = null)
     {
-        if($type == 0)
+        if($type === 0)
             $type = $description;
 
-        $sql = "INSERT INTO submissions(name,description,type) VALUES (?,?,0)";
+        $sql = "INSERT INTO submissions(name,description,type,channel) VALUES (?,?,0,?)";
         $query = $this->db->prepare($sql);
-        $query->execute(array($username, $type));
+        $query->execute(array($username, $type, $channel));
     }
 
     public function getSubmissions(): array
     {
-        $sql = "SELECT name, description, date FROM submissions ORDER BY date DESC";
+        $sql = "SELECT name, description, type, date FROM submissions ORDER BY date DESC";
         $query = $this->db->prepare($sql);
         $query->execute();
 
@@ -336,14 +336,14 @@ class Model
         return $lastOffset;
     }
 
-    public function addCorrection(string $username, int $type, $description = "")
+    public function addCorrection(string $username, int $type, $description = "", $channel = null)
     {
         if($type == 0)
             $type = $description;
 
-        $sql = "INSERT INTO submissions(name,description,type) VALUES (?,?,1)";
+        $sql = "INSERT INTO submissions(name,description,type) VALUES (?,?,1,?)";
         $query = $this->db->prepare($sql);
-        $query->execute(array($username, $type));
+        $query->execute(array($username, $type, $channel));
     }
 
     public function twitchUserExists(string $name): bool

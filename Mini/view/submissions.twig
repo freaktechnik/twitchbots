@@ -10,7 +10,7 @@
 <dl class="dl-horizontal">
 {% for s in submissions %}
     <dt><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external">{{ s.name|e }}</a></dt>
-    <dd>{{ s.description|e }}</dd>
+    <dd>{{ s.description|e }}{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/chat" rel="external">{{ s.channel|e }}</a>{% endif %}</dd>
 {% endfor %}
 </dl>
 {% endblock %}
