@@ -1,6 +1,7 @@
 <?php
-require '../vendor/autoload.php';
 namespace Mini\Twig\Extension;
+
+require '../vendor/autoload.php';
 
 class GeshiExtension extends \Twig_Extension
 {
