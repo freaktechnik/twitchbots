@@ -44,27 +44,25 @@
         "self": "{{apiUrl}}/v1/bot/nightbot",
         "type": "{{apiUrl}}/v1/type/1"
     }
-}</pre>{{ '
-        </section>
+}</pre></section>
+</section>
+    <h3>/bot/all</h3>
+    <p>Returns all known bots.</p>
+    <section>
+        <h4>Parameters</h4>
+        <dl class="dl-horizontal">
+            <dt><code>offset</code></dt>
+            <dd>Offset of items, 0 by default</dd>
+            <dt><code>limit</code></dt>
+            <dd>Maximum amount of items to return, 100 by default</dd>
+            <dt><code>type</code></dt>
+            <dd>Optionally only return bots of the given type ID</dd>
+        </dl>
     </section>
-        <h3>/bot/all</h3>
-        <p>Returns all known bots.</p>
-        <section>
-            <h4>Parameters</h4>
-            <dl class="dl-horizontal">
-                <dt><code>offset</code></dt>
-                <dd>Offset of items, 0 by default</dd>
-                <dt><code>limit</code></dt>
-                <dd>Maximum amount of items to return, 100 by default</dd>
-                <dt><code>type</code></dt>
-                <dd>Optionally only return bots of the given type ID</dd>
-            </dl>
-        </section>
-        <section>
-            <h4>Response</h4>
-            <code>GET {{apiUrl}}/v1/bot/all</code>
-            <pre>
-{
+    <section>
+        <h4>Response</h4>
+        <code>GET {{apiUrl}}/v1/bot/all</code>
+{{ '{
     "bots: [
         {
             "username": "nightbot",
