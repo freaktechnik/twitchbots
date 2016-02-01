@@ -192,7 +192,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate) {
 
         $app->lastModified(max($lastUpdate, $model->getLastUpdate(), $model->getLastUpdate('types')));
 
-        $types = $model->getTypes();
+        $types = $model->getTypes($page);
 
         $app->render('types.twig', array(
             'types' => $types,
