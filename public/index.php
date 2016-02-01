@@ -247,7 +247,7 @@ $app->group('/lib', function ()  use ($app, $model) {
         if($model->checkToken("submit", $app->request->params('token'))) {
             if($app->request->params('channel') && !$model->twitchUserExists($app->request->params('channel'))) {
                 $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
-                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=5'.$echoParam('username').$echoParam('type').$echoParam('channel').$correction, 303);
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=6'.$echoParam('username').$echoParam('type').$echoParam('channel').$correction, 303);
             }
             else if((boolean)$app->request->params('submission-type')) {
                 if(!$model->botSubmitted($app->request->params('username'))) {
