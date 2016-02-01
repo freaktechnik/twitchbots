@@ -74,7 +74,7 @@ $model = new \Mini\Model\Model($app->config('database'));
 $lastUpdate = 1454245011;
 
 $getLastMod = function($timestamp = 0) use ($lastUpdate) {
-    return date('c', max(array($lastUpdate, $timestamp)));
+    return date('c', max($lastUpdate, $timestamp));
 };
 
 $app->response->headers->set('Content-Security-Policy', $app->config('csp'));
@@ -88,7 +88,7 @@ $app->notFound(function () use ($app) {
 });
 
 $app->get('/', function () use ($app, $model, $lastUpdate) {
-    $app->lastModified(max(array($lastUpdate, $model->getLastUpdate())));
+    $app->lastModified(max($lastUpdate, $model->getLastUpdate()));
     $app->expires('+1 day');
 
     $pageCount = $model->getPageCount();
@@ -132,7 +132,7 @@ $app->map('/check', function () use ($app, $model, $lastUpdate) {
 
         $bot = $model->getBot($app->request->params('username'));
         if($bot) {
-            $app->lastModified(max(array($lastModified, strtotime($bot->date))));
+            $app->lastModified(max($lastModified, strtotime($bot->date)));
             $app->expires('+1 week');
             if($bot->type) {
                 $type = $model->getType($bot->type);
@@ -172,7 +172,7 @@ $app->get('/submissions', function () use ($app, $model, $lastUpdate) {
     $app->expires('+1 minute');
     $submissions = $model->getSubmissions();
     if(count($submissions) > 0) {
-        $app->lastModified(max(array($lastUpdate, strtotime($submissions[0]->date))));
+        $app->lastModified(max($lastUpdate, strtotime($submissions[0]->date)));
     }
     else {
         $app->lastModified(time());
@@ -210,7 +210,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
         $app->contentType('application/xml;charset=utf8');
         $botLastUpdate = $model->getLastUpdate();
         $typeLastUpdate = $model->getLastUpdate('types');
-        $app->lastModified(max(array($botLastUpdate, $typeLastUpdate)));
+        $app->lastModified(max($botLastUpdate, $typeLastUpdate));
         $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
         $types = $model->getAllTypes();
@@ -219,7 +219,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
             $url->addChild('loc', 'https://twitchbots.info/types/'.$type->id);
             $url->addChild('changefreq', 'daily');
             $url->addChild('priority', '0.6');
-            $url->addChild('lastmod', $getLastMod(max(array($type->date, $model->getLastUpdate('bots', $type->id)))));
+            $url->addChild('lastmod', $getLastMod(max($type->date, $model->getLastUpdate('bots', $type->id))));
         }
 
         echo $sitemap->asXML();
@@ -232,7 +232,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
         if(!$type)
             $app->notFound();
 
-        $pageCount = max(array(1, $model->getPageCount(null, $model->getBotCount($id))));
+        $pageCount = max(1, $model->getPageCount(null, $model->getBotCount($id)));
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
             $page = 1;
@@ -242,7 +242,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
 
         $bots = $model->getBotsByType($id, $model->getOffset($page));
 
-        $app->lastModified(max(array($lastUpdate, $type->date, max(array_map(function($bot) { return $bot->date; }, $bots)))));
+        $app->lastModified(max($lastUpdate, $type->date, max(array_map(function($bot) { return $bot->date; }, $bots))));
         $app->render('type.twig', array(
             'type' => $type,
             'bots' => $bots,
@@ -259,8 +259,7 @@ $app->group('/bots', function () use ($app, $model, $lastUpdate, $getLastMod) {
 
     $app->get('/sitemap.xml', function () use ($app, $model, $getLastMod) {
         $app->contentType('application/xml;charset=utf8');
-        $botLastUpdate = $model->getLastUpdate();
-        $app->lastModified($botLastUpdate);
+        $app->lastModified($model->getLastUpdate());
         $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
         $bots = $model->getAllRawBots(0, $model->getBotCount());
@@ -288,7 +287,7 @@ $app->group('/bots', function () use ($app, $model, $lastUpdate, $getLastMod) {
         }
 
         $app->expires('+1 week');
-        $app->lastModified(max(array($lastUpdate, $bot->date)));
+        $app->lastModified(max($lastUpdate, $bot->date));
         $app->render('bot.twig', array(
             'bot' => $bot
         ));
@@ -364,7 +363,7 @@ $app->get('/pages_map.xml', function () use ($app, $model, $lastUpdate, $getLast
     $subLastUpdate = $model->getLastUpdate('submissions');
     $botLastUpdate = $model->getLastUpdate();
     $typeLastUpdate = $model->getLastUpdate('types');
-    $app->lastModified(max(array($subLastUpdate, $botLastUpdate, $typeLastUpdate)));
+    $app->lastModified(max($subLastUpdate, $botLastUpdate, $typeLastUpdate));
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
     $lastBotUpdate = $model->getLastUpdate();
@@ -379,7 +378,7 @@ $app->get('/pages_map.xml', function () use ($app, $model, $lastUpdate, $getLast
     $url = $sitemap->addChild('url');
     $url->addChild('loc', 'https://twitchbots.info/types');
     $url->addChild('changefreq', 'daily');
-    $url->addChild('lastmod', $getLastMod(max(array($botLastUpdate, $typeLastUpdate))));
+    $url->addChild('lastmod', $getLastMod(max($botLastUpdate, $typeLastUpdate)));
     $url->addChild('priority', '0.2');
 
     $url = $sitemap->addChild('url');
@@ -415,12 +414,12 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getLastMod) {
     $botLastUpdate = $model->getLastUpdate();
     $typeLastUpdate = $model->getLastUpdate('types');
     $subLastUpdate = $model->getLastUpdate('submissions');
-    $app->lastModified(max(array($botLastUpdate, $typeLastUpdate, $subLastUpdate)));
+    $app->lastModified(max($botLastUpdate, $typeLastUpdate, $subLastUpdate));
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></sitemapindex>');
 
     $url = $sitemap->addChild('sitemap');
     $url->addChild('loc', 'https://twitchbots.info/pages_map.xml');
-    $url->addChild('lastmod', $getLastMod(max(array($subLastUpdate, $typeLastUpdate, $botLastUpdate))));
+    $url->addChild('lastmod', $getLastMod(max($subLastUpdate, $typeLastUpdate, $botLastUpdate)));
 
     $url = $sitemap->addChild('sitemap');
     $url->addChild('loc', 'https://twitchbots.info/bots/sitemap.xml');
