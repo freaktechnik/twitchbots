@@ -102,7 +102,7 @@ $app->get('/', function () use ($app, $model, $lastUpdate) {
         'page' => $page,
         'bots' => $bots
     ));
-});
+})->name('index');
 $app->get('/submit', function () use ($app, $model, $lastUpdate) {
     $token = $model->getToken("submit");
     $types = $model->getAllTypes();
@@ -227,6 +227,31 @@ $app->group('/types', function () use ($app, $model, $lastUpdate) {
             'pageCount' => $pageCount
         ));
     })->name('type');
+});
+
+$app->group('/bots', function () use ($app, $model, $lastUpdate) {
+    $app->get('/', function () use ($app) {
+        $app->redirect($app->request->getUrl().$app->urlFor('index'), 301);
+    });
+    
+    $app->get('/:name', function ($name) use ($app, $model, $lastUpdate) {
+        $bot = $model->getBot($name);
+        if(!$bot)
+            $app->notFound();
+            
+        if($bot->type) {
+            $type = $model->getType($bot->type);
+            $bot->typename = $type->name;
+            $bot->url = $type->url;
+            $bot->multichannel = $type->multichannel;
+        }
+        
+        $app->expires('+1 week');
+        $app->lastModified(max(array($lastUpdate, $bot->date)));
+        $app->render('bot.twig', array(
+            'bot' => $bot
+        ));
+    });
 });
 
 $app->group('/lib', function ()  use ($app, $model) {
