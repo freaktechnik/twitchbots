@@ -177,31 +177,56 @@ $app->get('/submissions', function () use ($app, $model, $lastUpdate) {
         'submissions' => $submissions
     ));
 });
-$app->get('/type/:id', function ($id) use ($app, $model, $lastUpdate) {
-    $app->expires('+1 day');
 
-    $type = $model->getType($id);
-    if(!$type)
-        $app->notFound();
+$app->group('/types', function () use ($app, $model, $lastUpdate) {
+    $app->get('/', function () use ($app, $model, $lastUpdate) {
+        $app->expires('+1 day');
+        
+        $pageCount = $model->getPageCount('types');
+        $page = $_GET['page'] ?? 1;
+        if(!is_numeric($page))
+            $page = 1;
 
-    $pageCount = $model->getPageCount(null, $model->getBotCount($id));
-    $page = $_GET['page'] ?? 1;
-    if(!is_numeric($page))
-        $page = 1;
+        if($page > $pageCount || $page < 0)
+            $app->notFound();
+            
+        $app->lastModified(max($lastUpdate, $model->getLastUpdate(), $model->getLastUpdate('types')));
+            
+        $types = $model->getTypes();
+        
+        $app->render('types.twig', array(
+            'types' => $types,
+            'page' => $page,
+            'pageCount' => $pageCount
+        ));
+    });
 
-    if($page > $pageCount || $page < 0)
-        $app->notFound();
+    $app->get('/:id', function ($id) use ($app, $model, $lastUpdate) {
+        $app->expires('+1 day');
 
-    $bots = $model->getBotsByType($id, $model->getOffset($page));
+        $type = $model->getType($id);
+        if(!$type)
+            $app->notFound();
 
-    $app->lastModified(max(array($lastUpdate, $type->date, max(array_map(function($bot) { return $bot->date; }, $bots)))));
-    $app->render('type.twig', array(
-        'type' => $type,
-        'bots' => $bots,
-        'page' => $page,
-        'pageCount' => $pageCount
-    ));
-})->name('type');
+        $pageCount = $model->getPageCount(null, $model->getBotCount($id));
+        $page = $_GET['page'] ?? 1;
+        if(!is_numeric($page))
+            $page = 1;
+
+        if($page > $pageCount || $page < 0)
+            $app->notFound();
+
+        $bots = $model->getBotsByType($id, $model->getOffset($page));
+
+        $app->lastModified(max(array($lastUpdate, $type->date, max(array_map(function($bot) { return $bot->date; }, $bots)))));
+        $app->render('type.twig', array(
+            'type' => $type,
+            'bots' => $bots,
+            'page' => $page,
+            'pageCount' => $pageCount
+        ));
+    })->name('type');
+});
 
 $app->group('/lib', function ()  use ($app, $model) {
     $app->get('/check', function ()  use ($app, $model) {
@@ -267,7 +292,8 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
     $app->contentType('application/xml;charset=utf8');
     $lastUpdate = $model->getLastUpdate();
     $subLastUpdate = $model->getLastUpdate('submissions');
-    $app->lastModified(max(array($lastUpdate, $subLastUpdate, $model->getLastUpdate('types'))));
+    $typeLastUpdate = $model->getLastUpdate('types');
+    $app->lastModified(max(array($lastUpdate, $subLastUpdate, $typeLastUpdate)));
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
     $url = $sitemap->addChild('url');
@@ -288,10 +314,16 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
         }
     }
 
+    $url = $sitemap->addChild('url');
+    $url->addChild('loc', 'https://twitchbots.info/types');
+    $url->addChild('changefreq', 'daily');
+    $url->addChild('lastmod', $getLastMod(max(array($lastUpdate, $typeLastUpdate))));
+    $url->addChild('priority', '0.2');
+
     $types = $model->getAllTypes();
     foreach($types as $type) {
         $url = $sitemap->addChild('url');
-        $url->addChild('loc', 'https://twitchbots.info/type/'.$type->id);
+        $url->addChild('loc', 'https://twitchbots.info/types/'.$type->id);
         $url->addChild('changefreq', 'daily');
         $url->addChild('priority', '0.3');
         $url->addChild('lastmod', $getLastMod(max(array($type->date, $model->getLastUpdate('bots', $type->id)))));

@@ -56,6 +56,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         ) DEFAULT CHARSET=ascii');
         $pdo->query('CREATE OR REPLACE VIEW count AS SELECT count(name) AS count FROM bots');
         $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, type, multichannel, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
+        $pdo->query('CREATE OR REPLACE VIEW typelist AS SELECT id, types.name AS name, multichannel, COUNT(DISTINCT(bots.name)) AS count FROM types LEFT JOIN bots ON bots.type = types.id GROUP BY id ORDER BY name ASC');
 
         parent::__construct();
     }
@@ -399,6 +400,30 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($this->model->twitchUserExists('butler_of_ec0ke'));
         $this->assertTrue($this->model->twitchUserExists('xanbot'));
         $this->assertFalse($this->model->twitchUserExists('zeldbot'));
+    }
+
+    public function testGetTypes()
+    {
+        $bots = $this->model->getTypes();
+
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', 'SELECT name FROM types LIMIT '.self::pageSize
+        );
+
+        $this->assertCount($queryTable->getRowCount(), $bots);
+
+        foreach($bots as $bot) {
+            $this->assertObjectHasAttribute("name", $bot);
+            $this->assertObjectHasAttribute("id", $bot);
+            $this->assertObjectHasAttribute("multichannel", $bot);
+            $this->assertObjectHasAttribute("count", $bot);
+        }
+
+        $bots = $this->model->getTypes(2);
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', 'SELECT name FROM types LIMIT '.self::pageSize.','.self::pageSize
+        );
+        $this->assertCount($queryTable->getRowCount(), $bots);
     }
 }
 ?>

@@ -360,4 +360,18 @@ class Model
 
         return $bots;
     }
+    
+    public function getTypes($page = 1): array
+    {
+        if($page <= $this->getPageCount($this->pageSize)) {
+            $sql = "SELECT * FROM typelist LIMIT :start,:stop";
+            $query = $this->db->prepare($sql);
+            $this->doPagination($query, $this->getOffset($page));
+            $query->execute();
+            return $query->fetchAll();
+        }
+        else {
+            return array();
+        }
+    }
 }

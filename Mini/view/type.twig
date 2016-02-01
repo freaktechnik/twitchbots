@@ -1,6 +1,13 @@
 {% import "_pagination.twig" as pagination %}
 {% extends "_base.twig" %}
 {% block title %}{{ type.name|e }}{% endblock %}
+{% block extraresources %}
+{% if page == 1 %}
+<link rel="canonical" href="https://twitchbots.info/types/{{ type.id }}">
+{% else %}
+<link rel="canonical" href="https://twitchbots.info/types/{{type.id }}?page={{page}}">
+{% endif %}
+{% endblock %}
 {% block content %}
 <div class="page-header">
     <h1>{{ type.name|e }} and bots of this type</h1>
