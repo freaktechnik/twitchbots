@@ -15,7 +15,7 @@ class GeshiExtension extends \Twig_Extension
     public function geshiHighlight($source, $language)
     {
         $geshi = new \GeSHi($source, $language);
-        $geshi->enable_classes();
+        //$geshi->enable_classes();
 
         return $geshi->parse_code();
     }
