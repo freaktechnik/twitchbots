@@ -149,9 +149,9 @@ class Model
      */
     public function getCount(string $table): int
     {
-        $sql = "SELECT count(*) AS count FROM ?";
+        $sql = "SELECT count(*) AS count FROM ".$table;
         $query = $this->db->prepare($sql);
-        $query->execute(array($table));
+        $query->execute();
 
         return (int)$query->fetch()->count;
     }
