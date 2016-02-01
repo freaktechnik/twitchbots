@@ -17,7 +17,8 @@ $app->view = new \Slim\Views\Twig();
 $app->view->setTemplatesDirectory("../Mini/view");
 
 $app->view->parserExtensions = array(
-    new \Slim\Views\TwigExtension()
+    new \Slim\Views\TwigExtension(),
+    new \Mini\Twig\Extension\GeshiExtension()
 );
 
 /******************************************* THE CONFIGS *******************************************************/
