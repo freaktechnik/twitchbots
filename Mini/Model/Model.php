@@ -105,7 +105,7 @@ class Model
 
     public function getSubmissions(): array
     {
-        $sql = "SELECT name, description, type, date FROM submissions ORDER BY date DESC";
+        $sql = "SELECT name, description, type, date, channel FROM submissions ORDER BY date DESC";
         $query = $this->db->prepare($sql);
         $query->execute();
 
