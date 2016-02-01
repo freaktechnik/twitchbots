@@ -8,7 +8,7 @@ class GeshiExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'geshi' => new \Twig_Filter_Method($this, 'geshiHighlight'),
+            'geshi' => new \Twig_Filter_Method($this, 'geshiHighlight', array('is_safe' => array('html')))
         );
     }
 
