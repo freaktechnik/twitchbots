@@ -1,3 +1,4 @@
+<?php
 require '../vendor/autoload.php';
 namespace Mini\Twig\Extension;
 
@@ -23,3 +24,4 @@ class GeshiExtension extends \Twig_Extension
         return 'geshi_highlight';
     }
 }
+?>
