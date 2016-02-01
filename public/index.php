@@ -219,8 +219,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
             $url->addChild('loc', 'https://twitchbots.info/types/'.$type->id);
             $url->addChild('changefreq', 'daily');
             $url->addChild('priority', '0.6');
-            print_r(max($type->date, $model->getLastUpdate('bots', $type->id)));
-            $url->addChild('lastmod', $getLastMod(max($type->date, $model->getLastUpdate('bots', $type->id))));
+            $url->addChild('lastmod', $getLastMod(max(strtotime($type->date), $model->getLastUpdate('bots', $type->id))));
         }
 
         echo $sitemap->asXML();
@@ -243,7 +242,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
 
         $bots = $model->getBotsByType($id, $model->getOffset($page));
 
-        $app->lastModified(max($lastUpdate, $type->date, max(array_map(function($bot) { return $bot->date; }, $bots))));
+        $app->lastModified(max($lastUpdate, strtotime($type->date), max(array_map(function($bot) { return strtotime($bot->date); }, $bots))));
         $app->render('type.twig', array(
             'type' => $type,
             'bots' => $bots,
