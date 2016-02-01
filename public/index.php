@@ -206,6 +206,25 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
         ));
     });
 
+    $app->get('/sitemap.xml', function () use ($app, $model, $getLastMod) {
+        $app->contentType('application/xml;charset=utf8');
+        $botLastUpdate = $model->getLastUpdate();
+        $typeLastUpdate = $model->getLastUpdate('types');
+        $app->lastModified(max(array($botLastUpdate, $typeLastUpdate)));
+        $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+
+        $types = $model->getAllTypes();
+        foreach($types as $type) {
+            $url = $sitemap->addChild('url');
+            $url->addChild('loc', 'https://twitchbots.info/types/'.$type->id);
+            $url->addChild('changefreq', 'daily');
+            $url->addChild('priority', '0.6');
+            $url->addChild('lastmod', $getLastMod(max(array($type->date, $model->getLastUpdate('bots', $type->id)))));
+        }
+
+        echo $sitemap->asXML();
+    });
+
     $app->get('/:id', function ($id) use ($app, $model, $lastUpdate) {
         $app->expires('+1 day');
 
@@ -231,30 +250,29 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
             'pageCount' => $pageCount
         ));
     })->name('type');
-
-    $app->get('/sitemap.xml', function () use ($app, $model, $getLastMod) {
-        $app->contentType('application/xml;charset=utf8');
-        $botLastUpdate = $model->getLastUpdate();
-        $typeLastUpdate = $model->getLastUpdate('types');
-        $app->lastModified(max(array($botLastUpdate, $typeLastUpdate)));
-        $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
-
-        $types = $model->getAllTypes();
-        foreach($types as $type) {
-            $url = $sitemap->addChild('url');
-            $url->addChild('loc', 'https://twitchbots.info/types/'.$type->id);
-            $url->addChild('changefreq', 'daily');
-            $url->addChild('priority', '0.6');
-            $url->addChild('lastmod', $getLastMod(max(array($type->date, $model->getLastUpdate('bots', $type->id)))));
-        }
-
-        echo $sitemap->asXML();
-    });
 });
 
 $app->group('/bots', function () use ($app, $model, $lastUpdate, $getLastMod) {
     $app->get('/', function () use ($app) {
         $app->redirect($app->request->getUrl().$app->urlFor('index'), 301);
+    });
+
+    $app->get('/sitemap.xml', function () use ($app, $model, $getLastMod) {
+        $app->contentType('application/xml;charset=utf8');
+        $botLastUpdate = $model->getLastUpdate();
+        $app->lastModified($botLastUpdate);
+        $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+
+        $bots = $model->getAllRawBots(0, $model->getBotCount());
+        foreach($bots as $bot) {
+            $url = $sitemap->addChild('url');
+            $url->addChild('loc', 'https://twitchbots.info/bots/'.$bot->name);
+            $url->addChild('changefreq', 'weekly');
+            $url->addChild('lastmod', $getLastMod($bot->date));
+            $url->addChild('priority', '0.8');
+        }
+
+        echo $sitemap->asXML();
     });
 
     $app->get('/:name', function ($name) use ($app, $model, $lastUpdate) {
@@ -275,24 +293,6 @@ $app->group('/bots', function () use ($app, $model, $lastUpdate, $getLastMod) {
             'bot' => $bot
         ));
     })->name('bot');
-
-    $app->get('/sitemap.xml', function () use ($app, $model, $getLastMod) {
-        $app->contentType('application/xml;charset=utf8');
-        $botLastUpdate = $model->getLastUpdate();
-        $app->lastModified($botLastUpdate);
-        $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
-
-        $bots = $model->getAllRawBots(0, $model->getBotCount());
-        foreach($bots as $bot) {
-            $url = $sitemap->addChild('url');
-            $url->addChild('loc', 'https://twitchbots.info/bots/'.$bot->name);
-            $url->addChild('changefreq', 'weekly');
-            $url->addChild('lastmod', $getLastMod($bot->date));
-            $url->addChild('priority', '0.8');
-        }
-
-        echo $sitemap->asXML();
-    });
 });
 
 $app->group('/lib', function ()  use ($app, $model) {
