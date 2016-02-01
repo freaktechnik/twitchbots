@@ -341,7 +341,7 @@ class Model
         if($type == 0)
             $type = $description;
 
-        $sql = "INSERT INTO submissions(name,description,type) VALUES (?,?,1,?)";
+        $sql = "INSERT INTO submissions(name,description,type,channel) VALUES (?,?,1,?)";
         $query = $this->db->prepare($sql);
         $query->execute(array($username, $type, $channel));
     }
