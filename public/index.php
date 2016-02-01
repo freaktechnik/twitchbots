@@ -233,19 +233,19 @@ $app->group('/bots', function () use ($app, $model, $lastUpdate) {
     $app->get('/', function () use ($app) {
         $app->redirect($app->request->getUrl().$app->urlFor('index'), 301);
     });
-    
+
     $app->get('/:name', function ($name) use ($app, $model, $lastUpdate) {
         $bot = $model->getBot($name);
         if(!$bot)
             $app->notFound();
-            
+
         if($bot->type) {
             $type = $model->getType($bot->type);
             $bot->typename = $type->name;
             $bot->url = $type->url;
             $bot->multichannel = $type->multichannel;
         }
-        
+
         $app->expires('+1 week');
         $app->lastModified(max(array($lastUpdate, $bot->date)));
         $app->render('bot.twig', array(
@@ -336,15 +336,13 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
     $url->addChild('lastmod', $lastMod);
     $url->addChild('priority', '1.0');
 
-    $pageCount = $model->getPageCount();
-    if($pageCount > 1) {
-        for($i = 2; $i <= $pageCount; $i++) {
-            $url = $sitemap->addChild('url');
-            $url->addChild('loc', 'https://twitchbots.info/?page='.$i);
-            $url->addChild('changefreq', 'daily');
-            $url->addChild('lastmod', $lastMod);
-            $url->addChild('priority', '1.0');
-        }
+    $bots = $model->getAllRawBots(0, $model->getBotCount());
+    foreach($bots as $bot) {
+        $url = $sitemap->addChild('url');
+        $url->addChild('loc', 'https://twitchbots.info/bots/'.$bot->name);
+        $url->addChild('changefreq', 'weekly');
+        $url->addChild('lastmod', $getLastMod($bot->date));
+        $url->addChild('priority', '0.8');
     }
 
     $url = $sitemap->addChild('url');
@@ -358,7 +356,7 @@ $app->get('/sitemap.xml', function() use ($app, $model, $lastUpdate) {
         $url = $sitemap->addChild('url');
         $url->addChild('loc', 'https://twitchbots.info/types/'.$type->id);
         $url->addChild('changefreq', 'daily');
-        $url->addChild('priority', '0.3');
+        $url->addChild('priority', '0.6');
         $url->addChild('lastmod', $getLastMod(max(array($type->date, $model->getLastUpdate('bots', $type->id)))));
     }
 
