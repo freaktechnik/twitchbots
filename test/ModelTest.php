@@ -425,5 +425,17 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         );
         $this->assertCount($queryTable->getRowCount(), $bots);
     }
+
+    public function testGetCount()
+    {
+        $botCount = $this->model->getCount('bots');
+        $this->assertEquals($this->getConnection()->getRowCount('bots'), $botCount);
+
+        $typeCount = $this->model->getCount('types');
+        $this->assertEquals($this->getConnection()->getRowCount('types'), $typeCount);
+
+        $submissionsCount = $this->model->getCount('submissions');
+        $this->assertEquals($this->getConnection()->getRowCount('submissions'), $submissionsCount);
+    }
 }
 ?>

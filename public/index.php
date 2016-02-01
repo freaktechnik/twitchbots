@@ -181,19 +181,19 @@ $app->get('/submissions', function () use ($app, $model, $lastUpdate) {
 $app->group('/types', function () use ($app, $model, $lastUpdate) {
     $app->get('/', function () use ($app, $model, $lastUpdate) {
         $app->expires('+1 day');
-        
-        $pageCount = $model->getPageCount('types');
+
+        $pageCount = $model->getPageCount(null, $model->getCount('types'));
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
             $page = 1;
 
         if($page > $pageCount || $page < 0)
             $app->notFound();
-            
+
         $app->lastModified(max($lastUpdate, $model->getLastUpdate(), $model->getLastUpdate('types')));
-            
+
         $types = $model->getTypes();
-        
+
         $app->render('types.twig', array(
             'types' => $types,
             'page' => $page,

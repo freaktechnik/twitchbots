@@ -144,6 +144,19 @@ class Model
     }
 
     /**
+     * @param string table
+     * @return int
+     */
+    public function getCount(string $table): int
+    {
+        $sql = "SELECT count(*) AS count FROM ?";
+        $query = $this->db->prepare($sql);
+        $query->execute(array($table));
+
+        return (int)$query->fetch()->count;
+    }
+
+    /**
      * @param int $count
      * @return int
      */
@@ -360,7 +373,7 @@ class Model
 
         return $bots;
     }
-    
+
     public function getTypes($page = 1): array
     {
         if($page <= $this->getPageCount($this->pageSize)) {
