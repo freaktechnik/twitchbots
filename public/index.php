@@ -251,7 +251,7 @@ $app->group('/bots', function () use ($app, $model, $lastUpdate) {
         $app->render('bot.twig', array(
             'bot' => $bot
         ));
-    });
+    })->name('bot');
 });
 
 $app->group('/lib', function ()  use ($app, $model) {
