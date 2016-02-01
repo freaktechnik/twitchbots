@@ -208,7 +208,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate) {
         if(!$type)
             $app->notFound();
 
-        $pageCount = max(array(1, $model->getPageCount(null, $model->getBotCount($id)));
+        $pageCount = max(array(1, $model->getPageCount(null, $model->getBotCount($id))));
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
             $page = 1;
