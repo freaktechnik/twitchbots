@@ -38,7 +38,7 @@ $app->configureMode('development', function () use ($app) {
         ),
         'csp' => "default-src 'none'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block",
         'apiUrl' => $app->request->getUrl().dirname($app->request->getRootUri(), 1).'/api',
-        'canonicalUrl' => 'https://'.$app->request->getHost().$app->request->getRootUri()
+        'canonicalUrl' => 'https://'.$app->request->getHost().$app->request->getRootUri().'/'
     ));
 });
 
@@ -58,7 +58,7 @@ $app->configureMode('production', function () use ($app) {
         ),
         'csp' => "default-src 'none'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info; form-action 'self'; frame-ancestors 'none'; reflected-xss block; base-uri twitchbots.info www.twitchbots.info; referrer no-referrer-when-downgrade",
         'apiUrl' => $app->request->getScheme().'://api.'.$app->request->getHost(),
-        'canonicalUrl' => 'https://'.$app->request->getHost()
+        'canonicalUrl' => 'https://'.$app->request->getHost().'/'
     ));
 
     $app->view->parserOptions = array(
@@ -220,7 +220,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
         $types = $model->getAllTypes();
         foreach($types as $type) {
             $url = $sitemap->addChild('url');
-            $url->addChild('loc', $app->config('canonicalUrl').$app->urlFor('type', [ "id" => $type->id ]));
+            $url->addChild('loc', $app->config('canonicalUrl').'types/'.$type->id);
             $url->addChild('changefreq', 'daily');
             $url->addChild('priority', '0.6');
             $url->addChild('lastmod', $getLastMod(max(strtotime($type->date), $model->getLastUpdate('bots', $type->id))));
@@ -269,7 +269,7 @@ $app->group('/bots', function () use ($app, $model, $lastUpdate, $getLastMod) {
         $bots = $model->getAllRawBots(0, $model->getBotCount());
         foreach($bots as $bot) {
             $url = $sitemap->addChild('url');
-            $url->addChild('loc', $app->config('canonicalUrl').$app->urlFor('bot', [ "name" => $bot->name ]));
+            $url->addChild('loc', $app->config('canonicalUrl').'bots/'.$bot->name);
             $url->addChild('changefreq', 'weekly');
             $url->addChild('lastmod', $getLastMod(strtotime($bot->date)));
             $url->addChild('priority', '0.8');
@@ -380,33 +380,33 @@ $app->get('/pages_map.xml', function () use ($app, $model, $lastUpdate, $getLast
     $url->addChild('priority', '1.0');
 
     $url = $sitemap->addChild('url');
-    $url->addChild('loc', $app->config('canonicalUrl').'/types');
+    $url->addChild('loc', $app->config('canonicalUrl').'types');
     $url->addChild('changefreq', 'daily');
     $url->addChild('lastmod', $getLastMod(max($botLastUpdate, $typeLastUpdate)));
     $url->addChild('priority', '0.2');
 
     $url = $sitemap->addChild('url');
-    $url->addChild('loc', $app->config('canonicalUrl').$app->urlFor('submit'));
+    $url->addChild('loc', $app->config('canonicalUrl').'submit');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod());
 
     $url = $sitemap->addChild('url');
-    $url->addChild('loc', $app->config('canonicalUrl').$app->urlFor('check'));
+    $url->addChild('loc', $app->config('canonicalUrl').'check');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod());
 
     $url = $sitemap->addChild('url');
-    $url->addChild('loc', $app->config('canonicalUrl').'/api');
+    $url->addChild('loc', $app->config('canonicalUrl').'api');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod());
 
     $url = $sitemap->addChild('url');
-    $url->addChild('loc', $app->config('canonicalUrl').'/about');
+    $url->addChild('loc', $app->config('canonicalUrl').'about');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod());
 
     $url = $sitemap->addChild('url');
-    $url->addChild('loc', $app->config('canonicalUrl').'/submissions');
+    $url->addChild('loc', $app->config('canonicalUrl').'submissions');
     $url->addChild('changefreq', 'daily');
     $url->addChild('priority', '0.2');
     $url->addChild('lastmod', $getLastMod($subLastUpdate));
@@ -422,15 +422,15 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getLastMod) {
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></sitemapindex>');
 
     $url = $sitemap->addChild('sitemap');
-    $url->addChild('loc', $app->config('canonicalUrl').'/pages_map.xml');
+    $url->addChild('loc', $app->config('canonicalUrl').'pages_map.xml');
     $url->addChild('lastmod', $getLastMod(max($subLastUpdate, $typeLastUpdate, $botLastUpdate)));
 
     $url = $sitemap->addChild('sitemap');
-    $url->addChild('loc', $app->config('canonicalUrl').'/bots/sitemap.xml');
+    $url->addChild('loc', $app->config('canonicalUrl').'bots/sitemap.xml');
     $url->addChild('lastmod', $getLastMod($botLastUpdate));
 
     $url = $sitemap->addChild('sitemap');
-    $url->addChild('loc', $app->config('canonicalUrl').'/types/sitemap.xml');
+    $url->addChild('loc', $app->config('canonicalUrl').'types/sitemap.xml');
     $url->addChild('lastod', $getLastMod($typeLastUpdate));
 
     echo $sitemap->asXML();

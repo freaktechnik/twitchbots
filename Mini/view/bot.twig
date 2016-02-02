@@ -2,7 +2,7 @@
 {% extends "_base.twig" %}
 {% block title %}{{ bot.name|e }}{% endblock %}
 {% block extraresources %}
-<link rel="canonical" href="https://twitchbots.info/bots/{{ bot.name|e('html_attr') }}">
+<link rel="canonical" href="{{ canonicalUrl }}bots/{{ bot.name|e('html_attr') }}">
 {% endblock %}
 {% block content %}
 {{ panels.bot(bot, '1') }}
