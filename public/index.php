@@ -383,7 +383,7 @@ $app->get('/pages_map.xml', function () use ($app, $model, $lastUpdate, $getLast
     $url->addChild('loc', $app->config('canonicalUrl').'types');
     $url->addChild('changefreq', 'daily');
     $url->addChild('lastmod', $getLastMod(max($botLastUpdate, $typeLastUpdate)));
-    $url->addChild('priority', '0.2');
+    $url->addChild('priority', '0.3');
 
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'submit');
