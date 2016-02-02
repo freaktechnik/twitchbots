@@ -220,7 +220,7 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
         $types = $model->getAllTypes();
         foreach($types as $type) {
             $url = $sitemap->addChild('url');
-            $url->addChild('loc', $app->config('canonicalUrl').$app->urlFor('type', [ "id": $type->id ]));
+            $url->addChild('loc', $app->config('canonicalUrl').$app->urlFor('type', [ "id" => $type->id ]));
             $url->addChild('changefreq', 'daily');
             $url->addChild('priority', '0.6');
             $url->addChild('lastmod', $getLastMod(max(strtotime($type->date), $model->getLastUpdate('bots', $type->id))));
@@ -269,7 +269,7 @@ $app->group('/bots', function () use ($app, $model, $lastUpdate, $getLastMod) {
         $bots = $model->getAllRawBots(0, $model->getBotCount());
         foreach($bots as $bot) {
             $url = $sitemap->addChild('url');
-            $url->addChild('loc', $app->config('canonicalUrl').$app->urlFor('bot', [ "name": $bot->name ]));
+            $url->addChild('loc', $app->config('canonicalUrl').$app->urlFor('bot', [ "name" => $bot->name ]));
             $url->addChild('changefreq', 'weekly');
             $url->addChild('lastmod', $getLastMod(strtotime($bot->date)));
             $url->addChild('priority', '0.8');
