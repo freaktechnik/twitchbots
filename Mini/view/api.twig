@@ -62,27 +62,27 @@
     <section>
         <h4>Response</h4>
         <code>GET {{apiUrl}}/v1/bot/all</code>
-{{ '{
-    "bots: [
+{{ "{
+    \"bots\": [
         {
-            "username": "nightbot",
-            "type": 1,
-            "_links": {
-                "self": "' ~ apiUrl ~'/v1/bot/nightbot"
-                "type": "{{apiUrl}}/v1/type/1"
+            \"username\": \"nightbot\",
+            \"type\": 1,
+            \"_links\": {
+                \"self\": \"#{apiUrl}/v1/bot/nightbot\"
+                \"type\": \"#{apiUrl}/v1/type/1\"
             }
         },
         ...
     ],
-    "offset": 0,
-    "limit": 100,
-    "total": 130,
-    "_links": {
-        "next": "{{apiUrl}}/v1/bot/all?offset=100&limit=100",
-        "prev": null,
-        "self": "{{apiUrl}}/v1/bot/all?offset=0&limit=100"
+    \"offset\": 0,
+    \"limit\": 100,
+    \"total\": 130,
+    \"_links\": {
+        \"next\": \"#{apiUrl}/v1/bot/all?offset=100&limit=100\",
+        \"prev\": null,
+        \"self\": \"#{apiUrl}/v1/bot/all?offset=0&limit=100\"
     }
-}'|geshi('javascript') }}
+}"|geshi('javascript') }}
             <code>GET {{apiUrl}}/v1/bot/all?type=1</code>
             <pre>
 {
