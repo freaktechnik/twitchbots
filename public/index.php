@@ -457,8 +457,8 @@ $app->get('/apis.json', function () use ($app, $lastUpdate) {
         "description" => "Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots indexed are service or moderator bots.",
         "url" => $app->config('canonicalUrl')."apis.json",
         "tags" => $tags,
-        "created" => "2016-02-14T16:32:14+01:00",
-        "modified" => date('c', $lastUpdate),
+        "created" => "2016-02-14",
+        "modified" => date('Y-m-d', $lastUpdate),
         "specificationVersion" => "0.14",
         "apis" => array(
             array(
