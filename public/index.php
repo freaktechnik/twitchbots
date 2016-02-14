@@ -468,6 +468,7 @@ $app->get('/apis.json', function () use ($app, $lastUpdate) {
                 "baseUrl" => $app->config('apiUrl'),
                 "version" => "v1",
                 "tags" => $tags,
+                "image" => null,
                 "properties" => array(),
                 "contact" => array( $martin )
             )
