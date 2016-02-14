@@ -464,8 +464,8 @@ $app->get('/apis.json', function () use ($app, $lastUpdate) {
             array(
                 "name" => "Twitch Bots API",
                 "description" => "Check if a Twitch user is a bot and if it is a bot, what kind of bot it is.",
-                "humanUrl" => $app->config('canonicalUrl').'api',
-                "baseUrl" => $app->config('apiUrl'),
+                "humanURL" => $app->config('canonicalUrl').'api',
+                "baseURL" => $app->config('apiUrl'),
                 "version" => "v1",
                 "tags" => $tags,
                 "image" => null,
