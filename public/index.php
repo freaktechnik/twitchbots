@@ -439,10 +439,10 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getLastMod) {
 $app->get('/apis.json', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->expires('+1 week');
-    
+
     $app->contentType('application/json;charset=utf8');
     $app->response->headers->set('Access-Control-Allow-Origin', '*');
-    
+
     $martin = array(
         "FN" => "Martin Giger",
         "email" => "martin@humanoids.be",
@@ -451,12 +451,13 @@ $app->get('/apis.json', function () use ($app, $lastUpdate) {
         "X-github" => "freaktechnik"
     );
     $tags = array("twitch", "chat", "bot", "stream", "spam", "mod", "coin", "token", "vanity");
-    
+
     $spec = array(
         "name" => "Twitch Bot Directory",
         "description" => "Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots indexed are service or moderator bots.",
         "url" => $app->config('canonicalUrl')."apis.json",
         "tags" => $tags,
+        "image" => "https://i.imgur.com/oRoYDOd.png",
         "created" => "2016-02-14",
         "modified" => date('Y-m-d', $lastUpdate),
         "specificationVersion" => "0.14",
@@ -468,14 +469,14 @@ $app->get('/apis.json', function () use ($app, $lastUpdate) {
                 "baseURL" => $app->config('apiUrl'),
                 "version" => "v1",
                 "tags" => $tags,
-                "image" => null,
+                "image" => "https://i.imgur.com/oRoYDOd.png",
                 "properties" => array(),
                 "contact" => array( $martin )
             )
         ),
         "maintainers" => array( $martin )
     );
-    
+
     echo json_encode($spec);
 });
 
