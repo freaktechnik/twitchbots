@@ -436,6 +436,48 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getLastMod) {
     echo $sitemap->asXML();
 });
 
+$app->get('/apis.json', function () use ($app, $lastUpdate) {
+    $app->lastModified($lastUpdate);
+    $app->expires('+1 week');
+    
+    $app->contentType('application/apis+json;charset=utf8');
+    $app->response->headers->set('Access-Control-Allow-Origin', '*');
+    
+    $martin = array(
+        "FN" => "Martin Giger",
+        "email" => "martin@humanoids.be",
+        "url" => "https://humanoids.be",
+        "X-twitter" => "freaktechnik",
+        "X-github" => "freaktechnik"
+    );
+    $tags = array("twitch", "chat", "bot", "stream", "spam", "mod", "coin", "token", "vanity");
+    
+    $spec = array(
+        "name" => "Twitch Bot Directory",
+        "description" => "Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots indexed are service or moderator bots.",
+        "url" => $app->config('canonicalUrl')."apis.json",
+        "tags" => $tags,
+        "created" => "2016-02-14T16:32:14+01:00",
+        "modified" => date('c', $lastUpdate),
+        "specificationVersion" => "0.14",
+        "apis" => array(
+            array(
+                "name" => "Twitch Bots API",
+                "description" => "Check if a Twitch user is a bot and if it is a bot, what kind of bot it is.",
+                "humanUrl" => $app->config('canonicalUrl').'api',
+                "baseUrl" => $app->config('apiUrl'),
+                "version" => "v1",
+                "tags" => $tags,
+                "properties" => array(),
+                "contact" => array( $martin )
+            )
+        ),
+        "maintainers" => array( $martin )
+    );
+    
+    echo json_encode($spec);
+});
+
 /******************************************* RUN THE APP *******************************************************/
 
 $app->run();
