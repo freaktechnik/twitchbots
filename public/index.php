@@ -222,8 +222,8 @@ $app->group('/types', function () use ($app, $model, $lastUpdate, $getLastMod) {
             $url = $sitemap->addChild('url');
             $url->addChild('loc', $app->config('canonicalUrl').'types/'.$type->id);
             $url->addChild('changefreq', 'daily');
-            $url->addChild('priority', '0.6');
             $url->addChild('lastmod', $getLastMod(max(strtotime($type->date), $model->getLastUpdate('bots', $type->id))));
+            $url->addChild('priority', '0.6');
         }
 
         echo $sitemap->asXML();
@@ -408,8 +408,8 @@ $app->get('/pages_map.xml', function () use ($app, $model, $lastUpdate, $getLast
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'submissions');
     $url->addChild('changefreq', 'daily');
-    $url->addChild('priority', '0.2');
     $url->addChild('lastmod', $getLastMod($subLastUpdate));
+    $url->addChild('priority', '0.2');
 
     echo $sitemap->asXML();
 });
@@ -431,7 +431,7 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getLastMod) {
 
     $url = $sitemap->addChild('sitemap');
     $url->addChild('loc', $app->config('canonicalUrl').'types/sitemap.xml');
-    $url->addChild('lastod', $getLastMod($typeLastUpdate));
+    $url->addChild('lastmod', $getLastMod($typeLastUpdate));
 
     echo $sitemap->asXML();
 });
