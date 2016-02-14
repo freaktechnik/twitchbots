@@ -440,7 +440,7 @@ $app->get('/apis.json', function () use ($app, $lastUpdate) {
     $app->lastModified($lastUpdate);
     $app->expires('+1 week');
     
-    $app->contentType('application/apis+json;charset=utf8');
+    $app->contentType('application/json;charset=utf8');
     $app->response->headers->set('Access-Control-Allow-Origin', '*');
     
     $martin = array(
