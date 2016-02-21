@@ -11,10 +11,12 @@ function update() {
     if(parseInt(select.value, 10) == 0) {
         input.removeAttribute("hidden");
         description.required = true;
+        description.disabled = false;
     }
     else {
         input.setAttribute("hidden", true);
         description.required = false;
+        description.disabled = true;
     }
 }
 select.addEventListener("change", update);
@@ -36,8 +38,8 @@ username.addEventListener("keyup", formChecker);
 form.addEventListener("submit", function(e) {
     if(!formChecker())
         e.preventDefault();
-        
-        
+
+
 });
 
 // User checking
