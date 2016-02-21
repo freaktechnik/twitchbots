@@ -36,21 +36,22 @@ username.addEventListener("keyup", formChecker);
 form.addEventListener("submit", function(e) {
     if(!formChecker())
         e.preventDefault();
+        
+        
 });
 
 // User checking
-
 function checkBot(username, cbk) {
     var url = "https://api.twitchbots.info/v1/bot/" + username;
-    
+
     var xhr = new XMLHttpRequest();
-    
+
     xhr.open("HEAD", url, true);
     xhr.onreadystatechange = function(e) {
         if(xhr.readyState === 2)
             cbk(xhr.status !== 404);
     };
-    
+
     xhr.send();
 }
 
@@ -87,8 +88,8 @@ function validateFieldContent(field, shouldExist) {
                     field.setCustomValidity("");
                 else
                     field.setCustomValidity("Must be an existing Twitch user.");
-                    
-                
+
+
                 if(shouldExist & field.validity.valid) {
                     checkBot(field.value, function(exists) {
                         if(exists)
@@ -102,7 +103,24 @@ function validateFieldContent(field, shouldExist) {
     }
 }
 
-channel.addEventListener("blur", validateFieldContent.bind(null, channel, false));
-username.addEventListener("blur", validateFieldContent.bind(null, username, true));
-validateFieldContent(channel, false);
-validateFieldContent(username, true);
+var fields = [
+    {
+        field: channel,
+        shouldExist: false
+    },
+    {
+        field: username,
+        shouldExist: true
+    }
+];
+
+for(var i = 0; i < fields.length; ++i) {
+    fields[i].field.addEventListener("blur", validateFieldContent.bind(null, fields[i].field, fields[i].shouldExist));
+    validateFieldContent(fields[i].field, fields[i].shouldExist);
+}
+
+submissionType.addEventListener("change", function() {
+    for(var i = 0; i < fields.length; ++i) {
+        validateFieldContent(fields[i].field, fields[i].shouldExist);
+    }
+});
