@@ -12,7 +12,7 @@ update();
 var channel = document.getElementById("channel");
 var username = document.getElementById("username");
 var description = document.getElementById("description");
-function fromChecker() {
+function formChecker() {
     if(channel.value == username.value)
         channel.setCustomValidity("The bot user has to be different from the channel it is for.");
     else
