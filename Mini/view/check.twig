@@ -11,7 +11,7 @@
 <p>Get the bot status for a specific username.</p>
 <form class="form-group" method="POST">
     <div class="input-group">
-        <input type="text" class="form-control" placeholder="Username" name="username" required pattern="[a-zA-Z0-9_]+" value="{{ username|e }}">
+        <input type="text" class="form-control" placeholder="Username" name="username" required pattern="[a-zA-Z0-9_]+" value="{{ username|e }}" spellcheck="false">
         <span class="input-group-btn">
             <button type="submit" class="btn btn-primary">Check</button>
         </span>
