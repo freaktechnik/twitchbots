@@ -123,7 +123,8 @@ $app->get('/submit', function () use ($app, $model, $lastUpdate) {
         'correction' => isset($_GET['correction']),
         'username' => $_GET['username'],
         'type' => (int)$_GET['type'],
-        'channel' => $_GET['channel']
+        'channel' => $_GET['channel'],
+        'description' => $_GET['description']
     ));
 })->name('submit');
 $app->map('/check', function () use ($app, $model, $lastUpdate) {
@@ -313,21 +314,25 @@ $app->group('/lib', function ()  use ($app, $model) {
         $echoParam = function (string $name, $first = false) use ($app) {
             return ($first?'?':'&').$name.'='.$app->request->params($name);
         };
+
+        $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
         //TODO should some of these checks be in the model?
         if($model->checkToken("submit", $app->request->params('token'))) {
-            if(!(boolean)$app->request->params('username') || !(boolean)$app->request->params('type')) {
-                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=8'.$echoParam('username').$echoParam('type').$echoParam('channel').$correction, 303);
+            if(!(boolean)$app->request->params('username') || $app->request->params('type') == "") {
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=8'.$echoParam('username').$echoParam('type').$echoParam('description').$echoParam('channel').$correction, 303);
             }
             else if($app->request->params('channel') == $app->request->params('username')) {
-                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=7'.$echoParam('username').$echoParam('type').$correction, 303);
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=7'.$echoParam('username').$echoParam('type').$echoParam('description').$correction, 303);
             }
             else if($app->request->params('channel') && !$model->twitchUserExists($app->request->params('channel'))) {
-                $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
-                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=6'.$echoParam('username').$echoParam('type').$echoParam('channel').$correction, 303);
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=6'.$echoParam('username').$echoParam('type').$echoParam('channel').$echoParam('description').$correction, 303);
+            }
+            else if($app->request->params('type') == 0 && $app->request->params('description') == "") {
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=9'.$echoParam('username').$echoParam('type').$echoParam('channel').$correction, 303);
             }
             else if((boolean)$app->request->params('submission-type')) {
                 if(!$model->botSubmitted($app->request->params('username'))) {
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=4&correction'.$echoParam('username').$echoParam('type').$echoParam('channel'), 303);
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=4&correction'.$echoParam('username').$echoParam('type').$echoParam('channel').$echoParam('description'), 303);
                 }
                 else if($model->getBot($app->request->params('username'))->type == $app->request->params('type')) {
                     $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=5&correction'.$echoParam('username').$echoParam('channel'), 303);
@@ -344,7 +349,7 @@ $app->group('/lib', function ()  use ($app, $model) {
             }
             else {
                 if(!$model->twitchUserExists($app->request->params('username'))) {
-                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2'.$echoParam('username').$echoParam('type').$echoParam('channel'), 303);
+                    $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=2'.$echoParam('username').$echoParam('type').$echoParam('channel').$echoParam('description'), 303);
                 }
                 else if($model->botSubmitted($app->request->params('username'))) {
                     $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=3'.$echoParam('username').$echoParam('type').$echoParam('channel'), 303);
@@ -361,8 +366,7 @@ $app->group('/lib', function ()  use ($app, $model) {
             }
         }
         else {
-            $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
-            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1'.$echoParam('username').$echoParam('type').$echoParam('channel').$correction);
+            $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=1'.$echoParam('username').$echoParam('type').$echoParam('channel').$echoParam('description').$correction);
         }
     });
 });

@@ -11,13 +11,19 @@ update();
 
 var channel = document.getElementById("channel");
 var username = document.getElementById("username");
-function usernameChecker() {
-    if(channel.value == username.value) {
-        channel.setCustomValidity("The bot user has to be different from the channel it is for");
-    }
-    else {
+var description = document.getElementById("description");
+function fromChecker() {
+    if(channel.value == username.value)
+        channel.setCustomValidity("The bot user has to be different from the channel it is for.");
+    else
         channel.setCustomValidity("");
-    }
+
+    if(parseInt(select.value, 10) == 0 && !description.value)
+        description.setCustomValidity("Please describe the new type.");
+    else
+        description.setCustomValidity("");
 }
-channel.addEventListener("keypress", usernameChecker);
-username.addEventListener("keypress", usernameChecker);
+
+var form = document.getElementById("submit-form");
+
+form.addEventListener("submit", formChecker);

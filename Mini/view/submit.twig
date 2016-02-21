@@ -26,6 +26,9 @@
 {% elseif error == 8 %}
     {% set level = 'danger' %}
     {% set message = "Not all required fields were filled out." %}
+{% elseif error == 9 %}
+    {% set level = 'danger' %}
+    {% set message = "Description can not be empty for new bot types" %}
 {% endif %}
 {% extends "_base.twig" %}
 {% block title %}Submit bot{% endblock %}
@@ -42,7 +45,7 @@
 {{ alerts.alert(level, message) }}
 <div class="panel panel-default">
     <div class="panel-body">
-        <form class="form-horizontal" method="post" action="lib/submit">
+        <form class="form-horizontal" method="post" action="lib/submit" id="submit-form">
             <fieldset class="form-group">
                 <legend class="col-sm-2 control-label">Submission Type</legend>
                 <div class="col-sm-10">
@@ -76,7 +79,7 @@
             <div class="form-group" id="bottype">
                 <label for="type" class="col-sm-2 control-label">New Type Description</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control col-sm-10" id="type" name="description" placeholder="Type">
+                    <input type="text" class="form-control col-sm-10" id="type" name="description" placeholder="Type" value="{{ channel|e('html_attr') }}">
                     <p class="help-block">Describe the bot type, normally the name of the software that runs it and if possible a link to the website of it. In case of a bot hosted by a thirdparty this is the name and URL of their site.</p>
                 </div>
             </div>
