@@ -124,7 +124,8 @@ for(var i = 0; i < fields.length; ++i) {
     validateFieldContent(fields[i].field, fields[i].shouldExist);
 }
 
-submissionType.addEventListener("click", function() {
+submissionType.addEventListener("change", function() {
+    username.setCustomValidity("");
     for(var i = 0; i < fields.length; ++i) {
         validateFieldContent(fields[i].field, fields[i].shouldExist);
     }
