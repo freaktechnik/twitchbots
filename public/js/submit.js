@@ -34,7 +34,10 @@ function formChecker() {
 formChecker();
 
 channel.addEventListener("keyup", formChecker);
-username.addEventListener("keyup", formChecker);
+username.addEventListener("keyup", function() {
+    formChecker();
+    username.setCustomValidity("");
+});
 form.addEventListener("submit", function(e) {
     if(!formChecker())
         e.preventDefault();
