@@ -87,8 +87,17 @@ function validateFieldContent(field, shouldExist) {
                     field.setCustomValidity("");
                 else
                     field.setCustomValidity("Must be an existing Twitch user.");
+                    
+                
+                if(shouldExist & field.validity.valid) {
+                    checkBot(field.value, function(exists) {
+                        if(exists)
+                            field.setCustomValidity("We already know about this bot.");
+                        else
+                            field.setCustomValidity("");
+                    });
+                }
             });
-            //TODO check if the user isn't in the directory if shouldExist.
         }
     }
 }
