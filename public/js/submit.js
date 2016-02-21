@@ -11,11 +11,13 @@ update();
 
 var channel = document.getElementById("channel");
 var username = document.getElementById("username");
-channel.addEventListener("keypress", function(event) {
+function usernameChecker() {
     if(channel.value == username.value) {
         channel.setCustomValidity("The bot user has to be different from the channel it is for");
     }
     else {
         channel.setCustomValidity("");
     }
-});
+}
+channel.addEventListener("keypress", usernameChecker);
+username.addEventListener("keypress", usernameChecker);
