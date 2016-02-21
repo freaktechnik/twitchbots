@@ -4,6 +4,7 @@ var channel = document.getElementById("channel");
 var username = document.getElementById("username");
 var description = document.getElementById("type");
 var form = document.getElementById("submit-form");
+var submissionType = document.getElementById("new-bot");
 
 // Conditionally show description field if the type is a new one.
 function update() {
@@ -37,15 +38,30 @@ form.addEventListener("submit", function(e) {
         e.preventDefault();
 });
 
-// Twitch user checking
-function checkUser(username, cbk) {
-    var url = "https://api.twitch.tv/kraken/users/"+username;
+// User checking
+
+function checkBot(username, cbk) {
+    var url = "https://api.twitchbots.info/v1/bot/" + username;
+    
+    var xhr = new XMLHttpRequest();
+    
+    xhr.open("HEAD", url, true);
+    xhr.onreadystatechange = function(e) {
+        if(xhr.readyState === 2)
+            cbk(xhr.status !== 404);
+    };
+    
+    xhr.send();
+}
+
+function checkTwitchUser(username, cbk) {
+    var url = "https://api.twitch.tv/kraken/users/" + username;
 
     var xhr = new XMLHttpRequest();
 
     xhr.open("HEAD", url, true);
     xhr.onreadystatechange = function(e) {
-        if(xhr.readyState == 2) {
+        if(xhr.readyState === 2) {
             // Only reject if the status is 404 not found.
             cbk(xhr.status !== 404);
         }
@@ -54,20 +70,30 @@ function checkUser(username, cbk) {
     xhr.send();
 }
 
-function validateFieldContent(e) {
-    var field = e.target;
+function validateFieldContent(field, shouldExist) {
     field.checkValidity();
     if(field.validity.valid && field.value.length) {
-        checkUser(field.value, function(exists) {
-            if(exists)
-                field.setCustomValidity("");
-            else
-                field.setCustomValidity("Must be an existing Twitch user.");
-        });
+        if(shouldExist && !submissionType.checked) {
+            checkBot(field.value, function(exists) {
+                if(exists)
+                    field.setCustomValidity("");
+                else
+                    field.setCustomValidity("Only known bots can be corrected.");
+            });
+        }
+        else {
+            checkTwitchUser(field.value, function(exists) {
+                if(exists)
+                    field.setCustomValidity("");
+                else
+                    field.setCustomValidity("Must be an existing Twitch user.");
+            });
+            //TODO check if the user isn't in the directory if shouldExist.
+        }
     }
 }
 
-channel.addEventListener("blur", validateFieldContent);
-username.addEventListener("blur", validateFieldContent);
-validateFieldContent({ target: channel });
-validateFieldContent({ target: username });
+channel.addEventListener("blur", validateFieldContent.bind(null, channel, false));
+username.addEventListener("blur", validateFieldContent.bind(null, username, true));
+validateFieldContent(channel, false);
+validateFieldContent(username, true);
