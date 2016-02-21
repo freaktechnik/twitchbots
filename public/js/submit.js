@@ -19,6 +19,24 @@ function update() {
 select.addEventListener("change", update);
 update();
 
+// Validation
+function formChecker() {
+    if(channel.value == username.value)
+        channel.setCustomValidity("The bot user has to be different from the channel it is for.");
+    else
+        channel.setCustomValidity("");
+
+   return channel.validity.valid && username.validity.valid;
+}
+formChecker();
+
+channel.addEventListener("keyup", formChecker);
+username.addEventListener("keyup", formChecker);
+form.addEventListener("submit", function(e) {
+    if(!formChecker())
+        e.preventDefault();
+});
+
 // Twitch user checking
 function checkUser(username, cbk) {
     var url = "https://api.twitch.tv/kraken/users/"+username;
@@ -33,7 +51,7 @@ function checkUser(username, cbk) {
         }
     };
 
-    xhr.send("GET");
+    xhr.send();
 }
 
 function validateFieldContent(e) {
@@ -51,20 +69,5 @@ function validateFieldContent(e) {
 
 channel.addEventListener("blur", validateFieldContent);
 username.addEventListener("blur", validateFieldContent);
-
-// Validation
-function formChecker() {
-    if(channel.value == username.value)
-        channel.setCustomValidity("The bot user has to be different from the channel it is for.");
-    else
-        channel.setCustomValidity("");
-
-   return channel.validity.valid && username.validity.valid;
-}
-
-channel.addEventListener("keyup", formChecker);
-username.addEventListener("keyup", formChecker);
-form.addEventListener("submit", function(e) {
-    if(!formChecker())
-        e.preventDefault();
-});
+validateFieldContent({ target: channel });
+validateFieldContent({ target: username });
