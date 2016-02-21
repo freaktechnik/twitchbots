@@ -4,7 +4,8 @@ var channel = document.getElementById("channel");
 var username = document.getElementById("username");
 var description = document.getElementById("type");
 var form = document.getElementById("submit-form");
-var submissionType = document.getElementById("new-bot");
+var stNew = document.getElementById("new-bot");
+var stCorrect = document.getElementById("correction");
 
 // Conditionally show description field if the type is a new one.
 function update() {
@@ -79,7 +80,7 @@ function checkTwitchUser(username, cbk) {
 function validateFieldContent(field, shouldExist) {
     field.checkValidity();
     if(field.validity.valid && field.value.length) {
-        if(shouldExist && !submissionType.checked) {
+        if(shouldExist && !stNew.checked) {
             checkBot(field.value, function(exists) {
                 if(exists)
                     field.setCustomValidity("");
@@ -108,6 +109,13 @@ function validateFieldContent(field, shouldExist) {
     }
 }
 
+function stListener() {
+    username.setCustomValidity("");
+    for(var i = 0; i < fields.length; ++i) {
+        validateFieldContent(fields[i].field, fields[i].shouldExist);
+    }
+}
+
 var fields = [
     {
         field: channel,
@@ -124,9 +132,5 @@ for(var i = 0; i < fields.length; ++i) {
     validateFieldContent(fields[i].field, fields[i].shouldExist);
 }
 
-submissionType.addEventListener("change", function() {
-    username.setCustomValidity("");
-    for(var i = 0; i < fields.length; ++i) {
-        validateFieldContent(fields[i].field, fields[i].shouldExist);
-    }
-});
+stNew.addEventListener("change", stListener);
+stCorrect.addEventListener("change", stListener);
