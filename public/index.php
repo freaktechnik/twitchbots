@@ -75,7 +75,7 @@ $model = new \Mini\Model\Model($app->config('database'));
 
 $app->view->getEnvironment()->addGlobal('canonicalUrl', $app->config('canonicalUrl'));
 
-$lastUpdate = 1455466495;
+$lastUpdate = 1456073551;
 
 $getLastMod = function($timestamp = 0) use ($lastUpdate) {
     return date('c', max($lastUpdate, $timestamp));
