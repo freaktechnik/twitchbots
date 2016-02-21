@@ -20,6 +20,12 @@
 {% elseif error == 6 %}
     {% set level = 'danger' %}
     {% set message = "The specified channel “#{channel|e}” isn't a registered account on Twitch." %}
+{% elseif error == 7 %}
+    {% set level = 'danger' %}
+    {% set message = "The bot username and channel name must not be the same." %}
+{% elseif error == 8 %}
+    {% set level = 'danger' %}
+    {% set message = "Not all required fields were filled out." %}
 {% endif %}
 {% extends "_base.twig" %}
 {% block title %}Submit bot{% endblock %}
@@ -53,7 +59,7 @@
             <div class="form-group">
                 <label for="username" class="col-sm-2 control-label">Twitch Username</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="{{ username|e('html_attr') }}" required>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="{{ username|e('html_attr') }}" required pattern="[a-zA-Z0-9_]+">
                 </div>
             </div>
             <div class="form-group">
@@ -77,7 +83,7 @@
             <div class="form-group">
                 <label for="channel" class="col-sm-2 control-label">Example Channel (optional)</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control col-sm-10" id="channel" name="channel" placeholder="Channel Name"  value="{{ channel|e('html_attr') }}">
+                    <input type="text" class="form-control col-sm-10" id="channel" name="channel" placeholder="Channel Name"  value="{{ channel|e('html_attr') }}" pattern="[a-zA-Z0-9_]+">
                     <p class="help-block">A channel in whose chat this bot is usually in.</p>
                 </div>
             </div>

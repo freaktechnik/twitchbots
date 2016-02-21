@@ -8,3 +8,14 @@ function update() {
 }
 select.addEventListener("change", update);
 update();
+
+var channel = document.getElementById("channel");
+var username = document.getElementById("username");
+channel.addEventListener("keypress", function(event) {
+    if(channel.value == username.value) {
+        channel.setCustomValidity("The bot user has to be different from the channel it is for");
+    }
+    else {
+        channel.setCustomValidity("");
+    }
+});

@@ -315,6 +315,12 @@ $app->group('/lib', function ()  use ($app, $model) {
         };
         //TODO should some of these checks be in the model?
         if($model->checkToken("submit", $app->request->params('token'))) {
+            if(empty($app->request->params('username') || empty($app->request->params('type')) {
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=8'.$echoParam('username').$echoParam('type').$echoParam('channel').$correction, 303);
+            }
+            if(isset($app->request->parms('channel')) && isset($app->request->params('username')) && $app->request->params('channel') == $app->request->params('username')) {
+                $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=7'.$echoParam('username').$echoParam('type').$correction, 303);
+            }
             if($app->request->params('channel') && !$model->twitchUserExists($app->request->params('channel'))) {
                 $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
                 $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error=6'.$echoParam('username').$echoParam('type').$echoParam('channel').$correction, 303);
