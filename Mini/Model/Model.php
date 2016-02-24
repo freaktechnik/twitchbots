@@ -354,22 +354,29 @@ class Model
 
     public function checkBots($step = 10): array
     {
-        $offset = $this->getLastCheckOffset($step);
-        $bots = $this->getAllRawBots($offset, $step);
+        try {
+            $offset = $this->getLastCheckOffset($step);
+            $bots = $this->getAllRawBots($offset, $step);
 
-        $bots = array_values(array_filter($bots, function($bot) {
-            return !$this->twitchUserExists($bot->name);
-        }));
+            $bots = array_values(array_filter($bots, function($bot) {
+                return !$this->twitchUserExists($bot->name);
+            }));
 
-        if(count($bots) > 1) {
-            $this->removeBots(array_map(function($bot) {
-                return $bot->name;
-            }, $bots));
+            if(count($bots) > 1) {
+                $this->removeBots(array_map(function($bot) {
+                    return $bot->name;
+                }, $bots));
+            }
+            else if(count($bots) == 1) {
+                $this->removeBot($bots[0]->name);
+            }
         }
-        else if(count($bots) == 1) {
-            $this->removeBot($bots[0]->name);
+        catch(Exception $e) {
+            throw $e;
         }
-        $this->checkDone();
+        finally {
+            $this->checkDone();
+        }
 
         return $bots;
     }
@@ -405,7 +412,7 @@ class Model
         return json_decode($json, true)['chatters'];
     }
 
-    private function isInChannel(string $user, string $channel): boolean
+    private function isInChannel(string $user, string $channel): bool
     {
         $chatters = $this->getChatters($channel);
         $user = strtolower($user);
@@ -418,7 +425,7 @@ class Model
         return false;
     }
 
-    private function setSubmissionInChat(integer $id, boolean $inChannel, boolean $live)
+    private function setSubmissionInChat(integer $id, bool $inChannel, bool $live)
     {
         if($live)
             $sql = "UPDATE submissions SET online=? WHERE id=?";
