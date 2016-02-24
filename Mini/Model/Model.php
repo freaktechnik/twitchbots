@@ -408,7 +408,7 @@ class Model
     private function isInChannel(string $user, string $channel): boolean
     {
         $chatters = $this->getChatters($channel);
-        $user = str_tolower($user);
+        $user = strtolower($user);
 
 
         foreach($chatters as $category) {
@@ -429,18 +429,24 @@ class Model
 	    $query->execute(array($inChannel, $id));
     }
 
-    public function checkSubmissions()
+    public function checkSubmissions(): integer
     {
         $submissions = $this->getSubmissions();
+        $count = 0;
 
         foreach($submissions as $submission) {
             if($submission->type == 0 && !empty($submission->channel) && (!isset($submission->online) || !isset($submission->offline))) {
                 $stream = $this->twitch->streamGet($submission->name);
-                if(isset($stream) && !isset($submission->online))
+                if(isset($stream) && !isset($submission->online)) {
                     $this->setSubmissionInChat($submission->id, $this->isInChannel($submission->name, $submission->channel), true);
-                else if(!isset($submission->offline))
+                    ++$count;
+                }
+                else if(!isset($submission->offline)) {
                     $this->setSubmissionInChat($submission->id, $this->isInChannel($submission->name, $submission->channel), false);
+                    ++$count;
+                }
             }
         }
+        return $count;
     }
 }

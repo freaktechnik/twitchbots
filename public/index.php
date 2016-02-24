@@ -307,8 +307,7 @@ $app->group('/lib', function ()  use ($app, $model) {
         else {
             echo 'Checked bots. Removed: ';
             print_r($model->checkBots());
-            $model->checkSubmissions();
-            echo 'Checked submissions.';
+            echo 'Checked '.$model->checkSubmissions().' submissions.';
         }
     });
 
