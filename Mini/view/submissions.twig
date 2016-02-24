@@ -18,6 +18,7 @@
                 <th>Offline</th>
                 <th>Online</th>
                 <th>Approve</th>
+                <th>Reject</th>
             </tr>
         </thead>
         <tbody>
@@ -29,7 +30,14 @@
                 <td>{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/chat" rel="external">{{ s.channel|e }}</a>{% endif %}</td>
                 <td>{{ s.offline|default("?") }}</td>
                 <td>{{ s.online|default("?") }}</td>
-                <td><button disabled type="submit">Approve</button></td>
+                <td><form>
+                    <input type="hidden" name="id" value="{{ s.id }}">
+                    <button disabled type="submit" class="btn btn-primary btn-sm">Approve</button>
+                </form></td>
+                <td><form>
+                    <input type="hidden" name="id" value="{{ s.id }}">
+                    <button disabled type="submit" class="btn btn-default btn-sm">Reject</button>
+                </form></td>
             </tr>
 {% endfor %}
         </tbody>
