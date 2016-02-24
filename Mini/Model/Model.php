@@ -425,7 +425,7 @@ class Model
         return false;
     }
 
-    private function setSubmissionInChat(integer $id, bool $inChannel, bool $live)
+    private function setSubmissionInChat(int $id, bool $inChannel, bool $live)
     {
         if($live)
             $sql = "UPDATE submissions SET online=? WHERE id=?";
@@ -436,7 +436,7 @@ class Model
 	    $query->execute(array($inChannel, $id));
     }
 
-    public function checkSubmissions(): integer
+    public function checkSubmissions(): int
     {
         $submissions = $this->getSubmissions();
         $count = 0;
