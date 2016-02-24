@@ -7,10 +7,32 @@
 <div class="page-header">
     <h1>Submission Queue</h1>
 </div>
-<dl class="dl-horizontal">
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Description</th>
+                <th>Submission Type</th>
+                <th>Channel</th>
+                <th>Offline</th>
+                <th>Online</th>
+                <th>Approve</th>
+            </tr>
+        </thead>
+        <tbody>
 {% for s in submissions %}
-    <dt><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external">{{ s.name|e }}</a></dt>
-    <dd>{{ s.description|e }}{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/chat" rel="external">{{ s.channel|e }}</a>{% endif %}</dd>
+            <tr>
+                <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external">{{ s.name|e }}</a></td>
+                <td>{{ s.description|e }}</td>
+                <td>{{ s.type == 0 ? "New" : "Correction" }}</td>
+                <td>{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/chat" rel="external">{{ s.channel|e }}</a>{% endif %}</td>
+                <td>{{ s.offline|default("?") }}</td>
+                <td>{{ s.online|default("?") }}</td>
+                <td><button disabled type="submit">Approve</button></td>
+            </tr>
 {% endfor %}
-</dl>
+        </tbody>
+    </table>
+</div>
 {% endblock %}

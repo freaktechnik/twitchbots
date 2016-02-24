@@ -34,6 +34,10 @@ $console
             $bots = $model->checkBots($amount);
 
             $output->writeln('Checked '.$amount.' bots. Removed '.count($bots));
+
+            $model->checkSubmissions();
+
+            $output->writeln('Checked submissions for being online');
         }
     });
 

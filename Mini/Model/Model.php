@@ -105,7 +105,7 @@ class Model
 
     public function getSubmissions(): array
     {
-        $sql = "SELECT name, description, type, date, channel FROM submissions ORDER BY date DESC";
+        $sql = "SELECT name, description, type, date, channel, offline, online, id FROM submissions ORDER BY date DESC";
         $query = $this->db->prepare($sql);
         $query->execute();
 
@@ -385,6 +385,62 @@ class Model
         }
         else {
             return array();
+        }
+    }
+
+    private function getChatters(string $channel): array
+    {
+        $url = "https://tmi.twitch.tv/group/user/".$channel."/chatters";
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $json = curl_exec($ch);
+
+        if(curl_getinfo($ch, CURLINFO_HTTP_CODE) >= 400) {
+            $json = '{"chatters":[]}';
+        }
+
+        curl_close($ch);
+
+        return json_decode($json, true)['chatters'];
+    }
+
+    private function isInChannel(string $user, string $channel): boolean
+    {
+        $chatters = $this->getChatters($channel);
+        $user = str_tolower($user);
+
+
+        foreach($chatters as $category) {
+            if(in_array($user, $category))
+                return true;
+        }
+        return false;
+    }
+
+    private function setSubmissionInChat(integer $id, boolean $inChannel, boolean $live)
+    {
+        if($live)
+            $sql = "UPDATE submissions SET online=? WHERE id=?";
+        else
+            $sql = "UPDATE submissions SET offline=? WHERE id=?";
+
+	    $query = $this->db->prepare($sql);
+	    $query->execute(array($inChannel, $id));
+    }
+
+    public function checkSubmissions()
+    {
+        $submissions = $this->getSubmissions();
+
+        foreach($submissions as $submission) {
+            if($submission->type == 0 && !empty($submission->channel) && (!isset($submission->online) || !isset($submission->offline))) {
+                $stream = $this->twitch->streamGet($submission->name);
+                if(isset($stream) && !isset($submission->online))
+                    $this->setSubmissionInChat($submission->id, $this->isInChannel($submission->name, $submission->channel), true);
+                else if(!isset($submission->offline))
+                    $this->setSubmissionInChat($submission->id, $this->isInChannel($submission->name, $submission->channel), false);
+            }
         }
     }
 }

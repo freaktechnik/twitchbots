@@ -30,6 +30,8 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             type int(1) unsigned NOT NULL DEFAULT 0,
             channel varchar(535) CHARACTER SET ascii DEFAULT NULL,
+            offline boolean NULL DEFAULT NULL,
+            online boolean NULL DEFAULT NULL
             PRIMARY KEY (id)
         ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=9');
         $pdo->query('CREATE TABLE IF NOT EXISTS types (
@@ -140,6 +142,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertObjectHasAttribute("description", $submission);
             $this->assertObjectHasAttribute("date", $submission);
             $this->assertGreaterThanOrEqual(strtotime($submission->date), time());
+            $this->assertObjectHasAttribute("id", $submission);
+            $this->assertObjectHasAttribute("offline", $submission);
+            $this->assertObjectHasAttribute("online", $submission);
         }
 
         // Sort order is descending by timestamp
