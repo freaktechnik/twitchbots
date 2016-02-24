@@ -31,7 +31,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             type int(1) unsigned NOT NULL DEFAULT 0,
             channel varchar(535) CHARACTER SET ascii DEFAULT NULL,
             offline boolean DEFAULT NULL,
-            online boolean DEFAULT NULL
+            online boolean DEFAULT NULL,
             PRIMARY KEY (id)
         ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=9');
         $pdo->query('CREATE TABLE IF NOT EXISTS types (
