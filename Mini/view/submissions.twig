@@ -24,10 +24,10 @@
         <tbody>
 {% for s in submissions %}
             <tr>
-                <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external">{{ s.name|e }}</a></td>
+                <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/profile" title="{{ s.name|e('html_attr') }} on Twitch" rel="external">{{ s.name|e }}</a></td>
                 <td>{{ s.description|e }}</td>
                 <td>{{ s.type == 0 ? "New" : "Correction" }}</td>
-                <td>{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/chat" rel="external">{{ s.channel|e }}</a>{% endif %}</td>
+                <td>{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/profile" rel="external">{{ s.channel|e }}</a>{% endif %}</td>
                 <td>{{ s.offline|default("?") }}</td>
                 <td>{{ s.online|default("?") }}</td>
                 <td><form>
