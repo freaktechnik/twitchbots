@@ -35,9 +35,8 @@ $console
 
             $output->writeln('Checked '.$amount.' bots. Removed '.count($bots));
 
-            $model->checkSubmissions();
-
-            $output->writeln('Checked submissions for being online');
+            $count = $model->checkSubmissions();
+            $output->writeln('Checked '.$count.' submissions for being in chat');
         }
     });
 
