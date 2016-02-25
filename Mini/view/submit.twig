@@ -75,6 +75,7 @@
                             <option value="{{ t.id|e('html_attr') }}"{% if type == t.id %} selected{% endif %}>{{ t.name|e }}</option>
                         {% endfor %}
                     </select>
+                    <p class="help-block">Try to select an existing type, only choose a new type if you can't find any matching type in the list. Selecting an existing type makes it easier for us to verify your submission.</p>
                 </div>
             </div>
             <div class="form-group" id="bottype"{% if type|default(0) != 0 %} hidden{% endif %}>
