@@ -448,7 +448,8 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getTemplateLastMod, $ge
     $templateUpdates = array(
         "type" => $getTemplateLastMod('type.twig'),
         "bot" => $getTemplateLastMod('bot.twig'),
-        "pages" => max(array_map("filemtime", glob('../Mini/view/*.twig')));
+        "pages" => max(array_map("filemtime", glob('../Mini/view/*.twig')))
+    );
     $app->lastModified(max($botLastUpdate, $typeLastUpdate, $subLastUpdate, $templateUpdates['pages']));
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></sitemapindex>');
 
