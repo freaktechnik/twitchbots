@@ -26,17 +26,18 @@ $console
     ))
     ->setDescription('Check a set of stored bots if they are still registered on Twitch.')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model) {
+        $date = '['.date('r').'] ';
         if($model->checkRunning()) {
-            $output->writeln('Check aready running. No action taken.');
+            $output->writeln($date.'Check aready running. No action taken.');
         }
         else {
             $amount = (int)$input->getArgument('amount');
             $bots = $model->checkBots($amount);
 
-            $output->writeln('Checked '.$amount.' bots. Removed '.count($bots));
+            $output->writeln($date.'Checked '.$amount.' bots. Removed '.count($bots));
 
             $count = $model->checkSubmissions();
-            $output->writeln('Checked '.$count.' submissions for being in chat');
+            $output->writeln($date.'Checked '.$count.' submissions for being in chat');
         }
     });
 
