@@ -56,7 +56,7 @@ $app->configureMode('production', function () use ($app) {
             'db_pass' => $db_pw,
             'page_size' => 50
         ),
-        'csp' => "default-src 'none'; style-src 'self'; script-src 'self' https://humanoids.be; font-src 'self'; connect-src https://api.twitchbots.info https://api.twitch.tv; form-action 'self'; frame-ancestors 'none'; reflected-xss block; base-uri twitchbots.info www.twitchbots.info; referrer no-referrer-when-downgrade; child-src https://humanoids.be; frame-src https://humanoids.be; img-src https://humanoids.be",
+        'csp' => "default-src 'none'; style-src 'self'; script-src 'self' https://humanoids.be; font-src 'self'; connect-src https://api.twitchbots.info https://api.twitch.tv https://humanoids.be; form-action 'self'; frame-ancestors 'none'; reflected-xss block; base-uri twitchbots.info www.twitchbots.info; referrer no-referrer-when-downgrade; child-src https://humanoids.be; frame-src https://humanoids.be; img-src https://humanoids.be",
         'apiUrl' => $app->request->getScheme().'://api.'.$app->request->getHost(),
         'canonicalUrl' => 'https://'.$app->request->getHost().'/'
     ));
