@@ -27,7 +27,7 @@
             <dd>{{ multichannel|default("Unknown")|e }}</dd>
             {% if not bot.multichannel and bot.channel is not empty %}
             <dt>For channel</dt>
-            <dd><a href="https://twitch.tv/{{ bot.channel|e('url')|e('html_attr') }}" rel="external">twitch.tv/{{ bot.channel|e }}</a></dd>
+            <dd><a href="https://twitch.tv/{{ bot.channel|e('url')|e('html_attr') }}" rel="external nofollow">twitch.tv/{{ bot.channel|e }}</a></dd>
             {% endif %}
         </dl>
         <a class="btn btn-default btn-sm pull-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}&type={{ bot.type|default('0')|e('url')|e('html_attr') }}&channel={{ bot.channel|e('url')|e('html_attr') }}">{{ btntext }}</a>
