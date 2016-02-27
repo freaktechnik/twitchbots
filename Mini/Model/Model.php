@@ -105,7 +105,7 @@ class Model
         if(!$this->twitchUserExists($username)) {
             throw new Exception("Cannot add a user that doesn't exist on Twitch", 2);
         }
-        else if($this->botSubmitted($usernme)) {
+        else if($this->botSubmitted($username)) {
             throw new Exception("Cannot add an already existing bot", 3);
         }
         else if($type == 0) {
