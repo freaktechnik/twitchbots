@@ -174,7 +174,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testAddCorrectionThrows2()
     {
         $this->expectException(Exception::class);
-        $this->model->addCorrection("test", 2));
+        $this->model->addCorrection("test", 2);
     }
     public function testAddCorrectionThrows3()
     {
