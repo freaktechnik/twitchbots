@@ -125,13 +125,26 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTablesEqual($expectedTable, $queryTable);
     }
 
-    public function testAddSubmissionThrows()
+    public function testAddSubmissionThrows1()
     {
-        $this->expectException($this->model->addSubmission("", 0, "lorem ipsum"));
-        $this->expectException($this->model->addSubmission("test", 0, ""));
-        $this->expectException($this->model->addSubmission("test", 0, "lorem ipsum", "test"));
+        $this->expectException(Exception::class);
+        $this->model->addSubmission("", 0, "lorem ipsum");
+    }
+    public function testAddSubmissionThrows2()
+    {
+        $this->expectException(Exception::class);
+        $this->model->addSubmission("test", 0, "");
+    }
+    public function testAddSubmissionThrows3()
+    {
+        $this->expectException(Exception::class);
+        $this->model->addSubmission("test", 0, "lorem ipsum", "test");
+    }
+    public function testAddSubmissionThrows4()
+    {
         $this->model->addSubmission("test", 1);
-        $this->expectException($this->model->addSubmission("test", 2));
+        $this->expectException(Exception::class);
+        $this->model->addSubmission("test", 2);
     }
 
     public function testAddCorrection()
@@ -153,14 +166,33 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTablesEqual($expectedTable, $queryTable);
     }
 
-    public function testAddCorrectionThrows()
+    public function testAddCorrectionThrows1()
     {
-        $this->expectException($this->model->addCorrection("", 0, "lorem ipsum"));
-        $this->expectException($this->model->addCorrection("test", 2));
+        $this->expectException(Exception::class);
+        $this->model->addCorrection("", 0, "lorem ipsum");
+    }
+    public function testAddCorrectionThrows2()
+    {
+        $this->expectException(Exception::class);
+        $this->model->addCorrection("test", 2));
+    }
+    public function testAddCorrectionThrows3()
+    {
         $this->model->addSubmission("test", 1);
-        $this->expectException($this->model->addSubmission("test", 0, ""));
-        $this->expectException($this->model->addSubmission("test", 1));
-        $this->expectException($this->model->addSubmission("test", 0, "lorem ipsum", "test"));
+        $this->expectException(Exception::class);
+        $this->model->addSubmission("test", 0, "");
+    }
+    public function testAddCorrectionThrows4()
+    {
+        $this->model->addSubmission("test", 1);
+        $this->expectException(Exception::class);
+        $this->model->addSubmission("test", 1);
+    }
+    public function testAddCorrectionThrows5()
+    {
+        $this->model->addSubmission("test", 1);
+        $this->expectException(Exception::class);
+        $this->model->addSubmission("test", 0, "lorem ipsum", "test");
     }
 
     public function testGetSubmissions()
