@@ -125,26 +125,46 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTablesEqual($expectedTable, $queryTable);
     }
 
-    public function testAddSubmissionThrows1()
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 0
+     */
+    public function testAddEmptySubmissionUsernameThrows()
     {
-        $this->expectException(Exception::class);
         $this->model->addSubmission("", 0, "lorem ipsum");
     }
-    public function testAddSubmissionThrows2()
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 9
+     */
+    public function testAddEmptySubmissionDescriptionThrows()
     {
-        $this->expectException(Exception::class);
         $this->model->addSubmission("test", 0, "");
     }
-    public function testAddSubmissionThrows3()
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 7
+     */
+    public function testAddSubmissionChannelEqualsUsernameThrows()
     {
-        $this->expectException(Exception::class);
         $this->model->addSubmission("test", 0, "lorem ipsum", "test");
     }
-    public function testAddSubmissionThrows4()
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 3
+     */
+    public function testAddExistingSubmissionThrows()
     {
         $this->model->addSubmission("test", 1);
-        $this->expectException(Exception::class);
         $this->model->addSubmission("test", 2);
+    }
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 3
+     */
+    public function testAddSubmissionExistingBotThrows()
+    {
+        $this->model->addSubmission("nightbot", 2);
     }
 
     public function testAddCorrection()
@@ -164,33 +184,45 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTablesEqual($expectedTable, $queryTable);
     }
 
-    public function testAddCorrectionThrows1()
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 0
+     */
+    public function testAddEmptyCorrectionUsernameThrows()
     {
-        $this->expectException(Exception::class);
         $this->model->addCorrection("", 0, "lorem ipsum");
     }
-    public function testAddCorrectionThrows2()
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 4
+     */
+    public function testAddInexistingCorrectionThrows()
     {
-        $this->expectException(Exception::class);
         $this->model->addCorrection("test", 2);
     }
-    public function testAddCorrectionThrows3()
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 9
+     */
+    public function testAddEmptyCorrectionDescriptionThrows()
     {
-        $this->model->addSubmission("test", 1);
-        $this->expectException(Exception::class);
-        $this->model->addSubmission("test", 0, "");
+        $this->model->addCorrection("nightbot", 0, "");
     }
-    public function testAddCorrectionThrows4()
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 5
+     */
+    public function testAddCorrectionSameTypeThrows()
     {
-        $this->model->addSubmission("test", 1);
-        $this->expectException(Exception::class);
-        $this->model->addSubmission("test", 1);
+        $this->model->addCorrection("nightbot", 1);
     }
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 5
+     */
     public function testAddCorrectionThrows5()
     {
-        $this->model->addSubmission("test", 1);
-        $this->expectException(Exception::class);
-        $this->model->addSubmission("test", 0, "lorem ipsum", "test");
+        $this->model->addCorrection("nightbot", 0, "lorem ipsum", "nightbot");
     }
 
     public function testGetSubmissions()
