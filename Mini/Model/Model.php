@@ -45,9 +45,9 @@ class Model
         $this->db = new PDO($dsn, $config['db_user'], $config['db_pass'], $options);
 
         $this->pageSize = $config['page_size'];
-        
+
         if(!$this->getConfig('update_size'))
-            $this->setConfig('update_size', 10);
+            $this->setConfig('update_size', '10');
 
         if(array_key_exists('testing', $config) && $config['testing']) {
             $this->twitch = new MockTwitch;
@@ -66,7 +66,7 @@ class Model
 	    if($result)
     	    return $result->value;
 	    else
-	        return null;
+	        return "";
 	}
 
 	private function setConfig(string $key, string $value)
@@ -361,7 +361,7 @@ class Model
 
     public function checkBots(): array
     {
-        return $this->checkNBots($this->getConfig('update_size', 10));
+        return $this->checkNBots((int)$this->getConfig('update_size', 10));
     }
 
     private function checkNBots(int $step): array
