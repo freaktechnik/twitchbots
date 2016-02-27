@@ -261,6 +261,7 @@
     <table name="bots">
         <column>name</column>
         <column>type</column>
+        <column>channel</column>
         <row>
             <value>ackbot</value>
             <value>24</value>
@@ -276,6 +277,7 @@
         <row>
             <value>butler_of_ec0ke</value>
             <value>22</value>
+            <value>ec0ke</value>
         </row>
         <row>
             <value>coebot</value>

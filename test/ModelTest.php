@@ -218,11 +218,19 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     }
     /**
      * @expectedException Exception
-     * @expectedExceptionCode 5
+     * @expectedExceptionCode 7
      */
-    public function testAddCorrectionThrows5()
+    public function testAddCorrectionSameChannelThrows()
     {
         $this->model->addCorrection("nightbot", 0, "lorem ipsum", "nightbot");
+    }
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 5
+     */
+    public function testAddCorrectionSameChannelThrows()
+    {
+        $this->model->addCorrection("butler_of_ec0ke", 22, "", "ec0ke");
     }
 
     public function testGetSubmissions()
