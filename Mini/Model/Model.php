@@ -4,6 +4,7 @@ namespace Mini\Model;
 
 use PDO;
 use PDOStatement;
+use Exception;
 
 require __DIR__.'/../../vendor/autoload.php';
 include_once 'csrf.php';
