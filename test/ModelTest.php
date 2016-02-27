@@ -220,7 +220,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 7
      */
-    public function testAddCorrectionSameChannelThrows()
+    public function testAddCorrectionChannelEqualsUsernameThrows()
     {
         $this->model->addCorrection("nightbot", 0, "lorem ipsum", "nightbot");
     }
@@ -228,7 +228,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 5
      */
-    public function testAddCorrectionSameChannelThrows()
+    public function testAddCorrectionIdenticalChannelThrows()
     {
         $this->model->addCorrection("butler_of_ec0ke", 22, "", "ec0ke");
     }
