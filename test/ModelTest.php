@@ -329,6 +329,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals("butler_of_ec0ke", $bot->name);
         $this->assertEquals(22, $bot->type);
         $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
+        $this->assertEquals("ec0ke", $bot->channel);
     }
 
     public function testGetNotExistingBot()
