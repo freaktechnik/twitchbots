@@ -102,12 +102,35 @@ class Model
      */
     public function addSubmission(string $username, int $type, $description = "", $channel = null)
     {
-        if($type === 0)
+        if(!$this->twitchUserExists($username)) {
+            throw new Exception("Cannot add a user that doesn't exist on Twitch", 2);
+        }
+        else if($this->botSubmitted($usernme)) {
+            throw new Exception("Cannot add an already existing bot", 3);
+        }
+        else if($type == 0) {
+            if($description == "")
+                throw new Exception("Description can not be empty", 9);
             $type = $description;
+        }
 
-        $sql = "INSERT INTO submissions(name,description,type,channel) VALUES (?,?,0,?)";
+        $this->appendToSubmissions($username, $type, 0, $channel);
+    }
+
+    private function appendToSubmissions(string $username, $type, $correction = 0, $channel = null)
+    {
+        if($username == "" || $type == "") {
+            throw new Exception("Required fields are empty", 0);
+        }
+        else if($username == $channel) {
+            throw new Exception("Username of the bot and the channel it is in can not match", 7);
+        }
+        else if($channel !== null && !$this->twitchUserExists($channel)) {
+            throw new Exception("Given channel isn't a Twitch channel", 6);
+        }
+        $sql = "INSERT INTO submissions(name,description,type,channel) VALUES (?,?,?,?)";
         $query = $this->db->prepare($sql);
-        $query->execute(array($username, $type, $channel));
+        $query->execute(array($username, $type, $correction, $channel));
     }
 
     public function getSubmissions(): array
@@ -345,12 +368,21 @@ class Model
 
     public function addCorrection(string $username, int $type, $description = "", $channel = null)
     {
-        if($type == 0)
+        if(!$this->botSubmitted($username)) {
+            throw new Exception("Cannot correct an inexistent bot", 4);
+        }
+        else if($type == 0) {
+            if($description == "")
+                throw new Exception("Description can not be empty", 9);
             $type = $description;
+        }
 
-        $sql = "INSERT INTO submissions(name,description,type,channel) VALUES (?,?,1,?)";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($username, $type, $channel));
+        $existingBot = $this->getBot($username);
+        if($existingBot->channel == $channel && $existingBot->type == $type) {
+            throw new Exception("Metadata must be different", 5);
+        }
+
+        $this->appendToSubmissions($username, $type, 1, $channel);
     }
 
     public function twitchUserExists(string $name): bool

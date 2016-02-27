@@ -125,6 +125,44 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTablesEqual($expectedTable, $queryTable);
     }
 
+    public function testAddSubmissionThrows()
+    {
+        $this->expectException($this->model->addSubmission("", 0, "lorem ipsum"));
+        $this->expectException($this->model->addSubmission("test", 0, ""));
+        $this->expectException($this->model->addSubmission("test", 0, "lorem ipsum", "test"));
+        $this->model->addSubmission("test", 1);
+        $this->expectException($this->model->addSubmission("test", 2));
+    }
+
+    public function testAddCorrection()
+    {
+        $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
+        $this->model->addSubmission("test", 4);
+        $this->model->addSubmission("nightbot", 0, "Nightbot");
+
+        $this->model->addCorrection("test", 0, "lorem ipsum");
+        $this->model->addCorrection("nightbot", 1);
+        $this->assertEquals(2, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
+
+        $queryTable = $this->getConnection()->createQueryTable(
+           'submissions',
+           'SELECT name, description FROM submissions'
+        );
+        $expectedTable = $this->createXMLDataSet(dirname(__FILE__)."/_fixtures/submissions.xml")
+                              ->getTable("submissions");
+        $this->assertTablesEqual($expectedTable, $queryTable);
+    }
+
+    public function testAddSubmissionThrows()
+    {
+        $this->expectException($this->model->addCorrection("", 0, "lorem ipsum"));
+        $this->expectException($this->model->addCorrection("test", 2));
+        $this->model->addSubmission("test", 1);
+        $this->expectException($this->model->addSubmission("test", 0, ""));
+        $this->expectException($this->model->addSubmission("test", 1));
+        $this->expectException($this->model->addSubmission("test", 0, "lorem ipsum", "test"));
+    }
+
     public function testGetSubmissions()
     {
         $this->assertEquals(count($this->model->getSubmissions()), $this->getConnection()->getRowCount('submissions'), "Not an empty array with no submissions");

@@ -16,7 +16,7 @@
     {% set message = "The bot “#{username|e}” isn't in our database." %}
 {% elseif error == 5 %}
     {% set level = 'danger' %}
-    {% set message = "Type matches the current type of the bot “#{username|e}”" %}
+    {% set message = "Info is identical to the current one for the bot “#{username|e}”" %}
 {% elseif error == 6 %}
     {% set level = 'danger' %}
     {% set message = "The specified channel “#{channel|e}” isn't a registered account on Twitch." %}
