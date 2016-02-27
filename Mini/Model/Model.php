@@ -442,7 +442,7 @@ class Model
         $count = 0;
 
         foreach($submissions as $submission) {
-            if($submission->type == 0 && !empty($submission->channel) && (!isset($submission->online) || !isset($submission->offline))) {
+            if(!empty($submission->channel) && (!isset($submission->online) || !isset($submission->offline))) {
                 $stream = $this->twitch->streamGet($submission->channel);
                 if(isset($stream->stream) && !isset($submission->online)) {
                     $this->setSubmissionInChat($submission->id, $this->isInChannel($submission->name, $submission->channel), true);
