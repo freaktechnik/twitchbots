@@ -153,7 +153,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTablesEqual($expectedTable, $queryTable);
     }
 
-    public function testAddSubmissionThrows()
+    public function testAddCorrectionThrows()
     {
         $this->expectException($this->model->addCorrection("", 0, "lorem ipsum"));
         $this->expectException($this->model->addCorrection("test", 2));
