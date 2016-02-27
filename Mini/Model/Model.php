@@ -45,6 +45,9 @@ class Model
         $this->db = new PDO($dsn, $config['db_user'], $config['db_pass'], $options);
 
         $this->pageSize = $config['page_size'];
+        
+        if(!$this->getConfig('update_size'))
+            $this->setConfig('update_size', 10);
 
         if(array_key_exists('testing', $config) && $config['testing']) {
             $this->twitch = new MockTwitch;
@@ -54,12 +57,16 @@ class Model
         }
 	}
 
-	private function getConfig(string $key, $defaultValue = null): string
+	private function getConfig(string $key): string
 	{
 	    $sql = "SELECT value FROM config where name=?";
 	    $query = $this->db->prepare($sql);
 	    $query->execute(array($key));
-	    return $query->fetch()->value || $defaultValue;
+	    $result = $query->fetch();
+	    if($result)
+    	    return $result->value;
+	    else
+	        return null;
 	}
 
 	private function setConfig(string $key, string $value)
