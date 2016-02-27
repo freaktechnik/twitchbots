@@ -160,7 +160,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
            'submissions',
            'SELECT name, description FROM submissions'
         );
-        $expectedTable = $this->createXMLDataSet(dirname(__FILE__)."/_fixtures/submissions.xml")
+        $expectedTable = $this->createXMLDataSet(dirname(__FILE__)."/_fixtures/corrections.xml")
                               ->getTable("submissions");
         $this->assertTablesEqual($expectedTable, $queryTable);
     }
@@ -199,7 +199,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals(count($this->model->getSubmissions()), $this->getConnection()->getRowCount('submissions'), "Not an empty array with no submissions");
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
-        $this->model->addSubmission("nightbot", 1);
+        $this->model->addSubmission("nightboot", 1);
         $this->assertEquals(2, $this->getConnection()->getRowCount('submissions'), "Test setup failed");
 
         $submissions = $this->model->getSubmissions();
@@ -410,7 +410,6 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function testBotSubmitted()
     {
-        $this->model->addCorrection('freaktechnik', 2);
         $this->assertTrue($this->model->botSubmitted('butler_of_ec0ke'));
         $this->assertFalse($this->model->botSubmitted('freaktechnik'));
         $this->model->addSubmission('freaktechnik', 1);

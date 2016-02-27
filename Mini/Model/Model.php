@@ -369,7 +369,8 @@ class Model
 
     public function addCorrection(string $username, int $type, $description = "", $channel = null)
     {
-        if(!$this->botSubmitted($username)) {
+        $existingBot = $this->getBot($username);
+        if(empty($existingBot)) {
             throw new Exception("Cannot correct an inexistent bot", 4);
         }
         else if($type == 0) {
@@ -377,9 +378,7 @@ class Model
                 throw new Exception("Description can not be empty", 9);
             $type = $description;
         }
-
-        $existingBot = $this->getBot($username);
-        if($existingBot->channel == $channel && $existingBot->type == $type) {
+        else if($existingBot->channel == $channel && $existingBot->type == $type) {
             throw new Exception("Metadata must be different", 5);
         }
 

@@ -5,11 +5,11 @@
         <column>description</column>
         <row>
             <value>test</value>
-            <value>lorem ipsum</value>
+            <value>q</value>
         </row>
         <row>
-            <value>nightboot</value>
-            <value>1</value>
+            <value>nightbot</value>
+            <value>nightbot</value>
         </row>
     </table>
 </dataset>
