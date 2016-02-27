@@ -4,8 +4,8 @@
         <column>name</column>
         <column>description</column>
         <row>
-            <value>test</value>
-            <value>q</value>
+            <value>moobot</value>
+            <value>1</value>
         </row>
         <row>
             <value>nightbot</value>
