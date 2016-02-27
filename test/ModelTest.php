@@ -395,7 +395,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testCheckBots()
     {
         $initialCount = $this->model->getBotCount();
-        $bots = $this->model->checkBots($initialCount);
+        $bots = $this->model->checkBots();
 
         $this->assertEquals($initialCount - count($bots), $this->model->getBotCount());
     }

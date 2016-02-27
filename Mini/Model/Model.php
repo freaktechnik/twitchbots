@@ -54,12 +54,12 @@ class Model
         }
 	}
 
-	private function getConfig(string $key): string
+	private function getConfig(string $key, $defaultValue = null): string
 	{
 	    $sql = "SELECT value FROM config where name=?";
 	    $query = $this->db->prepare($sql);
 	    $query->execute(array($key));
-	    return $query->fetch()->value;
+	    return $query->fetch()->value || $defaultValue;
 	}
 
 	private function setConfig(string $key, string $value)
@@ -352,8 +352,15 @@ class Model
         return $this->twitch->http_code != 404;
     }
 
-    public function checkBots($step = 10): array
+    public function checkBots(): array
     {
+        return $this->checkNBots($this->getConfig('update_size', 10));
+    }
+
+    private function checkNBots(int $step): array
+    {
+        // Make sure we get reserved.
+        $this->checkRunning();
         try {
             $offset = $this->getLastCheckOffset($step);
             $bots = $this->getAllRawBots($offset, $step);
