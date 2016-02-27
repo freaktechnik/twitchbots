@@ -113,7 +113,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
-        $this->model->addSubmission("nightbot", 1);
+        $this->model->addSubmission("nightboot", 1);
 
         $this->assertEquals(2, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
 
@@ -150,11 +150,10 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testAddCorrection()
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
-        $this->model->addSubmission("test", 4);
-        $this->model->addSubmission("nightbot", 0, "Nightbot");
+        $this->model->addSubmission("test", 0, "lorem ipsum");
 
-        $this->model->addCorrection("test", 0, "lorem ipsum");
-        $this->model->addCorrection("nightbot", 1);
+        $this->model->addCorrection("test", 1);
+        $this->model->addCorrection("nightbot", 0, "nightbot");
         $this->assertEquals(2, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
 
         $queryTable = $this->getConnection()->createQueryTable(
