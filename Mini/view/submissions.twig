@@ -30,7 +30,7 @@
 <a href="{{ urlFor('bot', { name: s.name }) }}" title="{{ s.name|e('html_attr') }} in the Twitch Bots Directory">{{ s.name|e }}</a>
 {% endif %}</td>
                 <td>{% if s.description matches '/^\\d+$/' %}
-                    <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}">{{ e.description|e }}</a>
+                    <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}">{{ s.description|e }}</a>
                 {% else %}
                     {{ s.description|e }}
                 {% endif %}</td>
