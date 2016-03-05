@@ -460,7 +460,7 @@ class Model
         $json = curl_exec($ch);
 
         if(curl_getinfo($ch, CURLINFO_HTTP_CODE) >= 400) {
-            $json = '{"chatters":[]}';
+            throw new Exception("No chatters returned");
         }
 
         curl_close($ch);
@@ -470,7 +470,13 @@ class Model
 
     private function isInChannel(string $user, string $channel): bool
     {
-        $chatters = $this->getChatters($channel);
+        try {
+            $chatters = $this->getChatters($channel);
+        }
+        catch(Exception $e) {
+            return null;
+        }
+
         $user = strtolower($user);
 
 
