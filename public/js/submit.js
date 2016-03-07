@@ -43,7 +43,9 @@ form.addEventListener("submit", function(e) {
     if(!formChecker())
         e.preventDefault();
 
-
+    //TODO also track errors/successes
+    var _paq = _paq || [];
+    _paq.push(['trackEvent', 'Submission', stNew.checked ? "Submit" : "Correct", username.value]);
 });
 
 // User checking
