@@ -25,7 +25,7 @@ update();
 
 // Validation
 function formChecker() {
-    if(channel.value == username.value)
+    if(channel.value.toLowerCase() == username.value.toLowerCase())
         channel.setCustomValidity("The bot user has to be different from the channel it is for.");
     else
         channel.setCustomValidity("");

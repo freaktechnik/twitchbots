@@ -133,7 +133,7 @@ class Model
         if($username == "" || $type == "") {
             throw new Exception("Required fields are empty", 0);
         }
-        else if($username == $channel) {
+        else if(strtolower($username) == strtolower($channel)) {
             throw new Exception("Username of the bot and the channel it is in can not match", 7);
         }
         else if($channel !== null && !$this->twitchUserExists($channel)) {

@@ -333,18 +333,18 @@ $app->group('/lib', function ()  use ($app, $model) {
             }
             else if((boolean)$app->request->params('submission-type')) {
                 $model->addCorrection(
-                    $app->request->params('username'),
+                    strtolower($app->request->params('username')),
                     $app->request->params('type'),
                     $app->request->params('description'),
-                    $app->request->params('channel')
+                    strtolower($app->request->params('channel'))
                 );
             }
             else {
                 $model->addSubmission(
-                    $app->request->params('username'),
+                    strtolower($app->request->params('username')),
                     $app->request->params('type'),
                     $app->request->params('description'),
-                    $app->request->params('channel')
+                    strtolower($app->request->params('channel'))
                 );
             }
         }
