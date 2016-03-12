@@ -25,7 +25,7 @@
 {% for s in submissions %}
             <tr>
                 <td>{% if s.type == 0 %}
-<a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/profile" title="{{ s.name|e('html_attr') }} on Twitch" rel="external">{{ s.name|e }}</a>
+<a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/profile" title="{{ s.name|e('html_attr') }} on Twitch" rel="external nofollow">{{ s.name|e }}</a>
 {% else %}
 <a href="{{ urlFor('bot', { name: s.name }) }}" title="{{ s.name|e('html_attr') }} in the Twitch Bots Directory">{{ s.name|e }}</a>
 {% endif %}</td>
@@ -35,7 +35,7 @@
                     {{ s.description|e }}
                 {% endif %}</td>
                 <td>{{ s.type == 0 ? "New" : "Correction" }}</td>
-                <td>{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/profile" rel="external">{{ s.channel|e }}</a>{% endif %}</td>
+                <td>{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/profile" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
                 <td>{{ s.offline|default("?") }}</td>
                 <td>{{ s.online|default("?") }}</td>
                 <td><form>
