@@ -232,6 +232,14 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->model->addCorrection("butler_of_ec0ke", 22, "", "ec0ke");
     }
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 10
+     */
+    public function testAddCorrectionMultichannelChannelThrows()
+    {
+        $this->model->addCorrection('nightbot', 1, "", "night");
+    }
 
     public function testGetSubmissions()
     {
