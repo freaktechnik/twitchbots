@@ -391,6 +391,12 @@ class Model
         else if($existingBot->channel == $channel && $existingBot->type == $type) {
             throw new Exception("Metadata must be different", 5);
         }
+        else if($type != 0 && $type == $existingBot->type && isset($channel)) {
+            $type = $this->getType((int)$description);
+            if($type->multichannel) {
+                throw new Exception("Example channel set for a multichannel bot", 10);
+            }
+        }
 
         $this->appendToSubmissions($username, $type, 1, $channel);
     }
