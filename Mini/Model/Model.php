@@ -476,6 +476,9 @@ class Model
         catch(Exception $e) {
             return null;
         }
+        
+        echo $user." is in ".$channel;
+        print_r($chatters);
 
         $user = strtolower($user);
 
