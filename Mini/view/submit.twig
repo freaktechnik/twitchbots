@@ -31,7 +31,7 @@
     {% set message = "Description can not be empty for new bot types" %}
 {% elseif error == 10 %}
     {% set level = 'danger' %}
-    {% set message = "This bot type can be in multiple channels. Example channels are not accepted as correction." %}
+    {% set message = "This bot type can be in multiple channels, thus example channels are not accepted as correction." %}
 {% endif %}
 {% extends "_base.twig" %}
 {% block title %}Submit bot{% endblock %}
