@@ -32,6 +32,9 @@
 {% elseif error == 10 %}
     {% set level = 'danger' %}
     {% set message = "This bot type can be in multiple channels, thus example channels are not accepted as correction." %}
+{% elseif error == 11 %}
+    {% set level = 'info' %}
+    {% set message = "A correction with identical username (#{username|e}), new type description and channel already exists." %}
 {% endif %}
 {% extends "_base.twig" %}
 {% block title %}Submit bot{% endblock %}

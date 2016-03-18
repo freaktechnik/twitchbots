@@ -373,12 +373,22 @@ class Model
 
         return $lastOffset;
     }
+    
+    private function hasCorrection(string $username, string $description, $channel = null): bool
+    {
+        $sql = 'SELECT * FROM submissions WHERE type=1 AND name=? AND  description=? AND channel=?';
+        $query = $this->db->prepare($sql);
+        $query->execute(array($username, $description, $channel));
+        return $query->fetch() != null;
+    }
 
     public function addCorrection(string $username, int $type, $description = "", $channel = null)
     {
         if($type == 0) {
             if($description == "")
                 throw new Exception("Description can not be empty", 9);
+            else if($this->hasCorrection($username, $description, $channel))
+                throw new Exception("Identical correction already exists", 11);
             $type = $description;
         }
 
