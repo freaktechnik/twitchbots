@@ -136,7 +136,7 @@ class Model
         else if(strtolower($username) == strtolower($channel)) {
             throw new Exception("Username of the bot and the channel it is in can not match", 7);
         }
-        else if($channel !== null && !$this->twitchUserExists($channel)) {
+        else if($channel !== null && !$this->twitchUserExists($channel, true)) {
             throw new Exception("Given channel isn't a Twitch channel", 6);
         }
     }
@@ -411,10 +411,10 @@ class Model
         $this->appendToSubmissions($username, $type, 1, $channel);
     }
 
-    public function twitchUserExists(string $name): bool
+    public function twitchUserExists(string $name, $noJustin = false): bool
     {
         $channel = $this->twitch->channelGet($name);
-        return $this->twitch->http_code != 404 && $this->twitch->http_code != 422;
+        return $this->twitch->http_code != 404 && (!$noJustin || $this->twitch->http_code != 422);
     }
 
     public function checkBots(): array
