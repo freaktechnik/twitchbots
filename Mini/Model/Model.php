@@ -414,7 +414,7 @@ class Model
     public function twitchUserExists(string $name): bool
     {
         $channel = $this->twitch->channelGet($name);
-        return $this->twitch->http_code != 404;
+        return $this->twitch->http_code != 404 && $this->twitch->http_code != 422;
     }
 
     public function checkBots(): array
