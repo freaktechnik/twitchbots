@@ -221,7 +221,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             unset($bot->name);
 
             echo json_encode($bot);
-        })->conditions(array('name' => '[a-zA-Z0-9_\-]+'))->name('bot');
+        })->conditions(array('name' => '[a-zA-Z0-9_]+'))->name('bot');
     });
 
     $app->group('/type', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {

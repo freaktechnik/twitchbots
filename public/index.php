@@ -260,7 +260,7 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
             'page' => $page,
             'pageCount' => $pageCount
         ));
-    })->name('type');
+    })->conditions(array('id' => '[1-9][0-9]*'))->name('type');
 });
 
 $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
@@ -303,7 +303,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         $app->render('bot.twig', array(
             'bot' => $bot
         ));
-    })->name('bot');
+    })->conditions(array('name' => '[a-zA-Z0-9_]+'))->name('bot');
 });
 
 $app->group('/lib', function ()  use ($app, $model) {
