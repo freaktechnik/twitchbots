@@ -583,7 +583,7 @@ class Model
 
         if($response['count'] > 0 && in_array($channel, array_map(function($i) {
             return $i['name'];
-        })))
+        }, $response['channels'])))
             return true;
 
         return false;
