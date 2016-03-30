@@ -513,7 +513,7 @@ class Model
     {
         $user = strtolower($user);
         
-        return array_key_exists('mods', $chatters) && in_array($user, $chatters['mods']);
+        return array_key_exists('moderators', $chatters) && in_array($user, $chatters['mods']);
     }
 
     private function setSubmissionInChat(int $id, $inChannel, bool $live)
