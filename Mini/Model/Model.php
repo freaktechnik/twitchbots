@@ -555,7 +555,6 @@ class Model
                                 $isMod = $this->isMod($submission->name, $chatters);
                             else if(!$ranModCheck)
                                 $isMod = $this->getModStatus($submission->name, $submission->channel);
-                            $ranModCheck = true;
                         }
                         catch(Exception $e) {
                             $isInChannel = null;
@@ -564,6 +563,8 @@ class Model
                         $this->setSubmissionInChat($submission->id, $isInChannel, $live);
                         if($isMod !== null)
                             $this->setSubmissionModded($submission->id, $isMod);
+
+                        $ranModCheck = true;
                         ++$count;
                     }
                 }
@@ -577,6 +578,8 @@ class Model
                     }
                     if($isMod !== null)
                         $this->setSubmissionModded($submission->id, $isMod);
+
+                    ++$count;
                 }
             }
         }
