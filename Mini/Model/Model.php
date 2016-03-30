@@ -548,7 +548,7 @@ class Model
                     try {
                         $chatters = $this->getChatters($submission->channel);
                         $isInChannel = $this->isInChannel($submission->name, $chatters);
-                        if($isInChannel)
+                        if($isInChannel && !$submission->ismod)
                             $isMod = $this->isMod($submission->name, $chatters);
                     }
                     catch(Exception $e) {
