@@ -591,7 +591,7 @@ class Model
 
     public function canCheck(string $token): bool
     {
-        if(strlen($token) == 0 || !preg_match('^[A-Za-z0-9]+$', $token)) {
+        if(strlen($token) == 0 || !preg_match('/^[A-Za-z0-9]+$/', $token)) {
             throw new Exception('Invalid token');
         }
 
