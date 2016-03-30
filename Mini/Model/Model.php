@@ -541,7 +541,7 @@ class Model
 
         foreach($submissions as $submission) {
             if(!empty($submission->channel)) {
-                $ranModCheck = false;
+                $ranModCheck = isset($submission->ismod);
                 if(!$submission->online || !isset($submission->offline)) {
                     $stream = $this->twitch->streamGet($submission->channel);
                     $live = isset($stream->stream);
@@ -551,11 +551,11 @@ class Model
                             $chatters = $this->getChatters($submission->channel);
                             $isInChannel = $this->isInChannel($submission->name, $chatters);
 
-                            $ranModCheck = true;
                             if($isInChannel && !$submission->ismod)
                                 $isMod = $this->isMod($submission->name, $chatters);
-                            else if(!isset($submission->ismod))
+                            else if(!$ranModCheck)
                                 $isMod = $this->getModStatus($submission->name, $submission->channel);
+                            $ranModCheck = true;
                         }
                         catch(Exception $e) {
                             $isInChannel = null;
@@ -568,7 +568,7 @@ class Model
                     }
                 }
 
-                if(!isset($submission->ismod) && !$ranModCheck) {
+                if(!$ranModCheck) {
                     try {
                         $isMod = $this->getModStatus($submission->name, $submission->channel);
                     }
