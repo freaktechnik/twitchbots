@@ -17,6 +17,7 @@
                 <th>Channel</th>
                 <th>Offline</th>
                 <th>Online</th>
+                <th>Modded</th>
                 <th>Approve</th>
                 <th>Reject</th>
             </tr>
@@ -38,6 +39,7 @@
                 <td>{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/profile" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
                 <td>{{ s.offline|default("?") }}</td>
                 <td>{{ s.online|default("?") }}</td>
+                <td>{{ s.ismod|default("?") }}</td>
                 <td><form>
                     <input type="hidden" name="id" value="{{ s.id }}">
                     <button disabled type="submit" class="btn btn-primary btn-xs">Approve</button>

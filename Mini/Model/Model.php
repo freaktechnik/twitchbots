@@ -123,9 +123,22 @@ class Model
 
     private function appendToSubmissions(string $username, $type, $correction = 0, $channel = null)
     {
-        $sql = "INSERT INTO submissions(name,description,type,channel) VALUES (?,?,?,?)";
+        $sql = "INSERT INTO submissions(name,description,type,channel,mod) VALUES (?,?,?,?,?)";
         $query = $this->db->prepare($sql);
-        $query->execute(array($username, $type, $correction, $channel));
+        $params = array($username, $type, $correction, $channel);
+
+        $isMode = null;
+        if($channel !== null) {
+            try {
+                $isMod = $this->getModStatus($username, $channel);
+            }
+            catch(Exception $e) {
+                $isMod = null;
+            }
+        }
+        $params[] = $isMode;
+
+        $query->execute($params);
     }
 
     private function commonSubmissionChecks(string $username, $type, $channel = null)
@@ -373,7 +386,7 @@ class Model
 
         return $lastOffset;
     }
-    
+
     private function hasCorrection(string $username, string $description, $channel = null): bool
     {
         $sql = 'SELECT * FROM submissions WHERE type=1 AND name=? AND  description=? AND channel=?';
@@ -484,15 +497,8 @@ class Model
         return json_decode($json, true)['chatters'];
     }
 
-    private function isInChannel(string $user, string $channel): bool
+    private function isInChannel(string $user, array $chatters): bool
     {
-        try {
-            $chatters = $this->getChatters($channel);
-        }
-        catch(Exception $e) {
-            return null;
-        }
-
         $user = strtolower($user);
 
 
@@ -502,8 +508,15 @@ class Model
         }
         return false;
     }
+    
+    private function isMod(string $user, array $chatters): bool
+    {
+        $user = strtolower($user);
+        
+        return array_key_exists('mods', $chatters) && in_array($user, $chatters['mods']);
+    }
 
-    private function setSubmissionInChat(int $id, bool $inChannel, bool $live)
+    private function setSubmissionInChat(int $id, $inChannel, bool $live)
     {
         if($live)
             $sql = "UPDATE submissions SET online=? WHERE id=?";
@@ -514,24 +527,65 @@ class Model
 	    $query->execute(array($inChannel, $id));
     }
 
+    private function setSubmissionModded(int $id, $isMod)
+    {
+        $sql = "UPDATE submissions SET ismod=? WHERE id=?";
+        $query = $this->db->prepare($sql);
+        $query->execute(array($isMod, $id));
+    }
+
     public function checkSubmissions(): int
     {
         $submissions = $this->getSubmissions();
         $count = 0;
 
         foreach($submissions as $submission) {
-            if(!empty($submission->channel) && (!isset($submission->online) || !isset($submission->offline))) {
+            if(!empty($submission->channel) && (!$submission->online || !isset($submission->offline))) {
                 $stream = $this->twitch->streamGet($submission->channel);
-                if(isset($stream->stream) && !$submission->online) {
-                    $this->setSubmissionInChat($submission->id, $this->isInChannel($submission->name, $submission->channel), true);
-                    ++$count;
-                }
-                else if(!isset($submission->offline)) {
-                    $this->setSubmissionInChat($submission->id, $this->isInChannel($submission->name, $submission->channel), false);
+                $live = isset($stream->stream);
+                if(($live && !$submission->online) || (!$live && !isset($submission->offline))) {
+                    $isMod = null;
+                    try {
+                        $chatters = $this->getChatters($submission->channel);
+                        $isInChannel = $this->isInChannel($submission->name, $chatters);
+                        if($isInChannel)
+                            $isMod = $this->isMod($submission->name, $chatters);
+                    }
+                    catch(Exception $e) {
+                        $isInChannel = null;
+                    }
+
+                    $this->setSubmissionInChat($submission->id, $isInChannel, $live);
+                    if($isMod != null)
+                        $this->setSubmissionModded($submission->id, $isMod);
                     ++$count;
                 }
             }
         }
         return $count;
+    }
+
+    private function getModStatus(string $username, string $channel): bool
+    {
+        $url = "https://twitchstuff.3v.fi/api/mods/" . $username;
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $json = curl_exec($ch);
+
+        if(curl_getinfo($ch, CURLINFO_HTTP_CODE) >= 400) {
+            throw new Exception("Could not get mod status");
+        }
+
+        curl_close($ch);
+
+        $response = json_decode($json, true);
+
+        if($response['count'] > 0 && in_array($channel, array_map(function($i) {
+            return $i['name'];
+        })))
+            return true;
+
+        return false;
     }
 }
