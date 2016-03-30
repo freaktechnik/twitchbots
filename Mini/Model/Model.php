@@ -550,7 +550,7 @@ class Model
                         $isInChannel = $this->isInChannel($submission->name, $chatters);
                         if($isInChannel && !$submission->ismod)
                             $isMod = $this->isMod($submission->name, $chatters);
-                        else if(!$submission->ismod)
+                        else if(!isset($submission->ismod))
                             $isMod = $this->getModStatus($submission->name, $submission->channel);
                     }
                     catch(Exception $e) {
