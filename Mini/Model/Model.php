@@ -581,7 +581,7 @@ class Model
 
         $response = json_decode($json, true);
 
-        if($response['count'] > 0 && in_array($channel, array_map(function($i) {
+        if($response['count'] > 0 && in_array(strtolower($channel), array_map(function($i) {
             return $i['name'];
         }, $response['channels'])))
             return true;
@@ -595,11 +595,12 @@ class Model
             throw new Exception('Invalid token');
         }
 
-        $sql = "SELECT * FROM check_tokens WHERE token=_ascii? COLLATE ascii_bin";
+        $sql = "SELECT * FROM check_tokens WHERE token=?";
         $query = $this->db->prepare($sql);
         $query->execute(array($token));
-        $result = $query->fetch();
-        echo $result;
-        return $result !== null;
+        $results = $query->fetchAll();
+        return count($results) > 0 && in_array($token, array_map(function($result) {
+            return $result->token;
+        }, $results), true);
     }
 }
