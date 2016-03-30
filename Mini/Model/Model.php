@@ -127,7 +127,7 @@ class Model
         $query = $this->db->prepare($sql);
         $params = array($username, $type, $correction, $channel);
 
-        $isMode = null;
+        $isMod = null;
         if($channel !== null) {
             try {
                 $isMod = $this->getModStatus($username, $channel);

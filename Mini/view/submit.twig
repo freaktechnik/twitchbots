@@ -4,7 +4,7 @@
     {% set message = "Your #{correction ? 'correction' : 'submission'} has been saved. We will review it as soon as possible." %}
 {% elseif error == 1 %}
     {% set level = 'danger' %}
-    {% set message = 'Something went wrong while submitting.' %}
+    {% set message = 'Something went wrong while submitting' %}
 {% elseif error == 2 %}
     {% set level = 'danger' %}
     {% set message = "The specified bot “#{username|e}” isn't a registered account on Twitch." %}
