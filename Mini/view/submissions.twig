@@ -36,10 +36,10 @@
                     {{ s.description|e }}
                 {% endif %}</td>
                 <td>{{ s.type == 0 ? "New" : "Correction" }}</td>
-                <td>{% if s.channel is not empty %} <a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/profile" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
+                <td>{% if s.channel is not empty %}<a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/profile" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
                 <td>{{ s.offline|default("?") }}</td>
                 <td>{{ s.online|default("?") }}</td>
-                <td>{{ s.ismod|default("?") }}</td>
+                <td>{% if s.ismod is not null %}<a href="https://twitchstuff.3v.fi/mods/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.ismod }}{% else %}?{% endif %}</a></td>
                 <td><form>
                     <input type="hidden" name="id" value="{{ s.id }}">
                     <button disabled type="submit" class="btn btn-primary btn-xs">Approve</button>
