@@ -540,27 +540,43 @@ class Model
         $count = 0;
 
         foreach($submissions as $submission) {
-            if(!empty($submission->channel) && (!$submission->online || !isset($submission->offline))) {
-                $stream = $this->twitch->streamGet($submission->channel);
-                $live = isset($stream->stream);
-                if(($live && !$submission->online) || (!$live && !isset($submission->offline))) {
-                    $isMod = null;
+            if(!empty($submission->channel)) {
+                $ranModCheck = false;
+                if(!$submission->online || !isset($submission->offline)) {
+                    $stream = $this->twitch->streamGet($submission->channel);
+                    $live = isset($stream->stream);
+                    if(($live && !$submission->online) || (!$live && !isset($submission->offline))) {
+                        $isMod = null;
+                        try {
+                            $chatters = $this->getChatters($submission->channel);
+                            $isInChannel = $this->isInChannel($submission->name, $chatters);
+
+                            $ranModCheck = true;
+                            if($isInChannel && !$submission->ismod)
+                                $isMod = $this->isMod($submission->name, $chatters);
+                            else if(!isset($submission->ismod))
+                                $isMod = $this->getModStatus($submission->name, $submission->channel);
+                        }
+                        catch(Exception $e) {
+                            $isInChannel = null;
+                        }
+
+                        $this->setSubmissionInChat($submission->id, $isInChannel, $live);
+                        if($isMod !== null)
+                            $this->setSubmissionModded($submission->id, $isMod);
+                        ++$count;
+                    }
+                }
+
+                if(!isset($submission->ismod) && !$ranModCheck) {
                     try {
-                        $chatters = $this->getChatters($submission->channel);
-                        $isInChannel = $this->isInChannel($submission->name, $chatters);
-                        if($isInChannel && !$submission->ismod)
-                            $isMod = $this->isMod($submission->name, $chatters);
-                        else if(!isset($submission->ismod))
-                            $isMod = $this->getModStatus($submission->name, $submission->channel);
+                        $isMod = $this->getModStatus($submission->name, $submission->channel);
                     }
                     catch(Exception $e) {
-                        $isInChannel = null;
+                        $isMod = null;
                     }
-
-                    $this->setSubmissionInChat($submission->id, $isInChannel, $live);
-                    if($isMod != null)
+                    if($isMod !== null)
                         $this->setSubmissionModded($submission->id, $isMod);
-                    ++$count;
                 }
             }
         }
