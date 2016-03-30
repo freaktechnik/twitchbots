@@ -136,7 +136,7 @@ class Model
                 $isMod = null;
             }
         }
-        $params[] = $isMode;
+        $params[] = $isMod;
 
         $query->execute($params);
     }
