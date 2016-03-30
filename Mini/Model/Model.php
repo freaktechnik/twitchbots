@@ -595,7 +595,7 @@ class Model
             throw new Exception('Invalid token');
         }
 
-        $sql = "SELECT * FROM check_tokens WHERE token=? COLLATE ascii_bin";
+        $sql = "SELECT * FROM check_tokens WHERE token=_ascii_bin? COLLATE ascii_bin";
         $query = $this->db->prepare($sql);
         $query->execute(array($token));
         $result = $query->fetch();
