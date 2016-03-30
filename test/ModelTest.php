@@ -59,10 +59,10 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         ) DEFAULT CHARSET=ascii');
         $pdo->query('CREATE TABLE IF NOT EXISTS check_tokens (
             id int(10) unsigned NOT NULL AUTO_INCREMENT,
-            token varchar(535) CHARACTER SET ascii_bin NOT NULL,
+            token varchar(535) CHARACTER SET ascii NOT NULL,
             PRIMARY KEY (id),
             UNIQUE KEY(token)
-        ) DEFAULT CHARSET=ascii_bin AUTO_INCREMENT=2');
+        ) DEFAULT CHARSET=ascii AUTO_INCREMENT=2');
         $pdo->query('CREATE OR REPLACE VIEW count AS SELECT count(name) AS count FROM bots');
         $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, type, multichannel, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
         $pdo->query('CREATE OR REPLACE VIEW typelist AS SELECT id, types.name AS name, multichannel, COUNT(DISTINCT(bots.name)) AS count FROM types LEFT JOIN bots ON bots.type = types.id GROUP BY id ORDER BY name ASC');
