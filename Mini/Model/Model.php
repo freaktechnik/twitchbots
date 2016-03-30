@@ -591,8 +591,9 @@ class Model
 
     public function canCheck(string $token): bool
     {
-        if(strlen($token) == 0 || !preg_match_all('[a-z0-9A-Z]', $token))
+        if(strlen($token) == 0 || !preg_match('^[A-Za-z0-9]+$', $token)) {
             throw new Exception('Invalid token');
+        }
 
         $sql = "SELECT * FROM check_tokens WHERE token=?";
         $query = $this->db->prepare($sql);
