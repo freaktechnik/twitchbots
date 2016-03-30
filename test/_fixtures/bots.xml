@@ -396,4 +396,12 @@
             <value>0</value>
         </row>
     </table>
+    <table name="check_tokens">
+        <column>id</column>
+        <column>token</column>
+        <row>
+            <value>1</value>
+            <value>foobar0</value>
+        </row>
+    </table>
 </dataset>

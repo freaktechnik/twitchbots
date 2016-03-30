@@ -508,11 +508,11 @@ class Model
         }
         return false;
     }
-    
+
     private function isMod(string $user, array $chatters): bool
     {
         $user = strtolower($user);
-        
+
         return array_key_exists('moderators', $chatters) && in_array($user, $chatters['moderators']);
     }
 
@@ -587,5 +587,16 @@ class Model
             return true;
 
         return false;
+    }
+
+    public function canCheck(string $token): bool
+    {
+        if(strlen($token) == 0 || !preg_match_all('[a-z0-9A-Z]', $token))
+            throw new Exception('Invalid token');
+
+        $sql = "SELECT * FROM check_tokens WHERE token=?";
+        $query = $this->db->prepare($sql);
+        $query->execute(array($token));
+        return $query->fetch() !== null;
     }
 }

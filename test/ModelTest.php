@@ -57,6 +57,12 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             value varchar(100) CHARACTER SET ascii DEFAULT NULL,
             PRIMARY KEY (name)
         ) DEFAULT CHARSET=ascii');
+        $pdo->query('CREATE TABLE IF NOT EXISTS check_tokens (
+            id int(10) unsigned NOT NULL AUTO_INCREMENT,
+            token varchar(535) CHARACTER SET ascii_bin NOT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY(token)
+        ) DEFAULT CHARSET=ascii_bin AUTO_INCREMENT=2');
         $pdo->query('CREATE OR REPLACE VIEW count AS SELECT count(name) AS count FROM bots');
         $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, type, multichannel, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
         $pdo->query('CREATE OR REPLACE VIEW typelist AS SELECT id, types.name AS name, multichannel, COUNT(DISTINCT(bots.name)) AS count FROM types LEFT JOIN bots ON bots.type = types.id GROUP BY id ORDER BY name ASC');
@@ -559,6 +565,44 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $submissionsCount = $this->model->getCount('submissions');
         $this->assertEquals($this->getConnection()->getRowCount('submissions'), $submissionsCount);
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testCanCheckThrowsEmptyString()
+    {
+        $this->model->canCheck(' ');
+    }
+    /**
+     * @expectedException Exception
+     */
+    public function testCanCheckThrowsNonAlphanumerical1()
+    {
+        $this->model->canCheck('; DROP TABLE *;');
+    }
+    /**
+     * @expectedException Exception
+     */
+    public function testCanCheckThrowsNonAlphanumerical2()
+    {
+        $this->model->canCheck(' ');
+    }
+    /**
+     * @expectedException Exception
+     */
+    public function testCanCheckThrowsNull()
+    {
+        $this->model->canCheck(null);
+    }
+
+    public function testCanCheck()
+    {
+        $this->assertFalse($this->model->canCheck('foobar'));
+        $this->assertTrue($this->model->canCheck('foobar0'));
+        $this->assertFalse($this->model->canCheck('FooBar0'));
+        $this->assertFalse($this->model->canCheck('0'));
+        $this->assertFalse($this->model->canCheck('null'));
     }
 }
 ?>

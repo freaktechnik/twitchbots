@@ -308,6 +308,19 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
 
 $app->group('/lib', function ()  use ($app, $model) {
     $app->get('/check', function ()  use ($app, $model) {
+        if(!isset($_GET['token'])) {
+            $app->halt(400, 'Token missing');
+        }
+        try {
+            $canCheck = !$model->canCheck($_GET['token']);
+        }
+        catch(Exception $e) {
+            $canCheck = false;
+        }
+        if(!$canCheck) {
+            $app->halt(403, 'Invalid token');
+        }
+
         if($model->checkRunning()) {
             $app->halt(500, 'Check already running');
         }
