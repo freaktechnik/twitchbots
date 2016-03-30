@@ -312,7 +312,7 @@ $app->group('/lib', function ()  use ($app, $model) {
             $app->halt(400, 'Token missing');
         }
         try {
-            $canCheck = !$model->canCheck($_GET['token']);
+            $canCheck = $model->canCheck($_GET['token']);
         }
         catch(Exception $e) {
             $canCheck = false;

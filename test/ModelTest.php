@@ -603,6 +603,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertFalse($this->model->canCheck('FooBar0'));
         $this->assertFalse($this->model->canCheck('0'));
         $this->assertFalse($this->model->canCheck('null'));
+        $this->assertFalse($this->model->canCheck('false'));
     }
 }
 ?>
