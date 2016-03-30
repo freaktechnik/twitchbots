@@ -589,7 +589,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->model->canCheck(' ');
     }
     /**
-     * @expectedException Exception
+     * @expectedException TypeError
      */
     public function testCanCheckThrowsNull()
     {
