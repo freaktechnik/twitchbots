@@ -262,7 +262,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertObjectHasAttribute("id", $submission);
             $this->assertObjectHasAttribute("offline", $submission);
             $this->assertObjectHasAttribute("online", $submission);
-            $this.>assertObjectHasAttribute("ismod", $submission);
+            $this->assertObjectHasAttribute("ismod", $submission);
         }
 
         // Sort order is descending by timestamp
