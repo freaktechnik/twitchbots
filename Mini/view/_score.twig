@@ -11,7 +11,7 @@
     {% set score = score - 2 %}
 {% endif %}
 
-{# +1 if it's not modded #}
+{# +1 if it's modded #}
 {% if submission.ismod %}
     {% set score = score + 1 %}
 {% endif %}
@@ -26,6 +26,8 @@
 {% if not submission.description matches '/^\\d+$/' %}
     {{ "heh" }}
     {% set score = score - 1 %}
+{% else %}
+    {{ "hah" }}
 {% endif %}
 
 {{ score}}
