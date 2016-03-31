@@ -523,11 +523,18 @@ class Model
         $query->execute(array($isMod, $id));
     }
 
-    private function setSubmissionFollowing(int $id, $followingCount = null, $followingChannel = null)
+    private function setSubmissionFollowing(int $id, $followingCount = null)
     {
-        $sql = "UPDATE submissions SET following=?, following_channel=? WHERE id=?";
+        $sql = "UPDATE submissions SET following=? WHERE id=?";
         $query = $this->db->prepare($sql);
-        $query->execute(array($followingCount, $followingChannel, $id));
+        $query->execute(array($followingCount, $id));
+    }
+
+    private function setSubmissionFollowingChannel(int $id, $followingChannel = null)
+    {
+        $sql = "UPDATE submissions SET following_channel=? WHERE id=?";
+        $query = $this->db->prepare($sql);
+        $query->execute(array($followingChannel, $id));
     }
 
     public function checkSubmissions(): int
@@ -538,7 +545,8 @@ class Model
         foreach($submissions as $submission) {
             $didSomething = false;
 
-            if(!isset($submission->following) || (!empty($submission->channel) && !isset($submission->following_channel))) {
+            // Update following if needed
+            if(!isset($submission->following)) {
                 try {
                     $follows = $this->getFollowing($submission->name);
                 }
@@ -546,18 +554,34 @@ class Model
                     $follows = new \stdClass();
                     $follows->_total = 0;
                 }
+                $this->setSubmissionFollowing($submission->id, $follows->_total;
+                $didSomething = true;
             }
 
-            $follows_channel = null;
-
             if(!empty($submission->channel)) {
+                // Update following_channel if needed
                 if(!isset($submission->following_channel)) {
-                    $follows_channel = $follows->_total > 0 && in_array($submission->channel, array_map(function($chan) {
-                        return strtolower($chan->channel->name);
-                    }, $follows->follows));
+                    $follows_channel = null;
+                    if(isset($follows)) {
+                        $follows_channel = $follows->_total > 0 && in_array($submission->channel, array_map(function($chan) {
+                            return strtolower($chan->channel->name);
+                        }, $follows->follows));
+                    }
+                    else {
+                        try {
+                            $follows_channel = $this->getFollowingChannel($submission->name, $submission->channel);
+                        }
+                        catch(Exception $e) {
+                            $follows_channel = null;
+                        }
+                    }
+
+                    $this->setSubmissionFollowingChannel($submission->id, $follows_channel);
+                    $didSomething = true;
                 }
 
                 $ranModCheck = isset($submission->ismod);
+                // Update online or offline and mod if needed
                 if(!$submission->online || !isset($submission->offline)) {
                     $stream = $this->twitch->streamGet($submission->channel);
                     $live = isset($stream->stream);
@@ -585,6 +609,7 @@ class Model
                     }
                 }
 
+                // If user wasn't in channel chat and mod not set, get mdo status
                 if(!$ranModCheck) {
                     try {
                         $isMod = $this->getModStatus($submission->name, $submission->channel);
@@ -597,10 +622,6 @@ class Model
 
                     $didSomething = true;
                 }
-            }
-            if(!isset($submission->following) || $follows_channel !== null) {
-                $this->setSubmissionFollowing($submission->id, $follows->_total, $follows_channel);
-                $didSomething = true;
             }
 
             if($didSomething)
@@ -649,7 +670,7 @@ class Model
         }, $results), true);
     }
 
-    public function getFollowing(string $name)
+    private function getFollowing(string $name)
     {
         $following = $this->twitch->userFollowChannels($name);
 
@@ -657,5 +678,15 @@ class Model
             throw new Exception("Can not get followers for ".$name);
 
         return $following;
+    }
+
+    private function getFollowingChannel(string $name, string $channel): bool
+    {
+        $relation = $this->twitch->userFollowRelationship($name, $channel);
+
+        if($this->twitch->http_code >= 400 && $this->twitch->http_code !== 404)
+            throw new Exception("Can't get following relation");
+
+        return $this->twitch->http_code < 400;
     }
 }
