@@ -655,6 +655,6 @@ class Model
         if($this->twitch->http_code >= 400)
             throw new Exception("Can not get followers for ".$name);
 
-        return $following
+        return $following;
     }
 }
