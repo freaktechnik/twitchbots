@@ -536,6 +536,8 @@ class Model
         $count = 0;
 
         foreach($submissions as $submission) {
+            $didSomething = false;
+
             if(!isset($submission->following) || (!empty($submission->channel) && !isset($submission->following_channel))) {
                 try {
                     $follows = $this->getFollowing($submission->name);
@@ -579,7 +581,7 @@ class Model
                             $this->setSubmissionModded($submission->id, $isMod);
 
                         $ranModCheck = true;
-                        ++$count;
+                        $didSomething = true;
                     }
                 }
 
@@ -593,12 +595,16 @@ class Model
                     if($isMod !== null)
                         $this->setSubmissionModded($submission->id, $isMod);
 
-                    ++$count;
+                    $didSomething = true;
                 }
             }
-        }
-        if(!isset($submission->following) || $follows_channel !== null) {
-            $this->setSubmissionFollowing($submission->id, $follows->_total, $follows_channel);
+            if(!isset($submission->following) || $follows_channel !== null) {
+                $this->setSubmissionFollowing($submission->id, $follows->_total, $follows_channel);
+                $didSomething = true;
+            }
+
+            if($didSomething)
+                ++$count;
         }
 
         return $count;
