@@ -17,5 +17,9 @@ class MockTwitch
         else
             $this->http_code = 200;
     }
+    
+    public function userFollowChannels(string $username) {
+        $this->http_code = 422;
+    }
 }
 ?>
