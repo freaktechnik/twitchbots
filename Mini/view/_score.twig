@@ -3,25 +3,21 @@
 
 {# +1 if it's in chat offline #}
 {% if submission.offline %}
-    {{ "offline +1" }}
     {% set score = score + 1 %}
 {% endif %}
 
 {# -2 if it's not in chat when live #}
 {% if submission.online is not null or not submission.online %}
-    {{ "not online -2"}}
     {% set score = score - 2 %}
 {% endif %}
 
 {# +1 if it's modded #}
 {% if submission.ismod %}
-    {{ "ismod +1" }}
     {% set score = score + 1 %}
 {% endif %}
 
 {# +1 if it follows less than 10 channels (debatable) #}
 {% if submission.following < 10 %}
-    {{ "following < 10 +1" }}
     {% set score = score + 1 %}
 {% endif %}
 
