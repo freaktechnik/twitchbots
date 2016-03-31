@@ -151,7 +151,7 @@ class Model
 
         if($follows->_total > 0 && $channel !== null && in_array($channel, array_map(function($chan) {
             return $chan->name;
-        }, $follows->follows)) {
+        }, $follows->follows))) {
             $params[] = true;
         }
         else if($channel !== null) {
