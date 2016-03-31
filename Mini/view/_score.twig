@@ -23,7 +23,7 @@
 
 {# NOT WORKING? (rebkitty should have -1) #}
 {# -1 if it's not a pre-existing type #}
-{% if not submission.description matches '/^\\d+$/' %}
+{% if submission.description matches '/^\\d+$/' %}
     {{ "heh" }}
     {% set score = score - 1 %}
 {% else %}
