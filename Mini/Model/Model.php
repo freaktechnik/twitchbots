@@ -553,7 +553,7 @@ class Model
             if(!empty($submission->channel)) {
                 if(!isset($submission->following_channel)) {
                     $follows_channel = $follows->_total > 0 && in_array($submission->channel, array_map(function($chan) {
-                        return $chan->name;
+                        return strtolower($chan->name);
                     }, $follows->follows));
                 }
 
