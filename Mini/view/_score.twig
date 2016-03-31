@@ -7,7 +7,7 @@
 {% endif %}
 
 {# -2 if it's not in chat when live #}
-{% if submission.online is not null and not submission.online %}
+{% if submission.online is not null or not submission.online %}
     {% set score = score - 2 %}
 {% endif %}
 
