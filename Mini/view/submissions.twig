@@ -15,9 +15,11 @@
                 <th>Description</th>
                 <th>Submission Type</th>
                 <th>Channel</th>
+                <th>Following Count</th>
                 <th>Offline</th>
                 <th>Online</th>
                 <th>Modded</th>
+                <th>Following Channel</th>
                 <th>Approve</th>
                 <th>Reject</th>
             </tr>
@@ -37,9 +39,11 @@
                 {% endif %}</td>
                 <td>{{ s.type == 0 ? "New" : "Correction" }}</td>
                 <td>{% if s.channel is not empty %}<a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/profile" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
+                <td>{{ s.following|default('?') }}</td>
                 <td>{{ s.offline|default("?") }}</td>
                 <td>{{ s.online|default("?") }}</td>
                 <td>{% if s.ismod is not null %}<a href="https://twitchstuff.3v.fi/mods/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.ismod }}{% else %}?{% endif %}</a></td>
+                <td>{{ s.following_channel|default('?') }}<td>
                 <td><form>
                     <input type="hidden" name="id" value="{{ s.id }}">
                     <button disabled type="submit" class="btn btn-primary btn-xs">Approve</button>
