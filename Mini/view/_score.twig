@@ -1,0 +1,30 @@
+{% macro calculate(submission) %}
+{% set score = 0 %}
+
+{# +1 if it's in chat offline #}
+{% if submission.offline %}
+    {% set score = score + 1 %}
+{% endif %}
+
+{# -2 if it's not in chat when live #}
+{% if submission.online is not null and not submission.online %}
+    {% set score = score - 2 %}
+{% endif %}
+
+{# +1 if it's not modded #}
+{% if submission.ismod %}
+    {% set score = score + 1 %}
+{% endif %}
+
+{# +1 if it follows less than 10 channels (debatable) #}
+{% if submission.following < 10 %}
+    {% set score = score + 1 %}
+{% endif %}
+
+{# -1 if it's not a pre-existing type #}
+{% if not submission.description matches '/^\\d+$/' %}
+    {% set score = score - 1 %}
+{% endif %}
+
+{{ score}}
+{% endmacro %}
