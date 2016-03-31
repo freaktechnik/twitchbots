@@ -123,43 +123,9 @@ class Model
 
     private function appendToSubmissions(string $username, $type, $correction = 0, $channel = null)
     {
-        $sql = "INSERT INTO submissions(name,description,type,channel,ismod,following,following_channel) VALUES (?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO submissions(name,description,type,channel,) VALUES (?,?,?,?)";
         $query = $this->db->prepare($sql);
         $params = array($username, $type, $correction, $channel);
-
-        //TODO move these requests to cronjob to make submission faster
-        $isMod = null;
-        if($channel !== null) {
-            try {
-                $isMod = $this->getModStatus($username, $channel);
-            }
-            catch(Exception $e) {
-                $isMod = null;
-            }
-        }
-        $params[] = $isMod;
-
-        try {
-            $follows = $this->getFollowing($username);
-        }
-        catch(Exception $e) {
-            $follows = new \stdClass();
-            $follows->_total = 0;
-        }
-
-        $params[] = $follows->_total;
-
-        if($follows->_total > 0 && $channel !== null && in_array($channel, array_map(function($chan) {
-            return $chan->name;
-        }, $follows->follows))) {
-            $params[] = true;
-        }
-        else if($channel !== null) {
-            $params[] = false;
-        }
-        else {
-            $params[] = null;
-        }
 
         $query->execute($params);
     }
@@ -179,7 +145,7 @@ class Model
 
     public function getSubmissions(): array
     {
-        $sql = "SELECT name, description, type, date, channel, offline, online, ismod, id FROM submissions ORDER BY date DESC";
+        $sql = "SELECT name, description, type, date, channel, offline, online, ismod, following, following_channel, id FROM submissions ORDER BY date DESC";
         $query = $this->db->prepare($sql);
         $query->execute();
 
@@ -557,13 +523,38 @@ class Model
         $query->execute(array($isMod, $id));
     }
 
+    private function setSubmissionFollowing(int $id, $followingCount = null, $followingChannel = null)
+    {
+        $sql = "UPDATE submissions SET following=?, following_channel=? WHERE id=?";
+        $query = $this->db->prepare($sql);
+        $query->execute(array($followingCount, $followingChannel, $id));
+    }
+
     public function checkSubmissions(): int
     {
         $submissions = $this->getSubmissions();
         $count = 0;
 
         foreach($submissions as $submission) {
+            if(!isset($submission->following) || (!empty($submission->channel) && !isset($submission->following_channel))) {
+                try {
+                    $follows = $this->getFollowing($submission->name);
+                }
+                catch(Exception $e) {
+                    $follows = new \stdClass();
+                    $follows->_total = 0;
+                }
+            }
+
+            $follows_channel = null;
+
             if(!empty($submission->channel)) {
+                if(!isset($submission->following_channel)) {
+                    $follows_channel = $follows->_total > 0 && in_array($submission->channel, array_map(function($chan) {
+                        return $chan->name;
+                    }, $follows->follows));
+                }
+
                 $ranModCheck = isset($submission->ismod);
                 if(!$submission->online || !isset($submission->offline)) {
                     $stream = $this->twitch->streamGet($submission->channel);
@@ -606,6 +597,10 @@ class Model
                 }
             }
         }
+        if(!isset($submission->following) || $follows_channel !== null) {
+            $this->setSubmissionFollowing($submission->id, $follows->_total, $follows_channel);
+        }
+
         return $count;
     }
 
