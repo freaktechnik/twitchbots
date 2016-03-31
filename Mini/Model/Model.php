@@ -123,10 +123,11 @@ class Model
 
     private function appendToSubmissions(string $username, $type, $correction = 0, $channel = null)
     {
-        $sql = "INSERT INTO submissions(name,description,type,channel,ismod) VALUES (?,?,?,?,?)";
+        $sql = "INSERT INTO submissions(name,description,type,channel,ismod,following,following_channel) VALUES (?,?,?,?,?,?,?)";
         $query = $this->db->prepare($sql);
         $params = array($username, $type, $correction, $channel);
 
+        //TODO move these requests to cronjob to make submission faster
         $isMod = null;
         if($channel !== null) {
             try {
@@ -137,6 +138,28 @@ class Model
             }
         }
         $params[] = $isMod;
+
+        try {
+            $follows = $this->getFollowing($username);
+        }
+        catch(Exception $e) {
+            $follows = new \stdClass();
+            $follows->_total = 0;
+        }
+
+        $params[] = $follows->_total;
+
+        if($follows->_total > 0 && $channel !== null && in_array($channel, array_map(function($chan) {
+            return $chan->name;
+        }, $follows->follows)) {
+            $params[] = true;
+        }
+        else if($channel !== null) {
+            $params[] = false;
+        }
+        else {
+            $params[] = null;
+        }
 
         $query->execute($params);
     }
@@ -623,5 +646,15 @@ class Model
         return count($results) > 0 && in_array($token, array_map(function($result) {
             return $result->token;
         }, $results), true);
+    }
+
+    public function getFollowing(string $name)
+    {
+        $following = $this->twitch->userFollowChannels($name);
+
+        if($this->twitch->http_code >= 400)
+            throw new Exception("Can not get followers for ".$name);
+
+        return $following
     }
 }
