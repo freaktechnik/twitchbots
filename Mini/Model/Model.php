@@ -554,7 +554,7 @@ class Model
                     $follows = new \stdClass();
                     $follows->_total = 0;
                 }
-                $this->setSubmissionFollowing($submission->id, $follows->_total;
+                $this->setSubmissionFollowing($submission->id, $follows->_total);
                 $didSomething = true;
             }
 
