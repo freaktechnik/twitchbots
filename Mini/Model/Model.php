@@ -100,9 +100,13 @@ class Model
      * @param string $username
      * @param int $type
      * @param string $description = ""
+     * @param string $channel = null
      */
     public function addSubmission(string $username, int $type, $description = "", $channel = null)
     {
+        if(empty($channel))
+            $channel = null;
+
         if($type == 0) {
             if($description == "")
                 throw new Exception("Description can not be empty", 9);
@@ -138,7 +142,7 @@ class Model
         else if(strtolower($username) == strtolower($channel)) {
             throw new Exception("Username of the bot and the channel it is in can not match", 7);
         }
-        else if($channel !== null && !$this->twitchUserExists($channel, true)) {
+        else if(!empty($channel) && !$this->twitchUserExists($channel, true)) {
             throw new Exception("Given channel isn't a Twitch channel", 6);
         }
     }
@@ -386,6 +390,9 @@ class Model
 
     public function addCorrection(string $username, int $type, $description = "", $channel = null)
     {
+        if(empty($channel))
+            $channel = null;
+
         if($type == 0) {
             if($description == "")
                 throw new Exception("Description can not be empty", 9);

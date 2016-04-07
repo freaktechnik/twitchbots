@@ -123,8 +123,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
         $this->model->addSubmission("nightboot", 1);
+        $this->model->addSubmission("notactuallyaboot", 44, "", "");
 
-        $this->assertEquals(2, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
+        $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
 
         $queryTable = $this->getConnection()->createQueryTable(
             'submissions', 'SELECT name, description FROM submissions'
@@ -182,7 +183,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->model->addCorrection("moobot", 1);
         $this->model->addCorrection("nightbot", 0, "nightbot");
-        $this->assertEquals(2, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
+        $this->model->addCorrection("butler_of_ec0ke", 23, "", "");
+        
+        $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
 
         $queryTable = $this->getConnection()->createQueryTable(
            'submissions',
