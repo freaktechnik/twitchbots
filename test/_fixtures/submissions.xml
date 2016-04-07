@@ -11,5 +11,9 @@
             <value>nightboot</value>
             <value>1</value>
         </row>
+        <row>
+            <value>notactuallyaboot</value>
+            <value>44</value>
+        </row>
     </table>
 </dataset>
