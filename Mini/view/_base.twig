@@ -38,13 +38,13 @@
                     <ul class="nav navbar-nav">
                         {% for item in navitems %}
                             {% set isCurrent = item.url == currentUrl(false) %}
-                            <li {% if isCurrent %} class="active"{% endif %}>
+                            <li{% if isCurrent %} class="active"{% endif %}>{% spaceless %}
                                 <a href="{{ item.url|e('html_attr') }}">{{ item.name|e }}
                                 {% if isCurrent %}
                                     <span class="sr-only">(current)</span>
                                 {% endif %}
                                 </a>
-                            </li>
+                            {% endspaceless %}</li>
                         {% endfor %}
                     </ul>
                 </div>
