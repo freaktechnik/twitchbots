@@ -32,11 +32,13 @@
 {% else %}
 <a href="{{ urlFor('bot', { name: s.name }) }}" title="{{ s.name|e('html_attr') }} in the Twitch Bots Directory">{{ s.name|e }}</a>
 {% endif %}</td>
-                <td>{% if s.description matches '/^\\d+$/' %}
-                    <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}">{{ s.description|e }}</a>
-                {% else %}
-                    {{ s.description|e }}
-                {% endif %}</td>
+                <td>{% spaceless %}
+                    {% if s.description matches '/^\\d+$/' %}
+                        <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}">{{ s.description|e }}</a>
+                    {% else %}
+                        {{ s.description|e }}
+                    {% endif %}
+                {% endspaceless %}</td>
                 <td>{{ s.type == 0 ? "New" : "Correction" }}</td>
                 <td>{% if s.channel is not empty %}<a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}/profile" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
                 <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/profile/following" rel="external nofollow">{{ s.following|default('?') }}</a></td>
