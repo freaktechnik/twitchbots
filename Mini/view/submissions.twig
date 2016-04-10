@@ -42,7 +42,7 @@
                 <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/profile/following" rel="external nofollow">{{ s.following|default('?') }}</a></td>
                 <td>{{ s.offline|default("?") }}</td>
                 <td>{{ s.online|default("?") }}</td>
-                <td>{% if s.channel is not empty %}<a href="https://twitchstuff.3v.fi/mods/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.ismod|default('?') }}{% else %}?{% endif %}</a></td>
+                <td><a href="https://twitchstuff.3v.fi/mods/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.ismod|default('?') }}</a></td>
                 <td>{{ s.following_channel|default('?') }}</td>
                 <td>{{ score.calculate(s) }}</td>
             </tr>
