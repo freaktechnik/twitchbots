@@ -1,4 +1,5 @@
 {% macro calculate(submission) %}
+{% spaceless %}
 {% set score = 0 %}
 
 {# +1 if it's in chat offline #}
@@ -27,4 +28,5 @@
 {% endif %}
 
 {{ score }}
+{% endspaceless %}
 {% endmacro %}
