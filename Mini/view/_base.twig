@@ -37,14 +37,15 @@
                 <div class="collapse navbar-collapse" id="main-nav">
                     <ul class="nav navbar-nav">
                         {% for item in navitems %}
+                            {% spaceless %}
                             {% set isCurrent = item.url == currentUrl(false) %}
-                            <li{% if isCurrent %} class="active"{% endif %}>{% spaceless %}
-                                <a href="{{ item.url|e('html_attr') }}">{{ item.name|e }}
-                                {% if isCurrent %}
-                                    <span class="sr-only">(current)</span>
-                                {% endif %}
-                                </a>
-                            {% endspaceless %}</li>
+                                <li{% if isCurrent %} class="active"{% endif %}>
+                                    <a href="{{ item.url|e('html_attr') }}">{{ item.name|e }}
+                                    {% if isCurrent %}
+                                        <span class="sr-only">(current)</span>
+                                    {% endif %}</a>
+                                </li>
+                            {% endspaceless %}
                         {% endfor %}
                     </ul>
                 </div>
