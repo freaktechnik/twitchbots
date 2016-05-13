@@ -13,7 +13,11 @@ class StorageFactory {
         $this->additionalArgs = $additionalArgs;
     }
 
+    private function getClassName(string $name): string {
+        return '\\Mini\\Model\\TypeCrawler\\Storage\\'.$name;
+    }
+
     public function getStorage(int $type): TypeCrawlerStorage {
-        return new '\\Mini\\Model\\TypeCrawler\\Storage\\'.$this->storage($type, ...$this->additionalArgs);
+        return new $this->getClassName($this->storage)($type, ...$this->additionalArgs);
     }
 }
