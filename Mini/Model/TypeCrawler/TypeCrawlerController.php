@@ -17,8 +17,13 @@ class TypeCrawlerController {
         $this->registerCrawler('ModBot');
     }
 
+    private function getClassName(string $crawler): string {
+        return '\\Mini\\Model\\TypeCrawler\\'.$crawler;
+    }
+
     public function registerCrawler(string $crawler) {
-        $this->crawlers[] = new '\\Mini\\Model\\TypeCrawler\\'.$crawler($this->storage->getStorage($crawler::$type));
+        $crawler = $this->getClassName($crawler);
+        $this->crawlers[] = $crawler($this->storage->getStorage($crawler::$type));
     }
 
     public function triggerCrawl(): array {
