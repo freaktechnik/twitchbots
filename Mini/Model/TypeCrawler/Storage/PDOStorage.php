@@ -11,7 +11,7 @@ class PDOStorage extends TypeCrawlerStorage {
     /** @var string */
     private $table;
 
-    __construct(int $forType, PDO $pdo, string $table) {
+    function __construct(int $forType, PDO $pdo, string $table) {
         parent::__construct($forType);
 
         $this->db = $pdo;
