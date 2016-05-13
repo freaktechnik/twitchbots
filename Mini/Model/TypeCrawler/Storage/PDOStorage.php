@@ -2,7 +2,7 @@
 
 namespace Mini\Model\TypeCrawler\Storage;
 
-use TypeCrawlerStorage;
+use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 use PDO;
 
 class PDOStorage extends TypeCrawlerStorage {

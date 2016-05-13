@@ -2,7 +2,7 @@
 
 namespace Mini\Model\TypeCrawler;
 
-use Storage\TypeCrawlerStorage;
+use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 
 class TypeCrawler {
     /** @var int */

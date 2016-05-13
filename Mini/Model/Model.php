@@ -5,8 +5,8 @@ namespace Mini\Model;
 use PDO;
 use PDOStatement;
 use Exception;
-use TypeCrawler\Storage\StorageFactory;
-use TypeCrawler\TypeCrawlerController;
+use \Mini\Model\TypeCrawler\Storage\StorageFactory;
+use \Mini\Model\TypeCrawler\TypeCrawlerController;
 
 require __DIR__.'/../../vendor/autoload.php';
 include_once 'csrf.php';
@@ -703,9 +703,9 @@ class Model
     {
         $sql = "INSERT INTO bots (name,type,channel) VALUES (?,?,?)";
         $query = $this->db->prepare($sql);
-        $query->bindValue(1, $name, PDO::PARAM_STR);
+        $query->bindValue(1, strtolower($name), PDO::PARAM_STR);
         $query->bindValue(2, $type, PDO::PARAM_INT);
-        $query->bindValue(3, $channel, PDO::PARAM_STR);
+        $query->bindValue(3, strtolower($channel), PDO::PARAM_STR);
         $query->execute();
     }
 

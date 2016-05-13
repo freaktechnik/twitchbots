@@ -2,7 +2,7 @@
 
 namespace Mini\Model\TypeCrawler;
 
-use Storage\StorageFactory;
+use \Mini\Model\TypeCrawler\Storage\StorageFactory;
 
 class TypeCrawlerController {
     /** @var array */

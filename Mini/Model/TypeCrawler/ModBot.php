@@ -2,8 +2,8 @@
 
 namespace Mini\Model\TypeCrawler;
 
-use TypeCrawler;
-use Storage\TypeCrawlerStorage;
+use \Mini\Model\TypeCrawler\TypeCrawler;
+use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 
 class ModBot extends TypeCrawler {
     /** @var int */
