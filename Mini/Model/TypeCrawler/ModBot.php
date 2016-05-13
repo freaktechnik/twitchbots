@@ -7,7 +7,7 @@ use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 
 class ModBot extends TypeCrawler {
     /** @var int */
-    protected static $crawlInterval = 86400096;
+    protected static $crawlInterval = 86400;
     /** @var int */
     public static $type = 28;
 

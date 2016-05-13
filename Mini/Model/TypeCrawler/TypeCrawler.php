@@ -10,7 +10,7 @@ class TypeCrawler {
     /** @var TypeCrawlerStorage */
     protected $storage;
     /** @var int */
-    protected static $crawlInterval = 3600000;
+    protected static $crawlInterval = 3600;
 
     function __construct(TypeCrawlerStorage $storage) {
         $this->storage = $storage;
