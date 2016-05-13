@@ -31,5 +31,6 @@ class TypeCrawlerController {
         foreach($this->crawlers as $crawler) {
             $ret = array_merge($ret, $crawler->crawl());
         }
+        return $ret;
     }
 }
