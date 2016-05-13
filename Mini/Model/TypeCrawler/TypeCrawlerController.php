@@ -23,7 +23,7 @@ class TypeCrawlerController {
 
     public function registerCrawler(string $crawler) {
         $crawler = $this->getClassName($crawler);
-        $this->crawlers[] = $crawler($this->storage->getStorage($crawler::$type));
+        $this->crawlers[] = new $crawler($this->storage->getStorage($crawler::$type));
     }
 
     public function triggerCrawl(): array {
