@@ -18,6 +18,7 @@ class StorageFactory {
     }
 
     public function getStorage(int $type): TypeCrawlerStorage {
-        return new $this->getClassName($this->storage)($type, ...$this->additionalArgs);
+        $storageClass = $this->getClassName($this->storage);
+        return new $storageClass($type, ...$this->additionalArgs);
     }
 }
