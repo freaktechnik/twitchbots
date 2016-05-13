@@ -3,6 +3,8 @@
 namespace Mini\Model\TypeCrawler;
 
 use \Mini\Model\TypeCrawler\Storage\StorageFactory;
+//TODO do this right
+use \Mini\Model\TypeCrawler\ModBot;
 
 class TypeCrawlerController {
     /** @var array */
