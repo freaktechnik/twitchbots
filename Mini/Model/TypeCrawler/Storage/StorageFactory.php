@@ -14,6 +14,6 @@ class StorageFactory {
     }
 
     public function getStorage(int $type): TypeCrawlerStorage {
-        return new $this->storage($type, ...$this->additionalArgs);
+        return new '\\Mini\\Model\\TypeCrawler\\Storage\\'.$this->storage($type, ...$this->additionalArgs);
     }
 }
