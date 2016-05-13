@@ -4,7 +4,7 @@ namespace Mini\Model\TypeCrawler\Storage;
 
 class TypeCrawlerStorage {
     /** @var in */
-    protected $type
+    protected $type;
 
     function __construct(int $forType) {
         $this->type = $forType;
