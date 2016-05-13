@@ -23,7 +23,7 @@ class ModBot extends TypeCrawler {
         $json = curl_exec($ch);
         curl_close($ch);
 
-        $response = json_decode(substr($json, 5, -5), true);
+        $response = json_decode(substr($json, 5, -6), true);
 
         $bots = array();
         foreach($response['streams'] as $bot) {
