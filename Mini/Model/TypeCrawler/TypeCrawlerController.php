@@ -3,8 +3,6 @@
 namespace Mini\Model\TypeCrawler;
 
 use \Mini\Model\TypeCrawler\Storage\StorageFactory;
-//TODO do this right
-use \Mini\Model\TypeCrawler\ModBot;
 
 class TypeCrawlerController {
     /** @var array */
@@ -20,7 +18,7 @@ class TypeCrawlerController {
     }
 
     public function registerCrawler(string $crawler) {
-        $this->crawlers[] = new $crawler($this->storage->getStorage($crawler::$type));
+        $this->crawlers[] = new '\\Mini\\Model\\TypeCrawler\\'.$crawler($this->storage->getStorage($crawler::$type));
     }
 
     public function triggerCrawl(): array {
