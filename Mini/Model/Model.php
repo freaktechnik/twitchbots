@@ -5,6 +5,8 @@ namespace Mini\Model;
 use PDO;
 use PDOStatement;
 use Exception;
+use TypeCrawler\Storage\StorageFactory;
+use TypeCrawler\TypeCrawlerController;
 
 require __DIR__.'/../../vendor/autoload.php';
 include_once 'csrf.php';
@@ -695,5 +697,30 @@ class Model
             throw new Exception("Can't get following relation");
 
         return $this->twitch->http_code < 400;
+    }
+
+    private function addBot(string $name, int $type, $channel = null)
+    {
+        $sql = "INSERT INTO bots (name,type,channel) VALUES (?,?,?)";
+        $query = $this->db->prepare($sql);
+        $query->bindValue(1, $name, PDO::PARAM_STR);
+        $query->bindValue(2, $type, PDO::PARAM_INT);
+        $query->bindValue(3, $channel, PDO::PARAM_STR);
+        $query->execute();
+    }
+
+    public function typeCrawl()
+    {
+        $storage = new StorageFactory('PDOStorage', array($this->db, 'config'));
+        $controller = new TypeCrawlerController($storage);
+
+        $foundBots = $controller->triggerCrawl();
+
+        foreach($foundBots as $bot) {
+            if($this->getBot($bot->name) == null) {
+                $this->addBot($bot->name, $bot->type, $bot->channel);
+                //TODO remove any submission of a bot with this name and type
+            }
+        }
     }
 }
