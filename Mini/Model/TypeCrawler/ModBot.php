@@ -11,7 +11,7 @@ class ModBot extends TypeCrawler {
     /** @var int */
     public static $type = 28;
 
-    __construct(TypeCrawlerStorage $storage) {
+    function __construct(TypeCrawlerStorage $storage) {
         parent::__construct($storage);
     }
 
