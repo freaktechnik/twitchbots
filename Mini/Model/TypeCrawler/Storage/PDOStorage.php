@@ -3,13 +3,12 @@
 namespace Mini\Model\TypeCrawler\Storage;
 
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
-use PDO;
 
 class PDOStorage extends TypeCrawlerStorage {
     private PDO $db
     private string $table
 
-    __construct(int $forType, PDO $pdo, string $table) {
+    __construct(int $forType, \PDO $pdo, string $table) {
         parent::__construct($forType);
 
         $this->db = $pdo;
