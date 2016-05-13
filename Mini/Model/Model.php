@@ -709,18 +709,23 @@ class Model
         $query->execute();
     }
 
-    public function typeCrawl()
+    public function typeCrawl(): int
     {
         $storage = new StorageFactory('PDOStorage', array($this->db, 'config'));
         $controller = new TypeCrawlerController($storage);
 
         $foundBots = $controller->triggerCrawl();
 
+        $count = 0;
+
         foreach($foundBots as $bot) {
             if($this->getBot($bot->name) == null) {
                 $this->addBot($bot->name, $bot->type, $bot->channel);
+                $count += 1;
                 //TODO remove any submission of a bot with this name and type
             }
         }
+
+        return $count;
     }
 }

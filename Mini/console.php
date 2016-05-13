@@ -38,6 +38,9 @@ $console
 
             $count = $model->checkSubmissions();
             $output->writeln($date.'Checked '.$count.' submissions for being in chat');
+
+            $addedCount = $model->typeCrawl();
+            $output->writeln($date.'Added '.$addedCount.' bots based on lists from bot vendors');
         }
     });
 
