@@ -328,6 +328,7 @@ $app->group('/lib', function ()  use ($app, $model) {
             echo 'Checked bots. Removed: ';
             print_r($model->checkBots());
             echo 'Checked '.$model->checkSubmissions().' submissions.';
+            echo 'Added '.$model->typeCrawl().' bots based on vendor lists';
         }
     });
 
