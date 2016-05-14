@@ -30,6 +30,7 @@ class Model
 	 * @var \ritero\SDK\TwitchTV\TwitchSDK
 	 */
     private $twitch;
+    private $twitchClientID
 
     /**
      * When creating the model, the configs for database connection creation are needed
@@ -59,6 +60,7 @@ class Model
             //TODO supply with Client-ID for future proofness
             $this->twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
         }
+        $this->twitchClientID = $this->getConfig('client-ID');
 	}
 
 	private function getConfig(string $key): string
@@ -425,8 +427,16 @@ class Model
 
     public function twitchUserExists(string $name, $noJustin = false): bool
     {
-        $channel = $this->twitch->channelGet($name);
-        return $this->twitch->http_code != 404 && (!$noJustin || $this->twitch->http_code != 422);
+        $url = "https://api.twitch.tv/kraken/users/".$name;
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_NOBODY, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Client-ID: '.$this->twitchClientID, 'Accept: application/vnd.twitchtv.v3+json'));
+
+        curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        return $http_code != 404 && (!$noJustin || $http_code != 422);
     }
 
     public function checkBots(): array
