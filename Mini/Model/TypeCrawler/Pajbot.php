@@ -3,6 +3,8 @@
 namespace Mini\Model\TypeCrawler;
 
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
+use DOMDocument;
+use DOMXpath;
 
 class Pajbot extends TypeCrawler {
     /** @var int */
