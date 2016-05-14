@@ -73,7 +73,7 @@ $shouldRun = function (InputInterface $input, OutputInterface $output) use ($mod
 $ran = function (InputInterface $input) use ($model) {
     if(!(bool)$input->getOption('ignoreLock'))
         $model->checkDone();
-}
+};
 
 $console
     ->register('check:bots')
