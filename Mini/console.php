@@ -89,7 +89,7 @@ $console
 
             $date = '['.date('r').'] ';
             $output->writeln($date.'Checked '.$amount.' bots. Removed '.count($bots));
-            $ran();
+            $ran($input);
         }
     });
 
@@ -106,7 +106,7 @@ $console
             $date = '['.date('r').'] ';
             $count = $model->checkSubmissions();
             $output->writeln($date.'Checked '.$count.' submissions for being in chat');
-            $ran();
+            $ran($input);
         }
     });
 
@@ -119,7 +119,7 @@ $console
             $date = '['.date('r').'] ';
             $addedCount = $model->typeCrawl();
             $output->writeln($date.'Added '.$addedCount.' bots based on lists from bot vendors');
-            $ran();
+            $ran($input);
         }
     });
 
