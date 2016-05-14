@@ -23,6 +23,7 @@ class ModBot extends TypeCrawler {
         $json = curl_exec($ch);
         curl_close($ch);
 
+        $json = preg_replace(', "Title":".+"', "", $json);
         $response = json_decode(substr($json, 5, -6), true);
 
         $bots = array();
