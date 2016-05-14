@@ -22,7 +22,7 @@ $model = new \Mini\Model\Model(array(
 $console
     ->register('check:all')
     ->setDefinition(array(
-        new InputOption('amount', 'a', InputOption::OPTIONAL, 'Number of bots to check', 10)
+        new InputOption('amount', 'a', InputOption::VALUE_OPTIONAL, 'Number of bots to check', 10)
     ))
     ->setDefinition('Run all check tasks')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $console) {
@@ -72,7 +72,7 @@ $shouldRun = function (InputInterface $input, OutputInterface $output) use ($mod
 $console
     ->register('check:bots')
     ->setDefinition(array(
-        new InputOption('amount', 'a', InputOption::OPTIONAL, 'Number of bots to check', 10),
+        new InputOption('amount', 'a', InputOption::VALUE_OPTIONAL, 'Number of bots to check', 10),
         new InputOption('ignoreLock', 'i', InputArgument::VALUE_NONE, 'If the check lock should be ignored', null)
     ))
     ->setDescription('Check a set of stored bots if they are still registered on Twitch.')
