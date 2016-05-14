@@ -429,7 +429,6 @@ class Model
     {
         $url = "https://api.twitch.tv/kraken/users/".$name;
         $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_NOBODY, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Client-ID: '.$this->twitchClientID, 'Accept: application/vnd.twitchtv.v3+json'));
 
