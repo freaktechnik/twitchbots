@@ -73,7 +73,7 @@ $console
     ->register('check:bots')
     ->setDefinition(array(
         new InputOption('amount', 'a', InputOption::VALUE_OPTIONAL, 'Number of bots to check', 10),
-        new InputOption('ignoreLock', 'i', InputArgument::VALUE_NONE, 'If the check lock should be ignored', null)
+        new InputOption('ignoreLock', 'i', InputOption::VALUE_NONE, 'If the check lock should be ignored', null)
     ))
     ->setDescription('Check a set of stored bots if they are still registered on Twitch.')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $shouldRun) {
