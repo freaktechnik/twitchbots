@@ -6,7 +6,7 @@ require __DIR__.'/../vendor/autoload.php';
 include_once __DIR__.'/../lib/config.php';
 
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\{InputInterface, InputArgument, InputOption, ArrayInputs};
+use Symfony\Component\Console\Input\{InputInterface, InputOption, ArrayInputs};
 use Symfony\Component\Console\Output\OutputInterface;
 
 $console = new Application;
@@ -22,7 +22,7 @@ $model = new \Mini\Model\Model(array(
 $console
     ->register('check:all')
     ->setDefinition(array(
-        new InputArgument('amount', InputArgument::OPTIONAL, 'Number of bots to check', 10)
+        new InputOption('amount', 'a', InputOption::OPTIONAL, 'Number of bots to check', 10)
     ))
     ->setDefinition('Run all check tasks')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $console) {
@@ -34,7 +34,7 @@ $console
             $bots = $console->find('check:bots');
             $arguments = array(
                 'command' => 'check:bots',
-                '--amount' => (int)$input->getArgument('amount'),
+                '--amount' => (int)$input->getOption('amount'),
                 '--ignoreLock' => true
             );
             $inputArr = new ArrayInput($arguments);
@@ -59,7 +59,7 @@ $console
     }
 
 function shouldRun(InputInterface $input, OutputInterface $output) use ($model): bool {
-    if(!(bool)$input->getArgument('ignoreLock') && $model->checkRunning()) {
+    if(!(bool)$input->getOption('ignoreLock') && $model->checkRunning()) {
         $date = '['.date('r').'] ';
         $output->writeln($date.'Check already running. No action taken.');
         return false;
@@ -72,13 +72,13 @@ function shouldRun(InputInterface $input, OutputInterface $output) use ($model):
 $console
     ->register('check:bots')
     ->setDefinition(array(
-        new InputArgument('amount', InputArgument::OPTIONAL, 'Number of bots to check', 10),
-        new InputArgument('ignoreLock', InputArgument::OPTIONAL, 'If the check lock should be ignored', false)
+        new InputOption('amount', 'a', InputOption::OPTIONAL, 'Number of bots to check', 10),
+        new InputOption('ignoreLock', 'i', InputArgument::VALUE_NONE, 'If the check lock should be ignored', null)
     ))
     ->setDescription('Check a set of stored bots if they are still registered on Twitch.')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model) {
         if(shouldRun($input, $output)) {
-            $amount = (int)$input->getArgument('amount');
+            $amount = (int)$input->getOption('amount');
             $bots = $model->checkBots($amount);
 
             $date = '['.date('r').'] ';
@@ -87,7 +87,7 @@ $console
     });
 
 $defaultArguments = array(
-    new InputArgument('ignoreLock', InputArgument::OPTIONAL, 'If the check lock should be ignored', false)
+    new InputOption('ignoreLock', 'i', InputOption::OPTIONAL, 'If the check lock should be ignored', null)
 );
 
 $console
