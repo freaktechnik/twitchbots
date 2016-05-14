@@ -15,6 +15,7 @@ class TypeCrawlerController {
         $this->storage = $storageFactory;
 
         $this->registerCrawler('ModBot');
+        $this->registerCrawler('Pajbot');
     }
 
     private function getClassName(string $crawler): string {
