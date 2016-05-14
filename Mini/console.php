@@ -24,7 +24,7 @@ $console
     ->setDefinition(array(
         new InputOption('amount', 'a', InputOption::VALUE_OPTIONAL, 'Number of bots to check', 10)
     ))
-    ->setD('Run all check tasks')
+    ->setDescription('Run all check tasks')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $console) {
         if($model->checkRunning()) {
             $date = '['.date('r').'] ';
