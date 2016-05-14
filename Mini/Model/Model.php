@@ -56,6 +56,7 @@ class Model
             $this->twitch = new MockTwitch;
         }
         else {
+            //TODO supply with Client-ID for future proofness
             $this->twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
         }
 	}
@@ -719,7 +720,7 @@ class Model
         $count = 0;
 
         foreach($foundBots as $bot) {
-            if($this->getBot($bot->name) == null && ($bot->channel == null || $this->twitchUserExists($bot->channel))) {
+            if($this->getBot($bot->name) == null && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel))x) {
                 $this->addBot($bot->name, $bot->type, $bot->channel);
                 $count += 1;
                 //TODO remove any submission of a bot with this name and type
