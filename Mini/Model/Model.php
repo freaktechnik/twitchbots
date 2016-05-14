@@ -432,7 +432,7 @@ class Model
             return $this->twitch->http_code != 404 && (!$noJustin || $this->twitch->http_code != 422);
         }
         else {
-            $url = "https://api.twitch.tv/kraken/users/".$name;
+            $url = "https://api.twitch.tv/kraken/channels/".$name;
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_NOBODY, true);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
