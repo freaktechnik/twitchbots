@@ -730,7 +730,7 @@ class Model
         $count = 0;
 
         foreach($foundBots as $bot) {
-            if($this->getBot($bot->name) == null && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel))) {
+            if($this->getBot($bot->name) == null && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel, true))) {
                 $this->addBot($bot->name, $bot->type, $bot->channel);
                 $count += 1;
                 //TODO remove any submission of a bot with this name and type
