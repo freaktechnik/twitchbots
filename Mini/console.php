@@ -87,7 +87,7 @@ $console
     });
 
 $defaultArguments = array(
-    new InputOption('ignoreLock', 'i', InputOption::OPTIONAL, 'If the check lock should be ignored', null)
+    new InputOption('ignoreLock', 'i', InputOption::VALUE_OPTIONAL, 'If the check lock should be ignored', null)
 );
 
 $console
