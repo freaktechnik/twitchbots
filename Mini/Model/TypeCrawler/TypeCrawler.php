@@ -29,7 +29,7 @@ class TypeCrawler {
     }
 
     private function shouldCrawl(): bool {
-        return (int)$this->storage->get('lastCrawl') + ($this::$crawlInterval * 1000) <= time();
+        return (int)$this->storage->get('lastCrawl') + $this::$crawlInterval <= time();
     }
 
     protected function doCrawl(): array {
