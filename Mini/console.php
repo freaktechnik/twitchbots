@@ -56,7 +56,7 @@ $console
             $inputArr = new ArrayInput($arguments);
             $types->run($inputArr, $output);
         }
-    }
+    });
 
 function shouldRun(InputInterface $input, OutputInterface $output) use ($model): bool {
     if(!(bool)$input->getOption('ignoreLock') && $model->checkRunning()) {
