@@ -30,7 +30,7 @@ class Model
 	 * @var \ritero\SDK\TwitchTV\TwitchSDK
 	 */
     private $twitch;
-    private $twitchClientID
+    private $twitchClientID;
 
     /**
      * When creating the model, the configs for database connection creation are needed
