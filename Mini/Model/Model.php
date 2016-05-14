@@ -729,8 +729,19 @@ class Model
 
         $count = 0;
 
+        $getName = function($bot) {
+            return $bot->name;
+        };
+        $names = array_map($getName, $foundBots);
+
+        $existingNames = array_map($getName, $this->getBotsByNames($names, 0, count($names));
+
+        $foundBots = array_filter($foundBots, function($bot) use ($existingNames) {
+            return !in_array($bot->name, $existingNames);
+        });
+
         foreach($foundBots as $bot) {
-            if($this->getBot($bot->name) == null && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel, true))) {
+            if($this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel, true))) {
                 $this->addBot($bot->name, $bot->type, $bot->channel);
                 $count += 1;
                 //TODO remove any submission of a bot with this name and type
