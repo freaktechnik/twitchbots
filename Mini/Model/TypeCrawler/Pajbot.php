@@ -29,13 +29,13 @@ class Pajbot extends TypeCrawler {
         $xpath = new DOMXpath($document);
         $elements = $xpath->query("*/div[@class='column pbot']");
 
-        if(!empty($elementy)) {
+        if(!empty($elements)) {
             $ret = array();
             foreach($elements as $element) {
                 $bot = new \stdClass;
                 $bot->name = $element->getElementsByTabName('h2')->item(0)->textContent;
                 $bot->type = $this::$type;
-                $bot->channel = $xpath->query("*/div/a[starts-with(@href, 'http://twitch.tv/')]", $element)->textContent;
+                $bot->channel = $xpath->query("div/a[starts-with(@href, 'http://twitch.tv/')]", $element)->textContent;
                 $ret[] = $bot;
             }
             return $ret;
