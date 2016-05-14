@@ -35,7 +35,7 @@ class Pajbot extends TypeCrawler {
                 $bot = new \stdClass;
                 $bot->name = $element->getElementsByTabName('h2')->item(0)->textContent;
                 $bot->type = $this::$type;
-                $bot->channel = $xpath->query("div/a[starts-with(@href, 'http://twitch.tv/')]", $element)->textContent;
+                $bot->channel = $xpath->query("/html/body/div/div/div/div/div/a[starts-with(@href, 'http://twitch.tv/')]", $element)->item(0)->textContent;
                 $ret[] = $bot;
             }
             return $ret;
