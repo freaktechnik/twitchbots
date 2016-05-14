@@ -23,13 +23,13 @@ class ModBot extends TypeCrawler {
         $json = curl_exec($ch);
         curl_close($ch);
 
-        $json = preg_replace('/, "Title":".+"/', "", $json);
+        $json = preg_replace('/,"Title":".+"/', "", $json);
         $response = json_decode(substr($json, 5, -6), true);
 
         $bots = array();
         foreach($response['streams'] as $bot) {
             if($bot['Channel'] !== $bot['Bot']) {
-                $botObject = new stdClass;
+                $botObject = new \stdClass;
                 $botObject->name = $bot['Bot'];
                 $botObject->type = $this->type;
                 $botObject->channel = $bot['Channel'];
