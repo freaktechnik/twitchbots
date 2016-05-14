@@ -727,6 +727,9 @@ class Model
 
         $foundBots = $controller->triggerCrawl();
 
+        if(count($foundBots) == 0)
+            return 0;
+
         $count = 0;
 
         $getName = function($bot) {
