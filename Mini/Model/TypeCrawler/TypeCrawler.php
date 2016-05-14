@@ -35,4 +35,12 @@ class TypeCrawler {
     protected function doCrawl(): array {
         throw new Execption();
     }
+
+    protected function getBot(string $name, $channel = null): \stdClass {
+        $bot = new \stdClass;
+        $bot->name = $name;
+        $bot->type = $this::$type;
+        $bot->channel = $channel;
+        return $bot;
+    }
 }

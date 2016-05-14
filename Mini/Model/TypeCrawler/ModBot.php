@@ -29,11 +29,7 @@ class ModBot extends TypeCrawler {
         $bots = array();
         foreach($response['streams'] as $bot) {
             if($bot['Channel'] !== $bot['Bot']) {
-                $botObject = new \stdClass;
-                $botObject->name = $bot['Bot'];
-                $botObject->type = $this::$type;
-                $botObject->channel = $bot['Channel'];
-                $bots[] = $botObject;
+                $bots[] = $this->getBot($bot['Bot'], $bot['Channel']);
             }
         }
 
