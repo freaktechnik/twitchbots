@@ -737,7 +737,7 @@ class Model
         };
         $names = array_map($getName, $foundBots);
 
-        $existingNames = array_map($getName, $this->getBotsByNames($names, 0, count($names));
+        $existingNames = array_map($getName, $this->getBotsByNames($names, 0, count($names)));
 
         $foundBots = array_filter($foundBots, function($bot) use ($existingNames) {
             return !in_array($bot->name, $existingNames);
