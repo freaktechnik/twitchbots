@@ -55,6 +55,7 @@ $console
             );
             $inputArr = new ArrayInput($arguments);
             $types->run($inputArr, $output);
+            $model->checkDone();
         }
     });
 
@@ -69,6 +70,11 @@ $shouldRun = function (InputInterface $input, OutputInterface $output) use ($mod
     }
 };
 
+$ran = function (InputInterface $input) use ($model) {
+    if(!(bool)$input->getOption('ignoreLock'))
+        $model->checkDone();
+}
+
 $console
     ->register('check:bots')
     ->setDefinition(array(
@@ -76,13 +82,14 @@ $console
         new InputOption('ignoreLock', 'i', InputOption::VALUE_NONE, 'If the check lock should be ignored', null)
     ))
     ->setDescription('Check a set of stored bots if they are still registered on Twitch.')
-    ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $shouldRun) {
+    ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $shouldRun, $ran) {
         if($shouldRun($input, $output)) {
             $amount = (int)$input->getOption('amount');
             $bots = $model->checkBots($amount);
 
             $date = '['.date('r').'] ';
             $output->writeln($date.'Checked '.$amount.' bots. Removed '.count($bots));
+            $ran();
         }
     });
 
@@ -94,11 +101,12 @@ $console
     ->register('check:submissions')
     ->setDefinition($defaultArguments)
     ->setDescription('Check submission meta data.')
-    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $shouldRun) {
+    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $shouldRun, $ran) {
         if($shouldRun($input, $output)) {
             $date = '['.date('r').'] ';
             $count = $model->checkSubmissions();
             $output->writeln($date.'Checked '.$count.' submissions for being in chat');
+            $ran();
         }
     });
 
@@ -106,11 +114,12 @@ $console
     ->register('check:types')
     ->setDefinition($defaultArguments)
     ->setDescription('Check known lists from bot vendors for new bots')
-    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $shouldRun) {
+    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $shouldRun, $ran) {
         if($shouldRun($input, $output)) {
             $date = '['.date('r').'] ';
             $addedCount = $model->typeCrawl();
             $output->writeln($date.'Added '.$addedCount.' bots based on lists from bot vendors');
+            $ran();
         }
     });
 
