@@ -31,7 +31,7 @@ class ModBot extends TypeCrawler {
             if($bot['Channel'] !== $bot['Bot']) {
                 $botObject = new \stdClass;
                 $botObject->name = $bot['Bot'];
-                $botObject->type = $this->type;
+                $botObject->type = $this::$type;
                 $botObject->channel = $bot['Channel'];
                 $bots[] = $botObject;
             }
