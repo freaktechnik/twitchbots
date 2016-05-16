@@ -748,7 +748,7 @@ class Model
         return $count;
     }
 
-    private function getBotByChannels(string $channel): array
+    private function getBotsByChannel(string $channel): array
     {
         $sql = "SELECT * FROM bots WHERE channel=?";
         $query = $this->db->prepare($sql);
