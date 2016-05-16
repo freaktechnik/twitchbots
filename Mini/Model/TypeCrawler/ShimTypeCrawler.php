@@ -1,6 +1,6 @@
 <?php
 
-namespace \Mini\Model\TypeCrawler;
+namespace Mini\Model\TypeCrawler;
 
 class ShimTypeCrawler extends TypeCrawler
 {
