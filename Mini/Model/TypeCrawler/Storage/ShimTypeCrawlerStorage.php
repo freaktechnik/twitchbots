@@ -8,7 +8,7 @@ class ShimTypeCrawlerStorage extends TypeCrawlerStorage
 
     function __construct(int $forType)
     {
-        parent::_construct($forType);
+        parent::__construct($forType);
         $this->lastCrawl = 0;
     }
 
