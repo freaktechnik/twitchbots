@@ -50,6 +50,7 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
 
     public function setUp()
     {
+        $this->getConnection();
         $this->model = new \Mini\Model\TypeCrawler\Storage\PDOStorage(1, self::$pdo, 'config');
         parent::setUp();
     }

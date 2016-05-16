@@ -8,6 +8,6 @@ class StorageFactoryTest extends PHPUnit_Framework_TestCase
 
         $storage = $factory->getStorage(2);
 
-        $this->assertInstanceOf('TypeCrawlerStorage', $storage);
+        $this->assertInstanceOf('\Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage', $storage);
     }
 }
