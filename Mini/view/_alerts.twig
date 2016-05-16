@@ -16,7 +16,7 @@
 <div class="alert alert-{{ level }}" role="alert">
     <span class="glyphicon glyphicon-{{ glyph }}" aria-hidden="true"></span>
     <span class="sr-only">{{ sr }}:</span>
-    {{ message }}
+    {{ message|raw }}
 </div>
 {% endif %}
 {% endmacro %}
