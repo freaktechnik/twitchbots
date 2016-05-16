@@ -37,10 +37,10 @@
     {% set message = "A correction with identical username (#{username|e}), new type description and channel already exists." %}
 {% elseif error == 12 %}
     {% set level = 'danger' %}
-    {% set message = "The user specified as channel the bot is in, is known to be a bot. If that is wrong, please <a href="#{{{siteUrl('/about') }}}">contact us</a>." %}
+    {% set message = "The user specified as channel the bot is in, is known to be a bot. If that is wrong, please <a href="#{ siteUrl('/about')|e('html_attr') }">contact us</a>." %}
 {% elseif error == 13 %}
     {% set level = 'danger' %}
-    {% set message = "The Twitch user given as bot is already registered as channel to at least one bot in the database. If that's wrong, please <a href="#{{{siteUrl('/about') }}}">contact us</a>." %}
+    {% set message = "The Twitch user given as bot is already registered as channel to at least one bot in the database. If that's wrong, please <a href="#{ siteUrl('/about')|e('html_attr') }">contact us</a>." %}
 {% endif %}
 {% extends "_base.twig" %}
 {% block title %}Submit bot{% endblock %}
