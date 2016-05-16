@@ -4,7 +4,7 @@ class TypeCrawlerControllerTest extends PHPUnit_Framework_TestCase
 {
     public function testCrawl()
     {
-        $storage = new \Mini\Model\TypeCrawler\Storage\StorageFactory('TypeCrawlerStorage', array());
+        $storage = new \Mini\Model\TypeCrawler\Storage\StorageFactory('ShimTypeCrawlerStorage', array());
         $controller = new \Mini\Model\TypeCrawler\TypeCrawlerController($storage);
         $controller->registerCrawler('ShimTypeCrawler');
 
