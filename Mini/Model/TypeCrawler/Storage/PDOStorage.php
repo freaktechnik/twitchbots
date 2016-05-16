@@ -24,8 +24,7 @@ class PDOStorage extends TypeCrawlerStorage {
         $query->execute(array($this->type."_".$name));
 
         $result = $query->fetch(PDO::FETCH_OBJ);
-        print isset($result);
-        return isset($result) ? $result->value : null;
+        return $result ? $result->value : null;
     }
 
     public function set(string $name, $value) {
