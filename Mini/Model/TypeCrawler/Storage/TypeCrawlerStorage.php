@@ -1,6 +1,6 @@
 <?php
 
-namespace \Mini\Model\TypeCrawler\Storage;
+namespace Mini\Model\TypeCrawler\Storage;
 
 use Exception;
 
