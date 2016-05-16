@@ -80,7 +80,7 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
         $this->model->set('has', 'had');
 
         $queryTable = $this->getConnection()->createQueryTable(
-            'submissions', 'SELECT name, value FROM config'
+            'config', 'SELECT name, value FROM config'
         );
         $expectedTable = $this->createXMLDataSet(dirname(__FILE__)."/_fixtures/config.xml")
                               ->getTable("config");
