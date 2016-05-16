@@ -10,7 +10,7 @@ class ShimTypeCrawler extends TypeCrawler
         parent::__construct($storage);
     }
 
-    protected function doCrawl(): array()
+    protected function doCrawl(): array
     {
         return array($this->getBot('test', 'crawl'));
     }
