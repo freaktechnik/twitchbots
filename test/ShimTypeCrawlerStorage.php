@@ -1,6 +1,6 @@
 <?php
 
-use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
+namespace \Mini\Model\TypeCrawler\Storage;
 
 class ShimTypeCrawlerStorage extends TypeCrawlerStorage
 {

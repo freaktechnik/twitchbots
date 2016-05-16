@@ -1,6 +1,8 @@
 <?php
 
-class ShimTypeCrawler extends \Mini\Model\TypeCrawler\TypeCrawler
+namespace \Mini\Model\TypeCrawler;
+
+class ShimTypeCrawler extends TypeCrawler
 {
     public static $type = 42;
 
