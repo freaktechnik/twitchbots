@@ -2,6 +2,8 @@
 
 namespace Mini\Model\TypeCrawler\Storage;
 
+use Exception;
+
 class TypeCrawlerStorage {
     /** @var in */
     protected $type;
