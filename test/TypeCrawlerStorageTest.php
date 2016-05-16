@@ -28,6 +28,6 @@ class TypeCrawlerStorageTest extends PHPUnit_Framework_TestCase
     public function testSetThrows()
     {
         $storage = new TypeCrawlerStorage(1);
-        $storage->set('test');
+        $storage->set('test', 'value');
     }
 }
