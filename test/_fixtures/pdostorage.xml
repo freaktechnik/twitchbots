@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <table name="config">
+        <column>name</column>
+        <column>value</column>
+        <row>
+            <value>1_get</value>
+            <value>success</value>
+        </row>
+        <row>
+            <value>1_has</value>
+            <value>yes</value>
+        </row>
+        <row>
+            <value>2_get</value>
+            <value>failed</value>
+        </row>
+    </table>
+</dataset>

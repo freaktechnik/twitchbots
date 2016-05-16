@@ -26,6 +26,16 @@ class TypeCrawlerController {
         $crawler = $this->getClassName($crawler);
         $this->crawlers[] = new $crawler($this->storage->getStorage($crawler::$type));
     }
+    
+    public function crawl(string $crawler): array {
+        foreach($this->crawlers as $c) {
+            if($c instanceof $crawler) {
+                $crawler = $c;
+                break;
+            }
+        }
+        return $crawler->crawl();
+    }
 
     public function triggerCrawl(): array {
         $ret = array();
