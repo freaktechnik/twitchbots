@@ -126,6 +126,9 @@ class Model
         else if($this->botSubmitted($username)) {
             throw new Exception("Cannot add an already existing bot", 3);
         }
+        else if(!empty($this->getBotsByChannel($username))) {
+            throw new Exception("Bot cannot be the channel to an existing bot", 13);
+        }
 
         $this->appendToSubmissions($username, $type, 0, $channel);
     }
@@ -146,6 +149,9 @@ class Model
         }
         else if(strtolower($username) == strtolower($channel)) {
             throw new Exception("Username of the bot and the channel it is in can not match", 7);
+        }
+        else if(!empty($channel) && !$this->getBot($channel)) {
+            throw new Exception("Given channel is already a bot", 12);
         }
         else if(!empty($channel) && !$this->twitchUserExists($channel, true)) {
             throw new Exception("Given channel isn't a Twitch channel", 6);
@@ -337,10 +343,7 @@ class Model
 
         // This is basicly an OR, but the second query gets executed lazily.
         if(!$query->fetch()) {
-            $sql = "SELECT * FROM bots WHERE name=?";
-            $query_two = $this->db->prepare($sql);
-            $query_two->execute(array($username));
-            if(!$query_two->fetch())
+            if(!$this->getBot($username))
                 return false;
         }
         return true;
@@ -743,5 +746,14 @@ class Model
         }
 
         return $count;
+    }
+
+    private function getBotByChannels(string $channel): array
+    {
+        $sql = "SELECT * FROM bots WHERE channel=?";
+        $query = $this->db->prepare($sql);
+        $query->execute($channel);
+
+        return $query->fetchAll();
     }
 }
