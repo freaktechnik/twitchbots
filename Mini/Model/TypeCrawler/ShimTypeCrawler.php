@@ -2,6 +2,8 @@
 
 namespace Mini\Model\TypeCrawler;
 
+use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
+
 class ShimTypeCrawler extends TypeCrawler
 {
     public static $type = 42;
