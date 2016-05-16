@@ -752,7 +752,7 @@ class Model
     {
         $sql = "SELECT * FROM bots WHERE channel=?";
         $query = $this->db->prepare($sql);
-        $query->execute($channel);
+        $query->execute(array($channel));
 
         return $query->fetchAll();
     }
