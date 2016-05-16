@@ -150,7 +150,7 @@ class Model
         else if(strtolower($username) == strtolower($channel)) {
             throw new Exception("Username of the bot and the channel it is in can not match", 7);
         }
-        else if(!empty($channel) && !$this->getBot($channel)) {
+        else if(!empty($channel) && !empty($this->getBot($channel))) {
             throw new Exception("Given channel is already a bot", 12);
         }
         else if(!empty($channel) && !$this->twitchUserExists($channel, true)) {

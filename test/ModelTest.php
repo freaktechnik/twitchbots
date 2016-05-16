@@ -177,6 +177,24 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->model->addSubmission("nightbot", 2);
     }
 
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 12
+     */
+    public function testAddSubmissionChannelIsBotThrows()
+    {
+        $this->model->addSubmission("myboot", 1, "", "nightbot");
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 13
+     */
+    public function testAddSubmissionBotIsChannelThrows()
+    {
+        $this->model->addSubmission("ec0ke", 2);
+    }
+
     public function testAddCorrection()
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
@@ -251,6 +269,15 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testAddCorrectionMultichannelChannelThrows()
     {
         $this->model->addCorrection('nightbot', 1, "", "night");
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 12
+     */
+    public function testAddCorrectionChannelIsBotThrows()
+    {
+        $this->model->addCorrection('butler_of_ec0ke', 22, "", "nightbot");
     }
 
     public function testGetSubmissions()
