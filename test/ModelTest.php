@@ -184,7 +184,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddExistingSubmissionThrows()
     {
+        $this->httpMock->append(new Response(200));
         $this->model->addSubmission("test", 1);
+        $this->httpMock->append(new Response(200));
         $this->model->addSubmission("test", 2);
     }
     /**
@@ -193,6 +195,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddSubmissionExistingBotThrows()
     {
+        $this->httpMock->append(new Response(200));
         $this->model->addSubmission("nightbot", 2);
     }
 
@@ -211,6 +214,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddSubmissionBotIsChannelThrows()
     {
+        $this->httpMock->append(new Response(200));
         $this->model->addSubmission("ec0ke", 2);
     }
 
@@ -279,6 +283,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddCorrectionIdenticalChannelThrows()
     {
+        $this->httpMock->append(new Response(200));
         $this->model->addCorrection("butler_of_ec0ke", 22, "", "ec0ke");
     }
     /**
@@ -287,6 +292,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddCorrectionMultichannelChannelThrows()
     {
+        $this->httpMock->append(new Response(200));
         $this->model->addCorrection('nightbot', 1, "", "night");
     }
 
