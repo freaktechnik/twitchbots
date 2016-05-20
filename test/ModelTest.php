@@ -106,7 +106,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->httpMock = new \GuzzleHttp\Handler\MockHandler();
         $client = new \GuzzleHttp\Client(array(
-            'handler' => \GuzzleHttp\HandlerStack::create($mock)
+            'handler' => \GuzzleHttp\HandlerStack::create($this->httpMock)
         ));
 
         $this->model = new \Mini\Model\Model(array(
