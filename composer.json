@@ -12,9 +12,9 @@
         "robloach/component-installer": "^0.2.3",
         "symfony/console": "^3.0",
         "geshi/geshi": "dev-master",
-        "guzzlehttp/guzzle": "~6.0",
-        "kevinrob/guzzle-cache-middleware": "~1.4",
-        "Doctrine/Cache": "*"
+        "kevinrob/guzzle-cache-middleware": "^1.4",
+        "Doctrine/Cache": "^1.6",
+        "guzzlehttp/guzzle": "^5.0"
     },
     "autoload": {
         "psr-4": {
@@ -28,6 +28,6 @@
     "require-dev": {
         "phpunit/phpunit": "^4.8",
         "phpunit/dbunit": "^2.0",
-        "aeris/guzzle-http-mock": "^1.0.1"
+        "aeris/guzzle-http-mock": "^1.1"
     }
 }
