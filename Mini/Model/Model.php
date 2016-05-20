@@ -57,7 +57,9 @@ class Model
         if(!$this->getConfig('update_size'))
             $this->setConfig('update_size', '10');
 
-        $this->twitchHeaders = array('Client-ID' => $this->getConfig('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json');
+        $this->twitchHeaders = array_merge(self::$requestOptions, array(
+            'headers' => array('Client-ID' => $this->getConfig('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
+        ));
         $this->client = $client;
 	}
 
@@ -428,7 +430,7 @@ class Model
 
     public function twitchUserExists(string $name, $noJustin = false): bool
     {
-        $response = $this->client->head("https://api.twitch.tv/kraken/channels/".$name, $this->twitchHeaders, self::$requestOptions);
+        $response = $this->client->head("https://api.twitch.tv/kraken/channels/".$name, $this->twitchHeaders);
         $http_code = $response->getStatusCode();
         return $http_code != 404 && (!$noJustin || $http_code != 422);
     }
@@ -546,7 +548,7 @@ class Model
 
     private function isChannelLive(string $channel): bool
     {
-        $response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$channel, $this->twitchHeaders, self::$requestOptions);
+        $response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$channel, $this->twitchHeaders);
         $stream = json_decode($response->getBody());
         return isset($stream->stream);
     }
@@ -681,7 +683,7 @@ class Model
 
     private function getFollowing(string $name)
     {
-        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels', $this->twitchHeaders, self::$requestOptions);
+        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels', $this->twitchHeaders);
 
         if($response->getStatusCode() >= 400)
             throw new Exception("Can not get followers for ".$name);
@@ -692,7 +694,8 @@ class Model
 
     private function getFollowingChannel(string $name, string $channel): bool
     {
-        $response = $this->client->head('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels/'.$channel, $this->twitchHeaders, self::$requestOptions);
+        $url = 'https://api.twitch.tv/kraken/users/'.$name.'/follows/channels/'.$channel;
+        $response = $this->client->head($url, $this->twitchHeaders);
 
         if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404)
             throw new Exception("Can't get following relation");
