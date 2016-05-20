@@ -133,21 +133,15 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
-        $this->httpMock->append(array(
-            new Response(200)
-        ));
+        $this->httpMock->append(new Response(200));
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
 
-        $this->httpMock->append(array(
-            new Response(200)
-        ));
+        $this->httpMock->append(new Response(200));
 
         $this->model->addSubmission("nightboot", 1);
 
-        $this->httpMock->append(array(
-            new Response(200)
-        ));
+        $this->httpMock->append(new Response(200));
         $this->model->addSubmission("notactuallyaboot", 44, "", "");
 
         $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
@@ -309,6 +303,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertEquals(count($this->model->getSubmissions()), $this->getConnection()->getRowCount('submissions'), "Not an empty array with no submissions");
 
+        $this->httpMock->append(new Response(200));
+        $this->httpMock->append(new Response(200));
+
         $this->model->addSubmission("test", 0, "lorem ipsum");
         $this->model->addSubmission("nightboot", 1);
         $this->assertEquals(2, $this->getConnection()->getRowCount('submissions'), "Test setup failed");
@@ -334,6 +331,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function testGetLastSubmissionsUpdate()
     {
+        $this->httpMock->append(new Response(200));
         $this->model->addSubmission("test", 1);
 
         $submissions = $this->model->getSubmissions();
@@ -525,6 +523,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertTrue($this->model->botSubmitted('butler_of_ec0ke'));
         $this->assertFalse($this->model->botSubmitted('freaktechnik'));
+        $this->httpMock->append(new Response(200));
         $this->model->addSubmission('freaktechnik', 1);
         $this->assertTrue($this->model->botSubmitted('freaktechnik'));
     }
@@ -583,8 +582,11 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function testTwitchUserExists()
     {
+        $this->httpMock->append(new Response(200));
         $this->assertTrue($this->model->twitchUserExists('butler_of_ec0ke'));
+        $this->httpMock->append(new Response(302));
         $this->assertTrue($this->model->twitchUserExists('xanbot'));
+        $this->httpMock->append(new Response(404));
         $this->assertFalse($this->model->twitchUserExists('zeldbot'));
     }
 
