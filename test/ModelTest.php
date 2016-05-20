@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Psr7\Response;
+
 class ModelTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -102,9 +104,10 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function setUp()
     {
-        $client = new \GuzzleHttp\Client();
-        $this->httpMock = new \Aeris\GuzzleHttp\Mock();
-        $this->httpMock->attachToClient($client);
+        $this->httpMock = new \GuzzleHttp\Handler\MockHandler();
+        $client = new \GuzzleHttp\Client(array(
+            'handler' => HandlerStack::create($mock)
+        ));
 
         $this->model = new \Mini\Model\Model(array(
             'db_host' => $GLOBALS['DB_HOST'],
@@ -116,11 +119,6 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             'testing' => true
         ), $client);
         parent::setUp();
-    }
-
-    public function tearDown()
-    {
-        $this->httpMock->verify();
     }
 
     public function testCSRFTokenValidation()
@@ -135,28 +133,22 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
-        $this->httpMock->shouldReceiveRequest()
-            ->withUrl('https://api.twitch.tv/kraken/channels/test')
-            ->withMethod('HEAD')
-            ->andRespondWithJson(array(), 200);
+        $this->httpMock->append(array(
+            new Response(200)
+        ));
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
-        $this->httpMock->verify();
 
-        $this->httpMock->shouldReceiveRequest()
-            ->withUrl('https://api.twitch.tv/kraken/channels/nightbot')
-            ->withMethod('HEAD')
-            ->andRespondWithJson(array(), 200);
+        $this->httpMock->append(array(
+            new Response(200)
+        ));
 
         $this->model->addSubmission("nightboot", 1);
-        $this->httpMock->verify();
 
-        $this->httpMock->shouldReceiveRequest()
-            ->withUrl('https://api.twitch.tv/kraken/channels/notactualyaboot')
-            ->withMethod('HEAD')
-            ->andRespondWithJson(array(), 200);
+        $this->httpMock->append(array(
+            new Response(200)
+        ));
         $this->model->addSubmission("notactuallyaboot", 44, "", "");
-        $this->httpMock->verify();
 
         $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
 
