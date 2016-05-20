@@ -15,6 +15,22 @@ $app->setName('api');
 
 // The API has no real view
 
+/********************************************* GUZZLE **********************************************************/
+$stack = \GuzzleHttp\HandlerStack::create();
+
+$stack->push(new \Kevinrob\GuzzleCache\CacheMiddleware(
+    new \Kevinrob\GuzzleCache\Strategy\PrivateCacheStrategy(
+        new \Kevinrob\GuzzleCache\Storage\DoctrineCacheStorage(
+            new \Doctrine\Common\Cache\ChainCache([
+                new \Doctrine\Common\Cache\ArrayCache(),
+                new \Doctrine\Common\Cache\FilesystemCache('../guzzle-cache'),
+            ])
+        )
+    )
+), 'cache');
+
+$client = new \GuzzleHttp\Client(array('handler' => $stack));
+
 /******************************************* THE CONFIGS *******************************************************/
 // Configs for mode "development" (Slim's default), see the GitHub readme for details on setting the environment
 $app->configureMode('development', function () use ($app) {
@@ -58,7 +74,7 @@ $app->configureMode('production', function () use ($app) {
 /******************************************** THE MODEL ********************************************************/
 
 // Initialize the model, pass the database configs. $model can now perform all methods from Mini\model\model.php
-$model = new \Mini\Model\Model($app->config('model'));
+$model = new \Mini\Model\Model($app->config('model'), $client);
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 

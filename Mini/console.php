@@ -9,6 +9,22 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\{InputInterface, InputOption, ArrayInput};
 use Symfony\Component\Console\Output\OutputInterface;
 
+/********************************************* GUZZLE **********************************************************/
+$stack = \GuzzleHttp\HandlerStack::create();
+
+$stack->push(new \Kevinrob\GuzzleCache\CacheMiddleware(
+    new \Kevinrob\GuzzleCache\Strategy\PrivateCacheStrategy(
+        new \Kevinrob\GuzzleCache\Storage\DoctrineCacheStorage(
+            new \Doctrine\Common\Cache\ChainCache([
+                new \Doctrine\Common\Cache\ArrayCache(),
+                new \Doctrine\Common\Cache\FilesystemCache('../guzzle-cache'),
+            ])
+        )
+    )
+), 'cache');
+
+$client = new \GuzzleHttp\Client(array('handler' => $stack));
+
 $console = new Application;
 $model = new \Mini\Model\Model(array(
     'db_host' => 'localhost',
@@ -17,7 +33,7 @@ $model = new \Mini\Model\Model(array(
     'db_user' => $db_user,
     'db_pass' => $db_pw,
     'page_size' => 50
-));
+), $client);
 
 $console
     ->register('check:all')

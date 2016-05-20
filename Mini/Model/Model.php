@@ -7,6 +7,7 @@ use PDOStatement;
 use Exception;
 use \Mini\Model\TypeCrawler\Storage\StorageFactory;
 use \Mini\Model\TypeCrawler\TypeCrawlerController;
+use GuzzleHttp\{Client, Promise};
 
 require __DIR__.'/../../vendor/autoload.php';
 include_once 'csrf.php';
@@ -20,23 +21,26 @@ class Model
 	private $db;
 
 	/**
+	 * The guzzle client
+	 * @var Client
+	 */
+	private $client;
+
+	/**
 	 * The default page size
 	 * @var int
 	 */
 	private $pageSize;
 
-	/**
-	 * The Twitch API wrapper
-	 * @var \ritero\SDK\TwitchTV\TwitchSDK
-	 */
-    private $twitch;
-    private $twitchClientID;
+    private $twitchHeaders;
+
+    private static $requestOptions = array('http_errors' => false);
 
     /**
      * When creating the model, the configs for database connection creation are needed
      * @param $config
      */
-    function __construct(array $config)
+    function __construct(array $config, Client $client)
     {
         // PDO db connection statement preparation
         $dsn = 'mysql:host=' . $config['db_host'] . ';dbname=' . $config['db_name'] . ';port=' . $config['db_port'];
@@ -53,14 +57,8 @@ class Model
         if(!$this->getConfig('update_size'))
             $this->setConfig('update_size', '10');
 
-        if(array_key_exists('testing', $config) && $config['testing']) {
-            $this->twitch = new MockTwitch;
-        }
-        else {
-            //TODO supply with Client-ID for future proofness
-            $this->twitch = new \ritero\SDK\TwitchTV\TwitchSDK;
-        }
-        $this->twitchClientID = $this->getConfig('client-ID');
+        $this->twitchHeaders = array('Client-ID' => $this->getConfig('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json');
+        $this->client = $client;
 	}
 
 	private function getConfig(string $key): string
@@ -430,22 +428,9 @@ class Model
 
     public function twitchUserExists(string $name, $noJustin = false): bool
     {
-        if($this->twitch instanceof MockTwitch) {
-            $channel = $this->twitch->channelGet($name);
-            return $this->twitch->http_code != 404 && (!$noJustin || $this->twitch->http_code != 422);
-        }
-        else {
-            $url = "https://api.twitch.tv/kraken/channels/".$name;
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_NOBODY, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Client-ID: '.$this->twitchClientID, 'Accept: application/vnd.twitchtv.v3+json'));
-
-            curl_exec($ch);
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-            return $http_code != 404 && (!$noJustin || $http_code != 422);
-        }
+        $response = $this->client->head("https://api.twitch.tv/kraken/channels/".$name, $this->twitchHeaders, self::$requestOptions);
+        $http_code = $response->getStatusCode();
+        return $http_code != 404 && (!$noJustin || $http_code != 422);
     }
 
     public function checkBots(): array
@@ -500,19 +485,12 @@ class Model
 
     private function getChatters(string $channel): array
     {
-        $url = "https://tmi.twitch.tv/group/user/".$channel."/chatters";
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $json = curl_exec($ch);
-
-        if(curl_getinfo($ch, CURLINFO_HTTP_CODE) >= 400) {
+        $response = $this->client->get("https://tmi.twitch.tv/group/user/".$channel."/chatters", array(), self::$requestOptions);
+        if($response->getStatusCode() >= 400) {
             throw new Exception("No chatters returned");
         }
 
-        curl_close($ch);
-
-        return json_decode($json, true)['chatters'];
+        return json_decode($response->getBody(), true)['chatters'];
     }
 
     private function isInChannel(string $user, array $chatters): bool
@@ -566,6 +544,13 @@ class Model
         $query->execute(array($followingChannel, $id));
     }
 
+    private function isChannelLive(string $channel): bool
+    {
+        $response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$channel, $this->twitchHeaders, self::$requestOptions);
+        $stream = json_decode($response->getBody());
+        return isset($stream->stream);
+    }
+
     public function checkSubmissions(): int
     {
         $submissions = $this->getSubmissions();
@@ -612,8 +597,7 @@ class Model
                 $ranModCheck = isset($submission->ismod);
                 // Update online or offline and mod if needed
                 if(!$submission->online || !isset($submission->offline)) {
-                    $stream = $this->twitch->streamGet($submission->channel);
-                    $live = isset($stream->stream);
+                    $live = $this->isChannelLive($submission->channel);
                     if(($live && !$submission->online) || (!$live && !isset($submission->offline))) {
                         $isMod = null;
                         try {
@@ -664,17 +648,13 @@ class Model
     {
         $url = "https://twitchstuff.3v.fi/api/mods/" . $username;
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $json = curl_exec($ch);
+        $response = $this->client->get($url, array(), self::$requestOptions);
 
-        if(curl_getinfo($ch, CURLINFO_HTTP_CODE) >= 400) {
+        if($response->getStatusCode() >= 400) {
             throw new Exception("Could not get mod status");
         }
 
-        curl_close($ch);
-
-        $response = json_decode($json, true);
+        $response = json_decode($response->getBody(), true);
 
         if($response['count'] > 0 && in_array(strtolower($channel), array_map(function($i) {
             return $i['name'];
@@ -701,22 +681,23 @@ class Model
 
     private function getFollowing(string $name)
     {
-        $following = $this->twitch->userFollowChannels($name);
+        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels', $this->twitchHeaders, self::$requestOptions);
 
-        if($this->twitch->http_code >= 400)
+        if($response->getStatusCode() >= 400)
             throw new Exception("Can not get followers for ".$name);
 
+        $following = json_decode($response->getBody());
         return $following;
     }
 
     private function getFollowingChannel(string $name, string $channel): bool
     {
-        $relation = $this->twitch->userFollowRelationship($name, $channel);
+        $response = $this->client->head('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels/'.$channel, $this->twitchHeaders, self::$requestOptions);
 
-        if($this->twitch->http_code >= 400 && $this->twitch->http_code !== 404)
+        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404)
             throw new Exception("Can't get following relation");
 
-        return $this->twitch->http_code < 400;
+        return $response->getStatusCode() < 400;
     }
 
     private function addBot(string $name, int $type, $channel = null)

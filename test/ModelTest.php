@@ -12,6 +12,11 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     private $model;
 
     /**
+     * @var \Aeris\GuzzleHttp\Mock
+     */
+    private $httpMock;
+
+    /**
      * @var int
      */
     const pageSize = 100;
@@ -97,6 +102,10 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function setUp()
     {
+        $client = new \GuzzleHttp\Client();
+        $this->httpMock = new \Aeris\GuzzleHttp\Mock();
+        $this->httpMock->attachToClient($client);
+
         $this->model = new \Mini\Model\Model(array(
             'db_host' => $GLOBALS['DB_HOST'],
             'db_port' => $GLOBALS['DB_PORT'],
@@ -105,8 +114,13 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
             'db_pass' => $GLOBALS['DB_PASSWD'],
             'page_size' => self::pageSize,
             'testing' => true
-        ));
+        ), $client);
         parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        $this->httpMock->verify();
     }
 
     public function testCSRFTokenValidation()
@@ -121,9 +135,28 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
+        $this->httpMock->shouldReceiveRequest()
+            ->withUrl('https://api.twitch.tv/kraken/channels/test')
+            ->withMethod('HEAD')
+            ->andRespondWithJson(array(), 200);
+
         $this->model->addSubmission("test", 0, "lorem ipsum");
+        $this->httpMock->verify();
+
+        $this->httpMock->shouldReceiveRequest()
+            ->withUrl('https://api.twitch.tv/kraken/channels/nightbot')
+            ->withMethod('HEAD')
+            ->andRespondWithJson(array(), 200);
+
         $this->model->addSubmission("nightboot", 1);
+        $this->httpMock->verify();
+
+        $this->httpMock->shouldReceiveRequest()
+            ->withUrl('https://api.twitch.tv/kraken/channels/notactualyaboot')
+            ->withMethod('HEAD')
+            ->andRespondWithJson(array(), 200);
         $this->model->addSubmission("notactuallyaboot", 44, "", "");
+        $this->httpMock->verify();
 
         $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
 
@@ -203,7 +236,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->model->addCorrection("nightbot", 0, "nightbot");
         $this->model->addCorrection("butler_of_ec0ke", 23, "", "");
 
-        $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
+        $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding correction failed");
 
         $queryTable = $this->getConnection()->createQueryTable(
            'submissions',
