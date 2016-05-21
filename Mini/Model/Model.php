@@ -703,7 +703,7 @@ class Model
         return $response->getStatusCode() < 400;
     }
 
-    private function addBot(string $name, int $type, $channel = null)
+    private function addBot(string $name, int $type, $channel = null, $query = null)
     {
         $sql = "INSERT INTO bots (name,type,channel) VALUES (?,?,?)";
         $query = $this->db->prepare($sql);
@@ -711,6 +711,7 @@ class Model
         $query->bindValue(2, $type, PDO::PARAM_INT);
         $query->bindValue(3, strtolower($channel), PDO::PARAM_STR);
         $query->execute();
+        return $query;
     }
 
     public function typeCrawl(): int
@@ -721,7 +722,9 @@ class Model
         $foundBots = $controller->triggerCrawl();
 
         $count = 0;
-        foreach($foundBots as $bot) {
+        $max = count($foundBots);
+        for($i = 0; $i < $max; $i += 1) {
+            $bot = $foundBots[$i];
             if(empty($this->getBot($bot->name)) && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel, true))) {
                 $this->addBot($bot->name, $bot->type, $bot->channel);
                 $count += 1;
