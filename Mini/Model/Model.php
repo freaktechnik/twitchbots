@@ -723,22 +723,10 @@ class Model
 
         $count = 0;
         $max = count($foundBots);
-        $sql = "INSERT INTO bots (name,type,channel) VALUES (?,?,?)";
-        $query = $this->db->prepare($sql);
-        $bot = $foundBots[0];
-        $name = strtolower($bot->name);
-        $type = $bot->type;
-        $channel = strtolower($bot->channel);
-        $query->bindParam(1, $name, PDO::PARAM_STR);
-        $query->bindParam(2, $type, PDO::PARAM_INT);
-        $query->bindParam(3, $channel, PDO::PARAM_STR);
         for($i = 0; $i < $max; $i += 1) {
             $bot = $foundBots[$i];
             if(empty($this->getBot($bot->name)) && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel, true))) {
-                $name = strtolower($bot->name);
-                $type = $bot->type;
-                $channel = strtolower($bot->channel);
-                $query->execute();
+                $this->addBot($bot->name, $bot->type, $bot->channel);
                 $count += 1;
                 //TODO remove any submission of a bot with this name and type
             }
