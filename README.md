@@ -13,10 +13,8 @@ The code in this repo is licensed under the MIT license.
 ## Used APIs
 Thanks to the following APIs, the service can try to curate the list as best as it can on its own:
 
- - [Twitch API](https://github.com/justintv/Twitch-API)
+ - [Twitch API](https://github.com/justintv/Twitch-API) *needs a CLient-ID saved as `clinet-ID` in the config table*
  - [Twitch Sword Counter](https://twitchstuff.3v.fi/mods/) API
- 
-None of these APIs currently require a token for the used endpoints.
 
 ## Set up
 
