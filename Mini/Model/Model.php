@@ -135,7 +135,6 @@ class Model
 
     private function appendToSubmissions(string $username, $type, $correction = 0, $channel = null)
     {
-        echo $type."\n";
         $sql = "INSERT INTO submissions(name,description,type,channel) VALUES (?,?,?,?)";
         $query = $this->db->prepare($sql);
         $params = array($username, $type, $correction, $channel);
