@@ -33,7 +33,7 @@ class Pajbot extends TypeCrawler {
             $ret = array();
             foreach($elements as $element) {
                 $name = $element->getElementsByTagName('h2')->item(0)->textContent;
-                $channel = preg_replace("https?:\/\/twitch\.tv\/", "", $xpath->query("div/a[starts-with(@href, 'http://twitch.tv/')]", $element)->item(0)->getAttribute("href"));
+                $channel = preg_replace("%https?://twitch\.tv/%", "", $xpath->query("div/a[starts-with(@href, 'http://twitch.tv/')]", $element)->item(0)->getAttribute("href"));
                 $ret[] = $this->getBot($name, $channel);
             }
             return $ret;
