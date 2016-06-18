@@ -24,7 +24,8 @@ class Pajbot extends TypeCrawler {
         $rawHTML = curl_exec($ch);
         curl_close($ch);
 
-        $document = DOMDocument::loadHTML($rawHTML);
+        $document = new DOMDocument();
+        $document->loadHTML($rawHTML);
 
         $xpath = new DOMXpath($document);
         $elements = $xpath->query("/html/body/div/div/div/div/div[@class='column pbot']");
