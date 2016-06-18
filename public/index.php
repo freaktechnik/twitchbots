@@ -356,7 +356,6 @@ $app->group('/lib', function ()  use ($app, $model) {
 
         $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
         try {
-            echo $app->request->params('type')."\n";
             if(!$model->checkToken("submit", $app->request->params('token'))) {
                 throw new Exception("CSRF token mismatch", 1);
             }
@@ -383,6 +382,8 @@ $app->group('/lib', function ()  use ($app, $model) {
         catch(Exception $e) {
             $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error='.$e->getCode().$echoParam('username').$echoParam('type').$echoParam('channel').$echoParam('description').$correction, 303);
         }
+
+        echo $app->request->params('type')."\n";
         //$app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1'.$correction, 303);
     });
 });
