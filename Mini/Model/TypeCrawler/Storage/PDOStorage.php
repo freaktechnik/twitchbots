@@ -28,10 +28,12 @@ class PDOStorage extends TypeCrawlerStorage {
     }
 
     public function set(string $name, $value) {
-        if($this->has($name))
+        if($this->has($name)) {
             $sql = "UPDATE ".$this->table." SET value=? WHERE name=?";
-        else
+        }
+        else {
             $sql = "INSERT INTO ".$this->table." (value, name) VALUES (?,?)";
+        }
         $query = $this->db->prepare($sql);
         $query->execute(array($value, $this->type."_".$name));
     }

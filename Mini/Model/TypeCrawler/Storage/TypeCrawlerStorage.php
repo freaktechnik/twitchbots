@@ -12,14 +12,23 @@ class TypeCrawlerStorage {
         $this->type = $forType;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function get(string $name) {
         throw new Exception();
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function set(string $name, $value) {
         throw new Exception();
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function has(string $name) {
         throw new Exception();
     }
