@@ -218,6 +218,26 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->model->addSubmission("ec0ke", 2);
     }
 
+    /**
+     * @expcetedException Exception
+     * @expectedExceptionCode 2
+     */
+    public function testAddSubmissionNotOnTwitchThrows()
+    {
+        $this->httpMock->append(new Response(404));
+        $this->model->addSubmission("notauser", 1);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 6
+     */
+    public function testAddSubmissionInexistentChannelThrows()
+    {
+        $this->httpMock->append(new Response(404));
+        $this->model->addSubmission("bot", 22, "", "notauser");
+    }
+
     public function testAddCorrection()
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
@@ -305,6 +325,16 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testAddCorrectionChannelIsBotThrows()
     {
         $this->model->addCorrection('butler_of_ec0ke', 22, "", "nightbot");
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 6
+     */
+    public function testAddCorrectionInexistentChannelThrows()
+    {
+        $this->httpMock->append(new Response(404));
+        $this->model->addCorrection("nightbot", 22, "", "notauser");
     }
 
     public function testGetSubmissions()

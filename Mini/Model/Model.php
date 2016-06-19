@@ -54,8 +54,9 @@ class Model
 
         $this->pageSize = $config['page_size'];
 
-        if(!$this->getConfig('update_size'))
+        if(!$this->getConfig('update_size')) {
             $this->setConfig('update_size', '10');
+        }
 
         $this->twitchHeaders = array_merge(self::$requestOptions, array(
             'headers' => array('Client-ID' => $this->getConfig('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
@@ -69,10 +70,12 @@ class Model
 	    $query = $this->db->prepare($sql);
 	    $query->execute(array($key));
 	    $result = $query->fetch();
-	    if($result)
+	    if($result) {
     	    return $result->value;
-	    else
+    	}
+	    else {
 	        return "";
+	    }
 	}
 
 	private function setConfig(string $key, string $value)
@@ -109,8 +112,9 @@ class Model
      */
     public function addSubmission(string $username, int $type, $description = "", $channel = null)
     {
-        if(empty($channel))
+        if(empty($channel)) {
             $channel = null;
+        }
 
         if($type == 0) {
             if($description == "")
@@ -173,8 +177,9 @@ class Model
     public function getLastUpdate($table = "bots", $type = 0): int
     {
         $sql = "SELECT date FROM ".$table." ORDER BY date DESC LIMIT 1";
-        if($type != 0)
+        if($type != 0) {
             $sql .= "WHERE type=?";
+        }
 
         $query = $this->db->prepare($sql);
         $query->execute(array($type));
@@ -189,8 +194,9 @@ class Model
     public function getBotCount($type = 0): int
     {
         $sql = "SELECT count FROM count";
-        if($type != 0)
+        if($type != 0) {
             $sql = "SELECT count(name) AS count FROM bots WHERE type=?";
+        }
 
         $query = $this->db->prepare($sql);
         $query->execute(array($type));
@@ -219,10 +225,12 @@ class Model
     {
         $limit = $limit ?? $this->pageSize;
         $count = $count ?? $this->getBotCount();
-        if($limit > 0)
+        if($limit > 0) {
             return ceil($count / (float)$limit);
-        else
+        }
+        else {
             return 0;
+        }
     }
 
     /**
@@ -365,8 +373,9 @@ class Model
 
     public function checkRunning(): bool
     {
-        if((int)$this->getConfig('lock') == 1)
+        if((int)$this->getConfig('lock') == 1) {
             return true;
+        }
 
         $this->setConfig('lock', '1');
         return false;
@@ -380,7 +389,6 @@ class Model
     public function getLastCheckOffset(int $step): int
     {
         $lastOffset = (int)$this->getConfig('update_offset');
-
         $newOffset = ($lastOffset + $step) % $this->getBotCount();
 
         $this->setConfig('update_offset', $newOffset);
@@ -398,14 +406,17 @@ class Model
 
     public function addCorrection(string $username, int $type, $description = "", $channel = null)
     {
-        if(empty($channel))
+        if(empty($channel)) {
             $channel = null;
+        }
 
         if($type == 0) {
-            if($description == "")
+            if($description == "") {
                 throw new Exception("Description can not be empty", 9);
-            else if($this->hasCorrection($username, $description, $channel))
+            }
+            else if($this->hasCorrection($username, $description, $channel)) {
                 throw new Exception("Identical correction already exists", 11);
+            }
             $type = $description;
         }
 
@@ -501,8 +512,9 @@ class Model
 
 
         foreach($chatters as $category) {
-            if(in_array($user, $category))
+            if(in_array($user, $category)) {
                 return true;
+            }
         }
         return false;
     }
@@ -516,10 +528,12 @@ class Model
 
     private function setSubmissionInChat(int $id, $inChannel, bool $live)
     {
-        if($live)
+        if($live) {
             $sql = "UPDATE submissions SET online=? WHERE id=?";
-        else
+        }
+        else {
             $sql = "UPDATE submissions SET offline=? WHERE id=?";
+        }
 
 	    $query = $this->db->prepare($sql);
 	    $query->execute(array($inChannel, $id));
@@ -606,18 +620,21 @@ class Model
                             $chatters = $this->getChatters($submission->channel);
                             $isInChannel = $this->isInChannel($submission->name, $chatters);
 
-                            if($isInChannel && !$submission->ismod)
+                            if($isInChannel && !$submission->ismod) {
                                 $isMod = $this->isMod($submission->name, $chatters);
-                            else if(!$ranModCheck)
+                            }
+                            else if(!$ranModCheck) {
                                 $isMod = $this->getModStatus($submission->name, $submission->channel);
+                            }
                         }
                         catch(Exception $e) {
                             $isInChannel = null;
                         }
 
                         $this->setSubmissionInChat($submission->id, $isInChannel, $live);
-                        if($isMod !== null)
+                        if($isMod !== null) {
                             $this->setSubmissionModded($submission->id, $isMod);
+                        }
 
                         $ranModCheck = true;
                         $didSomething = true;
@@ -632,15 +649,17 @@ class Model
                     catch(Exception $e) {
                         $isMod = null;
                     }
-                    if($isMod !== null)
+                    if($isMod !== null) {
                         $this->setSubmissionModded($submission->id, $isMod);
+                    }
 
                     $didSomething = true;
                 }
             }
 
-            if($didSomething)
+            if($didSomething) {
                 ++$count;
+            }
         }
 
         return $count;
@@ -660,8 +679,9 @@ class Model
 
         if($response['count'] > 0 && in_array(strtolower($channel), array_map(function($i) {
             return $i['name'];
-        }, $response['channels'])))
+        }, $response['channels']))) {
             return true;
+        }
 
         return false;
     }
@@ -685,8 +705,9 @@ class Model
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels', $this->twitchHeaders);
 
-        if($response->getStatusCode() >= 400)
+        if($response->getStatusCode() >= 400) {
             throw new Exception("Can not get followers for ".$name);
+        }
 
         $following = json_decode($response->getBody());
         return $following;
@@ -697,8 +718,9 @@ class Model
         $url = 'https://api.twitch.tv/kraken/users/'.$name.'/follows/channels/'.$channel;
         $response = $this->client->head($url, $this->twitchHeaders);
 
-        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404)
+        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
             throw new Exception("Can't get following relation");
+        }
 
         return $response->getStatusCode() < 400;
     }
