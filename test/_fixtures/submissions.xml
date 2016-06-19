@@ -3,17 +3,21 @@
     <table name="submissions">
         <column>name</column>
         <column>description</column>
+        <column>type</column>
         <row>
             <value>test</value>
             <value>lorem ipsum</value>
+            <value>0</value>
         </row>
         <row>
             <value>nightboot</value>
             <value>1</value>
+            <value>0</value>
         </row>
         <row>
             <value>notactuallyaboot</value>
             <value>44</value>
+            <value>0</value>
         </row>
     </table>
 </dataset>

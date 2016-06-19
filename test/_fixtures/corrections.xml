@@ -3,17 +3,29 @@
     <table name="submissions">
         <column>name</column>
         <column>description</column>
+        <column>type</column>
+        <column>channel</column>
         <row>
             <value>moobot</value>
+            <value>1</value>
             <value>1</value>
         </row>
         <row>
             <value>nightbot</value>
             <value>nightbot</value>
+            <value>1</value>
         </row>
         <row>
             <value>butler_of_ec0ke</value>
             <value>23</value>
+            <value>1</value>
+            <value></value>
+        </row>
+        <row>
+            <value>ncsmusicbot</value>
+            <value>22</value>
+            <value>1</value>
+            <value>ncsmusic</value>
         </row>
     </table>
 </dataset>
