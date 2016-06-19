@@ -10,6 +10,10 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">Mini/Model</directory>
+            <exclude>
+                <file>Mini/Model/TypeCrawler/ShimTypeCrawler.php</file>
+                <file>Mini/Model/TypeCrawler/Storage/ShimTypeCrawlerStorage.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <logging>
