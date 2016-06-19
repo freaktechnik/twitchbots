@@ -7,4 +7,11 @@
         <var name="DB_PASSWD" value="" />
         <var name="DB_PORT" value="" />
     </php>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">Mini/Model</directory>
+            <file>public/index.php</file>
+            <file>api/index.php</file>
+        </whitelist>
+    </filter>
 </phpunit>

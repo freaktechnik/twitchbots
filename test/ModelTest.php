@@ -147,7 +147,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
 
         $queryTable = $this->getConnection()->createQueryTable(
-            'submissions', 'SELECT name, description FROM submissions'
+            'submissions', 'SELECT name, description, type FROM submissions'
         );
         $expectedTable = $this->createXMLDataSet(dirname(__FILE__)."/_fixtures/submissions.xml")
                               ->getTable("submissions");
@@ -231,7 +231,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $queryTable = $this->getConnection()->createQueryTable(
            'submissions',
-           'SELECT name, description FROM submissions'
+           'SELECT name, description, type, channel FROM submissions'
         );
         $expectedTable = $this->createXMLDataSet(dirname(__FILE__)."/_fixtures/corrections.xml")
                               ->getTable("submissions");
