@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<phpunit>
+<phpunit bootstrap="vendor/autoload.php">
     <php>
         <var name="DB_NAME" value="twitchbots" />
         <var name="DB_HOST" value="localhost" />
@@ -10,8 +10,6 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">Mini/Model</directory>
-            <file>public/index.php</file>
-            <file>api/index.php</file>
         </whitelist>
     </filter>
     <logging>

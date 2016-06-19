@@ -12,7 +12,7 @@ install:
 script:
   - php -l public/index.php
   - php -l api/index.php
-  - phpunit --bootstrap vendor/autoload.php test
+  - phpunit test
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - source .travis/trust-server.sh
