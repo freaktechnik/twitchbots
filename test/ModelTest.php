@@ -225,7 +225,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->model->addCorrection("moobot", 1);
         $this->model->addCorrection("nightbot", 0, "nightbot");
         $this->model->addCorrection("butler_of_ec0ke", 23, "", "");
-        $this->model->addCorrection("ncsmusicbot", 22, "ncsmusic");
+        $this->model->addCorrection("ncsmusicbot", 22, "", "ncsmusic");
 
         $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding correction failed");
 
