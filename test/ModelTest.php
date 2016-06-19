@@ -219,7 +219,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @expcetedException Exception
+     * @expectedException Exception
      * @expectedExceptionCode 2
      */
     public function testAddSubmissionNotOnTwitchThrows()

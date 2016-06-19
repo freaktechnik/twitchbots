@@ -18,19 +18,19 @@ class Model
      * The database connection
      * @var PDO
      */
-	private $db;
+    private $db;
 
-	/**
-	 * The guzzle client
-	 * @var Client
-	 */
-	private $client;
+    /**
+     * The guzzle client
+     * @var Client
+     */
+    private $client;
 
-	/**
-	 * The default page size
-	 * @var int
-	 */
-	private $pageSize;
+    /**
+     * The default page size
+     * @var int
+     */
+    private $pageSize;
 
     private $twitchHeaders;
 
