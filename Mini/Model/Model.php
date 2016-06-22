@@ -296,7 +296,7 @@ class Model
                 $query->execute();
             }
 
-            $sql = 'SELECT * FROM bots LEFT JOIN botnames ON bots.name = botnames.name LIMIT ?,?';
+            $sql = 'SELECT * FROM bots INNER JOIN botnames ON bots.name = botnames.name LIMIT ?,?';
             $query = $this->db->prepare($sql);
             $this->doPagination($query, $offset, $limit, 1, 2);
             $query->execute();
