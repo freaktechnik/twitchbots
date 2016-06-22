@@ -283,12 +283,22 @@ class Model
         $limit = $limit ?? $this->pageSize;
         $namesCount = count($names);
         if($limit > 0 && $offset < $namesCount) {
-            $sql = 'SELECT * FROM bots WHERE name IN ('.implode(',', array_fill(1, $namesCount, '?')).') LIMIT ?,?';
+            $sql = 'CREATE TEMPORARY TABLE botnames(name)';
             $query = $this->db->prepare($sql);
-            foreach($names as $i => $n) {
-                $query->bindValue($i + 1, $n, PDO::PARAM_STR);
+            $query->execute();
+
+            $sql = 'INSERT INTO botnames(name) VALUES (?)';
+            $query = $this->db->prepare($sql);
+            $name;
+            $query->bindParam(1, $name);
+
+            foreach($names as $name) {
+                $query->execute();
             }
-            $this->doPagination($query, $offset, $limit, $namesCount + 1, $namesCount + 2);
+
+            $sql = 'SELECT * FROM bots LEFT JOIN botnames ON bots.name = botnames.name LIMIT ?,?';
+            $query = $this->db->prepare($sql);
+            $this->doPagination($query, $offset, $limit, 1, 2);
             $query->execute();
 
             return $query->fetchAll();
