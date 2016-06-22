@@ -283,11 +283,11 @@ class Model
         $limit = $limit ?? $this->pageSize;
         $namesCount = count($names);
         if($limit > 0 && $offset < $namesCount) {
-            $sql = 'CREATE TEMPORARY TABLE botnames(name)';
+            $sql = 'CREATE TEMPORARY TABLE botnames (name varchar(535) CHARACTER SET ascii NOT NULL)';
             $query = $this->db->prepare($sql);
             $query->execute();
 
-            $sql = 'INSERT INTO botnames(name) VALUES (?)';
+            $sql = 'INSERT INTO botnames (name) VALUES (?)';
             $query = $this->db->prepare($sql);
             $name;
             $query->bindParam(1, $name);
