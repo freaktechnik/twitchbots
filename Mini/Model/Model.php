@@ -2,6 +2,7 @@
 
 namespace Mini\Model;
 
+use PDO;
 use PDOStatement;
 use Exception;
 use \Mini\Model\TypeCrawler\Storage\StorageFactory;
