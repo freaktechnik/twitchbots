@@ -2,6 +2,8 @@
 
 namespace Mini\Model;
 
+use ReflectionClass;
+
 class PingablePDO {
     private $pdo;
     private $params;
