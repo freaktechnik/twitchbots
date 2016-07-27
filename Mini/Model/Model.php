@@ -2,7 +2,6 @@
 
 namespace Mini\Model;
 
-use PDO;
 use PDOStatement;
 use Exception;
 use \Mini\Model\TypeCrawler\Storage\StorageFactory;
@@ -16,7 +15,7 @@ class Model
 {
     /**
      * The database connection
-     * @var PDO
+     * @var PingablePDO
      */
     private $db;
 
@@ -50,7 +49,7 @@ class Model
         $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
 
         // create new PDO db connection
-        $this->db = new PDO($dsn, $config['db_user'], $config['db_pass'], $options);
+        $this->db = new PingablePDO($dsn, $config['db_user'], $config['db_pass'], $options);
 
         $this->pageSize = $config['page_size'];
 
@@ -583,6 +582,7 @@ class Model
         $count = 0;
 
         foreach($submissions as $submission) {
+            $this->db-ping();
             $didSomething = false;
 
             // Update following if needed
@@ -752,6 +752,8 @@ class Model
         $controller = new TypeCrawlerController($storage);
 
         $foundBots = $controller->triggerCrawl();
+
+        $this->db->ping();
 
         $count = 0;
         $max = count($foundBots);
