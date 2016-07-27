@@ -7,6 +7,7 @@ use PDOStatement;
 use Exception;
 use \Mini\Model\TypeCrawler\Storage\StorageFactory;
 use \Mini\Model\TypeCrawler\TypeCrawlerController;
+use \Mini\Model\PingablePDO;
 use GuzzleHttp\{Client, Promise};
 
 require __DIR__.'/../../vendor/autoload.php';
