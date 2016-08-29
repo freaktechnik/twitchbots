@@ -347,7 +347,7 @@ class Model
 
     public function getAllTypes(): array
     {
-        $sql = "SELECT types.s*, COUNT(DISTINCT(bots.name)) AS count FROM types LEFT JOIN bots ON bots.type = types.id GROUP BY types.id ORDER BY count DESC, types.name ASC";
+        $sql = "SELECT types.*, COUNT(DISTINCT(bots.name)) AS count FROM types LEFT JOIN bots ON bots.type = types.id GROUP BY types.id ORDER BY count DESC, types.name ASC";
         $query = $this->db->prepare($sql);
         $query->execute();
 
