@@ -3,7 +3,7 @@
 namespace Mini\Model\TypeCrawler\Storage;
 
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
-use PDO;
+use \Mini\Model\PingablePDO;
 
 class PDOStorage extends TypeCrawlerStorage {
     /** @var PDO */
@@ -11,7 +11,7 @@ class PDOStorage extends TypeCrawlerStorage {
     /** @var string */
     private $table;
 
-    function __construct(int $forType, PDO $pdo, string $table) {
+    function __construct(int $forType, PingablePDO $pdo, string $table) {
         parent::__construct($forType);
 
         $this->db = $pdo;
