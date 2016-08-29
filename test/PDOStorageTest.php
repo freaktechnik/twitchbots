@@ -1,5 +1,7 @@
 <?php
 
+use \Mini\Model\PingablePDO;
+
 class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -32,7 +34,7 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
-                self::$pdo = new PDO('mysql:dbname='.$GLOBALS['DB_NAME'].';host='.$GLOBALS['DB_HOST'].';port='.$GLOBALS['DB_PORT'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+                self::$pdo = new PingablePDO('mysql:dbname='.$GLOBALS['DB_NAME'].';host='.$GLOBALS['DB_HOST'].';port='.$GLOBALS['DB_PORT'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
             }
             $this->conn = $this->createDefaultDBConnection(self::$pdo, ':memory:');
         }
