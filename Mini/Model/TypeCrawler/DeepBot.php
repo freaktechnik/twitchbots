@@ -5,7 +5,7 @@ namespace Mini\Model\TypeCrawler;
 use \Mini\Model\TypeCrawler\TypeCrawler;
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 
-class ModBot extends TypeCrawler {
+class DeepBot extends TypeCrawler {
     /** @var int */
     protected static $crawlInterval = 3600;
     /** @var int */
