@@ -18,6 +18,10 @@ class PingablePDO {
     {
         return call_user_func_array(array($this->pdo, $name), $args);
     }
+    
+    public function getOriginalPDO() {
+        return $this->pdo;
+    }
 
     public function ping()
     {
