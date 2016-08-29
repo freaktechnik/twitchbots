@@ -3,6 +3,7 @@
 namespace Mini\Model;
 
 use ReflectionClass;
+use PDO;
 
 class PingablePDO {
     private $pdo;
@@ -18,8 +19,8 @@ class PingablePDO {
     {
         return call_user_func_array(array($this->pdo, $name), $args);
     }
-    
-    public function getOriginalPDO() {
+
+    public function getOriginalPDO(): PDO {
         return $this->pdo;
     }
 
