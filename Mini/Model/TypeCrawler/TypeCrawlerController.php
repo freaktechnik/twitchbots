@@ -16,6 +16,7 @@ class TypeCrawlerController {
 
         $this->registerCrawler('ModBot');
         $this->registerCrawler('Pajbot');
+        $this->registerCrawler('DeepBot');
     }
 
     private function getClassName(string $crawler): string {

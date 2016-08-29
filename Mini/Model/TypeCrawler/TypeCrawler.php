@@ -43,9 +43,9 @@ class TypeCrawler {
 
     protected function getBot(string $name, $channel = null): \stdClass {
         $bot = new \stdClass;
-        $bot->name = $name;
+        $bot->name = strtolower($name);
         $bot->type = $this::$type;
-        $bot->channel = $channel;
+        $bot->channel = strtolower($channel);
         return $bot;
     }
 }
