@@ -4,6 +4,7 @@ namespace Mini\Model\TypeCrawler\Storage;
 
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 use \Mini\Model\PingablePDO;
+use PDO;
 
 class PDOStorage extends TypeCrawlerStorage {
     /** @var PDO */
