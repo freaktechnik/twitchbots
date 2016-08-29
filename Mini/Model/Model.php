@@ -584,7 +584,7 @@ class Model
         $count = 0;
 
         foreach($submissions as $submission) {
-            $this->db-ping();
+            $this->db->ping();
             $didSomething = false;
 
             // Update following if needed
