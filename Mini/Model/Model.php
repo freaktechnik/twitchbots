@@ -347,7 +347,7 @@ class Model
 
     public function getAllTypes(): array
     {
-        $sql = "SELECT * FROM types ORDER BY name ASC";
+        $sql = "SELECT * FROM typelist ORDER BY typelist.count DESC, typelist.name ASC";
         $query = $this->db->prepare($sql);
         $query->execute();
 
