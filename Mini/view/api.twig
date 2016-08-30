@@ -12,7 +12,7 @@
 <p>All the API endpoints are on the base URL <code>{{apiUrl}}/v1/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service. All endpoints with a more or less static dataset send an expiration header indicating how long the data is at least expected to be valid. These will be adjusted according to real-world values. If your HTTP library does not honor the <code>Expires</code> header, please honor it manually.</p>
 {{ alerts.alert('warning', 'The API pagination has switched from using page numbering to offset & limit. All the meta links have been moved into one property, too.') }}
 <section>
-    <h2>Libraries</h2>
+    <h2 id="libraries">Libraries</h2>
     <p>For back-end JS developers there are a few pre-built packages on NPM to get data via API:</p>
     <dl class="dl-horizontal">
         <dt><a href="https://www.npmjs.com/package/twitchbots-base">twitchbots-base</a></dt>
@@ -24,14 +24,14 @@
     </dl>
 </section>
 <section>
-    <h2>Errors</h2>
+    <h2 id="errors">Errors</h2>
     <p>The API returns error codes whenever appropriate, like for example invalid parameters. If there are special cases where errors get thrown that's documented in the "Response" section of an endpoint. Some errors will return JSON specifying what went wrong in the following form:</p>
     {{ "{ \"error\": \"Invalid offset specified\", \"code\": 400 }"|geshi('javascript') }}
 </section>
 <section>
-    <h2>Endpoints</h2>
+    <h2 id="endpoints">Endpoints</h2>
     <section>
-        <h3>/bot/:name</h3>
+        <h3 id="bot_name">/bot/:name</h3>
         <p>Replace <code>:name</code> with the username of the Twitch user to check.</p>
         <section>
             <h4>Response</h4>
@@ -47,7 +47,7 @@
     }
 }"|geshi('javascript') }}</section>
 </section>
-    <h3>/bot/all</h3>
+    <h3 id="bot_all">/bot/all</h3>
     <p>Returns all known bots.</p>
     <section>
         <h4>Parameters</h4>
@@ -111,7 +111,7 @@
         </section>
     </section>
     <section>
-        <h3>/bot</h3>
+        <h3 id="bot">/bot</h3>
         <p>Check multiple user's bot status. Only returns users that are registered as bots.</p>
         <section>
             <h4>Parameters</h4>
@@ -151,7 +151,7 @@
         </section>
     </section>
     <section>
-        <h3>/type/:id</h3>
+        <h3 id="type_id">/type/:id</h3>
         <p>Replace <code>:id</code> with the id of the type you want to get.</p>
         <section>
             <h4>Response</h4>
@@ -169,7 +169,7 @@
         </section>
     </section>
     <section>
-        <h2>Example Usage</h2>
+        <h2 id="example_usage">Example Usage</h2>
         <div class="list-group">
             <a href="https://twitchstuff.3v.fi/mods" rel="external" title="Twitch Mods" class="list-group-item">Twitch Sword Count Checker</a>
             <a href="https://github.com/freaktechnik/twitch-provider" rel="external" title="freaktechnik/twitch-provider" class="list-group-item">Twitch Chat Provider for Instantbird</a>
