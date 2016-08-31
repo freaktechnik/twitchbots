@@ -7,8 +7,6 @@ use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 
 class DeepBot extends TypeCrawler {
     /** @var int */
-    protected static $crawlInterval = 3600;
-    /** @var int */
     public static $type = 22;
 
     function __construct(TypeCrawlerStorage $storage) {
@@ -27,7 +25,7 @@ class DeepBot extends TypeCrawler {
 
         $bots = array();
         foreach($response['streams'] as $bot) {
-            if(strtolower($bot['user']) !== strtolower($bot['bot_name'])) {
+            if(strtolower($bot['user']) !== strtolower($bot['bot_name']) && (int)$this->storage->get('lastCrawl') < strtotime($bot['insert_time'])) {
                 $bots[] = $this->getBot($bot['bot_name'], $bot['user']);
             }
         }
