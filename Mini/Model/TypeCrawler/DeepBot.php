@@ -25,7 +25,8 @@ class DeepBot extends TypeCrawler {
 
         $bots = array();
         foreach($response['streams'] as $bot) {
-            if(strtolower($bot['user']) !== strtolower($bot['bot_name']) && (int)$this->storage->get('lastCrawl') < strtotime($bot['insert_time'])) {
+            // Ignore insert time for now, since we don't know its timezone.
+            if(strtolower($bot['user']) !== strtolower($bot['bot_name'])) { // && (int)$this->storage->get('lastCrawl') < strtotime($bot['insert_time'])) {
                 $bots[] = $this->getBot($bot['bot_name'], $bot['user']);
             }
         }
