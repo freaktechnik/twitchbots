@@ -245,10 +245,8 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->model->addCorrection("moobot", 1);
         $this->model->addCorrection("nightbot", 0, "nightbot");
         $this->model->addCorrection("butler_of_ec0ke", 23, "");
-        $this->httpMock->append(new Response(200));
-        $this->model->addCorrection("ncsmusicbot", 22, "");
 
-        $this->assertEquals(4, $this->getConnection()->getRowCount('submissions'), "Adding correction failed");
+        $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding correction failed");
 
         $queryTable = $this->getConnection()->createQueryTable(
            'submissions',
@@ -290,15 +288,6 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testAddCorrectionSameTypeThrows()
     {
         $this->model->addCorrection("nightbot", 1);
-    }
-
-    /**
-     * @expectedException Exception
-     * @expectedExceptionCode 12
-     */
-    public function testAddCorrectionChannelIsBotThrows()
-    {
-        $this->model->addCorrection('butler_of_ec0ke', 22, "");
     }
 
     public function testGetSubmissions()
