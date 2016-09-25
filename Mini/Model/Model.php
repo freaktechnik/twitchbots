@@ -407,44 +407,36 @@ class Model
         return $lastOffset;
     }
 
-    private function hasCorrection(string $username, string $description, $channel = null): bool
+    private function hasCorrection(string $username, string $description): bool
     {
-        $sql = 'SELECT * FROM submissions WHERE type=1 AND name=? AND  description=? AND channel=?';
+        $sql = 'SELECT * FROM submissions WHERE type=1 AND name=? AND  description=?';
         $query = $this->db->prepare($sql);
-        $query->execute(array($username, $description, $channel));
+        $query->execute(array($username, $description));
         return $query->fetch() != null;
     }
 
-    public function addCorrection(string $username, int $type, $description = "", $channel = null)
+    public function addCorrection(string $username, int $type, $description = "")
     {
-        if(empty($channel)) {
-            $channel = null;
-        }
-
         if($type == 0) {
             if($description == "") {
                 throw new Exception("Description can not be empty", 9);
             }
-            else if($this->hasCorrection($username, $description, $channel)) {
+            else if($this->hasCorrection($username, $description)) {
                 throw new Exception("Identical correction already exists", 11);
             }
             $type = $description;
         }
 
-        $this->commonSubmissionChecks($username, $type, $channel);
-
         $existingBot = $this->getBot($username);
+
         if(empty($existingBot)) {
             throw new Exception("Cannot correct an inexistent bot", 4);
         }
-        else if($existingBot->channel == $channel && $existingBot->type == $type) {
+
+        $this->commonSubmissionChecks($username, $type, $existingBot->channel);
+
+        if($existingBot->type == $type) {
             throw new Exception("Metadata must be different", 5);
-        }
-        else if($type != 0 && $type == $existingBot->type && isset($channel)) {
-            $givenType = $this->getType($type);
-            if($givenType->multichannel) {
-                throw new Exception("Example channel set for a multichannel bot", 10);
-            }
         }
 
         $this->appendToSubmissions($username, $type, 1, $channel);

@@ -6,6 +6,7 @@ var description = document.getElementById("type");
 var form = document.getElementById("submit-form");
 var stNew = document.getElementById("new-bot");
 var stCorrect = document.getElementById("correction");
+var chanGroup = document.getElementById("channel-group");
 
 // Conditionally show description field if the type is a new one.
 function update() {
@@ -25,7 +26,7 @@ update();
 
 // Validation
 function formChecker() {
-    if(channel.value.toLowerCase() == username.value.toLowerCase())
+    if(channel.value.toLowerCase() == username.value.toLowerCase() && stNew.checked)
         channel.setCustomValidity("The bot user has to be different from the channel it is for.");
     else
         channel.setCustomValidity("");
@@ -115,6 +116,13 @@ function stListener() {
     username.setCustomValidity("");
     for(var i = 0; i < fields.length; ++i) {
         validateFieldContent(fields[i].field, fields[i].shouldExist);
+    }
+
+    if(stNew.checked) {
+        chanGroup.removeAttribute("hidden");
+    }
+    else {
+        chanGroup.setAttribute("hidden");
     }
 }
 

@@ -366,8 +366,7 @@ $app->group('/lib', function ()  use ($app, $model) {
                 $model->addCorrection(
                     strtolower($app->request->params('username')),
                     $app->request->params('type'),
-                    $app->request->params('description'),
-                    strtolower($app->request->params('channel'))
+                    $app->request->params('description')
                 );
             }
             else {
