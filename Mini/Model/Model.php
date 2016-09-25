@@ -427,15 +427,13 @@ class Model
             $type = $description;
         }
 
-        $existingBot = $this->getBot($username);
+        $this->commonSubmissionChecks($username, $type);
 
+        $existingBot = $this->getBot($username);
         if(empty($existingBot)) {
             throw new Exception("Cannot correct an inexistent bot", 4);
         }
-
-        $this->commonSubmissionChecks($username, $type);
-
-        if($existingBot->type == $type) {
+        else if($existingBot->type == $type) {
             throw new Exception("Metadata must be different", 5);
         }
 
