@@ -122,7 +122,7 @@ function stListener() {
         chanGroup.removeAttribute("hidden");
     }
     else {
-        chanGroup.setAttribute("hidden");
+        chanGroup.setAttribute("hidden", true);
     }
 }
 
