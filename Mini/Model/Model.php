@@ -439,7 +439,7 @@ class Model
             throw new Exception("Metadata must be different", 5);
         }
 
-        $this->appendToSubmissions($username, $type, 1, $channel);
+        $this->appendToSubmissions($username, $type, 1, $existingBot->channel);
     }
 
     public function twitchUserExists(string $name, $noJustin = false): bool
