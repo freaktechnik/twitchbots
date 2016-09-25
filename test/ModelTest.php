@@ -250,7 +250,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $queryTable = $this->getConnection()->createQueryTable(
            'submissions',
-           'SELECT name, description, type, channel FROM submissions'
+           'SELECT name, description, type FROM submissions'
         );
         $expectedTable = $this->createXMLDataSet(dirname(__FILE__)."/_fixtures/corrections.xml")
                               ->getTable("submissions");
