@@ -30,7 +30,7 @@
             <dd><a href="https://twitch.tv/{{ bot.channel|e('url')|e('html_attr') }}" rel="external nofollow">twitch.tv/{{ bot.channel|e }}</a></dd>
             {% endif %}
         </dl>
-        <a class="btn btn-default btn-sm pull-right" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}&type={{ bot.type|default('0')|e('url')|e('html_attr') }}">{{ btntext }}</a>
+        <a class="btn btn-default btn-sm pull-right hidden-print" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}&type={{ bot.type|default('0')|e('url')|e('html_attr') }}">{{ btntext }}</a>
     </div>
 </section>
 {% endmacro %}
