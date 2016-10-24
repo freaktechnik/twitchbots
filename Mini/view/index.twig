@@ -5,18 +5,22 @@
 {% endblock %}
 {% block content %}
 <section>
-    <div class="col-md-6 text-center jumbotron">
+    <div class="col-md-4 text-center jumbotron">
         <h1>{{ bots }}</h1>
         <p>Known bots</p>
         <a href="{{ urlFor('bots') }}" class="btn btn-lg" role="button">Check out bots</a>
     </div>
-    <div class="col-md-6 text-center jumbotron">
+    <div class="col-md-4 text-center jumbotron">
         <h1>{{ types }}</h1>
         <p>Twitch bot types</p>
         <a href="{{ urlFor('types') }}" class="btn btn-lg" role="button">Browse bot types</a>
     </div>
+    <div class="col-md-4 text-center jumbotron">
+        <h1>Check Twitch user</h1>
+        <p>Find out if your new Twitch chat buddy is in reality just a bot.</p>
+        <a href="{{ urlFor('check') }}" class="btn btn-lg" role="button">Find user</a>
+    </div>
 </section>
-<!-- TODO action buttons for the two counters and a search action? -->
 <div class="page-header">
     <h1>Find out if a Twitch user is a chat bot</h1>
     <p class="lead">Since Twitch accounts can't be marked as a bot there is many times no way to tell. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots listed are service or moderator bots.</p>
