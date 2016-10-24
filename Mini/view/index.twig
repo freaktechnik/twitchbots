@@ -5,17 +5,15 @@
 {% endblock %}
 {% block content %}
 <section>
-    <div class="col-md-6 text-center">
-        <a href="{{ urlFor('bots') }}">
-            <p class="lead">{{ bots }}</p>
-            <p>Known bots</p>
-        </a>
+    <div class="col-md-6 text-center jumbotron">
+        <h1>{{ bots }}</h1>
+        <p>Known bots</p>
+        <a href="{{ urlFor('bots') }}" class="btn">Check out bots</a>
     </div>
-    <div class="col-md-6 text-center">
-        <a href="{{ urlFor('types') }}">
-            <p class="lead">{{ types }}</p>
-            <p>Twitch bot types</p>
-        </a>
+    <div class="col-md-6 text-center jumbotron">
+        <h1>{{ types }}</h1>
+        <p>Twitch bot types</p>
+        <a href="{{ urlFor('types') }}" class="btn">Browse bot types</a>
     </div>
 </section>
 <!-- TODO action buttons for the two counters and a search action? -->
