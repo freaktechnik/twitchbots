@@ -1,28 +1,30 @@
 {% extends "_base.twig" %}
+{% set description = 'Twitch does not offer a distinction between service bots and normal users. This site tries to answer that question by collecting usernames of Twitch service and moderation bots. With the API the data from this directory can be re-used in other applications.' %}
 {% block title %}Index{% endblock %}
 {% block extraresources %}
-<link rel="canonical" href="{{ canonicalUrl }}">
+<link rel="canonical" href="{{ canonicalUrl|e('html_attr') }}">
+<meta name="description" content="{{ description|e('html_attr') }}>
 {% endblock %}
 {% block content %}
 <div class="page-header">
     <h1>Find out if a Twitch user is a chat bot</h1>
-    <p class="lead">Twitch does not offer a distinction between service bots and normal users. This site tries to answer that question by collecting usernames of Twitch service and moderation bots. With the API the data from this directory can be re-used in other applications.</p>
+    <p class="lead">{{ description|e }}</p>
 </div>
 <section>
     <div class="col-md-4 text-center jumbotron">
-        <h1>{{ bots }}</h1>
+        <h1>{{ bots|e }}</h1>
         <p>Known bots</p>
-        <a href="{{ urlFor('bots') }}" class="btn btn-lg btn-default" role="button">Check out bots</a>
+        <a href="{{ urlFor('bots')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Check out bots</a>
     </div>
     <div class="col-md-4 text-center jumbotron">
-        <h1>{{ types }}</h1>
+        <h1>{{ types|e }}</h1>
         <p>Twitch bot types</p>
-        <a href="{{ urlFor('types') }}" class="btn btn-lg btn-default" role="button">Browse bot types</a>
+        <a href="{{ urlFor('types')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Browse bot types</a>
     </div>
     <div class="col-md-4 text-center jumbotron">
         <h1>1M+</h1>
         <p>Unknown bots</p>
-        <a href="{{ urlFor('submit') }}" class="btn btn-lg btn-default" role="button">Add your bot</a>
+        <a href="{{ urlFor('submit')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Add your bot</a>
     </div>
 </section>
 {% endblock %}
