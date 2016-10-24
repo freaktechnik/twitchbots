@@ -50,7 +50,7 @@
                     </ul>
 
                     <div class="navbar-right row">
-                        <form class="form-inline" method="GET" target="{{ urlFor('check') }}">
+                        <form class="form-inline" method="GET" action="{{ urlFor('check')|e('html_attr') }}">
                             <div class="input-group">
                                 <label class="sr-only" for="search">Check Twitch Username</label>
                                 <input type="text" class="form-control" required pattern="[a-zA-Z0-9_]+" spellcheck="false" id="search" name="username" placeholder="Username">
