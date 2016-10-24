@@ -116,22 +116,15 @@ $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
     $app->lastModified(max($model->getLastUpdate(), $getTemplateLastMod('index.twig')));
     $app->expires('+1 day');
 
-    $pageCount = $model->getPageCount();
-    $page = $_GET['page'] ?? 1;
-    if(!is_numeric($page))
-        $page = 1;
+    $botCount = $model->getBotCount();
+    $typeCount = $model->getCount('types');
 
-    if($page <= $pageCount && $page > 0)
-        $bots = $model->getBots($page);
-    else
-        $bots = array();
-
-    $app->render('index.twig', array(
-        'pageCount' => $pageCount,
-        'page' => $page,
-        'bots' => $bots
-    ));
+    $app->render('index.twig', [
+        'bots' => $botCount,
+        'types' => $typeCount
+    ]);
 })->name('index');
+
 $app->get('/submit', function () use ($app, $model) {
     $token = $model->getToken("submit");
     $types = $model->getAllTypes();
@@ -231,7 +224,7 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
             'page' => $page,
             'pageCount' => $pageCount
         ));
-    });
+    })->name('types');
 
     $app->get('/sitemap.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
         $app->contentType('application/xml;charset=utf8');
@@ -281,9 +274,26 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
 });
 
 $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
-    $app->get('/', function () use ($app) {
-        $app->redirect($app->request->getUrl().$app->urlFor('index'), 301);
-    });
+    $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
+        $app->lastModified(max($model->getLastUpdate(), $getTemplateLastMod('bots.twig')));
+        $app->expires('+1 day');
+
+        $pageCount = $model->getPageCount();
+        $page = $_GET['page'] ?? 1;
+        if(!is_numeric($page))
+            $page = 1;
+
+        if($page <= $pageCount && $page > 0)
+            $bots = $model->getBots($page);
+        else
+            $bots = array();
+
+        $app->render('bots.twig', array(
+            'pageCount' => $pageCount,
+            'page' => $page,
+            'bots' => $bots
+        ));
+    })->name('bots');
 
     $app->get('/sitemap.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
         $app->contentType('application/xml;charset=utf8');
@@ -393,6 +403,7 @@ $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, 
     $typeLastUpdate = $model->getLastUpdate('types');
     $templateUpdates = array(
         "index" => $getTemplateLastMod('index.twig'),
+        "bots" => $getTemplateLastMod('bots.twig'),
         "types" => $getTemplateLastMod('types.twig'),
         "submit" => $getTemplateLastMod('submit.twig'),
         "check" => $getTemplateLastMod('check.twig'),
@@ -413,10 +424,16 @@ $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, 
     $url->addChild('priority', '1.0');
 
     $url = $sitemap->addChild('url');
+    $url->addChild('loc', $app->config('canonicalUrl').'bots');
+    $url->addChild('changefreq', 'daily');
+    $url->addChild('lastmod', $getLastMod(max($templateUpdates['bots'], $botLastUpdate, $typeLastUpdate)));
+    $url->addChild('priority', '0.6');
+
+    $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'types');
     $url->addChild('changefreq', 'daily');
     $url->addChild('lastmod', $getLastMod(max($templateUpdates['types'], $botLastUpdate, $typeLastUpdate)));
-    $url->addChild('priority', '0.3');
+    $url->addChild('priority', '0.6');
 
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'submit');

@@ -1,0 +1,43 @@
+{% import "_pagination.twig" as pagination %}
+{% extends "_base.twig" %}
+{% block title %}Known bots{% endblock %}
+{% block extraresources %}
+{% if page == 1 %}
+<link rel="canonical" href="{{ canonicalUrl }}bots">
+{% else %}
+<link rel="canonical" href="{{ canonicalUrl }}bots/?page={{page}}">
+{% endif %}
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Known Twitch service bots</h1>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <caption>Type information is best-effort: bot types are verified when possible and else just assumed correct. "Multi-channel" indicates the ability of the indicated bot software to join multiple channels, not if the bot user is expected to be in multiple channels. Please <a href="{{ urlFor('submit')|e('html_attr') }}?correction">submit a correction</a> if you spot something wrong.</caption>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Multi-channel</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for bot in bots %}
+            <tr>
+                <td><a href="{{ urlFor('bot', { name: bot.name })|e('html_attr') }}">{{ bot.name|e }}</a></td>
+                {% if bot.typename is not empty %}
+                <td>{% if bot.multichannel %}Yes{% else %}No{% endif %}</td>
+                <td><a href="{{ urlFor('type', { id: bot.type }) }}">{{ bot.typename|e }}</a></td>
+                {% else %}
+                <td>?</td>
+                <td><a href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Unknown (click to correct)</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{{ pagination.print(page, pageCount, 3, 2) }}
+{% endblock %}

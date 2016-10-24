@@ -1,45 +1,26 @@
-{% import "_pagination.twig" as pagination %}
 {% extends "_base.twig" %}
-{% block title %}Known bots{% endblock %}
+{% block title %}Index{% endblock %}
 {% block extraresources %}
-{% if page == 1 %}
 <link rel="canonical" href="{{ canonicalUrl }}">
-{% else %}
-<link rel="canonical" href="{{ canonicalUrl }}/?page={{page}}">
-{% endif %}
 {% endblock %}
 {% block content %}
+<section>
+    <div class="col-md-6 text-center">
+        <a href="{{ urlFor('bots') }}">
+            <p class="lead">{{ bots }}</p>
+            <p>Known bots</p>
+        </a>
+    </div>
+    <div class="col-md-6 text-center">
+        <a href="{{ urlFor('types') }}">
+            <p class="lead">{{ types }}</p>
+            <p>Twitch bot types</p>
+        </a>
+    </div>
+</section>
+<!-- TODO action buttons for the two counters and a search action? -->
 <div class="page-header">
     <h1>Find out if a Twitch user is a chat bot</h1>
+    <p class="lead">Since Twitch accounts can't be marked as a bot there is many times no way to tell. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots listed are service or moderator bots.</p>
 </div>
-<p class="lead">Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots listed are service or moderator bots. Please <a href="{{ urlFor('submit')|e('html_attr') }}?correction">submit a correction</a> if you spot something wrong.</p>
-</div>
-
-<div class="table-responsive">
-    <table class="table table-striped">
-        <caption>Type information is best-effort: bot types are verified when possible and else just assumed correct. "Multi-channel" indicates the ability of the indicated bot software to join multiple channels, not if the bot user is expected to be in multiple channels.</caption>
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Multi-channel</th>
-                <th>Type</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for bot in bots %}
-            <tr>
-                <td><a href="{{ urlFor('bot', { name: bot.name })|e('html_attr') }}">{{ bot.name|e }}</a></td>
-                {% if bot.typename is not empty %}
-                <td>{% if bot.multichannel %}Yes{% else %}No{% endif %}</td>
-                <td><a href="{{ urlFor('type', { id: bot.type }) }}">{{ bot.typename|e }}</a></td>
-                {% else %}
-                <td>?</td>
-                <td><a href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Unknown (click to correct)</a></td>
-                {% endif %}
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-{{ pagination.print(page, pageCount, 3, 2) }}
 {% endblock %}
