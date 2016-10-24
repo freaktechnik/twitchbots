@@ -4,6 +4,7 @@
 {% block extraresources %}
 <link rel="canonical" href="{{ canonicalUrl|e('html_attr') }}">
 <meta name="description" content="{{ description|e('html_attr') }}">
+<link rel="stylesheet" href="{{ siteUrl('css/jumbotron.css')|e('html_attr')" type="text/css">
 {% endblock %}
 {% block content %}
 <div class="page-header">
