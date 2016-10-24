@@ -42,7 +42,7 @@
     <div class="panel-body">
         <a href="https://twitch.tv/{{ name|e('url')|e('html_attr') }}" title="{{ name|e('html_attr') }} on Twitch">twitch.tv/{{ name|e }}</a><br>
         {{ name|e }} is not known to be a bot.
-        <a class="btn btn-default btn-sm pull-right" href="{{ urlFor('submit')|e('html_attr') }}?username={{ name|e('url')|e('html_attr') }}">Submit as bot</a>
+        <a class="btn btn-default btn-sm pull-right hidden-print" href="{{ urlFor('submit')|e('html_attr') }}?username={{ name|e('url')|e('html_attr') }}">Submit as bot</a>
     </div>
 </section>
 {% endmacro %}
