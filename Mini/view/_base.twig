@@ -49,6 +49,18 @@
                         {%- endfor -%}
                     </ul>
                 </div>
+
+                <div class="navbar-right">
+                    <form class="form-inline" method="GET" target="{{ urlFor('check') }}">
+                        <div class="form-group">
+                            <label class="sr-only" for="search">Check Twitch Username</label>
+                            <input type="text" class="form-control" required pattern="[a-zA-Z0-9_]+" spellcheck="false" id="search" name="username" placeholder="Username">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-primary">Check</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
             </div>
         </nav>
         <main class="container">
@@ -59,17 +71,17 @@
                 <p class="text-muted visible-lg-inline-block visible-md-inline-block visible-sm-inline-block visible-xs-inline-block"">This is an independent site not run by Twitch.</p>
                 <nav class="visible-lg-inline-block visible-md-inline-block visible-sm-inline-block visible-xs-inline-block hidden-print">
                     <ul class="list-inline">
-                        <li><a href="{{ siteUrl("/bots") }}">Known bots</a></li>
-                        <li><a href="{{ siteUrl("/types") }}">Types</a></li>
-                        <li><a href="{{ siteUrl("/api") }}">API</a></li>
-                        <li><a href="{{ siteUrl("/about") }}">About</a></li>
+                        <li><a href="{{ siteUrl("/bots")|e('html_attr') }}">Known bots</a></li>
+                        <li><a href="{{ siteUrl("/types")|e('html_attr') }}">Types</a></li>
+                        <li><a href="{{ siteUrl("/api")|e('html_attr') }}">API</a></li>
+                        <li><a href="{{ siteUrl("/about")|e('html_attr') }}">About</a></li>
                     </ul>
                 </nav>
             </div>
         </footer>
         <!-- Piwik -->
         <script type="text/javascript" src="https://humanoids.be/stats/piwik.js" async defer></script>
-        <script type="text/javascript" src="{{ siteUrl("/js/tracking.js") }}"></script>
+        <script type="text/javascript" src="{{ siteUrl("/js/tracking.js")|e('html_attr') }}"></script>
         <noscript><p><img src="https://humanoids.be/stats/piwik.php?idsite=5" style="border:0;" alt="" /></p></noscript>
         <!-- End Piwik Code -->
     </body>
