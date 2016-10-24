@@ -106,7 +106,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
         return $app->request->getUrl().$app->request->getRootUri().$path;
     };
 
-    $fullUrlFor = function(string $name, array $params) use ($app) {
+    $fullUrlFor = function(string $name, array $params = []) use ($app) {
         return $app->request->getUrl().$app->urlFor($name, $params);
     };
 
