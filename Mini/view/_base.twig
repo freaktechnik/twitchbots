@@ -49,16 +49,16 @@
                         {%- endfor -%}
                     </ul>
 
-                    <div class="navbar-right row">
-                        <form class="form-inline" method="GET" action="{{ urlFor('check')|e('html_attr') }}">
+                    <form class="navbar-form navbar-right" method="GET" action="{{ urlFor('check')|e('html_attr') }}">
+                        <div class="form-group">
                             <div class="input-group">
                                 <input type="text" class="form-control" required pattern="[a-zA-Z0-9_]+" spellcheck="false" id="search" name="username" placeholder="Username">
                                 <span class="input-group-btn">
                                     <button type="submit" class="btn btn-primary">Check</button>
                                 </span>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </nav>
