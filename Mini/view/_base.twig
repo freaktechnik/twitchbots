@@ -36,9 +36,10 @@
 
                 <div class="collapse navbar-collapse hidden-print" id="main-nav">
                     <ul class="nav navbar-nav">
+                        {% set cu = currentUrl(false) %}
                         {% for item in navitems %}
                             {%- spaceless %}
-                            {%- set isCurrent = item.url == currentUrl(false) or item.url ~ '/' == currentUrl(false) -%}
+                            {%- set isCurrent = item.url == cu or item.url ~ '/' == cu -%}
                                 <li{% if isCurrent %} class="active"{% endif %}>
                                     <a href="{{ item.url|e('html_attr') }}">{{ item.name|e -}}
                                     {%- if isCurrent -%}
