@@ -43,7 +43,9 @@
     \"channel\": null,
     \"_links\": {
         \"self\": \"#{apiUrl}/v1/bot/nightbot\",
-        \"type\": \"#{apiUrl}/v1/type/1\"
+        \"type\": \"#{apiUrl}/v1/type/1\",
+        \"web\": \"#{canonicalUrl}bots/nightbot\",
+        \"documentation\": \"#{canonicalUrl}api#bot_name\"
     }
 }"|geshi('javascript') }}</section>
 </section>
@@ -71,7 +73,9 @@
             \"channel\": null,
             \"_links\": {
                 \"self\": \"#{apiUrl}/v1/bot/nightbot\"
-                \"type\": \"#{apiUrl}/v1/type/1\"
+                \"type\": \"#{apiUrl}/v1/type/1\",
+                \"web\": \"#{canonicalUrl}bots/nightbot\",
+                \"documentation\": \"#{canonicalUrl}api#bot_name\"
             }
         },
         ...
@@ -82,7 +86,9 @@
     \"_links\": {
         \"next\": \"#{apiUrl}/v1/bot/all?offset=100&limit=100\",
         \"prev\": null,
-        \"self\": \"#{apiUrl}/v1/bot/all?offset=0&limit=100\"
+        \"self\": \"#{apiUrl}/v1/bot/all?offset=0&limit=100\",
+        \"web\": \"#{canonicalUrl}bots\",
+        \"documentation\": \"#{canonicalUrl}api#bot_all\"
     }
 }"|geshi('javascript') }}
             <code>GET {{apiUrl}}/v1/bot/all?type=1</code>
@@ -94,7 +100,9 @@
             \"channel\": null,
             \"_links\": {
                 \"self\": \"#{apiUrl}/v1/bot/nightbot\",
-                \"type\": \"#{apiUrl}/v1/type/1\"
+                \"type\": \"#{apiUrl}/v1/type/1\",
+                \"web\": \"#{canonicalUrl}bots/nightbot\",
+                \"documentation\": \"#{canonicalUrl}api#bot_name\"
             }
         }
     ],
@@ -105,7 +113,9 @@
         \"next\": null,
         \"prev\": null,
         \"self\": \"#{apiUrl}/v1/bot/all?offset=0&limit=100&type=1\",
-        \"type\": \"#{apiUrl}/v1/type/1\"
+        \"type\": \"#{apiUrl}/v1/type/1\",
+        \"web\": \"#{canonicalUrl}bots\",
+        \"documentation\": \"#{canonicalUrl}api#bot_all\"
     }
 }"|geshi('javascript') }}
         </section>
@@ -136,7 +146,9 @@
             \"channel\": null,
             \"_links\": {
                 \"self\": \"#{apiUrl}/v1/bot/nightbot\",
-                \"type\": \"#{apiUrl}/v1/type/1\"
+                \"type\": \"#{apiUrl}/v1/type/1\",
+                \"web\": \"#{canonicalUrl}bots/nightbot\",
+                \"documentation\": \"#{canonicalUrl}api#bot_name\"
             }
         }
     ],
@@ -145,7 +157,9 @@
     \"_links\": {
         \"next\": null,
         \"prev\": null,
-        \"self\": \"#{apiUrl}/v1/bot?bots=nightbot&offset=0&limit=100\"
+        \"self\": \"#{apiUrl}/v1/bot?bots=nightbot&offset=0&limit=100\",
+        \"web\": \"#{canonicalUrl}bots\",
+        \"documentation\": \"#{canonicalUrl}api#bot\"
     }
 }"|geshi('javascript') }}
         </section>
@@ -163,7 +177,9 @@
     \"url\": \"https://www.nightbot.tv\",
     \"_links\": {
         \"self\": \"#{apiUrl}/v1/type/1\",
-        \"bots\": \"#{apiUrl}/v1/bot/all?type=1\"
+        \"bots\": \"#{apiUrl}/v1/bot/all?type=1\",
+        \"web\": \"#{canonicalUrl}types/1\",
+        \"documentation\": \"#{canonicalUrl}api#type_id\"
     }
 }"|geshi('javascript') }}
         </section>

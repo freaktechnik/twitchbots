@@ -46,7 +46,7 @@ $app->configureMode('development', function () use ($app) {
             'db_pass' => $db_pw,
             'page_size' => 100
         ),
-        'docsUrl' => $app->request->getUrl().dirname($app->request->getRootUri(), 1).'/public/api'
+        'webUrl' => $app->request->getUrl().dirname($app->request->getRootUri(), 1).'/public/'
     ));
 });
 
@@ -67,7 +67,7 @@ $app->configureMode('production', function () use ($app) {
             'db_pass' => $db_pw,
             'page_size' => 100
         ),
-        'docsUrl' => $app->request->getScheme().'://'.$m[1].'/api'
+        'webUrl' => $app->request->getScheme().'://'.$m[1].'/'
     ));
 });
 
@@ -119,7 +119,8 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                 'bot' => $url.'bot/',
                 'type' => $url.'type/',
                 'self' => $url,
-                'documentation' => $app->config('docsUrl')
+                'web' => $app->config('webUrl'),
+                'documentation' => $app->config('webUrl').'api'
             )
         );
         echo json_encode($index);
@@ -129,7 +130,8 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
         $mapBot = function ($bot) use ($fullUrlFor) {
             $bot->username = $bot->name;
             $bot->_links = array(
-                'self' => $fullUrlFor('bot', array('name' => $bot->name))
+                'self' => $fullUrlFor('bot', array('name' => $bot->name)),
+                'web' => $app->config('webUrl').'bots/'.$bot->name
             );
             if(isset($bot->type))
                 $bot->_links['type'] = $fullUrlFor('type', array('id' => $bot->type));
@@ -162,7 +164,9 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                 '_links' => array(
                     'next' => null,
                     'prev' => null,
-                    'self' => $url.'?bots='.$_GET['bots'].'&offset='.$offset.'&limit='.$limit
+                    'self' => $url.'?bots='.$_GET['bots'].'&offset='.$offset.'&limit='.$limit,
+                    'web' => $app->config('webUrl').'bots',
+                    'documentation' => $app->config('webUrl').'api#bot'
                 )
             );
 
@@ -203,7 +207,9 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                 '_links' => array(
                     'next' => null,
                     'prev' => null,
-                    'self' => $url.'?offset='.$offset.'&limit='.$limit.$typeParam
+                    'self' => $url.'?offset='.$offset.'&limit='.$limit.$typeParam,
+                    'web' => $app->config('webUrl').'bots',
+                    'documentation' => $app->config('webUrl').'api#bot_all'
                 )
             );
 
@@ -230,7 +236,9 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
 
             $bot->username = $bot->name;
             $bot->_links = array(
-                'self' => $apiUrl()
+                'self' => $apiUrl(),
+                'web' => $app->config('webUrl').'bots/'.$bot->name,
+                'documentation' => $app->config('webUrl').'api#bot_name'
             );
             if(isset($bot->type))
                 $bot->_links['type'] = $fullUrlFor('type', array('id' => $bot->type));
@@ -248,7 +256,8 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                 '_links' => array(
                     'type' => $fullUrlFor('type', array('id' => '{id}')),
                     'self' => $apiUrl(),
-                    'documentation' => $app->config('docsUrl')
+                    'web' => $app->config('webUrl').'types',
+                    'documentation' => $app->config('webUrl').'api'
                 )
             );
 
@@ -270,7 +279,9 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
 
             $type->_links = array(
                 'self' => $apiUrl(),
-                'bots' => $fullUrlFor('allbots').'?type='.$id
+                'bots' => $fullUrlFor('allbots').'?type='.$id,
+                'web' => $app->config('webUrl').'types/'.$id,
+                'documentation' => $app->config('webUrl').'api#type_id'
             );
 
             echo json_encode($type);
