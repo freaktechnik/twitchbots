@@ -127,7 +127,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
     });
 
     $app->group('/bot', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified, $returnError) {
-        $mapBot = function ($bot) use ($fullUrlFor) {
+        $mapBot = function ($bot) use ($fullUrlFor, $app) {
             $bot->username = $bot->name;
             $bot->_links = array(
                 'self' => $fullUrlFor('bot', array('name' => $bot->name)),
