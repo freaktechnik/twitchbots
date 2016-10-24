@@ -38,7 +38,7 @@
                     <ul class="nav navbar-nav">
                         {% for item in navitems %}
                             {%- spaceless %}
-                            {%- set isCurrent = item.url == currentUrl(false) -%}
+                            {%- set isCurrent = item.url == currentUrl(false) or item.url ~ '/' == currentUrl(false) -%}
                                 <li{% if isCurrent %} class="active"{% endif %}>
                                     <a href="{{ item.url|e('html_attr') }}">{{ item.name|e -}}
                                     {%- if isCurrent -%}
