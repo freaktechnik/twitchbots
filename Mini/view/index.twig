@@ -5,12 +5,14 @@
 <link rel="canonical" href="{{ canonicalUrl|e('html_attr') }}">
 <meta name="description" content="{{ description|e('html_attr') }}">
 <link rel="stylesheet" href="{{ siteUrl('css/jumbotron.css')|e('html_attr') }}" type="text/css">
+<link rel="stylesheet" href="{{ siteUrl('css/splash.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
 {% block content %}
 <div class="page-header">
     <h1>Find out if a Twitch user is a chat bot</h1>
     <p class="lead">{{ description|e }}</p>
 </div>
+<img src="img/splash.svg" id="splash">
 <section>
     <div class="col-md-4 text-center jumbotron">
         <h1>{{ bots|e }}</h1>

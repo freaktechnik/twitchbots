@@ -18,7 +18,19 @@
           <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
-        <script src="{{ siteUrl("/js/load-bootstrap.js") }}"></script>
+        <script src="{{ siteUrl("/js/load-bootstrap.js")|e('html_attr') }}"></script>
+
+        <link rel="icon" href="{{ siteUrl("favicon.png")|e('html_attr') }}" type="image/png" sizes="32x32">
+        <link rel="icon" href="{{ siteUrl("img/favicon-16x16.png")|e('html_attr') }}" type="image/png" sizes="16x16">
+        <link rel="icon" href="{{ siteUrl("img/android-chrome-144x144.png")|e('html_attr') }}" type="image/png" sizes="144x144">
+        <link rel="apple-touch-icon" href="{{ siteUrl("img/apple-touch-icon.png")|e('html_attr') }}" type="image/png" sizes="152x152">
+        <link rel="icon" href="{{ siteUrl("img/apple-touch-icon.png")|e('html_attr') }}" type="image/png" sizes="152x152">
+        <link rel="icon" href="{{ siteUrl("img/mstile-150x150.png")|e('html_attr') }}" type="image/png" sizes="270x270">
+
+        <link rel="mask-icon" href="{{ siteUrl("img/safari-pinned-tab.svg")|e('html_attr') }}" type="image/svg+xml" sizes="any" color="#F3D300">
+
+        <meta name="msapplication-TileImage" content="{{ siteUrl("img/mstile-150x150.png")|e('html_attr') }}"/>
+
         {% block extraresources %}{% endblock %}
     </head>
     <body>
