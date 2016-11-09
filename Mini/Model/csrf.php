@@ -8,7 +8,7 @@
     }
 
     function unset_session(string $key) {
-        $SESSCION[$key] = ' ';
+        $SESSION[$key] = ' ';
         unset($_SESSION[$key]);
     }
 
