@@ -387,9 +387,9 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                     $app->request->params('description')
                 );
                 $piwikEvent("Correction", [
-                    "username" => $app->request->params('username'),
-                    "type" => $app->request->params('type'),
-                    "description" => $app->request->params('description')
+                    "1" => ["username", $app->request->params('username')],
+                    "2" => ["type", $app->request->params('type')],
+                    "3" => ["description", $app->request->params('description')]
                 ]);
             }
             else {
@@ -400,10 +400,10 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                     strtolower($app->request->params('channel'))
                 );
                 $piwikEvent("Submission", [
-                    "username" => $app->request->params('username'),
-                    "type" => $app->request->params('type'),
-                    "description" => $app->request->params('description'),
-                    "channel" => $app->request->params('channel')
+                    "1" => ["username", $app->request->params('username')],
+                    "2" => ["type", $app->request->params('type')],
+                    "3" => ["description", $app->request->params('description')],
+                    "4" => ["channel", $app->request->params('channel')]
                 ]);
             }
         }
