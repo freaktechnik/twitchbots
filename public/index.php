@@ -102,6 +102,13 @@ $getLastMod = function($timestamp = 0) use ($lastUpdate) {
     return date('c', max($lastUpdate, $timestamp));
 };
 
+$piwikEvent = function(string $event, array $opts) use ($piwik_token) {
+    $ch = curl_init("https://humanoids.be/stats/piwik.php?idsize=5&rec=1&action_name=Submit/".$event."&urlref=".$_SERVER['HTTP_REFERER']."&url=https://twitchbots.info/lib/submit&apiv=1&ua=".$_SERVER['HTTP_USER_AGENT']."&lang=".$_SERVER['HTTP_ACCEPT_LANGUAGE']."&cip=".$_SERVER['REMOTE_ADDR']."&cvar=".json_encode($opts)."&token_auth=".$piwik_token);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_exec($ch);
+    curl_close($ch);
+};
+
 $app->response->headers->set('Content-Security-Policy', $app->config('csp'));
 
 $app->notFound(function () use ($app) {
@@ -334,7 +341,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
     })->conditions(array('name' => '[a-zA-Z0-9_]+'))->name('bot');
 });
 
-$app->group('/lib', function ()  use ($app, $model) {
+$app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
     $app->get('/check', function ()  use ($app, $model) {
         if(!isset($_GET['token'])) {
             $app->halt(400, 'Token missing');
@@ -360,7 +367,7 @@ $app->group('/lib', function ()  use ($app, $model) {
         }
     });
 
-    $app->put('/submit', function () use ($app, $model) {
+    $app->put('/submit', function () use ($app, $model, $piwikEvent) {
         $echoParam = function (string $name, $first = false) use ($app) {
             return ($first?'?':'&').$name.'='.$app->request->params($name);
         };
@@ -379,6 +386,11 @@ $app->group('/lib', function ()  use ($app, $model) {
                     $app->request->params('type'),
                     $app->request->params('description')
                 );
+                $piwikEvent("Correction", [
+                    "username" => $app->request->params('username'),
+                    "type" => $app->request->params('type'),
+                    "description" => $app->request->params('description')
+                ]);
             }
             else {
                 $model->addSubmission(
@@ -387,6 +399,12 @@ $app->group('/lib', function ()  use ($app, $model) {
                     $app->request->params('description'),
                     strtolower($app->request->params('channel'))
                 );
+                $piwikEvent("Submission", [
+                    "username" => $app->request->params('username'),
+                    "type" => $app->request->params('type'),
+                    "description" => $app->request->params('description'),
+                    "channel" => $app->request->params('channel')
+                ]);
             }
         }
         catch(Exception $e) {
