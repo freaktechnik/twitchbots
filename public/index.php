@@ -103,7 +103,7 @@ $getLastMod = function($timestamp = 0) use ($lastUpdate) {
 };
 
 $piwikEvent = function(string $event, array $opts) use ($piwik_token) {
-    $ch = curl_init("https://humanoids.be/stats/piwik.php?idsize=5&rec=1&action_name=Submit/".$event."&urlref=".$_SERVER['HTTP_REFERER']."&url=https://twitchbots.info/lib/submit&apiv=1&ua=".$_SERVER['HTTP_USER_AGENT']."&lang=".$_SERVER['HTTP_ACCEPT_LANGUAGE']."&cip=".$_SERVER['REMOTE_ADDR']."&cvar=".json_encode($opts)."&token_auth=".$piwik_token);
+    $ch = curl_init("https://humanoids.be/stats/piwik.php?idsite=5&rec=1&action_name=Submit/".urlencode($event)."&urlref=".urlencode($_SERVER['HTTP_REFERER'])."&url=https://twitchbots.info/lib/submit&apiv=1&ua=".urlencode($_SERVER['HTTP_USER_AGENT'])."&lang=".urlencode($_SERVER['HTTP_ACCEPT_LANGUAGE'])."&cip=".urlencode($_SERVER['REMOTE_ADDR'])."&cvar=".urlencode(json_encode($opts))."&token_auth=".$piwik_token."&send_image=0");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_exec($ch);
     curl_close($ch);
