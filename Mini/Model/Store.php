@@ -28,7 +28,7 @@ class Store {
         if($where != "") {
             $where = " ".$where;
         }
-        $sql = "SELECT ".$select." FROM ".$table." AS 'table'".$where;
+        $sql = "SELECT ".$select." FROM ".$table." AS `table`".$where;
         return $this->prepareQuery($sql);
     }
 

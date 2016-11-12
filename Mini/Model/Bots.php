@@ -64,7 +64,7 @@ class Bots extends PaginatingStore {
         if($limit > 0 && $offset < $namesCount) {
             $tempTable = $this->createTempTable($names);
 
-            $query = $this->prepareSelect('*', 'INNER JOIN '.$tempTable.' ON  \'table\'.name = '.$tempTable.'.value LIMIT ?,?');
+            $query = $this->prepareSelect('*', 'INNER JOIN '.$tempTable.' ON table.name = '.$tempTable.'.value LIMIT ?,?');
             $this->doPagination($query, $offset, $limit, 1, 2);
             $query->execute();
 
@@ -109,7 +109,7 @@ class Bots extends PaginatingStore {
     public function removeBots(array $usernames)
     {
         $tempTable = $this->createTempTable($usernames);
-        $where = 'INNER JOIN '.$tempTable.' AS t ON t.value = \'table\'.name';
+        $where = 'INNER JOIN '.$tempTable.' AS t ON t.value = table.name';
         $query = $this->prepareDelete($where);
         $query->execute();
     }
