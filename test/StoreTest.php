@@ -110,5 +110,9 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
         $expectedTable = $this->createFlatXmlDataSet("store.xml")
                               ->getTable($table);
         $this->assertTablesEqual($expectedTable, $queryTable);
+
+        $this->store->cleanUpTempTable($table);
+
+        //TODO ensure table is not existing anymore
     }
 }

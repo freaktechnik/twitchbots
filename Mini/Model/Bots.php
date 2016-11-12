@@ -70,7 +70,10 @@ class Bots extends PaginatingStore {
             $this->doPagination($query, $offset, $limit, 1, 2);
             $query->execute();
 
-            return $query->fetchAll();
+            $result = $query->fetchAll();
+            $this->cleanUpTempTable($tempTable);
+
+            return $result;
         }
         else {
             return array();
@@ -114,6 +117,7 @@ class Bots extends PaginatingStore {
         $where = 'INNER JOIN '.$tempTable.' AS t ON t.value = table.name';
         $query = $this->prepareDelete($where);
         $query->execute();
+        $this->cleanUpTempTable($tempTable);
     }
 
     public function addBot(string $name, int $type, $channel = null, $query = null)

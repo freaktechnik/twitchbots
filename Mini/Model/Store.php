@@ -93,4 +93,9 @@ class Store {
         }
         return $tableName;
     }
+
+    protected function cleanUpTempTable(string $tableName)
+    {
+         $this->prepareQuery("DROP TABLE IF EXISTS ".$tableName)->execute();
+    }
 }
