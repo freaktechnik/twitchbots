@@ -1,7 +1,5 @@
 <?php
 
-use PDOStatement;
-
 class StoreTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
