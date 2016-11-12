@@ -2,7 +2,7 @@
 
 namespace Mini\Model;
 
-use PDOStatment;
+use PDOStatement;
 
 class Store {
     /**
