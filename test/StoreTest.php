@@ -46,7 +46,7 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
     public function setUp()
     {
 
-        $this->store = new \Mini\Model\Store(self::$pdo, 'config');
+        $this->store = new \Mini\Model\ShimStore(self::$pdo, 'config');
         parent::setUp();
     }
 

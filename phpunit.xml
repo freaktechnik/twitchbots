@@ -13,6 +13,7 @@
             <exclude>
                 <file>Mini/Model/TypeCrawler/ShimTypeCrawler.php</file>
                 <file>Mini/Model/TypeCrawler/Storage/ShimTypeCrawlerStorage.php</file>
+                <file>Mini/Model/ShimStore.php</file>
             </exclude>
         </whitelist>
     </filter>

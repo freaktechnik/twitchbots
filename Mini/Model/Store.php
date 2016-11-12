@@ -77,7 +77,7 @@ class Store {
     protected function createTempTable(array $values): string
     {
         $tableName = "tempvals";
-        $sql = 'CREATE TEMPORARY TABLE '.$tempName.' (value varchar(535) CHARACTER SET utf8 NOT NULL, index varchar(535) CHARACTER SET utf8 NOT NULL)';
+        $sql = 'CREATE TEMPORARY TABLE '.$tableName.' (value varchar(535) CHARACTER SET utf8 NOT NULL, index varchar(535) CHARACTER SET utf8 NOT NULL)';
         $query = $this->prepareQuery($sql);
         $query->execute();
 

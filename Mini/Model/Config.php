@@ -8,7 +8,7 @@ class Config extends Store {
         parent::__construct($db, "config");
     }
 
-	private function get(string $key): string
+	public function get(string $key): string
 	{
 	    $query = $this->prepareSelect("value", "WHERE name=?");
 	    $query->execute(array($key));
@@ -21,7 +21,7 @@ class Config extends Store {
 	    }
 	}
 
-	private function set(string $key, string $value)
+	public function set(string $key, string $value)
 	{
 	    $query = $this->prepareUpdate("value=? WHERE name=?");
 	    $query->execute(array($value, $key));

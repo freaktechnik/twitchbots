@@ -189,7 +189,7 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
     public function testRemoveBot()
     {
         $initialCount = $this->bots->getCount();
-        $this->model->removeBot('ackbot');
+        $this->bots->removeBot('ackbot');
 
         $this->assertEquals($initialCount - 1, $this->bots->getCount());
 
@@ -202,7 +202,7 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
     public function testRemoveBots()
     {
         $initialCount = $this->bots->getCount();
-        $this->model->removeBots(array('ackbot', 'nightbot'));
+        $this->bots->removeBots(array('ackbot', 'nightbot'));
 
         $this->assertEquals($initialCount - 2, $this->bots->getCount());
 
