@@ -56,6 +56,19 @@ class Store {
         return (int)$query->fetch()->count;
     }
 
+    public function getLastUpdate(string $condition = "", array $values = array()): int
+    {
+        $where = "ORDER BY date DESC LIMIT 1";
+        if(!empty($condition)) {
+            $where = "WHERE ".$condition." ".$where;
+        }
+
+        $query = $this->prepareSelect("date", $where);
+        $query->execute($values);
+
+        return strtotime($query->fetch()->date);
+    }
+
     /**
      * Store the values and indexes from an array in a temporary table. Returns
      * the table name. The array indexes are in a column called "index" and the

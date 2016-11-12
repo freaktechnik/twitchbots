@@ -16,19 +16,6 @@ class PaginatingStore extends Store {
         parent::__construct($db, $table);
     }
 
-    public function getLastUpdate(string $condition, array $values): int
-    {
-        $where = "ORDER BY date DESC LIMIT 1";
-        if(!empty($condition)) {
-            $where = "WHERE ".$condition." ".$where;
-        }
-
-        $query = $this->prepareSelect("date", $where);
-        $query->execute($values);
-
-        return strtotime($query->fetch()->date);
-    }
-
     public function getPageCount($limit = null, $count = null): int
     {
         $limit = $limit ?? $this->pageSize;

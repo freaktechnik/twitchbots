@@ -247,7 +247,7 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
             $url = $sitemap->addChild('url');
             $url->addChild('loc', $app->config('canonicalUrl').'types/'.$type->id);
             $url->addChild('changefreq', 'daily');
-            $url->addChild('lastmod', $getLastMod(max($typeLastMod, strtotime($type->date), $model->bots->getLastUpdate($type->id))));
+            $url->addChild('lastmod', $getLastMod(max($typeLastMod, strtotime($type->date), $model->bots->getLastUpdateByType($type->id))));
             $url->addChild('priority', '0.6');
         }
 

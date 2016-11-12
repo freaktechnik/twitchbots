@@ -8,13 +8,13 @@ class Bots extends PaginatingStore {
         parent::__construct($db, "bots", $pageSize);
     }
 
-    public function getLastUpdate(int $type = 0): int
+    public function getLastUpdateByType(int $type = 0): int
     {
         $condition = "";
         if($type != 0) {
             $condition = "type=?";
         }
-        $parent::getLastUpdate($condition, array($type));
+        return $this->getLastUpdate($condition, array($type));
     }
 
     public function getCount(int $type = 0): int
