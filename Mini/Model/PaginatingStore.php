@@ -3,6 +3,7 @@
 namespace Mini\Model;
 
 use PDOStatement;
+use PDO;
 
 class PaginatingStore extends Store {
     /**

@@ -2,6 +2,8 @@
 
 namespace Mini\Model;
 
+use PDO;
+
 class Bots extends PaginatingStore {
     function __construct(PingablePDO $db, int $pageSize = 50)
     {
