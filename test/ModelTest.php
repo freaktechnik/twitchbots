@@ -156,7 +156,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     /**
      * @expectedException Exception
-     * @expectedExceptionCode 0
+     * @expectedExceptionCode 8
      */
     public function testAddEmptySubmissionUsernameThrows()
     {
@@ -259,7 +259,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     /**
      * @expectedException Exception
-     * @expectedExceptionCode 0
+     * @expectedExceptionCode 8
      */
     public function testAddEmptyCorrectionUsernameThrows()
     {
@@ -290,235 +290,6 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->model->addCorrection("nightbot", 1);
     }
 
-    public function testGetSubmissions()
-    {
-        $this->assertEquals(count($this->model->getSubmissions()), $this->getConnection()->getRowCount('submissions'), "Not an empty array with no submissions");
-
-        $this->httpMock->append(new Response(200));
-        $this->httpMock->append(new Response(200));
-
-        $this->model->addSubmission("test", 0, "lorem ipsum");
-        $this->model->addSubmission("nightboot", 1);
-        $this->assertEquals(2, $this->getConnection()->getRowCount('submissions'), "Test setup failed");
-
-        $submissions = $this->model->getSubmissions();
-
-        $this->assertCount($this->getConnection()->getRowCount('submissions'), $submissions);
-
-        foreach($submissions as $submission) {
-            $this->assertObjectHasAttribute("name", $submission);
-            $this->assertObjectHasAttribute("description", $submission);
-            $this->assertObjectHasAttribute("date", $submission);
-            $this->assertGreaterThanOrEqual(strtotime($submission->date), time());
-            $this->assertObjectHasAttribute("id", $submission);
-            $this->assertObjectHasAttribute("offline", $submission);
-            $this->assertObjectHasAttribute("online", $submission);
-            $this->assertObjectHasAttribute("ismod", $submission);
-        }
-
-        // Sort order is descending by timestamp
-        //TODO test array?
-    }
-
-    public function testGetLastSubmissionsUpdate()
-    {
-        $this->httpMock->append(new Response(200));
-        $this->model->addSubmission("test", 1);
-
-        $submissions = $this->model->getSubmissions();
-        $lastModified = $this->model->getLastUpdate('submissions');
-
-        $this->assertEquals($lastModified, strtotime($submissions[0]->date));
-    }
-
-    public function testGetPageCount()
-    {
-        for($count = 0; $count < self::pageSize * 4; ++$count) {
-            $expectedPageCount = ceil($count / (float)self::pageSize);
-            $pageCount = $this->model->getPageCount(self::pageSize, $count);
-
-            $this->assertEquals($expectedPageCount, $pageCount);
-        }
-    }
-
-    public function testGetOffset()
-    {
-        for($page = 1; $page < 4; ++$page) {
-            $expectedOffset = ($page - 1) * self::pageSize;
-            $offset = $this->model->getOffset($page);
-
-            $this->assertEquals($expectedOffset, $offset);
-        }
-    }
-
-    public function testGetType()
-    {
-        $type = $this->model->getType(1);
-
-        $this->assertEquals("Nightbot", $type->name);
-        $this->assertEquals(1, $type->id);
-        $this->assertEquals(true, $type->multichannel);
-        $this->assertEquals("https://www.nightbot.tv/", $type->url);
-    }
-
-    public function testGetNotExistingType()
-    {
-        $type = $this->model->getType(0);
-
-        $this->assertFalse($type);
-    }
-
-    public function testGetAllTypes()
-    {
-        $types = $this->model->getAllTypes();
-
-        $this->assertCount($this->getConnection()->getRowCount('types'), $types);
-
-        foreach($types as $type) {
-            $this->assertObjectHasAttribute("name", $type);
-            $this->assertObjectHasAttribute("id", $type);
-            $this->assertObjectHasAttribute("url", $type);
-            $this->assertObjectHasAttribute("multichannel", $type);
-            $this->assertObjectHasAttribute("date", $type);
-            $this->assertGreaterThanOrEqual(strtotime($type->date), time());
-        }
-    }
-
-    public function testGetBot()
-    {
-        $bot = $this->model->getBot("butler_of_ec0ke");
-
-        $this->assertEquals("butler_of_ec0ke", $bot->name);
-        $this->assertEquals(22, $bot->type);
-        $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
-        $this->assertEquals("ec0ke", $bot->channel);
-    }
-
-    public function testGetNotExistingBot()
-    {
-        $bot = $this->model->getBot("freaktechnik");
-
-        $this->assertFalse($bot);
-    }
-
-    public function testGetBotsByType()
-    {
-        $bots = $this->model->getBotsByType(22);
-
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize
-        );
-
-        $this->assertCount($queryTable->getRowCount(), $bots);
-
-        foreach($bots as $bot) {
-            $this->assertObjectHasAttribute("name", $bot);
-            $this->assertObjectHasAttribute("type", $bot);
-            $this->assertObjectHasAttribute("date", $bot);
-            $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
-        }
-
-        $bots = $this->model->getBotsByType(22, self::pageSize);
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots WHERE type=22 LIMIT '.self::pageSize.','.self::pageSize
-        );
-        $this->assertCount($queryTable->getRowCount(), $bots);
-    }
-
-    public function testGetBotCount()
-    {
-        $botCount = $this->model->getBotCount();
-        $this->assertEquals($botCount, $this->getConnection()->getRowCount('bots'));
-
-        $botCount = $this->model->getBotCount(22);
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots WHERE type=22'
-        );
-
-        $this->assertEquals($botCount, $queryTable->getRowCount());
-    }
-
-    public function testGetBots()
-    {
-        $bots = $this->model->getBots();
-
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize
-        );
-
-        $this->assertCount($queryTable->getRowCount(), $bots);
-
-        foreach($bots as $bot) {
-            $this->assertObjectHasAttribute("name", $bot);
-            $this->assertObjectHasAttribute("type", $bot);
-            $this->assertObjectHasAttribute("multichannel", $bot);
-            $this->assertObjectHasAttribute("typename", $bot);
-        }
-
-        $bots = $this->model->getBots(2);
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.self::pageSize
-        );
-        $this->assertCount($queryTable->getRowCount(), $bots);
-    }
-
-    public function testGetAllRawBots()
-    {
-        $bots = $this->model->getAllRawBots();
-
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize
-        );
-
-        $this->assertCount($queryTable->getRowCount(), $bots);
-
-        foreach($bots as $bot) {
-            $this->assertObjectHasAttribute("name", $bot);
-            $this->assertObjectHasAttribute("type", $bot);
-            $this->assertObjectHasAttribute("date", $bot);
-            $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
-        }
-
-        $bots = $this->model->getAllRawBots(self::pageSize);
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM bots LIMIT '.self::pageSize.','.self::pageSize
-        );
-        $this->assertCount($queryTable->getRowCount(), $bots);
-    }
-
-    public function testGetBotsByNames()
-    {
-        $names = array(
-            "butler_of_ec0ke",
-            "freaktechnik",
-            "nightbot",
-            "ec0ke",
-            "syntria"
-        );
-        $bots = $this->model->getBotsByNames($names);
-
-        $this->assertCount(2, $bots);
-
-        foreach($bots as $bot) {
-            $this->assertObjectHasAttribute("name", $bot);
-            $this->assertObjectHasAttribute("type", $bot);
-            $this->assertObjectHasAttribute("date", $bot);
-            $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
-        }
-
-        $bots = $this->model->getBotsByNames($names, self::pageSize);
-        $this->assertEmpty($bots);
-    }
-
-    public function testBotSubmitted()
-    {
-        $this->assertTrue($this->model->botSubmitted('butler_of_ec0ke'));
-        $this->assertFalse($this->model->botSubmitted('freaktechnik'));
-        $this->httpMock->append(new Response(200));
-        $this->model->addSubmission('freaktechnik', 1);
-        $this->assertTrue($this->model->botSubmitted('freaktechnik'));
-    }
-
     public function testLock()
     {
         $this->assertFalse($this->model->checkRunning());
@@ -527,48 +298,12 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertFalse($this->model->checkRunning());
     }
 
-    public function testGetLastCheckOffset()
-    {
-        $botCount = $this->model->getBotCount();
-        $halfCount = ceil($botCount / 2);
-        $this->assertEquals(0, $this->model->getLastCheckOffset($halfCount));
-        $this->assertEquals($halfCount, $this->model->getLastCheckOffset(0));
-        $this->assertEquals($halfCount, $this->model->getLastCheckOffset($botCount + 1));
-        $this->assertEquals($halfCount + 1, $this->model->getLastCheckOffset(0));
-    }
-
-    public function testRemoveBot()
-    {
-        $initialCount = $this->model->getBotCount();
-        $this->model->removeBot('ackbot');
-
-        $this->assertEquals($initialCount - 1, $this->model->getBotCount());
-
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots0', "SELECT * FROM bots WHERE name='ackbot'"
-        );
-        $this->assertEquals(0, $queryTable->getRowCount());
-    }
-
-    public function testRemoveBots()
-    {
-        $initialCount = $this->model->getBotCount();
-        $this->model->removeBots(array('ackbot', 'nightbot'));
-
-        $this->assertEquals($initialCount - 2, $this->model->getBotCount());
-
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', "SELECT * FROM bots WHERE name IN ('ackbot','nightbot')"
-        );
-        $this->assertEquals(0, $queryTable->getRowCount());
-    }
-
     public function testCheckBots()
     {
-        $initialCount = $this->model->getBotCount();
+        $initialCount = $this->model->bots->getCount();
         $bots = $this->model->checkBots();
 
-        $this->assertEquals($initialCount - count($bots), $this->model->getBotCount());
+        $this->assertEquals($initialCount - count($bots), $this->model->bots->getCount());
     }
 
     public function testTwitchUserExists()
@@ -579,42 +314,6 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($this->model->twitchUserExists('xanbot'));
         $this->httpMock->append(new Response(404));
         $this->assertFalse($this->model->twitchUserExists('zeldbot'));
-    }
-
-    public function testGetTypes()
-    {
-        $bots = $this->model->getTypes();
-
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM types LIMIT '.self::pageSize
-        );
-
-        $this->assertCount($queryTable->getRowCount(), $bots);
-
-        foreach($bots as $bot) {
-            $this->assertObjectHasAttribute("name", $bot);
-            $this->assertObjectHasAttribute("id", $bot);
-            $this->assertObjectHasAttribute("multichannel", $bot);
-            $this->assertObjectHasAttribute("count", $bot);
-        }
-
-        $bots = $this->model->getTypes(2);
-        $queryTable = $this->getConnection()->createQueryTable(
-            'bots', 'SELECT name FROM types LIMIT '.self::pageSize.','.self::pageSize
-        );
-        $this->assertCount($queryTable->getRowCount(), $bots);
-    }
-
-    public function testGetCount()
-    {
-        $botCount = $this->model->getCount('bots');
-        $this->assertEquals($this->getConnection()->getRowCount('bots'), $botCount);
-
-        $typeCount = $this->model->getCount('types');
-        $this->assertEquals($this->getConnection()->getRowCount('types'), $typeCount);
-
-        $submissionsCount = $this->model->getCount('submissions');
-        $this->assertEquals($this->getConnection()->getRowCount('submissions'), $submissionsCount);
     }
 
     /**

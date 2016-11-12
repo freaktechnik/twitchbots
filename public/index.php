@@ -124,8 +124,8 @@ $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
     $app->lastModified(max($model->getLastUpdate(), $getTemplateLastMod('index.twig')));
     $app->expires('+1 day');
 
-    $botCount = $model->getBotCount();
-    $typeCount = $model->getCount('types');
+    $botCount = $model->bots->getCount();
+    $typeCount = $model->types->getCount();
 
     $app->render('index.twig', [
         'bots' => $botCount,
@@ -135,7 +135,7 @@ $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
 
 $app->get('/submit', function () use ($app, $model) {
     $token = $model->getToken("submit");
-    $types = $model->getAllTypes();
+    $types = $model->types->getAllTypes();
 
     $app->render('submit.twig', array(
         'success' => (boolean)$_GET['success'],
@@ -158,12 +158,12 @@ $app->map('/check', function () use ($app, $model, $getTemplateLastMod) {
            && $app->request->post('username') != $app->request->get('username'))
             $app->redirect($app->request->getUrl().$app->urlFor('check').'?username='.strtolower($app->request->post('username')), 303);
 
-        $bot = $model->getBot($app->request->params('username'));
+        $bot = $model->bots->getBot($app->request->params('username'));
         if($bot) {
             $app->lastModified(max($lastUpdate, strtotime($bot->date)));
             $app->expires('+1 week');
             if($bot->type) {
-                $type = $model->getType($bot->type);
+                $type = $model->types->getType($bot->type);
                 $bot->typename = $type->name;
                 $bot->url = $type->url;
                 $bot->multichannel = $type->multichannel;
@@ -198,7 +198,7 @@ $app->get('/about', function () use ($app, $getTemplateLastMod) {
 });
 $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
     $app->expires('+1 minute');
-    $submissions = $model->getSubmissions();
+    $submissions = $model->submissions->getSubmissions();
     if(count($submissions) > 0) {
         $app->lastModified(max($getTemplateLastMod('submissions.twig'), strtotime($submissions[0]->date)));
     }
@@ -215,7 +215,7 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
     $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
         $app->expires('+1 day');
 
-        $pageCount = $model->getPageCount(null, $model->getCount('types'));
+        $pageCount = $model->types->getPageCount();
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
             $page = 1;
@@ -223,9 +223,9 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
         if($page > $pageCount || $page < 0)
             $app->notFound();
 
-        $app->lastModified(max($getTemplateLastMod('types.twig'), $model->getLastUpdate(), $model->getLastUpdate('types')));
+        $app->lastModified(max($getTemplateLastMod('types.twig'), $model->bots->getLastUpdate(), $model->types->getLastUpdate()));
 
-        $types = $model->getTypes($page);
+        $types = $model->types->getTypes($page);
 
         $app->render('types.twig', array(
             'types' => $types,
@@ -236,18 +236,18 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
 
     $app->get('/sitemap.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
         $app->contentType('application/xml;charset=utf8');
-        $botLastUpdate = $model->getLastUpdate();
-        $typeLastUpdate = $model->getLastUpdate('types');
+        $botLastUpdate = $model->bots->getLastUpdate();
+        $typeLastUpdate = $model->types->getLastUpdate();
         $app->lastModified(max($botLastUpdate, $typeLastUpdate));
         $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
-        $types = $model->getAllTypes();
+        $types = $model->types->getAllTypes();
         $typeLastMod = $getTemplateLastMod('type.twig');
         foreach($types as $type) {
             $url = $sitemap->addChild('url');
             $url->addChild('loc', $app->config('canonicalUrl').'types/'.$type->id);
             $url->addChild('changefreq', 'daily');
-            $url->addChild('lastmod', $getLastMod(max($typeLastMod, strtotime($type->date), $model->getLastUpdate('bots', $type->id))));
+            $url->addChild('lastmod', $getLastMod(max($typeLastMod, strtotime($type->date), $model->bots->getLastUpdate($type->id))));
             $url->addChild('priority', '0.6');
         }
 
@@ -257,11 +257,11 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
     $app->get('/:id', function ($id) use ($app, $model, $getTemplateLastMod) {
         $app->expires('+1 day');
 
-        $type = $model->getType($id);
+        $type = $model->types->getType($id);
         if(!$type)
             $app->notFound();
 
-        $pageCount = max(1, $model->getPageCount(null, $model->getBotCount($id)));
+        $pageCount = max(1, $model->bots->getPageCount(null, $model->bots->getCount($id)));
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
             $page = 1;
@@ -269,7 +269,7 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
         if($page > $pageCount || $page < 0)
             $app->notFound();
 
-        $bots = $model->getBotsByType($id, $model->getOffset($page));
+        $bots = $model->bots->getBotsByType($id, $model->bots->getOffset($page));
 
         $app->lastModified(max($getTemplateLastMod('type.twig'), strtotime($type->date), max(array_map(function($bot) { return strtotime($bot->date); }, $bots))));
         $app->render('type.twig', array(
@@ -283,16 +283,16 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
 
 $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
     $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
-        $app->lastModified(max($model->getLastUpdate(), $getTemplateLastMod('bots.twig')));
+        $app->lastModified(max($model->bots->getLastUpdate(), $getTemplateLastMod('bots.twig')));
         $app->expires('+1 day');
 
-        $pageCount = $model->getPageCount();
+        $pageCount = $model->bots->getPageCount();
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
             $page = 1;
 
         if($page <= $pageCount && $page > 0)
-            $bots = $model->getBots($page);
+            $bots = $model->bots->getBots($page);
         else
             $bots = array();
 
@@ -305,10 +305,10 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
 
     $app->get('/sitemap.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
         $app->contentType('application/xml;charset=utf8');
-        $app->lastModified($model->getLastUpdate());
+        $app->lastModified($model->bots->getLastUpdate());
         $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
-        $bots = $model->getAllRawBots(0, $model->getBotCount());
+        $bots = $model->bots->getAllRawBots(0, $model->bots->getCount());
         $botLastMod = $getTemplateLastMod('bot.twig');
         foreach($bots as $bot) {
             $url = $sitemap->addChild('url');
@@ -322,12 +322,12 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
     });
 
     $app->get('/:name', function ($name) use ($app, $model, $getTemplateLastMod) {
-        $bot = $model->getBot($name);
+        $bot = $model->bots->getBot($name);
         if(!$bot)
             $app->notFound();
 
         if($bot->type) {
-            $type = $model->getType($bot->type);
+            $type = $model->types->getType($bot->type);
             $bot->typename = $type->name;
             $bot->url = $type->url;
             $bot->multichannel = $type->multichannel;
@@ -417,9 +417,9 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
 $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
     $app->contentType('application/xml;charset=utf8');
 
-    $subLastUpdate = $model->getLastUpdate('submissions');
-    $botLastUpdate = $model->getLastUpdate();
-    $typeLastUpdate = $model->getLastUpdate('types');
+    $subLastUpdate = $model->submissions->getLastUpdate();
+    $botLastUpdate = $model->bots->getLastUpdate();
+    $typeLastUpdate = $model->types->getLastUpdate();
     $templateUpdates = array(
         "index" => $getTemplateLastMod('index.twig'),
         "bots" => $getTemplateLastMod('bots.twig'),
@@ -432,9 +432,6 @@ $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, 
     );
     $app->lastModified(max(max($templateUpdates), $subLastUpdate, $botLastUpdate, $typeLastUpdate));
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
-
-    $lastBotUpdate = $model->getLastUpdate();
-    $lastTypeUpdate = $model->getLastUpdate('types');
 
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl'));
@@ -484,9 +481,9 @@ $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, 
 });
 $app->get('/sitemap.xml', function() use ($app, $model, $getTemplateLastMod, $getLastMod) {
     $app->contentType('application/xml;charset=utf8');
-    $botLastUpdate = $model->getLastUpdate();
-    $typeLastUpdate = $model->getLastUpdate('types');
-    $subLastUpdate = $model->getLastUpdate('submissions');
+    $botLastUpdate = $model->bots->getLastUpdate();
+    $typeLastUpdate = $model->types->getLastUpdate();
+    $subLastUpdate = $model->submissions->getLastUpdate();
     $templateUpdates = array(
         "type" => $getTemplateLastMod('type.twig'),
         "bot" => $getTemplateLastMod('bot.twig'),

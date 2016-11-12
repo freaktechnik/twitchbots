@@ -10,6 +10,24 @@ use \Mini\Model\TypeCrawler\TypeCrawlerController;
 use \Mini\Model\PingablePDO;
 use GuzzleHttp\{Client, Promise};
 
+/**
+ * Submission Exceptions:
+ * + is submission only, - is correction only
+ *  1: Generic problem
+ *+ 2: Cannot add a user that doesn't exist on Twitch
+ *+ 3: Cannot add an already existing bot
+ *- 4: Cannot correct an inexistent bot
+ *- 5: Metadata must be different
+ *  6: Given channel isn't a Twitch channel
+ *  7: Username of the bot and the channel it is in can not match
+ *  8: Required fields are empty
+ *  9: Description can not be empty
+ * 10:
+ *-11: Identical correction already exists
+ * 12: Given channel is already a bot
+ *+13: Bot cannot be the channel to an existing bot
+ */
+
 require __DIR__.'/../../vendor/autoload.php';
 include_once 'csrf.php';
 
@@ -33,6 +51,12 @@ class Model
      */
     private $pageSize;
 
+    // Database table abstractions
+    public $bots;
+    public $types;
+    public $submissions;
+    private $config;
+
     private $twitchHeaders;
 
     private static $requestOptions = array('http_errors' => false);
@@ -55,35 +79,15 @@ class Model
 
         $this->pageSize = $config['page_size'];
 
-        if(!$this->getConfig('update_size')) {
-            $this->setConfig('update_size', '10');
-        }
+        $this->bots = new Bots($this->db, $this->pageSize);
+        $this->types = new Types($this->db, $this->pageSize);
+        $this->config = new Config($this->db);
+        $this->submissions = new Submissions($this->db, $this->pageSize);
 
         $this->twitchHeaders = array_merge(self::$requestOptions, array(
-            'headers' => array('Client-ID' => $this->getConfig('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
+            'headers' => array('Client-ID' => $this->config->get('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
         ));
         $this->client = $client;
-	}
-
-	private function getConfig(string $key): string
-	{
-	    $sql = "SELECT value FROM config where name=?";
-	    $query = $this->db->prepare($sql);
-	    $query->execute(array($key));
-	    $result = $query->fetch();
-	    if($result) {
-    	    return $result->value;
-    	}
-	    else {
-	        return "";
-	    }
-	}
-
-	private function setConfig(string $key, string $value)
-	{
-	    $sql = "UPDATE config SET value=? WHERE name=?";
-	    $query = $this->db->prepare($sql);
-	    $query->execute(array($value, $key));
 	}
 
     /**
@@ -105,13 +109,7 @@ class Model
         return validate_token($formname, $token);
     }
 
-    /**
-     * @param string $username
-     * @param int $type
-     * @param string $description = ""
-     * @param string $channel = null
-     */
-    public function addSubmission(string $username, int $type, $description = "", $channel = null)
+    public function addSubmission(string $username, int $type, string $description = "", string $channel = null)
     {
         if(empty($channel)) {
             $channel = null;
@@ -128,34 +126,26 @@ class Model
         if(!$this->twitchUserExists($username)) {
             throw new Exception("Cannot add a user that doesn't exist on Twitch", 2);
         }
-        else if($this->botSubmitted($username)) {
+        else if($this->hasBot($username)) {
             throw new Exception("Cannot add an already existing bot", 3);
         }
         else if(!empty($this->getBotsByChannel($username))) {
             throw new Exception("Bot cannot be the channel to an existing bot", 13);
         }
 
-        $this->appendToSubmissions($username, $type, 0, $channel);
+        $this->submissions->append($username, $type, Submissions::SUBMISSION, $channel);
     }
 
-    private function appendToSubmissions(string $username, $type, $correction = 0, $channel = null)
-    {
-        $sql = "INSERT INTO submissions(name,description,type,channel) VALUES (?,?,?,?)";
-        $query = $this->db->prepare($sql);
-        $params = array($username, $type, $correction, $channel);
 
-        $query->execute($params);
-    }
-
-    private function commonSubmissionChecks(string $username, $type, $channel = null)
+    private function commonSubmissionChecks(string $username, $type, string $channel = null)
     {
         if($username == "" || $type == "") {
-            throw new Exception("Required fields are empty", 0);
+            throw new Exception("Required fields are empty", 8);
         }
         else if(strtolower($username) == strtolower($channel)) {
             throw new Exception("Username of the bot and the channel it is in can not match", 7);
         }
-        else if(!empty($channel) && !empty($this->getBot($channel))) {
+        else if(!empty($channel) && !empty($this->bots->getBot($channel))) {
             throw new Exception("Given channel is already a bot", 12);
         }
         else if(!empty($channel) && !$this->twitchUserExists($channel, true)) {
@@ -163,256 +153,14 @@ class Model
         }
     }
 
-    public function getSubmissions(): array
+    public function hasBot(string $username): bool
     {
-        $sql = "SELECT name, description, type, date, channel, offline, online, ismod, following, following_channel, id FROM submissions ORDER BY date DESC";
-        $query = $this->db->prepare($sql);
-        $query->execute();
-
-        return $query->fetchAll();
-    }
-
-    /**
-     * @return int
-     */
-    public function getLastUpdate($table = "bots", $type = 0): int
-    {
-        $sql = "SELECT date FROM ".$table." ORDER BY date DESC LIMIT 1";
-        if($type != 0) {
-            $sql .= "WHERE type=?";
-        }
-
-        $query = $this->db->prepare($sql);
-        $query->execute(array($type));
-
-        return strtotime($query->fetch()->date);
-    }
-
-    /**
-     * @param int $type
-     * @return int
-     */
-    public function getBotCount($type = 0): int
-    {
-        $sql = "SELECT count FROM count";
-        if($type != 0) {
-            $sql = "SELECT count(name) AS count FROM bots WHERE type=?";
-        }
-
-        $query = $this->db->prepare($sql);
-        $query->execute(array($type));
-
-        return (int)$query->fetch()->count;
-    }
-
-    /**
-     * @param string table
-     * @return int
-     */
-    public function getCount(string $table): int
-    {
-        $sql = "SELECT count(*) AS count FROM ".$table;
-        $query = $this->db->prepare($sql);
-        $query->execute();
-
-        return (int)$query->fetch()->count;
-    }
-
-    /**
-     * @param int $count
-     * @return int
-     */
-    public function getPageCount($limit = null, $count = null): int
-    {
-        $limit = $limit ?? $this->pageSize;
-        $count = $count ?? $this->getBotCount();
-        if($limit > 0) {
-            return ceil($count / (float)$limit);
-        }
-        else {
-            return 0;
-        }
-    }
-
-    /**
-     * @param int $page
-     * @return int
-     */
-    public function getOffset(int $page): int
-    {
-        return ($page - 1) * $this->pageSize;
-    }
-
-    private function doPagination(PDOStatement $query, $offset = 0, $limit = null, $start = ":start", $stop = ":stop")
-    {
-        $limit = $limit ?? $this->pageSize;
-        $query->bindValue($start, $offset, PDO::PARAM_INT);
-        $query->bindValue($stop, $limit, PDO::PARAM_INT);
-    }
-
-    public function getBots($page = 1): array
-    {
-        if($page <= $this->getPageCount($this->pageSize)) {
-            $sql = "SELECT * FROM list LIMIT :start,:stop";
-            $query = $this->db->prepare($sql);
-            $this->doPagination($query, $this->getOffset($page));
-            $query->execute();
-            return $query->fetchAll();
-        }
-        else {
-            return array();
-        }
-    }
-
-    public function getAllRawBots($offset = 0, $limit = null): array
-    {
-        $limit = $limit ?? $this->pageSize;
-        if($limit > 0 && $offset < $this->getBotCount()) {
-            $sql = "SELECT * FROM bots LIMIT :start,:stop";
-            $query = $this->db->prepare($sql);
-            $this->doPagination($query, $offset, $limit);
-            $query->execute();
-            return $query->fetchAll();
-        }
-        else {
-            return array();
-        }
-    }
-
-    public function getBotsByNames(array $names, $offset = 0, $limit = null): array
-    {
-        $limit = $limit ?? $this->pageSize;
-        $namesCount = count($names);
-        if($limit > 0 && $offset < $namesCount) {
-            $sql = 'CREATE TEMPORARY TABLE botnames (name varchar(535) CHARACTER SET ascii NOT NULL)';
-            $query = $this->db->prepare($sql);
-            $query->execute();
-
-            $sql = 'INSERT INTO botnames (name) VALUES (?)';
-            $query = $this->db->prepare($sql);
-            $name;
-            $query->bindParam(1, $name);
-
-            foreach($names as $name) {
-                $query->execute();
-            }
-
-            $sql = 'SELECT * FROM bots INNER JOIN botnames ON bots.name = botnames.name LIMIT ?,?';
-            $query = $this->db->prepare($sql);
-            $this->doPagination($query, $offset, $limit, 1, 2);
-            $query->execute();
-
-            return $query->fetchAll();
-        }
-        else {
-            return array();
-        }
-    }
-
-    public function getBotsByType(int $type, $offset = 0, $limit = null): array
-    {
-        $limit = $limit ?? $this->pageSize;
-        //TODO should these bounds checks be in the controller?
-        if($limit > 0 && $offset < $this->getBotCount($type)) {
-            $sql = "SELECT * FROM bots WHERE type=:type LIMIT :start,:stop";
-            $query = $this->db->prepare($sql);
-            $this->doPagination($query, $offset, $limit);
-            $query->bindValue(":type", $type, PDO::PARAM_INT);
-            $query->execute();
-            return $query->fetchAll();
-        }
-        else {
-            return array();
-        }
-    }
-
-    public function getBot(string $name)
-    {
-        $sql = "SELECT * FROM bots WHERE name=?";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($name));
-
-        return $query->fetch();
-    }
-
-    public function getType(int $id)
-    {
-        $sql = "SELECT * FROM types WHERE id=?";
-        $query = $this->db->prepare($sql);
-        $query->bindValue(1, $id, PDO::PARAM_INT);
-        $query->execute();
-
-        return $query->fetch();
-    }
-
-    public function getAllTypes(): array
-    {
-        $sql = "SELECT types.*, COUNT(DISTINCT(bots.name)) AS count FROM types LEFT JOIN bots ON bots.type = types.id GROUP BY types.id ORDER BY count DESC, types.name ASC";
-        $query = $this->db->prepare($sql);
-        $query->execute();
-
-        return $query->fetchAll();
-    }
-
-    public function botSubmitted(string $username): bool
-    {
-        $sql = "SELECT * FROM submissions WHERE name=? AND type=0";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($username));
-
-        // This is basicly an OR, but the second query gets executed lazily.
-        if(!$query->fetch()) {
-            if(!$this->getBot($username))
+        if(!$this->submissions->hasSubmission($username)) {
+            if(!$this->bots->getBot($username)) {
                 return false;
+            }
         }
         return true;
-    }
-
-    public function removeBot(string $username)
-    {
-        $sql = "DELETE FROM bots WHERE name=?";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($username));
-    }
-
-    public function removeBots(array $usernames)
-    {
-        $sql = 'DELETE FROM bots WHERE name IN ('.implode(',', array_fill(1, count($usernames), '?')).')';
-        $query = $this->db->prepare($sql);
-        $query->execute($usernames);
-    }
-
-    public function checkRunning(): bool
-    {
-        if((int)$this->getConfig('lock') == 1) {
-            return true;
-        }
-
-        $this->setConfig('lock', '1');
-        return false;
-    }
-
-    public function checkDone()
-    {
-        $this->setConfig('lock', '0');
-    }
-
-    public function getLastCheckOffset(int $step): int
-    {
-        $lastOffset = (int)$this->getConfig('update_offset');
-        $newOffset = ($lastOffset + $step) % $this->getBotCount();
-
-        $this->setConfig('update_offset', $newOffset);
-
-        return $lastOffset;
-    }
-
-    private function hasCorrection(string $username, string $description): bool
-    {
-        $sql = 'SELECT * FROM submissions WHERE type=1 AND name=? AND  description=?';
-        $query = $this->db->prepare($sql);
-        $query->execute(array($username, $description));
-        return $query->fetch() != null;
     }
 
     public function addCorrection(string $username, int $type, $description = "")
@@ -421,7 +169,7 @@ class Model
             if($description == "") {
                 throw new Exception("Description can not be empty", 9);
             }
-            else if($this->hasCorrection($username, $description)) {
+            else if($this->submissions->hasCorrection($username, $description)) {
                 throw new Exception("Identical correction already exists", 11);
             }
             $type = $description;
@@ -429,7 +177,7 @@ class Model
 
         $this->commonSubmissionChecks($username, $type);
 
-        $existingBot = $this->getBot($username);
+        $existingBot = $this->bots->getBot($username);
         if(empty($existingBot)) {
             throw new Exception("Cannot correct an inexistent bot", 4);
         }
@@ -437,7 +185,23 @@ class Model
             throw new Exception("Metadata must be different", 5);
         }
 
-        $this->appendToSubmissions($username, $type, 1, $existingBot->channel);
+        $this->submissions->append($username, $type, Submissions::CORRECTION, $existingBot->channel);
+    }
+
+
+    public function checkRunning(): bool
+    {
+        if((int)$this->config->get('lock') == 1) {
+            return true;
+        }
+
+        $this->config->set('lock', '1');
+        return false;
+    }
+
+    public function checkDone()
+    {
+        $this->config->set('lock', '0');
     }
 
     public function twitchUserExists(string $name, $noJustin = false): bool
@@ -449,7 +213,8 @@ class Model
 
     public function checkBots(): array
     {
-        return $this->checkNBots((int)$this->getConfig('update_size', 10));
+        $botsPerHour = $this->bots-getCount() / $this->config->get('checks_per_day');
+        return $this->checkNBots($botsPerHour);
     }
 
     private function checkNBots(int $step): array
@@ -457,20 +222,20 @@ class Model
         // Make sure we get reserved.
         $this->checkRunning();
         try {
-            $offset = $this->getLastCheckOffset($step);
-            $bots = $this->getAllRawBots($offset, $step);
+            $bots = $this->getOldestBots($step);
 
             $bots = array_values(array_filter($bots, function($bot) {
                 return !$this->twitchUserExists($bot->name);
             }));
 
+            $this->db->ping();
             if(count($bots) > 1) {
-                $this->removeBots(array_map(function($bot) {
+                $this->bots->removeBots(array_map(function($bot) {
                     return $bot->name;
                 }, $bots));
             }
             else if(count($bots) == 1) {
-                $this->removeBot($bots[0]->name);
+                $this->bots->removeBot($bots[0]->name);
             }
         }
         catch(Exception $e) {
@@ -481,20 +246,6 @@ class Model
         }
 
         return $bots;
-    }
-
-    public function getTypes($page = 1): array
-    {
-        if($page <= $this->getPageCount($this->pageSize)) {
-            $sql = "SELECT * FROM typelist LIMIT :start,:stop";
-            $query = $this->db->prepare($sql);
-            $this->doPagination($query, $this->getOffset($page));
-            $query->execute();
-            return $query->fetchAll();
-        }
-        else {
-            return array();
-        }
     }
 
     private function getChatters(string $channel): array
@@ -527,40 +278,6 @@ class Model
         return array_key_exists('moderators', $chatters) && in_array($user, $chatters['moderators']);
     }
 
-    private function setSubmissionInChat(int $id, $inChannel, bool $live)
-    {
-        if($live) {
-            $sql = "UPDATE submissions SET online=? WHERE id=?";
-        }
-        else {
-            $sql = "UPDATE submissions SET offline=? WHERE id=?";
-        }
-
-	    $query = $this->db->prepare($sql);
-	    $query->execute(array($inChannel, $id));
-    }
-
-    private function setSubmissionModded(int $id, $isMod)
-    {
-        $sql = "UPDATE submissions SET ismod=? WHERE id=?";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($isMod, $id));
-    }
-
-    private function setSubmissionFollowing(int $id, $followingCount = null)
-    {
-        $sql = "UPDATE submissions SET following=? WHERE id=?";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($followingCount, $id));
-    }
-
-    private function setSubmissionFollowingChannel(int $id, $followingChannel = null)
-    {
-        $sql = "UPDATE submissions SET following_channel=? WHERE id=?";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($followingChannel, $id));
-    }
-
     private function isChannelLive(string $channel): bool
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$channel, $this->twitchHeaders);
@@ -570,7 +287,7 @@ class Model
 
     public function checkSubmissions(): int
     {
-        $submissions = $this->getSubmissions();
+        $submissions = $this->submissions->getSubmissions();
         $count = 0;
 
         foreach($submissions as $submission) {
@@ -586,7 +303,7 @@ class Model
                     $follows = new \stdClass();
                     $follows->_total = 0;
                 }
-                $this->setSubmissionFollowing($submission->id, $follows->_total);
+                $this->submissions->setFollowing($submission->id, $follows->_total);
                 $didSomething = true;
             }
 
@@ -608,7 +325,7 @@ class Model
                         }
                     }
 
-                    $this->setSubmissionFollowingChannel($submission->id, $follows_channel);
+                    $this->submissions->setFollowingChannel($submission->id, $follows_channel);
                     $didSomething = true;
                 }
 
@@ -633,9 +350,9 @@ class Model
                             $isInChannel = null;
                         }
 
-                        $this->setSubmissionInChat($submission->id, $isInChannel, $live);
+                        $this->submissions->setInChat($submission->id, $isInChannel, $live);
                         if($isMod !== null) {
-                            $this->setSubmissionModded($submission->id, $isMod);
+                            $this->submissions->setModded($submission->id, $isMod);
                         }
 
                         $ranModCheck = true;
@@ -652,7 +369,7 @@ class Model
                         $isMod = null;
                     }
                     if($isMod !== null) {
-                        $this->setSubmissionModded($submission->id, $isMod);
+                        $this->submissions->setModded($submission->id, $isMod);
                     }
 
                     $didSomething = true;
@@ -727,17 +444,6 @@ class Model
         return $response->getStatusCode() < 400;
     }
 
-    private function addBot(string $name, int $type, $channel = null, $query = null)
-    {
-        $sql = "INSERT INTO bots (name,type,channel) VALUES (?,?,?)";
-        $query = $this->db->prepare($sql);
-        $query->bindValue(1, strtolower($name), PDO::PARAM_STR);
-        $query->bindValue(2, $type, PDO::PARAM_INT);
-        $query->bindValue(3, strtolower($channel), PDO::PARAM_STR);
-        $query->execute();
-        return $query;
-    }
-
     public function typeCrawl(): int
     {
         $storage = new StorageFactory('PDOStorage', array($this->db, 'config'));
@@ -751,22 +457,16 @@ class Model
         $max = count($foundBots);
         for($i = 0; $i < $max; $i += 1) {
             $bot = $foundBots[$i];
-            if(empty($this->getBot($bot->name)) && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel, true))) {
-                $this->addBot($bot->name, $bot->type, $bot->channel);
+            if(empty($this->bots->getBot($bot->name)) && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel, true))) {
+                $this->bots->addBot($bot->name, $bot->type, $bot->channel);
                 $count += 1;
-                //TODO remove any submission of a bot with this name and type
+
+                if($this->submissions->has($bot->name, NULL, (string)$bot->type)) {
+                    $this->submissions->removeSubmissions($bot->name, (string)$bot->type);
+                }
             }
         }
 
         return $count;
-    }
-
-    private function getBotsByChannel(string $channel): array
-    {
-        $sql = "SELECT * FROM bots WHERE channel=?";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($channel));
-
-        return $query->fetchAll();
     }
 }

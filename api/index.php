@@ -127,6 +127,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
     });
 
     $app->group('/bot', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified, $returnError) {
+        $botsModel = $model->bots;
         $mapBot = function ($bot) use ($fullUrlFor, $app) {
             $bot->username = $bot->name;
             $bot->_links = array(
@@ -150,12 +151,12 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                 $app->halt(400, $returnError(400, 'Invalid offset specified'));
         };
 
-        $app->get('/', $checkPagination, function () use ($app, $model, $apiUrl, $mapBot) {
+        $app->get('/', $checkPagination, function () use ($app, $botsModel, $apiUrl, $mapBot) {
             $offset = (int)($_GET['offset'] ?? 0);
             $maxLimit = $app->config('model')['page_size'];
             $limit = isset($_GET['limit']) ? min((int)$_GET['limit'], $maxLimit) : $maxLimit;
             $names = explode(',', $_GET['bots']);
-            $bots = $model->getBotsByNames($names, $offset, $limit);
+            $bots = $botsModel->getBotsByNames($names, $offset, $limit);
             $url = $apiUrl();
             $json = array(
                 'bots' => array_map($mapBot, $bots),
@@ -177,7 +178,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
 
             echo json_encode($json);
         });
-        $app->get('/all', $checkPagination, function () use ($app, $model, $mapBot, $apiUrl, $fullUrlFor, $lastModified, $returnError) {
+        $app->get('/all', $checkPagination, function () use ($app, $botsModel, $mapBot, $apiUrl, $fullUrlFor, $lastModified, $returnError) {
             if(isset($_GET['type']) && !is_numeric($_GET['type']))
                 $app->halt(400, $returnError(400, 'Invalid type speified'));
 
@@ -185,15 +186,15 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             $maxLimit = $app->config('model')['page_size'];
             $limit = isset($_GET['limit']) ? min((int)$_GET['limit'], $maxLimit) : $maxLimit;
             if(isset($_GET['type'])) {
-                $app->lastModified(max(array($lastModified, $model->getLastUpdate("bots", $_GET['type']))));
-                $bots = $model->getBotsByType($_GET['type'], $offset, $limit);
-                $botCount = $model->getBotCount($_GET['type']);
+                $app->lastModified(max(array($lastModified, $botsModel->getLastUpdate($_GET['type']))));
+                $bots = $botsModel->getBotsByType($_GET['type'], $offset, $limit);
+                $botCount = $botsModel->getCount($_GET['type']);
                 $typeParam = '&type='.$_GET['type'];
             }
             else {
-                $app->lastModified(max(array($lastModified, $model->getLastUpdate())));
-                $bots = $model->getAllRawBots($offset, $limit);
-                $botCount = $model->getBotCount();
+                $app->lastModified(max(array($lastModified, $botsModel->getLastUpdate())));
+                $bots = $botsModel->getAllRawBots($offset, $limit);
+                $botCount = $botsModel->getCount();
                 $typeParam = '';
             }
 
@@ -223,8 +224,8 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
 
             echo json_encode($json);
         })->name('allbots');
-        $app->get('/:name', function ($name) use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
-            $bot = $model->getBot($name);
+        $app->get('/:name', function ($name) use ($app, $botsModel, $apiUrl, $fullUrlFor, $lastModified) {
+            $bot = $botsModel->getBot($name);
 
             if(!$bot) {
                 $app->notFound();
@@ -249,6 +250,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
     });
 
     $app->group('/type', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
+        $typesModel = $model->types;
         $app->get('/', function () use ($app, $apiUrl, $fullUrlFor, $lastModified) {
             $app->lastModified($lastModified);
 
@@ -264,8 +266,8 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             echo json_encode($json);
         });
 
-        $app->get('/:id', function ($id) use ($app, $model, $apiUrl, $fullUrlFor, $lastModified) {
-            $type = $model->getType($id);
+        $app->get('/:id', function ($id) use ($app, $typesModel, $apiUrl, $fullUrlFor, $lastModified) {
+            $type = $typesModel->getType($id);
             if(!$type) {
                 $app->notFound();
             }

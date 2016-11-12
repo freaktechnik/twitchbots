@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <table name="tempvals">
+        <column>value</column>
+        <column>index</column>
+        <row>
+            <value>a</value>
+            <value>0</value>
+        </row>
+        <row>
+            <value>b</value>
+            <value>a</value>
+        </row>
+    </table>
+</dataset>
