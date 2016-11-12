@@ -45,7 +45,7 @@ class Store {
 
     protected function prepareUpdate(string $set): PDOStatement
     {
-        return $this->prepareQuery("UPDATE ".$this->talbe." SET ".$set);
+        return $this->prepareQuery("UPDATE ".$this->table." SET ".$set);
     }
 
     public function getCount(): int

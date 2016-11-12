@@ -54,7 +54,7 @@ class Submissions extends PaginatingStore {
 
     public function hasCorrection(string $username, string $description): bool
     {
-        return $this->has($username, $description, self::CORRECTION);
+        return $this->has($username, self::CORRECTION, $description);
     }
 
 

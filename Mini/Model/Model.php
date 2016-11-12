@@ -213,7 +213,7 @@ class Model
 
     public function checkBots(): array
     {
-        $botsPerHour = $this->bots-getCount() / $this->config->get('checks_per_day');
+        $botsPerHour = $this->bots->getCount() / $this->config->get('checks_per_day');
         return $this->checkNBots($botsPerHour);
     }
 
