@@ -1,5 +1,7 @@
 <?php
 
+use \Mini\Model\PingablePDO;
+
 class StoreTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
