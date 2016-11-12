@@ -35,7 +35,7 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
             if (self::$pdo == null) {
                 self::$pdo = new PingablePDO('mysql:dbname='.$GLOBALS['DB_NAME'].';host='.$GLOBALS['DB_HOST'].';port='.$GLOBALS['DB_PORT'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
             }
-            $this->conn = $this->createDefaultDBConnection(self::$pdo, ':memory:');
+            $this->conn = $this->createDefaultDBConnection(self::$pdo->getOriginalPDO(), ':memory:');
         }
 
         return $this->conn;
