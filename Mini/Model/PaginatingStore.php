@@ -9,7 +9,7 @@ class PaginatingStore extends Store {
      * The default page size
      * @var int
      */
-    private $pageSize;
+    protected $pageSize;
 
     function __construct(PingablePDO $db, string $table, int $pageSize = 50) {
         $this->pageSize = $pageSize;
