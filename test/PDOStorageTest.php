@@ -1,5 +1,7 @@
 <?php
 
+include_once('_fixtures/setup.php');
+
 use \Mini\Model\PingablePDO;
 
 class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
@@ -16,13 +18,8 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
     public function __construct()
     {
         $this->getConnection();
-        $pdo = self::$pdo;
 
-        $pdo->query('CREATE TABLE IF NOT EXISTS config (
-            name varchar(120) CHARACTER SET ascii NOT NULL,
-            value varchar(100) CHARACTER SET ascii DEFAULT NULL,
-            PRIMARY KEY (name)
-        ) DEFAULT CHARSET=ascii');
+        create_config_table(self::$pdo);
 
         parent::__construct();
     }
@@ -34,7 +31,7 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
-                self::$pdo = new PingablePDO('mysql:dbname='.$GLOBALS['DB_NAME'].';host='.$GLOBALS['DB_HOST'].';port='.$GLOBALS['DB_PORT'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
+                self::$pdo = create_pdo($GLOBALS);
             }
             $this->conn = $this->createDefaultDBConnection(self::$pdo->getOriginalPDO(), ':memory:');
         }
