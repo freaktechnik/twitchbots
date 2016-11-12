@@ -88,6 +88,10 @@ class Model
             'headers' => array('Client-ID' => $this->config->get('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
         ));
         $this->client = $client;
+
+        if(!$this->config->get('checks_per_day')) {
+            $this->config->set('checks_per_day', "24");
+        }
 	}
 
     /**
@@ -129,7 +133,7 @@ class Model
         else if($this->hasBot($username)) {
             throw new Exception("Cannot add an already existing bot", 3);
         }
-        else if(!empty($this->getBotsByChannel($username))) {
+        else if(!empty($this->bots->getBotsByChannel($username))) {
             throw new Exception("Bot cannot be the channel to an existing bot", 13);
         }
 
@@ -213,7 +217,7 @@ class Model
 
     public function checkBots(): array
     {
-        $botsPerHour = $this->bots->getCount() / $this->config->get('checks_per_day');
+        $botsPerHour = $this->bots->getCount() / (int)$this->config->get('checks_per_day');
         return $this->checkNBots($botsPerHour);
     }
 
