@@ -2,6 +2,8 @@
 
 namespace Mini\Model;
 
+use PDOStatement;
+
 class ShimStore extends Store {
     public function prepareQuery(string $sql): PDOStatement
     {
