@@ -94,6 +94,12 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($rows - 1, $this->getConnection()->getRowCount('config'));
     }
 
+    public function testGetCount()
+    {
+        $botCount = $this->store->getCount('config');
+        $this->assertEquals($this->getConnection()->getRowCount('config'), $botCount);
+    }
+
     public function testTempTable()
     {
         $table = $this->store->createTempTable(array(

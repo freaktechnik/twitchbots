@@ -29,14 +29,6 @@ class PaginatingStore extends Store {
         return strtotime($query->fetch()->date);
     }
 
-    public function getCount(): int
-    {
-        $query = $this->prepareSelect("count(*) AS count");
-        $query->execute();
-
-        return (int)$query->fetch()->count;
-    }
-
     public function getPageCount($limit = null, $count = null): int
     {
         $limit = $limit ?? $this->pageSize;

@@ -1,8 +1,8 @@
 <?php
 
-use Mini\Model\PingablePDO;
+use \Mini\Model\PingablePDO;
 
-class ModelTest extends PHPUnit_Extensions_Database_TestCase
+class BotsTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
     static private $pdo = null;
@@ -99,7 +99,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     public function setUp()
     {
-        $this->bots = new Bots(self::$pdo, self::pageSize);
+        $this->bots = new \Mini\Model\Bots(self::$pdo, self::pageSize);
         parent::setUp();
     }
 
@@ -227,5 +227,31 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $bots = $this->bots->getBotsByNames($names, self::pageSize);
         $this->assertEmpty($bots);
+    }
+
+    public function testRemoveBot()
+    {
+        $initialCount = $this->bots->getCount();
+        $this->model->removeBot('ackbot');
+
+        $this->assertEquals($initialCount - 1, $this->bots->getCount());
+
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots0', "SELECT * FROM bots WHERE name='ackbot'"
+        );
+        $this->assertEquals(0, $queryTable->getRowCount());
+    }
+
+    public function testRemoveBots()
+    {
+        $initialCount = $this->bots->getCount();
+        $this->model->removeBots(array('ackbot', 'nightbot'));
+
+        $this->assertEquals($initialCount - 2, $this->bots->getCount());
+
+        $queryTable = $this->getConnection()->createQueryTable(
+            'bots', "SELECT * FROM bots WHERE name IN ('ackbot','nightbot')"
+        );
+        $this->assertEquals(0, $queryTable->getRowCount());
     }
 }

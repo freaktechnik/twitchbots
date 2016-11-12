@@ -129,6 +129,15 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($this->model->checkToken($formname, $token));
     }
 
+    public function testHasBot()
+    {
+        $this->assertTrue($this->model->hasBot('butler_of_ec0ke'));
+        $this->assertFalse($this->model->hasBot('freaktechnik'));
+        $this->httpMock->append(new Response(200));
+        $this->model->addSubmission('freaktechnik', 1);
+        $this->assertTrue($this->model->hasBot('freaktechnik'));
+    }
+
     public function testAddSubmission()
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");

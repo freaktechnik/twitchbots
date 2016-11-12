@@ -48,6 +48,14 @@ class Store {
         return $this->prepareQuery("UPDATE ".$this->talbe." SET ".$set);
     }
 
+    public function getCount(): int
+    {
+        $query = $this->prepareSelect("count(*) AS count");
+        $query->execute();
+
+        return (int)$query->fetch()->count;
+    }
+
     /**
      * Store the values and indexes from an array in a temporary table. Returns
      * the table name. The array indexes are in a column called "index" and the
