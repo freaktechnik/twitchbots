@@ -114,7 +114,7 @@ class Bots extends PaginatingStore {
     public function removeBots(array $usernames)
     {
         $tempTable = $this->createTempTable($usernames);
-        $where = 'INNER JOIN '.$tempTable.' AS t ON t.value = table.name';
+        $where = 'INNER JOIN '.$tempTable.' AS t ON t.value = `table`.name';
         $query = $this->prepareDelete($where);
         $query->execute();
         $this->cleanUpTempTable($tempTable);

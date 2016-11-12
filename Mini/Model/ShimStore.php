@@ -12,7 +12,7 @@ class ShimStore extends Store {
 
     public function prepareSelect(string $select = "*", string $where = "", string $table = NULL): PDOStatement
     {
-        return parent::preapreQuery($select, $where, $table);
+        return parent::prepareSelect($select, $where, $table);
     }
 
     public function prepareDelete(string $condition): PDOStatement

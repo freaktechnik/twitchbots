@@ -4,6 +4,8 @@ include_once('_fixtures/setup.php');
 
 use \Mini\Model\PingablePDO;
 
+use PDOStatement;
+
 class StoreTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -107,7 +109,7 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
         $queryTable = $this->getConnection()->createQueryTable(
             $table, 'SELECT * FROM '.$table
         );
-        $expectedTable = $this->createFlatXmlDataSet("store.xml")
+        $expectedTable = $this->createFlatXmlDataSet(dirname(__FILE__)."/_fixtures/store.xml")
                               ->getTable($table);
         $this->assertTablesEqual($expectedTable, $queryTable);
 

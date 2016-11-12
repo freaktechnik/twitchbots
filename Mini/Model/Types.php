@@ -22,7 +22,7 @@ class Types extends PaginatingStore {
 
     public function getAllTypes(): array
     {
-        $query = $this->db->prepareSelect("table.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id GROUP BY table.id ORDER BY count DESC, table.name ASC");
+        $query = $this->prepareSelect("table.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id GROUP BY table.id ORDER BY count DESC, table.name ASC");
         $query->execute();
 
         return $query->fetchAll();
@@ -31,7 +31,7 @@ class Types extends PaginatingStore {
     public function getTypes($page = 1): array
     {
         if($page <= $this->getPageCount($this->pageSize)) {
-            $query = $this->prepareSelect("table.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id GROUP BY table.id ORDER BY table.name ASC LIMIT :start,:stop");
+            $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = `table`.id GROUP BY `table`.id ORDER BY `table`.name ASC LIMIT :start,:stop");
             $this->doPagination($query, $this->getOffset($page));
             $query->execute();
             return $query->fetchAll();
