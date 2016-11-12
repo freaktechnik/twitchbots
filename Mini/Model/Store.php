@@ -81,7 +81,7 @@ class Store {
         $query = $this->prepareQuery($sql);
         $query->execute();
 
-        $sql = 'INSERT INTO botnames (value) VALUES (?,?)';
+        $sql = 'INSERT INTO '.$tableName.' (`value`,`index`) VALUES (?,?)';
         $query = $this->prepareQuery($sql);
         $value;
         $i;
