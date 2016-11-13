@@ -198,8 +198,9 @@ $app->get('/about', function () use ($app, $getTemplateLastMod) {
 });
 $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
     $app->expires('+1 minute');
-    $submissions = $model->submissions->getSubmissions();
-    if(count($submissions) > 0) {
+    $submissions = $model->submissions->getSubmissions(\Mini\Model\Submissions::SUBMISSION);
+    $corrections = $model->submissions->getSubmissions(\Mini\Model\Submissions::CORRECTION);
+    if(count($submissions) + count($corrections) > 0) {
         $app->lastModified(max($getTemplateLastMod('submissions.twig'), $model->submissions->getLastUpdate()));
     }
     else {
@@ -207,7 +208,8 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
     }
 
     $app->render('submissions.twig', array(
-        'submissions' => $submissions
+        'submissions' => $submissions,
+        'corrections' => $corrections
     ));
 });
 

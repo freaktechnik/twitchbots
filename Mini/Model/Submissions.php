@@ -2,6 +2,8 @@
 
 namespace Mini\Model;
 
+use PDO;
+
 /* CREATE TABLE IF NOT EXISTS submissions (
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
     name varchar(535) CHARACTER SET ascii NOT NULL,
@@ -36,10 +38,18 @@ class Submissions extends PaginatingStore {
         $query->execute($params);
     }
 
-    public function getSubmissions(): array
+    public function getSubmissions(int $type = NULL): array
     {
-        $query = $this->prepareSelect("*, (IFNULL(offline,0) + IFNULL(ismod,0) + COALESCE(following<10,0) - IFNULL(vods,1) - (description REGEXP '^[^0-9].*$') - (2 - IFNULL(online+online,0))) AS score", "ORDER BY score DESC, online DESC, date DESC");
-        $query->execute();
+        $condition = "ORDER BY score DESC, online DESC, date DESC";
+        $params = array();
+        if(isset($type)) {
+            $condition = "WHERE type=? ".$condition;
+        }
+        $query = $this->prepareSelect("*, (IFNULL(offline,0) + IFNULL(ismod,0) + COALESCE(following<10,0) - IFNULL(vods,1) - (description REGEXP '^[^0-9].*$') - (2 - IFNULL(online+online,0))) AS score", $condition);
+        if(isset($type)) {
+            $query->bindValue(1, $type, PDO::PARAM_INT);
+        }
+        $query->execute($params);
 
         return $query->fetchAll();
     }

@@ -3,17 +3,13 @@
 {% block extraresources %}
 <link rel="canonical" href="{{ canonicalUrl }}submissions">
 {% endblock %}
-{%block content %}
-<div class="page-header">
-    <h1>Submission Queue</h1>
-</div>
-<div class="table-responsive">
+{% macro table(set, id, active) %}
+<div class="table-responsive tab-pane{% if active %} active{% endif %}" role="tabpanel" id="{{ id|e('html_attr') }}">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Username</th>
                 <th>Description</th>
-                <th>Submission Type</th>
                 <th>Channel</th>
                 <th>Following Count</th>
                 <th>Bio</th>
@@ -26,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-{% for s in submissions %}
+{% for s in set %}
             <tr>
                 <td>{% if s.type == 0 -%}
                     <a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external nofollow">{{ s.name|e }}</a>
@@ -40,7 +36,6 @@
                         {{ s.description|e }}
                     {% endif %}
                 {% endspaceless %}</td>
-                <td>{{ s.type == 0 ? "New" : "Correction" }}</td>
                 <td>{% if s.channel is not empty %}<a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
                 <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/following" rel="external nofollow">{{ s.following|default('?') }}</a></td>
                 <td>{{ s.bio|default('?') }}</td>
@@ -55,4 +50,22 @@
         </tbody>
     </table>
 </div>
+{% endmacro %}
+{% block content %}
+<div class="page-header">
+    <h1>Submission Queue</h1>
+</div>
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#submissions" role="tab" aria-controls="submissions">Submissions <span class="badge">{{ submissions|length }}</span></a>
+    </li>
+    <li role="presentation">
+        <a href="#corrections" role="tab" aria-controls="corrections">Corrections <span class="badge">{{ corrections|length }}</span></a>
+    </li>
+</ul>
+<div class="tab-content">
+    {{ table(submissions, "submissions", true) }}
+    {{ table(corrections, "corrections", false) }}
+</div>
+<script type="application/javascript" src="{{ siteUrl('/js/tabs.js')|e('html_attr') }}"></script>
 {% endblock %}
