@@ -109,15 +109,16 @@ class Model
         return validate_token($formname, $token);
     }
 
-    public function addSubmission(string $username, int $type, string $description = "", string $channel = null)
+    public function addSubmission(string $username, int $type, string $description = NULL, string $channel = NULL)
     {
         if(empty($channel)) {
             $channel = null;
         }
 
         if($type == 0) {
-            if($description == "")
+            if(empty($description)) {
                 throw new Exception("Description can not be empty", 9);
+            }
             $type = $description;
         }
 
@@ -163,10 +164,10 @@ class Model
         return true;
     }
 
-    public function addCorrection(string $username, int $type, $description = "")
+    public function addCorrection(string $username, int $type, string $description = NULL)
     {
         if($type == 0) {
-            if($description == "") {
+            if(empty($description)) {
                 throw new Exception("Description can not be empty", 9);
             }
             else if($this->submissions->hasCorrection($username, $description)) {
