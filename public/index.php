@@ -120,8 +120,7 @@ $app->notFound(function () use ($app) {
 });
 
 $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
-    //TODO last modoified should also look at types updates
-    $app->lastModified(max($model->getLastUpdate(), $getTemplateLastMod('index.twig')));
+    $app->lastModified(max($model->bots->getLastUpdate(), $model->tpyes->getLastUpdate(), $getTemplateLastMod('index.twig')));
     $app->expires('+1 day');
 
     $botCount = $model->bots->getCount();
