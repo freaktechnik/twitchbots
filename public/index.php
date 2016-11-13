@@ -102,11 +102,12 @@ $getLastMod = function($timestamp = 0) use ($lastUpdate) {
     return date('c', max($lastUpdate, $timestamp));
 };
 
-$piwikEvent = function(string $event, array $opts) use ($piwik_token, $app) {
-    $ch = curl_init("https://humanoids.be/stats/piwik.php?idsite=5&rec=1&action_name=Submit/".urlencode($event)."&urlref=".urlencode($_SERVER['HTTP_REFERER'])."&url=".urlencode($app->config('canonicalUrl'))."lib/submit&apiv=1&ua=".urlencode($_SERVER['HTTP_USER_AGENT'])."&lang=".urlencode($_SERVER['HTTP_ACCEPT_LANGUAGE'])."&cip=".urlencode($_SERVER['REMOTE_ADDR'])."&cvar=".urlencode(json_encode($opts))."&token_auth=".$piwik_token."&send_image=0&idgoal=1");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_exec($ch);
-    curl_close($ch);
+$piwikEvent = function(string $event, array $opts) use ($piwik_token, $app, $client) {
+    $url = "https://humanoids.be/stats/piwik.php?idsite=5&rec=1&action_name=Submit/".urlencode($event)."&urlref=".urlencode($_SERVER['HTTP_REFERER'])."&url=".urlencode($app->config('canonicalUrl'))."lib/submit&apiv=1&ua=".urlencode($_SERVER['HTTP_USER_AGENT'])."&lang=".urlencode($_SERVER['HTTP_ACCEPT_LANGUAGE'])."&cip=".urlencode($_SERVER['REMOTE_ADDR'])."&cvar=".urlencode(json_encode($opts))."&token_auth=".$piwik_token."&send_image=0&idgoal=1";
+    $client->request('GET', $url, [
+        'http_errors' => false,
+        'synchronous' => false
+    ]);
 };
 
 $app->response->headers->set('Content-Security-Policy', $app->config('csp'));
