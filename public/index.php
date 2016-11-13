@@ -373,6 +373,12 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
         };
 
         $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
+        $piwikParams = [
+            "1" => ["username", $app->request->params('username')],
+            "2" => ["type", $app->request->params('type')],
+            "3" => ["description", $app->request->params('description')],
+            "4" => ["channel", $app->request->params('channel')]
+        ];
         try {
             if(!$model->checkToken("submit", $app->request->params('token'))) {
                 throw new Exception("CSRF token mismatch", 1);
@@ -386,11 +392,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                     $app->request->params('type'),
                     $app->request->params('description')
                 );
-                $piwikEvent("Correction", [
-                    "1" => ["username", $app->request->params('username')],
-                    "2" => ["type", $app->request->params('type')],
-                    "3" => ["description", $app->request->params('description')]
-                ]);
+                $submission = "Correction";
             }
             else {
                 $model->addSubmission(
@@ -399,17 +401,15 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                     $app->request->params('description'),
                     strtolower($app->request->params('channel'))
                 );
-                $piwikEvent("Submission", [
-                    "1" => ["username", $app->request->params('username')],
-                    "2" => ["type", $app->request->params('type')],
-                    "3" => ["description", $app->request->params('description')],
-                    "4" => ["channel", $app->request->params('channel')]
-                ]);
+                $event = "Submission";
             }
         }
         catch(Exception $e) {
+            $piwikParams['5'] = ['errorCode' => $e->getCode()];
+            $piwikEvent("Error", $piwikParams);
             $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error='.$e->getCode().$echoParam('username').$echoParam('type').$echoParam('channel').$echoParam('description').$correction, 303);
         }
+        $piwikEvent($event, $piwikParams);
         $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1'.$correction, 303);
     });
 });
