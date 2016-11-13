@@ -50,7 +50,7 @@
                 <td>{{ s.online|default("?") }}</td>
                 <td><a href="https://twitchstuff.3v.fi/mods/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.ismod|default('?') }}</a></td>
                 <td>{{ s.following_channel|default('?') }}</td>
-                <td>{{ score.calculate(s) }}</td>
+                <td>{{ s.score }}</td>
             </tr>
 {% endfor %}
         </tbody>
