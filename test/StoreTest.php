@@ -52,9 +52,9 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
 
     public function testPrepareInsertUpdate()
     {
-        $query = $this->store->prepareInsert("(name, value) VALUES (1_new, value)");
+        $query = $this->store->prepareInsert("(name, value) VALUES (?, ?)");
         $this->assertInstanceOf(PDOStatement::class, $query);
-        $query->execute();
+        $query->execute(array("1_new", "value"));
 
         $query = $this->store->prepareUpdate("value=had WHERE name=1_has")->execute();
         $this->assertInstanceOf(PDOStatement::class, $query);
@@ -84,7 +84,7 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
         $rows = $this->getConnection()->getRowCount('config');
         $query = $this->store->prepareDelete("WHERE name=?");
         $this->assertInstanceOf(PDOStatement::class, $query);
-        $query->execute("1_has");
+        $query->execute(array("1_has"));
 
         $query->fetch();
 
