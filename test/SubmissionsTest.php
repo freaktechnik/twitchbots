@@ -84,18 +84,4 @@ class SubmissionsTest extends PHPUnit_Extensions_Database_TestCase
         // Sort order is descending by timestamp
         //TODO test array?
     }
-
-    /**
-     * @uses \Mini\Model\Submissions::append
-     * @uses \Mini\Model\Submissions::getSubmissions
-     */
-    public function testGetLastSubmissionsUpdate()
-    {
-        $this->submissions->append("test", "1", Submissions::CORRECTION);
-
-        $submissions = $this->submissions->getSubmissions();
-        $lastModified = $this->submissions->getLastUpdate();
-
-        $this->assertEquals($lastModified, strtotime($submissions[0]->date));
-    }
 }

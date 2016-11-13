@@ -200,7 +200,7 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
     $app->expires('+1 minute');
     $submissions = $model->submissions->getSubmissions();
     if(count($submissions) > 0) {
-        $app->lastModified(max($getTemplateLastMod('submissions.twig'), strtotime($submissions[0]->date)));
+        $app->lastModified(max($getTemplateLastMod('submissions.twig'), $model->submissions->getLastUpdate()));
     }
     else {
         $app->lastModified(time());

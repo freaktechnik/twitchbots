@@ -38,7 +38,7 @@ class Submissions extends PaginatingStore {
 
     public function getSubmissions(): array
     {
-        $query = $this->prepareSelect("*, (IFNULL(offline,0) + IFNULL(ismod,0) + COALESCE(following<10,0) - IFNULL(vods,1) - (description REGEXP '^[^0-9].*$') - (2 - IFNULL(online+online,0))) AS score", "ORDER BY online DESC, score DESC, date DESC");
+        $query = $this->prepareSelect("*, (IFNULL(offline,0) + IFNULL(ismod,0) + COALESCE(following<10,0) - IFNULL(vods,1) - (description REGEXP '^[^0-9].*$') - (2 - IFNULL(online+online,0))) AS score", "ORDER BY date ASC, score DESC, online DESC");
         $query->execute();
 
         return $query->fetchAll();
