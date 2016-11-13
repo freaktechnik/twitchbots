@@ -81,14 +81,14 @@ class Submissions extends PaginatingStore {
     public function setFollowing(int $id, $followingCount = null)
     {
         $sql = "following=? WHERE id=?";
-        $query = $this->db->prepareUpdate($sql);
+        $query = $this->prepareUpdate($sql);
         $query->execute(array($followingCount, $id));
     }
 
     public function setFollowingChannel(int $id, $followingChannel = null)
     {
         $sql = "following_channel=? WHERE id=?";
-        $query = $this->db->prepareUpdate($sql);
+        $query = $this->prepareUpdate($sql);
         $query->execute(array($followingChannel, $id));
     }
 
