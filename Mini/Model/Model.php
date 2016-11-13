@@ -61,6 +61,9 @@ class Model
 
     private static $requestOptions = array('http_errors' => false);
 
+
+    private $_followsCache;
+
     /**
      * When creating the model, the configs for database connection creation are needed
      * @param $config
@@ -302,14 +305,16 @@ class Model
 
     private function getFollowing(string $name): \stdClass
     {
-        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels', $this->twitchHeaders);
+        if(!isset($this->_followsCache)) {
+            $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels', $this->twitchHeaders);
 
-        if($response->getStatusCode() >= 400) {
-            throw new Exception("Can not get followers for ".$name);
+            if($response->getStatusCode() >= 400) {
+                throw new Exception("Can not get followers for ".$name);
+            }
+
+            $this->_followsCache = json_decode($response->getBody());
         }
-
-        $following = json_decode($response->getBody());
-        return $following;
+        return $this->_followsCache;
     }
 
     private function getFollowingChannel(string $name, string $channel): bool
@@ -400,11 +405,22 @@ class Model
     {
         // Update following_channel if needed
         if(!isset($submission->following_channel)) {
-            try {
-                $follows_channel = $this->getFollowingChannel($submission->name, $submission->channel);
+            if(isset($this->_followsCache)) {
+                $follows = $this->_followsCache;
+                $follows_channel = $follows->_total > 0 && in_array($submission->channel, array_map(function($chan) {
+                    return strtolower($chan->channel->name);
+                }, $follows->follows));
+                if(!$follows_channel && $follows->_total > count($follows->follows)) {
+                    unset($follows_channel);
+                }
             }
-            catch(Exception $e) {
-                return false;
+            if(!isset($follows_channel)) {
+                try {
+                    $follows_channel = $this->getFollowingChannel($submission->name, $submission->channel);
+                }
+                catch(Exception $e) {
+                    return false;
+                }
             }
 
             $this->submissions->setFollowingChannel($submission->id, $follows_channel);
@@ -496,6 +512,7 @@ class Model
             if($didSomething) {
                 ++$count;
             }
+            unset($this->_followsCache);
         }
 
         return $count;
