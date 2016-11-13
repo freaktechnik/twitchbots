@@ -120,7 +120,7 @@ $app->notFound(function () use ($app) {
 });
 
 $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
-    $app->lastModified(max($model->bots->getLastUpdate(), $model->tpyes->getLastUpdate(), $getTemplateLastMod('index.twig')));
+    $app->lastModified(max($model->bots->getLastUpdate(), $model->types->getLastUpdate(), $getTemplateLastMod('index.twig')));
     $app->expires('+1 day');
 
     $botCount = $model->bots->getCount();
