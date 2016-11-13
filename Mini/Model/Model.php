@@ -222,7 +222,7 @@ class Model
         // Make sure we get reserved.
         $this->checkRunning();
         try {
-            $bots = $this->getOldestBots($step);
+            $bots = $this->bots->getOldestBots($step);
 
             $bots = array_values(array_filter($bots, function($bot) {
                 return !$this->twitchUserExists($bot->name);
