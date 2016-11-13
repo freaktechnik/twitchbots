@@ -97,6 +97,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddSubmission()
     {
@@ -127,6 +128,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 8
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddEmptySubmissionUsernameThrows()
     {
@@ -136,6 +138,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 9
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddEmptySubmissionDescriptionThrows()
     {
@@ -145,6 +148,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 7
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddSubmissionChannelEqualsUsernameThrows()
     {
@@ -154,6 +158,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 3
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddExistingSubmissionThrows()
     {
@@ -166,6 +171,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 3
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddSubmissionExistingBotThrows()
     {
@@ -177,6 +183,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 12
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddSubmissionChannelIsBotThrows()
     {
@@ -187,6 +194,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 13
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddSubmissionBotIsChannelThrows()
     {
@@ -198,6 +206,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 2
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddSubmissionNotOnTwitchThrows()
     {
@@ -209,6 +218,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 6
      * @covers ::addSubmission
+     * @covers ::<private>
      */
     public function testAddSubmissionInexistentChannelThrows()
     {
@@ -218,6 +228,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers ::addCorrection
+     * @covers ::<private>
      */
     public function testAddCorrection()
     {
@@ -242,6 +253,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 8
      * @covers ::addCorrection
+     * @covers ::<private>
      */
     public function testAddEmptyCorrectionUsernameThrows()
     {
@@ -251,6 +263,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 4
      * @covers ::addCorrection
+     * @covers ::<private>
      */
     public function testAddInexistingCorrectionThrows()
     {
@@ -260,6 +273,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 9
      * @covers ::addCorrection
+     * @covers ::<private>
      */
     public function testAddEmptyCorrectionDescriptionThrows()
     {
@@ -269,6 +283,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      * @expectedException Exception
      * @expectedExceptionCode 5
      * @covers ::addCorrection
+     * @covers ::<private>
      */
     public function testAddCorrectionSameTypeThrows()
     {
@@ -289,6 +304,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers ::checkBots
+     * @covers ::<private>
      * @uses \Mini\Model\Bots::getCount
      */
     public function testCheckBots()
