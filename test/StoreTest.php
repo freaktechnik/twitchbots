@@ -76,7 +76,7 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
 
         $result = $query->fetch();
         $this->assertEquals("yes", $result->value);
-        $this->assertEquals("1_has", $result->value);
+        $this->assertEquals("1_has", $result->name);
     }
 
     public function testPrepareDelete()
