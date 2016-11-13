@@ -4,6 +4,16 @@ namespace Mini\Model;
 
 use PDO;
 
+/* CREATE TABLE IF NOT EXISTS bots (
+    name varchar(535) CHARACTER SET ascii NOT NULL COMMENT `Twitch username of the bot`,
+    type int(10) unsigned DEFAULT NULL COMMENT `Type of the bot`,
+    date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last content modification ts`,
+    cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last crawl or update ts`,
+    channel varchar(535) CHARACTER SET ascii DEFAULT NULL COMMENT `Channel the bot is in`,
+    PRIMARY KEY (name),
+    FOREIGN KEY (type) REFERENCES types(id)
+) DEFAULT CHARSET=ascii */
+
 class Bots extends PaginatingStore {
     function __construct(PingablePDO $db, int $pageSize = 50)
     {
@@ -141,7 +151,7 @@ class Bots extends PaginatingStore {
 
     public function getOldestBots(int $count = 10): array
     {
-        $query = $this->prepareSelect("*", "WHERE date < DATE_SUB(NOW(), INTERVAL 24 HOUR) ORDER BY date ASC LIMIT ?");
+        $query = $this->prepareSelect("*", "WHERE cdate < DATE_SUB(NOW(), INTERVAL 24 HOUR) ORDER BY date ASC LIMIT ?");
         $query->bindValue(1, $count, PDO::PARAM_INT);
         $query->execute();
 
@@ -150,7 +160,7 @@ class Bots extends PaginatingStore {
 
     public function touchBot($username)
     {
-        $query = $this->prepareUpdate("date=NOW() WHERE name=?");
+        $query = $this->prepareUpdate("cdate=NOW() WHERE name=?");
         $query->execute(array($username));
     }
 }
