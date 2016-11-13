@@ -17,7 +17,7 @@ $stack->push(new \Kevinrob\GuzzleCache\CacheMiddleware(
         new \Kevinrob\GuzzleCache\Storage\DoctrineCacheStorage(
             new \Doctrine\Common\Cache\ChainCache([
                 new \Doctrine\Common\Cache\ArrayCache(),
-                new \Doctrine\Common\Cache\FilesystemCache(__DIR__.'../guzzle-cache'),
+                new \Doctrine\Common\Cache\FilesystemCache(__DIR__.'/../guzzle-cache'),
             ])
         )
     )
