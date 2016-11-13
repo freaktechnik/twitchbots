@@ -34,10 +34,7 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         parent::__construct();
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
-     */
-    public function getConnection()
+    public function getConnection(): PHPUnit_Extensions_Database_DB_IDatabaseConnection
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
@@ -49,10 +46,7 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         return $this->conn;
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-     */
-    public function getDataSet()
+    public function getDataSet(): PHPUnit_Extensions_Database_DataSet_IDataSet
     {
         return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/bots.xml');
     }
