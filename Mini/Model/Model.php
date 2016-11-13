@@ -299,150 +299,28 @@ class Model
         return $vods->_total > 0;
     }
 
-    private function checkFollowing(\stdClass $submission): bool
+    private function getFollowing(string $name): \stdClass
     {
-        // Update following if needed
-        if(!isset($submission->following)) {
-            try {
-                $follows = $this->getFollowing($submission->name);
-            }
-            catch(Exception $e) {
-                $follows = new \stdClass();
-                $follows->_total = 0;
-            }
-            $this->submissions->setFollowing($submission->id, $follows->_total);
-            return true;
+        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels', $this->twitchHeaders);
+
+        if($response->getStatusCode() >= 400) {
+            throw new Exception("Can not get followers for ".$name);
         }
-        return false;
+
+        $following = json_decode($response->getBody());
+        return $following;
     }
 
-    private function checkBio(\stdClass $submission): bool
+    private function getFollowingChannel(string $name, string $channel): bool
     {
-        if(!isset($submission->bio)) {
-            try {
-                $bio = $this->getBio($submission->name);
-            }
-            catch(Exception $e) {
-                return false;
-            }
-            $this->submissions->setBio($submission->id, $bio);
-            return true;
-        }
-        return false;
-    }
+        $url = 'https://api.twitch.tv/kraken/users/'.$name.'/follows/channels/'.$channel;
+        $response = $this->client->head($url, $this->twitchHeaders);
 
-    private function checkHasVODs(\stdClass $submission): bool
-    {
-        if(!isset($submission->vods)) {
-            try {
-                $hasVODs = $this->hasVODs($submission->name);
-            }
-            catch(Exception $e) {
-                return false;
-            }
-
-            $this->submissions->setHasVODs($submission->id, $hasVODs);
-            return true;
-        }
-        return false;
-    }
-
-    public function checkSubmissions(): int
-    {
-        $submissions = $this->submissions->getSubmissions();
-        $count = 0;
-
-        foreach($submissions as $submission) {
-            $this->db->ping();
-            $didSomething = false;
-
-            if($this->checkFollowing($submission)) {
-                $didSomething = true;
-            }
-
-            if($this->checkBio($submission) && !$didSomething) {
-                $didSomething = true;
-            }
-
-            if($this->checkHasVODs($submission) && !$didSomething) {
-                $didSomething = true;
-            }
-
-            if(!empty($submission->channel)) {
-                // Update following_channel if needed
-                if(!isset($submission->following_channel)) {
-                    $follows_channel = null;
-                    if(isset($follows)) {
-                        $follows_channel = $follows->_total > 0 && in_array($submission->channel, array_map(function($chan) {
-                            return strtolower($chan->channel->name);
-                        }, $follows->follows));
-                    }
-                    else {
-                        try {
-                            $follows_channel = $this->getFollowingChannel($submission->name, $submission->channel);
-                        }
-                        catch(Exception $e) {
-                            $follows_channel = null;
-                        }
-                    }
-
-                    $this->submissions->setFollowingChannel($submission->id, $follows_channel);
-                    $didSomething = true;
-                }
-
-                $ranModCheck = isset($submission->ismod);
-                // Update online or offline and mod if needed
-                if(!$submission->online || !isset($submission->offline)) {
-                    $live = $this->isChannelLive($submission->channel);
-                    if(($live && !$submission->online) || (!$live && !isset($submission->offline))) {
-                        $isMod = null;
-                        try {
-                            $chatters = $this->getChatters($submission->channel);
-                            $isInChannel = $this->isInChannel($submission->name, $chatters);
-
-                            if($isInChannel && !$submission->ismod) {
-                                $isMod = $this->isMod($submission->name, $chatters);
-                            }
-                            else if(!$ranModCheck) {
-                                $isMod = $this->getModStatus($submission->name, $submission->channel);
-                            }
-                        }
-                        catch(Exception $e) {
-                            $isInChannel = null;
-                        }
-
-                        $this->submissions->setInChat($submission->id, $isInChannel, $live);
-                        if($isMod !== null) {
-                            $this->submissions->setModded($submission->id, $isMod);
-                        }
-
-                        $ranModCheck = true;
-                        $didSomething = true;
-                    }
-                }
-
-                // If user wasn't in channel chat and mod not set, get mdo status
-                if(!$ranModCheck) {
-                    try {
-                        $isMod = $this->getModStatus($submission->name, $submission->channel);
-                    }
-                    catch(Exception $e) {
-                        $isMod = null;
-                    }
-                    if($isMod !== null) {
-                        $this->submissions->setModded($submission->id, $isMod);
-                    }
-
-                    $didSomething = true;
-                }
-            }
-
-            if($didSomething) {
-                ++$count;
-            }
+        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
+            throw new Exception("Can't get following relation");
         }
 
-        return $count;
+        return $response->getStatusCode() < 400;
     }
 
     private function getModStatus(string $username, string $channel): bool
@@ -466,6 +344,166 @@ class Model
         return false;
     }
 
+    private function checkFollowing(\stdClass $submission): bool
+    {
+        // Update following if needed
+        if(!isset($submission->following)) {
+            try {
+                $follows = $this->getFollowing($submission->name);
+            }
+            catch(Exception $e) {
+                $follows = new \stdClass();
+                $follows->_total = 0;
+            }
+            $this->submissions->setFollowing($submission->id, $follows->_total);
+            $submission->following = $follows->_total;
+            return true;
+        }
+        return false;
+    }
+
+    private function checkBio(\stdClass $submission): bool
+    {
+        if(!isset($submission->bio)) {
+            try {
+                $bio = $this->getBio($submission->name);
+            }
+            catch(Exception $e) {
+                return false;
+            }
+            $this->submissions->setBio($submission->id, $bio);
+            $submission->bio = $bio;
+            return true;
+        }
+        return false;
+    }
+
+    private function checkHasVODs(\stdClass $submission): bool
+    {
+        if(!isset($submission->vods)) {
+            try {
+                $hasVODs = $this->hasVODs($submission->name);
+            }
+            catch(Exception $e) {
+                return false;
+            }
+
+            $this->submissions->setHasVODs($submission->id, $hasVODs);
+            $submission->vods = $hasVODs;
+            return true;
+        }
+        return false;
+    }
+
+    private function checkFollowingChannel(\stdClass $submission): bool
+    {
+        // Update following_channel if needed
+        if(!isset($submission->following_channel)) {
+            try {
+                $follows_channel = $this->getFollowingChannel($submission->name, $submission->channel);
+            }
+            catch(Exception $e) {
+                return false;
+            }
+
+            $this->submissions->setFollowingChannel($submission->id, $follows_channel);
+            $submission->following_channel = $follows_channel;
+            return true;
+        }
+        return false;
+    }
+
+    public function checkSubmissions(): int
+    {
+        $submissions = $this->submissions->getSubmissions();
+        $count = 0;
+
+        foreach($submissions as $submission) {
+            $this->db->ping();
+            $didSomething = false;
+
+            if($this->checkFollowing($submission)) {
+                $didSomething = true;
+            }
+            if($this->checkBio($submission) && !$didSomething) {
+                $didSomething = true;
+            }
+            if($this->checkHasVODs($submission) && !$didSomething) {
+                $didSomething = true;
+            }
+
+            if(!empty($submission->channel)) {
+                if($this->checkFollowingChannel($submission) && !$didSomething) {
+                    $didSomething = true;
+                }
+
+                $ranModCheck = isset($submission->ismod);
+                // Update online or offline and mod if needed
+                if(!$submission->online || !isset($submission->offline)) {
+                    $live = $this->isChannelLive($submission->channel);
+                    if(($live && !$submission->online) || (!$live && !isset($submission->offline))) {
+                        $isMod = null;
+                        try {
+                            $chatters = $this->getChatters($submission->channel);
+                            $isInChannel = $this->isInChannel($submission->name, $chatters);
+
+                            if($isInChannel && !$submission->ismod) {
+                                $isMod = $this->isMod($submission->name, $chatters);
+                            }
+                            else if(!$ranModCheck) {
+                                $isMod = $this->getModStatus($submission->name, $submission->channel);
+                            }
+                        }
+                        catch(Exception $e) {
+                            $isInChannel = NULL;
+                        }
+
+                        $this->submissions->setInChat($submission->id, $isInChannel, $live);
+                        if($live) {
+                            $submission->online = $isInChannel;
+                        }
+                        else {
+                            $submission->offline = $isInChannel;
+                        }
+
+                        if($isMod !== null) {
+                            $this->submissions->setModded($submission->id, $isMod);
+                            $ranModCheck = true;
+                        }
+
+                        $didSomething = true;
+                    }
+                }
+
+                // If user wasn't in channel chat and mod not set, get mdo status
+                if(!$ranModCheck) {
+                    try {
+                        $isMod = $this->getModStatus($submission->name, $submission->channel);
+                    }
+                    catch(Exception $e) {
+                        $isMod = null;
+                    }
+                    if($isMod !== null) {
+                        $this->submissions->setModded($submission->id, $isMod);
+                    }
+
+                    $didSomething = true;
+                }
+                $submission->ismod = $isMod;
+            }
+
+            if($didSomething) {
+                if($submission->ismod === false && $submission->online === false && $submission->offline === false) {
+                    $this->submissions->removeSubmission($submission->id);
+                }
+
+                ++$count;
+            }
+        }
+
+        return $count;
+    }
+
     public function canCheck(string $token): bool
     {
         if(strlen($token) == 0 || !preg_match('/^[A-Za-z0-9]+$/', $token)) {
@@ -479,30 +517,6 @@ class Model
         return count($results) > 0 && in_array($token, array_map(function($result) {
             return $result->token;
         }, $results), true);
-    }
-
-    private function getFollowing(string $name)
-    {
-        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels', $this->twitchHeaders);
-
-        if($response->getStatusCode() >= 400) {
-            throw new Exception("Can not get followers for ".$name);
-        }
-
-        $following = json_decode($response->getBody());
-        return $following;
-    }
-
-    private function getFollowingChannel(string $name, string $channel): bool
-    {
-        $url = 'https://api.twitch.tv/kraken/users/'.$name.'/follows/channels/'.$channel;
-        $response = $this->client->head($url, $this->twitchHeaders);
-
-        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
-            throw new Exception("Can't get following relation");
-        }
-
-        return $response->getStatusCode() < 400;
     }
 
     public function typeCrawl(): int

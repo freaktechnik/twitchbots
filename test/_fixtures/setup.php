@@ -58,7 +58,7 @@ function create_tables($pdo) {
     $pdo->query('CREATE OR REPLACE VIEW typelist AS SELECT id, types.name AS name, multichannel, COUNT(DISTINCT(bots.name)) AS count FROM types LEFT JOIN bots ON bots.type = types.id GROUP BY id ORDER BY name ASC');
 }
 
-function create_pdo($globals) {
+function create_pdo(&$globals) {
     $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
     return new PingablePDO('mysql:dbname='.$globals['DB_NAME'].';host='.$globals['DB_HOST'].';port='.$globals['DB_PORT'], $globals['DB_USER'], $globals['DB_PASSWD'], $options);
 }
