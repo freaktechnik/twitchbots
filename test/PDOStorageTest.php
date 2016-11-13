@@ -5,7 +5,7 @@ include_once('_fixtures/setup.php');
 use \Mini\Model\PingablePDO;
 
 /**
- * @coversDefaultClass \Mini\Model<TypeCrawler\Storage\PDOStorage
+ * @coversDefaultClass \Mini\Model\TypeCrawler\Storage\PDOStorage
  */
 class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
 {
