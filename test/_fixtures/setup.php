@@ -24,6 +24,7 @@ function create_tables($pdo) {
         ismod boolean DEFAULT NULL,
         following int(10) unsigned DEFAULT NULL,
         following_channel boolean DEFAULT NULL,
+        bio text DEFAULT NULL,
         PRIMARY KEY (id)
     ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=9');
     $pdo->query('CREATE TABLE IF NOT EXISTS types (

@@ -285,6 +285,13 @@ class Model
         return isset($stream->stream);
     }
 
+    private function getBio(string $channel): string
+    {
+        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$channel, $this->twitchHeaders);
+        $user = json_decode($response->getBody());
+        return $user->bio;
+    }
+
     public function checkSubmissions(): int
     {
         $submissions = $this->submissions->getSubmissions();
@@ -304,6 +311,17 @@ class Model
                     $follows->_total = 0;
                 }
                 $this->submissions->setFollowing($submission->id, $follows->_total);
+                $didSomething = true;
+            }
+
+            if(!isset($submission->bio)) {
+                try {
+                    $bio = $this->getBio($submission->name);
+                }
+                catch(Exception $e) {
+                    $bio = NULL;
+                }
+                $this->submissions->setBio($submission->id, $bio);
                 $didSomething = true;
             }
 
@@ -461,9 +479,8 @@ class Model
                 $this->bots->addBot($bot->name, $bot->type, $bot->channel);
                 $count += 1;
 
-                if($this->submissions->has($bot->name, NULL, (string)$bot->type)) {
-                    $this->submissions->removeSubmissions($bot->name, (string)$bot->type);
-                }
+                // Remove any matching submissions.
+                $this->submissions->removeSubmissions($bot->name, (string)$bot->type);
             }
         }
 

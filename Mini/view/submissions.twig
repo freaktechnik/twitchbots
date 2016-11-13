@@ -17,6 +17,7 @@
                 <th>Submission Type</th>
                 <th>Channel</th>
                 <th>Following Count</th>
+                <th>Bio</th>
                 <th>Offline</th>
                 <th>Online</th>
                 <th>Modded</th>
@@ -42,6 +43,7 @@
                 <td>{{ s.type == 0 ? "New" : "Correction" }}</td>
                 <td>{% if s.channel is not empty %}<a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
                 <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/following" rel="external nofollow">{{ s.following|default('?') }}</a></td>
+                <td>{{ s.bio|default('?') }}</td>
                 <td>{{ s.offline|default("?") }}</td>
                 <td>{{ s.online|default("?") }}</td>
                 <td><a href="https://twitchstuff.3v.fi/mods/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.ismod|default('?') }}</a></td>

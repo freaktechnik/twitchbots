@@ -2,6 +2,22 @@
 
 namespace Mini\Model;
 
+/* CREATE TABLE IF NOT EXISTS submissions (
+    id int(10) unsigned NOT NULL AUTO_INCREMENT,
+    name varchar(535) CHARACTER SET ascii NOT NULL,
+    description text NOT NULL,
+    date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    type int(1) unsigned NOT NULL DEFAULT 0,
+    channel varchar(535) CHARACTER SET ascii DEFAULT NULL,
+    offline boolean DEFAULT NULL,
+    online boolean DEFAULT NULL,
+    ismod boolean DEFAULT NULL,
+    following int(10) unsigned DEFAULT NULL,
+    following_channel boolean DEFAULT NULL,
+    bio text DEFAULT NULL,
+    PRIMARY KEY (id)
+) DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 */
+
 class Submissions extends PaginatingStore {
     const SUBMISSION = 0;
     const CORRECTION = 1;
@@ -78,7 +94,7 @@ class Submissions extends PaginatingStore {
         $query->execute(array($isMod, $id));
     }
 
-    public function setFollowing(int $id, $followingCount = null)
+    public function setFollowing(int $id, int $followingCount = null)
     {
         $sql = "following=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
@@ -90,6 +106,13 @@ class Submissions extends PaginatingStore {
         $sql = "following_channel=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute(array($followingChannel, $id));
+    }
+
+    public function setBio(int $id, string $bio)
+    {
+        $sql = "bio=? WHERE id=?";
+        $query = $this->prepareUpdate($sql);
+        $query->execute(array($bio, $id));
     }
 
     public function removeSubmission(int $id)
