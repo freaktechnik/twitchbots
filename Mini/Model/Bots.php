@@ -132,7 +132,7 @@ class Bots extends PaginatingStore {
 
     public function addBot(string $name, int $type, $channel = null, $query = null)
     {
-        $structure = "(name,type,channel) VALUES (?,?,?)";
+        $structure = "(name,type,channel,date) VALUES (?,?,?,NOW())";
         $query = $this->prepareInsert($structure);
         $query->bindValue(1, strtolower($name), PDO::PARAM_STR);
         $query->bindValue(2, $type, PDO::PARAM_INT);
@@ -151,16 +151,25 @@ class Bots extends PaginatingStore {
 
     public function getOldestBots(int $count = 10): array
     {
-        $query = $this->prepareSelect("*", "WHERE cdate < DATE_SUB(NOW(), INTERVAL 24 HOUR) ORDER BY date ASC LIMIT ?");
+        $query = $this->prepareSelect("*", "WHERE cdate < DATE_SUB(NOW(), INTERVAL 24 HOUR) ORDER BY cdate ASC LIMIT ?");
         $query->bindValue(1, $count, PDO::PARAM_INT);
         $query->execute();
 
         return $query->fetchAll();
     }
 
-    public function touchBot($username)
+    /**
+     * @param $username: Username of the bot to touch.
+     * @param $hard: If there are content modifications of the bot this should
+     *               be true.
+     */
+    public function touchBot(string $username, bool $hard = false)
     {
-        $query = $this->prepareUpdate("cdate=NOW() WHERE name=?");
+        $sql = "cdate=NOW() WHERE name=?";
+        if($hard) {
+            $sql = "date=NOW(), ".$sql;
+        }
+        $query = $this->prepareUpdate($sql);
         $query->execute(array($username));
     }
 }

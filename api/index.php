@@ -139,6 +139,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
 
             unset($bot->name);
             unset($bot->date);
+            unset($bot->cdate);
             return $bot;
         };
 
@@ -234,6 +235,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             $app->lastModified(max(array($lastModified, strtotime($bot->date))));
             $app->expires('+1 week');
             unset($bot->date);
+            unset($bot->cdate);
 
             $bot->username = $bot->name;
             $bot->_links = array(
