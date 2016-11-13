@@ -75,7 +75,7 @@ class TypesTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertObjectHasAttribute("count", $bot);
         }
 
-        $bots = $this->bots->getTypes(2);
+        $bots = $this->types->getTypes(2);
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM types LIMIT '.self::pageSize.','.self::pageSize
         );

@@ -22,7 +22,7 @@ class Types extends PaginatingStore {
 
     public function getAllTypes(): array
     {
-        $query = $this->prepareSelect("table.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id GROUP BY table.id ORDER BY count DESC, table.name ASC");
+        $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id GROUP BY table.id ORDER BY count DESC, table.name ASC");
         $query->execute();
 
         return $query->fetchAll();

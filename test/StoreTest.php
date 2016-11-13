@@ -107,7 +107,7 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
         $queryTable = $this->getConnection()->createQueryTable(
             $table, 'SELECT * FROM '.$table
         );
-        $expectedTable = $this->createFlatXmlDataSet(dirname(__FILE__)."/_fixtures/store.xml")
+        $expectedTable = $this->createXMLDataSet(dirname(__FILE__)."/_fixtures/store.xml")
                               ->getTable($table);
         $this->assertTablesEqual($expectedTable, $queryTable);
 
