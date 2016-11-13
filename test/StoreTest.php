@@ -86,8 +86,6 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertInstanceOf(PDOStatement::class, $query);
         $query->execute(array("1_has"));
 
-        $query->fetch();
-
         $this->assertEquals($rows - 1, $this->getConnection()->getRowCount('config'));
     }
 
