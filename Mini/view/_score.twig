@@ -27,6 +27,11 @@
     {% set score = score - 1 %}
 {% endif %}
 
+{# -1 if it has VODs #}
+{% if submission.vods %}
+    {% set score = score - 1 %}
+{% endif %}
+
 {{ score }}
 {% endspaceless %}
 {% endmacro %}
