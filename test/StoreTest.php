@@ -4,6 +4,9 @@ include_once('_fixtures/setup.php');
 
 use \Mini\Model\PingablePDO;
 
+/**
+ * @coversDefaultClass \Mini\Model\Store
+ */
 class StoreTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny

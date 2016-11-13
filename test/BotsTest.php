@@ -4,6 +4,9 @@ include_once('_fixtures/setup.php');
 
 use \Mini\Model\PingablePDO;
 
+/**
+ * @coversDefaultClass \Mini\Model\Bots
+ */
 class BotsTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -60,6 +63,9 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         parent::setUp();
     }
 
+    /**
+     * @covers ::getBot
+     */
     public function testGetBot()
     {
         $bot = $this->bots->getBot("butler_of_ec0ke");
@@ -70,6 +76,9 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals("ec0ke", $bot->channel);
     }
 
+    /**
+     * @covers ::getBot
+     */
     public function testGetNotExistingBot()
     {
         $bot = $this->bots->getBot("freaktechnik");
@@ -77,6 +86,9 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertFalse($bot);
     }
 
+    /**
+     * @covers ::getBotsByType
+     */
     public function testGetBotsByType()
     {
         $bots = $this->bots->getBotsByType(22);
@@ -101,6 +113,9 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertCount($queryTable->getRowCount(), $bots);
     }
 
+    /**
+     * @covers ::getCount
+     */
     public function testGetCount()
     {
         $botCount = $this->bots->getCount();
@@ -114,6 +129,9 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($botCount, $queryTable->getRowCount());
     }
 
+    /**
+     * @covers ::getBots
+     */
     public function testGetBots()
     {
         $bots = $this->bots->getBots();
@@ -138,6 +156,9 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertCount($queryTable->getRowCount(), $bots);
     }
 
+    /**
+     * @covers ::getAllRawBots
+     */
     public function testGetAllRawBots()
     {
         $bots = $this->bots->getAllRawBots();
@@ -162,6 +183,9 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertCount($queryTable->getRowCount(), $bots);
     }
 
+    /**
+     * @covers ::getBotsByNames
+     */
     public function testGetBotsByNames()
     {
         $names = array(
@@ -186,6 +210,9 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEmpty($bots);
     }
 
+    /**
+     * @covers ::removeBot
+     */
     public function testRemoveBot()
     {
         $initialCount = $this->bots->getCount();
@@ -199,6 +226,9 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals(0, $queryTable->getRowCount());
     }
 
+    /**
+     * @covers ::removeBots
+     */
     public function testRemoveBots()
     {
         $initialCount = $this->bots->getCount();

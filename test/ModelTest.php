@@ -4,6 +4,9 @@ include_once('_fixtures/setup.php');
 
 use GuzzleHttp\Psr7\Response;
 
+/**
+ * @coversDefaultClass \Mini\Model\Model
+ */
 class ModelTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -86,6 +89,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($this->model->checkToken($formname, $token));
     }
 
+    /**
+     * @covers ::hasBot
+     */
     public function testHasBot()
     {
         $this->assertTrue($this->model->hasBot('butler_of_ec0ke'));
@@ -95,6 +101,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($this->model->hasBot('freaktechnik'));
     }
 
+    /**
+     * @covers ::addSubmission
+     */
     public function testAddSubmission()
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
@@ -123,6 +132,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 8
+     * @covers ::addSubmission
      */
     public function testAddEmptySubmissionUsernameThrows()
     {
@@ -131,6 +141,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 9
+     * @covers ::addSubmission
      */
     public function testAddEmptySubmissionDescriptionThrows()
     {
@@ -139,6 +150,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 7
+     * @covers ::addSubmission
      */
     public function testAddSubmissionChannelEqualsUsernameThrows()
     {
@@ -147,6 +159,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 3
+     * @covers ::addSubmission
      */
     public function testAddExistingSubmissionThrows()
     {
@@ -158,6 +171,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 3
+     * @covers ::addSubmission
      */
     public function testAddSubmissionExistingBotThrows()
     {
@@ -168,6 +182,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 12
+     * @covers ::addSubmission
      */
     public function testAddSubmissionChannelIsBotThrows()
     {
@@ -177,6 +192,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 13
+     * @covers ::addSubmission
      */
     public function testAddSubmissionBotIsChannelThrows()
     {
@@ -187,6 +203,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 2
+     * @covers ::addSubmission
      */
     public function testAddSubmissionNotOnTwitchThrows()
     {
@@ -197,6 +214,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 6
+     * @covers ::addSubmission
      */
     public function testAddSubmissionInexistentChannelThrows()
     {
@@ -204,6 +222,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->model->addSubmission("bot", 22, "", "notauser");
     }
 
+    /**
+     * @covers ::addCorrection
+     */
     public function testAddCorrection()
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
@@ -226,6 +247,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 8
+     * @covers ::addCorrection
      */
     public function testAddEmptyCorrectionUsernameThrows()
     {
@@ -234,6 +256,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 4
+     * @covers ::addCorrection
      */
     public function testAddInexistingCorrectionThrows()
     {
@@ -242,6 +265,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 9
+     * @covers ::addCorrection
      */
     public function testAddEmptyCorrectionDescriptionThrows()
     {
@@ -250,12 +274,17 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * @expectedException Exception
      * @expectedExceptionCode 5
+     * @covers ::addCorrection
      */
     public function testAddCorrectionSameTypeThrows()
     {
         $this->model->addCorrection("nightbot", 1);
     }
 
+    /**
+     * @covers ::checkRunning
+     * @covers ::checkDone
+     */
     public function testLock()
     {
         $this->assertFalse($this->model->checkRunning());
@@ -264,6 +293,10 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertFalse($this->model->checkRunning());
     }
 
+    /**
+     * @covers ::checkBots
+     * @uses \Mini\Model\Bots::getCount
+     */
     public function testCheckBots()
     {
         $initialCount = $this->model->bots->getCount();
@@ -272,6 +305,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($initialCount - count($bots), $this->model->bots->getCount());
     }
 
+    /**
+     * @covers ::twitchUserExists
+     */
     public function testTwitchUserExists()
     {
         $this->httpMock->append(new Response(200));
@@ -284,6 +320,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
     /**
      * @expectedException Exception
+     * @covers ::canCheck
      */
     public function testCanCheckThrowsEmptyString()
     {
@@ -291,6 +328,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     }
     /**
      * @expectedException Exception
+     * @covers ::canCheck
      */
     public function testCanCheckThrowsNonAlphanumerical1()
     {
@@ -298,6 +336,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     }
     /**
      * @expectedException Exception
+     * @covers ::canCheck
      */
     public function testCanCheckThrowsNonAlphanumerical2()
     {
@@ -305,12 +344,16 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     }
     /**
      * @expectedException TypeError
+     * @covers ::canCheck
      */
     public function testCanCheckThrowsNull()
     {
         $this->model->canCheck(null);
     }
 
+    /**
+     * @covers ::canCheck
+     */
     public function testCanCheck()
     {
         $this->assertFalse($this->model->canCheck('foobar'));
@@ -321,4 +364,3 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertFalse($this->model->canCheck('false'));
     }
 }
-?>
