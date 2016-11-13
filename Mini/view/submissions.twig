@@ -1,56 +1,9 @@
+{% from "_table.twig" import table %}
 {% extends "_base.twig" %}
 {% block title %}Submissions{% endblock %}
 {% block extraresources %}
 <link rel="canonical" href="{{ canonicalUrl }}submissions">
 {% endblock %}
-{% macro table(set, id, active) %}
-<div class="table-responsive tab-pane{% if active %} active{% endif %}" role="tabpanel" id="{{ id|e('html_attr') }}">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Description</th>
-                <th>Channel</th>
-                <th>Following Count</th>
-                <th>Bio</th>
-                <th>Has VODs</th>
-                <th>Offline</th>
-                <th>Online</th>
-                <th>Modded</th>
-                <th>Following Channel</th>
-                <th>Score</th>
-            </tr>
-        </thead>
-        <tbody>
-{% for s in set %}
-            <tr>
-                <td>{% if s.type == 0 -%}
-                    <a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external nofollow">{{ s.name|e }}</a>
-                {%- else -%}
-                    <a href="{{ urlFor('bot', { name: s.name }) }}" title="{{ s.name|e('html_attr') }} in the Twitch Bots Directory">{{ s.name|e }}</a>
-                {%- endif %}</td>
-                <td>{% spaceless %}
-                    {% if s.description matches '/^\\d+$/' %}
-                        <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}">{{ s.description|e }}</a>
-                    {% else %}
-                        {{ s.description|e }}
-                    {% endif %}
-                {% endspaceless %}</td>
-                <td>{% if s.channel is not empty %}<a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
-                <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/following" rel="external nofollow">{{ s.following|default('?') }}</a></td>
-                <td>{{ s.bio|default('?') }}</td>
-                <td><a href="https://www.twitch.tv/{{ s.name|e('url')|e('html_attr') }}/videos/all" rel="external nofollow">{{ s.vods|default('?') }}</a></td>
-                <td>{{ s.offline|default("?") }}</td>
-                <td>{{ s.online|default("?") }}</td>
-                <td><a href="https://twitchstuff.3v.fi/mods/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.ismod|default('?') }}</a></td>
-                <td>{{ s.following_channel|default('?') }}</td>
-                <td>{{ s.score }}</td>
-            </tr>
-{% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endmacro %}
 {% block content %}
 <div class="page-header">
     <h1>Submission Queue</h1>
