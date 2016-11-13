@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @coversDefaultClass \Mini\Model\TypeCrawler\Storage\StorageFactory
+ */
 class StorageFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testGetStorage()

@@ -2,6 +2,9 @@
 
 use \Mini\Model\{PingablePDO, Submissions};
 
+/**
+ * @coversDefaultClass \Mini\Model\Submissions
+ */
 class SubmissionsTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -29,10 +32,7 @@ class SubmissionsTest extends PHPUnit_Extensions_Database_TestCase
         parent::__construct();
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
-     */
-    public function getConnection()
+    public function getConnection(): PHPUnit_Extensions_Database_DB_IDatabaseConnection
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
@@ -44,10 +44,7 @@ class SubmissionsTest extends PHPUnit_Extensions_Database_TestCase
         return $this->conn;
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-     */
-    public function getDataSet()
+    public function getDataSet(): PHPUnit_Extensions_Database_DataSet_IDataSet
     {
         return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/bots.xml');
     }
@@ -58,6 +55,9 @@ class SubmissionsTest extends PHPUnit_Extensions_Database_TestCase
         parent::setUp();
     }
 
+    /**
+     * @covers ::getSubmissions
+     */
     public function testGetSubmissions()
     {
         $this->assertEquals(count($this->submissions->getSubmissions()), $this->getConnection()->getRowCount('submissions'), "Not an empty array with no submissions");
@@ -85,6 +85,10 @@ class SubmissionsTest extends PHPUnit_Extensions_Database_TestCase
         //TODO test array?
     }
 
+    /**
+     * @uses ::append
+     * @uses ::getSubmissions
+     */
     public function testGetLastSubmissionsUpdate()
     {
         $this->submissions->append("test", "1", Submissions::CORRECTION);

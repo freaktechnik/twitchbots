@@ -2,10 +2,14 @@
 
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 
+/**
+ * @coversDefaultClass \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage
+ */
 class TypeCrawlerStorageTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException Exception
+     * @covers ::get
      */
     public function testGetThrows()
     {
@@ -15,6 +19,7 @@ class TypeCrawlerStorageTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException Exception
+     * @covers ::has
      */
     public function testHasThrows()
     {
@@ -24,6 +29,7 @@ class TypeCrawlerStorageTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException Exception
+     * @covers ::set
      */
     public function testSetThrows()
     {

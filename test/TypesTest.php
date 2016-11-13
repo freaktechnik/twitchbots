@@ -2,6 +2,9 @@
 
 use \Mini\Model\PingablePDO;
 
+/**
+ * @coversDefaultClass \Mini\Model\Types
+ */
 class TypesTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -29,10 +32,7 @@ class TypesTest extends PHPUnit_Extensions_Database_TestCase
         parent::__construct();
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
-     */
-    public function getConnection()
+    public function getConnection(): PHPUnit_Extensions_Database_DB_IDatabaseConnection
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
@@ -44,10 +44,7 @@ class TypesTest extends PHPUnit_Extensions_Database_TestCase
         return $this->conn;
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-     */
-    public function getDataSet()
+    public function getDataSet(): PHPUnit_Extensions_Database_DataSet_IDataSet
     {
         return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/bots.xml');
     }
@@ -58,6 +55,9 @@ class TypesTest extends PHPUnit_Extensions_Database_TestCase
         parent::setUp();
     }
 
+    /**
+     * @covers ::getTypes
+     */
     public function testGetTypes()
     {
         $bots = $this->types->getTypes();
@@ -82,6 +82,9 @@ class TypesTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertCount($queryTable->getRowCount(), $bots);
     }
 
+    /**
+     * @covers ::getType
+     */
     public function testGetType()
     {
         $type = $this->types->getType(1);
@@ -92,6 +95,9 @@ class TypesTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals("https://www.nightbot.tv/", $type->url);
     }
 
+    /**
+     * @covers ::getType
+     */
     public function testGetNotExistingType()
     {
         $type = $this->types->getType(0);
@@ -99,6 +105,9 @@ class TypesTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertFalse($type);
     }
 
+    /**
+     * @covers ::getAllTypes
+     */
     public function testGetAllTypes()
     {
         $types = $this->types->getAllTypes();

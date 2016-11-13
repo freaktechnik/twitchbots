@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @coversDefaultClass \Mini\Model\TypeCrawler\TypeCrawlerController
+ */
 class TypeCrawlerControllerTest extends PHPUnit_Framework_TestCase
 {
     public function testCrawl()

@@ -4,6 +4,9 @@ include_once('_fixtures/setup.php');
 
 use \Mini\Model\PingablePDO;
 
+/**
+ * @coversDefaultClass \Mini\Model<TypeCrawler\Storage\PDOStorage
+ */
 class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -24,10 +27,7 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
         parent::__construct();
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
-     */
-    public function getConnection()
+    public function getConnection(): PHPUnit_Extensions_Database_DB_IDatabaseConnection
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
@@ -39,10 +39,7 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
         return $this->conn;
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-     */
-    public function getDataSet()
+    public function getDataSet(): PHPUnit_Extensions_Database_DataSet_IDataSet
     {
         return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/pdostorage.xml');
     }
@@ -54,6 +51,9 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
         parent::setUp();
     }
 
+    /**
+     * @covers ::get
+     */
     public function testGet()
     {
         $got = $this->model->get('get');
@@ -63,6 +63,9 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertNull($got);
     }
 
+    /**
+     * @covers ::has
+     */
     public function testHas()
     {
         $had = $this->model->has('has');
@@ -73,6 +76,9 @@ class PDOStorageTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertFalse($had);
     }
 
+    /**
+     * @covers ::set
+     */
     public function testSet()
     {
         $this->model->set('new', 'value');

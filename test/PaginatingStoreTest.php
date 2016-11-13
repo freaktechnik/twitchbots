@@ -4,6 +4,9 @@ include_once('_fixtures/setup.php');
 
 use \Mini\Model\PingablePDO;
 
+/**
+ * @coversDefaultClass \Mini\Model\PaginatingStore
+ */
 class PaginatingStoreTest extends PHPUnit_Extensions_Database_TestCase
 {
     // Database connection efficieny
@@ -31,10 +34,7 @@ class PaginatingStoreTest extends PHPUnit_Extensions_Database_TestCase
         parent::__construct();
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
-     */
-    public function getConnection()
+    public function getConnection(): PHPUnit_Extensions_Database_DB_IDatabaseConnection
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
@@ -46,10 +46,7 @@ class PaginatingStoreTest extends PHPUnit_Extensions_Database_TestCase
         return $this->conn;
     }
 
-    /**
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-     */
-    public function getDataSet()
+    public function getDataSet(): PHPUnit_Extensions_Database_DataSet_IDataSet
     {
         return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/bots.xml');
     }
@@ -60,7 +57,9 @@ class PaginatingStoreTest extends PHPUnit_Extensions_Database_TestCase
         parent::setUp();
     }
 
-
+    /**
+     * @covers ::getPageCount
+     */
     public function testGetPageCount()
     {
         for($count = 0; $count < self::pageSize * 4; ++$count) {
@@ -71,6 +70,9 @@ class PaginatingStoreTest extends PHPUnit_Extensions_Database_TestCase
         }
     }
 
+    /**
+     * @covers ::getOffset
+     */
     public function testGetOffset()
     {
         for($page = 1; $page < 4; ++$page) {
