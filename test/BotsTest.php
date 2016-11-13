@@ -197,6 +197,8 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
             $this->assertObjectHasAttribute("name", $bot);
             $this->assertObjectHasAttribute("type", $bot);
             $this->assertObjectHasAttribute("date", $bot);
+            $this->assertObjectNotHasAttribute("index", $bot);
+            $this->assertObjectNotHasAttribute("value", $bot);
             $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
         }
 
