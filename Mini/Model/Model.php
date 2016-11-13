@@ -285,7 +285,7 @@ class Model
         return isset($stream->stream);
     }
 
-    private function getBio(string $channel): string
+    private function getBio(string $channel)//: ?string
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$channel, $this->twitchHeaders);
         $user = json_decode($response->getBody());

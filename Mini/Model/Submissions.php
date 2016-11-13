@@ -108,7 +108,7 @@ class Submissions extends PaginatingStore {
         $query->execute(array($followingChannel, $id));
     }
 
-    public function setBio(int $id, string $bio)
+    public function setBio(int $id, string $bio = NULL)
     {
         $sql = "bio=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
