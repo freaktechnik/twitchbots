@@ -110,9 +110,11 @@ class Submissions extends PaginatingStore {
 
     public function setBio(int $id, string $bio = NULL)
     {
-        $sql = "bio=? WHERE id=?";
-        $query = $this->prepareUpdate($sql);
-        $query->execute(array($bio, $id));
+        if(!empty($bio)) {
+            $sql = "bio=? WHERE id=?";
+            $query = $this->prepareUpdate($sql);
+            $query->execute(array($bio, $id));
+        }
     }
 
     public function removeSubmission(int $id)

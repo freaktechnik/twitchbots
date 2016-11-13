@@ -76,7 +76,7 @@ class Bots extends PaginatingStore {
         if($limit > 0 && $offset < $namesCount) {
             $tempTable = $this->createTempTable($names);
 
-            $query = $this->prepareSelect('*', 'INNER JOIN '.$tempTable.' ON table.name = '.$tempTable.'.value LIMIT ?,?');
+            $query = $this->prepareSelect('`table`.*', 'INNER JOIN '.$tempTable.' ON table.name = '.$tempTable.'.value LIMIT ?,?');
             $this->doPagination($query, $offset, $limit, 1, 2);
             $query->execute();
 
