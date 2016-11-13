@@ -38,7 +38,7 @@ class Submissions extends PaginatingStore {
 
     public function getSubmissions(): array
     {
-        $query = $this->prepareSelect("*", "ORDER BY date DESC");
+        $query = $this->prepareSelect("*", "ORDER BY online DESC, date DESC");
         $query->execute();
 
         return $query->fetchAll();
