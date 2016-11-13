@@ -131,7 +131,8 @@ class Submissions extends PaginatingStore {
         $query->execute(array($id));
     }
 
-    public function removeSubmissions(string $username, string $description = NULL) {
+    public function removeSubmissions(string $username, string $description = NULL)
+    {
         $condition = "WHERE name=?";
         $args = array($username);
         if(!empty($description)) {

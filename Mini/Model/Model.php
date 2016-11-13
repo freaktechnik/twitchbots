@@ -493,10 +493,6 @@ class Model
             }
 
             if($didSomething) {
-                if($submission->ismod === false && $submission->online === false && $submission->offline === false) {
-                    $this->submissions->removeSubmission($submission->id);
-                }
-
                 ++$count;
             }
         }
