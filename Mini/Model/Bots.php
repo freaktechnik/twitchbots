@@ -141,8 +141,9 @@ class Bots extends PaginatingStore {
 
     public function getOldestBots(int $count = 10): array
     {
-        $query = $this->prepareSelect("*", "WHERE date < DATE_SUB(NOW(), INTERVAL 24 HOUR)  ORDER BY date ASC LIMIT ?");
-        $query->execute(array($count));
+        $query = $this->prepareSelect("*", "WHERE date < DATE_SUB(NOW(), INTERVAL 24 HOUR) ORDER BY date ASC LIMIT ?");
+        $query->bindValue(1, $count, PDO::PARAM_INT);
+        $query->execute();
 
         return $query->fetchAll();
     }
