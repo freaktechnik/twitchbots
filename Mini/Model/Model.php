@@ -292,6 +292,61 @@ class Model
         return $user->bio;
     }
 
+    private function hasVODs(string $channel): bool
+    {
+        $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channel.'/videos', $this->twitchHeaders);
+        $vods = json_decode($response->getBody());
+        return $vods->_total > 0;
+    }
+
+    private function checkFollowing(\stdClass $submission): bool
+    {
+        // Update following if needed
+        if(!isset($submission->following)) {
+            try {
+                $follows = $this->getFollowing($submission->name);
+            }
+            catch(Exception $e) {
+                $follows = new \stdClass();
+                $follows->_total = 0;
+            }
+            $this->submissions->setFollowing($submission->id, $follows->_total);
+            return true;
+        }
+        return false;
+    }
+
+    private function checkBio(\stdClass $submission): bool
+    {
+        if(!isset($submission->bio)) {
+            try {
+                $bio = $this->getBio($submission->name);
+            }
+            catch(Exception $e) {
+                return false;
+            }
+            $this->submissions->setBio($submission->id, $bio);
+            return true;
+        }
+        return false;
+    }
+
+    private function checkHasVODs(\stdClass $submission): bool
+    {
+        if(!isset($submission->vods)) {
+            try {
+                $hasVODs = $this->hasVODs($submission->name);
+            }
+            catch(Exception $e) {
+                return false;
+            }
+
+            $this->submissions->setHasVODs($submission->id, $hasVODs);
+            return true;
+        }
+        return false;
+    }
+
     public function checkSubmissions(): int
     {
         $submissions = $this->submissions->getSubmissions();
@@ -301,27 +356,15 @@ class Model
             $this->db->ping();
             $didSomething = false;
 
-            // Update following if needed
-            if(!isset($submission->following)) {
-                try {
-                    $follows = $this->getFollowing($submission->name);
-                }
-                catch(Exception $e) {
-                    $follows = new \stdClass();
-                    $follows->_total = 0;
-                }
-                $this->submissions->setFollowing($submission->id, $follows->_total);
+            if($this->checkFollowing($submission)) {
                 $didSomething = true;
             }
 
-            if(!isset($submission->bio)) {
-                try {
-                    $bio = $this->getBio($submission->name);
-                }
-                catch(Exception $e) {
-                    $bio = NULL;
-                }
-                $this->submissions->setBio($submission->id, $bio);
+            if($this->checkBio($submission) && !$didSomething) {
+                $didSomething = true;
+            }
+
+            if($this->checkHasVODs($submission) && !$didSomething) {
                 $didSomething = true;
             }
 

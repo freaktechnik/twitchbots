@@ -15,6 +15,7 @@ namespace Mini\Model;
     following int(10) unsigned DEFAULT NULL,
     following_channel boolean DEFAULT NULL,
     bio text DEFAULT NULL,
+    vods boolean DEFAULT NULL,
     PRIMARY KEY (id)
 ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 */
 
@@ -115,6 +116,13 @@ class Submissions extends PaginatingStore {
             $query = $this->prepareUpdate($sql);
             $query->execute(array($bio, $id));
         }
+    }
+
+    public function setHasVODs(int $id, bool $hasVODs)
+    {
+        $sql = "vods=? WHERE id=?";
+        $query = $this->prepareUpdate($sql);
+        $query->execute(array($hasVODs, $id));
     }
 
     public function removeSubmission(int $id)
