@@ -88,10 +88,6 @@ class Model
             'headers' => array('Client-ID' => $this->config->get('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
         ));
         $this->client = $client;
-
-        if(!$this->config->get('checks_per_day')) {
-            $this->config->set('checks_per_day', "24");
-        }
 	}
 
     /**

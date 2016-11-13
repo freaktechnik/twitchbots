@@ -395,6 +395,10 @@
             <value>update_offset</value>
             <value>0</value>
         </row>
+        <row>
+            <value>checks_per_day</value>
+            <value>24</value>
+        </row>
     </table>
     <table name="check_tokens">
         <column>id</column>
