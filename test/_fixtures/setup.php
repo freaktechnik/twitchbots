@@ -38,8 +38,8 @@ function create_tables($pdo) {
     $pdo->query('CREATE TABLE IF NOT EXISTS bots (
         name varchar(535) CHARACTER SET ascii NOT NULL,
         type int(10) unsigned DEFAULT NULL,
-        date timestamp NOT NULL,
         cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        date timestamp NOT NULL DEFAULT 0,
         channel varchar(535) CHARACTER SET ascii DEFAULT NULL,
         PRIMARY KEY (name),
         FOREIGN KEY (type) REFERENCES types(id)
