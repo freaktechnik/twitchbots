@@ -2,6 +2,7 @@
 
 include_once('_fixtures/setup.php');
 
+use PDOStatement;
 use \Mini\Model\PingablePDO;
 
 class StoreTest extends PHPUnit_Extensions_Database_TestCase
