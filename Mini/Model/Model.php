@@ -485,6 +485,7 @@ class Model
 
                         if($isMod !== null) {
                             $this->submissions->setModded($submission->id, $isMod);
+                            $submission->ismod = $isMod;
                             $ranModCheck = true;
                         }
 
@@ -502,11 +503,10 @@ class Model
                     }
                     if($isMod !== null) {
                         $this->submissions->setModded($submission->id, $isMod);
+                        $submission->isMod = $isMod;
                     }
-
                     $didSomething = true;
                 }
-                $submission->ismod = $isMod;
             }
 
             if($didSomething) {
