@@ -34,7 +34,8 @@ class Store {
 
     protected function prepareDelete(string $condition): PDOStatement
     {
-        $sql = "DELETE * FROM `".$this->table."` AS `table` ".$condition;
+        $sql = "DELETE FROM `".$this->table."` AS `table` ".$condition;
+        echo "\n".$sql."\n";
         return $this->prepareQuery($sql);
     }
 
