@@ -86,8 +86,8 @@ class SubmissionsTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @uses ::append
-     * @uses ::getSubmissions
+     * @uses \Mini\Model\Submissions::append
+     * @uses \Mini\Model\Submissions::getSubmissions
      */
     public function testGetLastSubmissionsUpdate()
     {
