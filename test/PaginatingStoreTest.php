@@ -56,7 +56,7 @@ class PaginatingStoreTest extends PHPUnit_Extensions_Database_TestCase
 
     public function setUp()
     {
-        $this->store = new \Mini\Model\PaginatingStore(self::$pdo, self::pageSize);
+        $this->store = new \Mini\Model\PaginatingStore(self::$pdo, "config", self::pageSize);
         parent::setUp();
     }
 
