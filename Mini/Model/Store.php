@@ -28,7 +28,7 @@ class Store {
         if($where != "") {
             $where = " ".$where;
         }
-        $sql = "SELECT ".$select." FROM ".$table." AS `table`".$where;
+        $sql = "SELECT ".$select." FROM `".$table."` AS `table`".$where;
         return $this->prepareQuery($sql);
     }
 
@@ -40,12 +40,12 @@ class Store {
 
     protected function prepareInsert(string $structure): PDOStatement
     {
-        return $this->prepareQuery("INSERT INTO ".$this->table." ".$structure);
+        return $this->prepareQuery("INSERT INTO `".$this->table."` ".$structure);
     }
 
     protected function prepareUpdate(string $set): PDOStatement
     {
-        return $this->prepareQuery("UPDATE ".$this->table." SET ".$set);
+        return $this->prepareQuery("UPDATE `".$this->table."` SET ".$set);
     }
 
     public function getCount(): int
@@ -77,11 +77,11 @@ class Store {
     protected function createTempTable(array $values): string
     {
         $tableName = "tempvals";
-        $sql = 'CREATE TEMPORARY TABLE '.$tableName.' (`value` varchar(535) CHARACTER SET utf8 NOT NULL, `index` varchar(535) CHARACTER SET utf8 NOT NULL)';
+        $sql = 'CREATE TEMPORARY TABLE `'.$tableName.'` (`value` varchar(535) CHARACTER SET utf8 NOT NULL, `index` varchar(535) CHARACTER SET utf8 NOT NULL)';
         $query = $this->prepareQuery($sql);
         $query->execute();
 
-        $sql = 'INSERT INTO '.$tableName.' (`value`,`index`) VALUES (?,?)';
+        $sql = 'INSERT INTO `'.$tableName.'` (`value`,`index`) VALUES (?,?)';
         $query = $this->prepareQuery($sql);
         $value;
         $i;
@@ -96,6 +96,6 @@ class Store {
 
     protected function cleanUpTempTable(string $tableName)
     {
-         $this->prepareQuery("DROP TABLE IF EXISTS ".$tableName)->execute();
+        $this->prepareQuery("DROP TABLE IF EXISTS `".$tableName."`")->execute();
     }
 }

@@ -56,9 +56,9 @@ class StoreTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertInstanceOf(PDOStatement::class, $query);
         $query->execute(array("1_new", "value"));
 
-        $query = $this->store->prepareUpdate("value=had WHERE name=1_has")->execute();
+        $query = $this->store->prepareUpdate("value=had WHERE name=?")
         $this->assertInstanceOf(PDOStatement::class, $query);
-        $query->execute();
+        $query->execute(array("1_has"));
 
         $queryTable = $this->getConnection()->createQueryTable(
             'config', 'SELECT name, value FROM config'
