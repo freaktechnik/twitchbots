@@ -1,10 +1,10 @@
 {%- macro status(value) -%}
 {% if value -%}
-<span class="glyphicon glyphicon-ok-sign status-ok"></span>
+<span class="glyphicon glyphicon-ok-sign status-ok" title="Yes"></span>
 {%- elseif value is not null -%}
-<span class="glyphicon glyphicon-remove-sign status-nok"></span>
+<span class="glyphicon glyphicon-remove-sign status-nok" title="No"></span>
 {%- else -%}
-<span class="glyphicon glyphicon-question-sign status-unknown"></span>
+<span class="glyphicon glyphicon-question-sign status-unknown" title="No data"></span>
 {%- endif %}
 {%- endmacro -%}
 {%- macro table(set, id, active) -%}
