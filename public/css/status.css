@@ -1,14 +1,19 @@
 .status-ok {
     color: green;
-    cursor: default;
 }
 
 .status-nok {
     color: red;
-    cursor: default;
 }
 
 .status-unknown {
     color: gray;
+}
+
+.status-ok, .status-unknown, .status-nok {
     cursor: default;
+}
+
+a .status-ok, a .status-unknown, a.status-nok {
+    cursor: pointer;
 }
