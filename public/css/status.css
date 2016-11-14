@@ -1,0 +1,11 @@
+.status-ok {
+    color: green;
+}
+
+.status-nok {
+    color: red;
+}
+
+.status-unknown {
+    color: gray;
+}
