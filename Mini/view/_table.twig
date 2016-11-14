@@ -1,7 +1,7 @@
 {%- macro status(value) -%}
 {% if value -%}
 <span class="glyphicon glyphicon-ok-sign status-ok"></span>
-{%- elseif vaue == 0 -%}
+{%- elseif value is not null -%}
 <span class="glyphicon glyphicon-remove-sign status-nok"></span>
 {%- else -%}
 <span class="glyphicon glyphicon-question-sign status-unknown"></span>
