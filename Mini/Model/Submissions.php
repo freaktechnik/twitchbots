@@ -49,7 +49,7 @@ class Submissions extends PaginatingStore {
         if(isset($type)) {
             $query->bindValue(1, $type, PDO::PARAM_INT);
         }
-        $query->execute($params);
+        $query->execute();
 
         return $query->fetchAll();
     }
