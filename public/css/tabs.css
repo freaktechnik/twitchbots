@@ -1,0 +1,9 @@
+.tab-content > .tab-pane {
+    display: block;
+    visibility: visible;
+}
+
+.tab-content > .tab-pane:not(:target):not(.active), .tab-content > .tab-pane:target ~ .active {
+    display: none;
+    visibility: hidden;
+}
