@@ -3,7 +3,6 @@
 {% block title %}Submissions{% endblock %}
 {% block extraresources %}
 <link rel="canonical" href="{{ canonicalUrl }}submissions">
-<link rel="stylesheet" href="{{ siteUrl('/css/tbs.css')|e('html_attr') }}">
 {% endblock %}
 {% block content %}
 <div class="page-header">
@@ -21,4 +20,5 @@
     {{ table(submissions, "submissions", true) }}
     {{ table(corrections, "corrections", false) }}
 </div>
+<script type="application/javascript" src="{{ siteUrl('/js/tabs.js')|e('html_attr') }}"></script>
 {% endblock %}
