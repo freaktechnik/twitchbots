@@ -9,6 +9,7 @@
 {%- endmacro -%}
 {%- macro table(set, id, active) -%}
 {%- from _self import status -%}
+{% set defaultVal = status(null) %}
 <div class="table-responsive tab-pane{% if active %} active{% endif %}" role="tabpanel" id="{{ id|e('html_attr') }}">
     <table class="table table-striped">
         <thead>
@@ -42,8 +43,8 @@
                     {% endif %}
                 {% endspaceless %}</td>
                 <td>{% if s.channel is not empty %}<a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.channel|e }}</a>{% endif %}</td>
-                <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/following" rel="external nofollow">{{ s.following|default('?') }}</a></td>
-                <td>{{ s.bio|default('?') }}</td>
+                <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/following" rel="external nofollow">{{ s.following|default(defaultVal) }}</a></td>
+                <td>{{ s.bio|default(defaultVal) }}</td>
                 <td><a href="https://www.twitch.tv/{{ s.name|e('url')|e('html_attr') }}/videos/all" rel="external nofollow">{{ status(s.vods) }}</a></td>
                 <td>{{ status(s.offline) }}</td>
                 <td>{{ status(s.online) }}</td>
