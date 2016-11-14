@@ -1,4 +1,4 @@
-{% macro status(value) %}
+{%- macro status(value) -%}
 {% if value -%}
 <span class="glyphicon glyphicon-ok-sign status-ok"></span>
 {%- elseif vaue == 0 -%}
@@ -6,8 +6,8 @@
 {%- else -%}
 <span class="glyphicon glyphicon-question-sign status-unknown"></span>
 {%- endif %}
-{% endmacro %}
-{% macro table(set, id, active) %}
+{%- endmacro -%}
+{%- macro table(set, id, active) -%}
 {%- from _self import status -%}
 <div class="table-responsive tab-pane{% if active %} active{% endif %}" role="tabpanel" id="{{ id|e('html_attr') }}">
     <table class="table table-striped">
@@ -45,7 +45,7 @@
                 <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/following" rel="external nofollow">{{ s.following|default('?') }}</a></td>
                 <td>{{ s.bio|default('?') }}</td>
                 <td><a href="https://www.twitch.tv/{{ s.name|e('url')|e('html_attr') }}/videos/all" rel="external nofollow">{{ status(s.vods) }}</a></td>
-                <td>{{ status(s.offline }}</td>
+                <td>{{ status(s.offline) }}</td>
                 <td>{{ status(s.online) }}</td>
                 <td><a href="https://twitchstuff.3v.fi/mods/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow">{{ status(s.ismod) }}</a></td>
                 <td>{{ status(s.following_channel) }}</td>
@@ -55,4 +55,4 @@
         </tbody>
     </table>
 </div>
-{% endmacro %}
+{%- endmacro -%}
