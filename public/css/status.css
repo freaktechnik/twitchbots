@@ -1,11 +1,14 @@
 .status-ok {
     color: green;
+    cursor: default;
 }
 
 .status-nok {
     color: red;
+    cursor: default;
 }
 
 .status-unknown {
     color: gray;
+    cursor: default;
 }
