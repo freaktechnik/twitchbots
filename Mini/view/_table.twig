@@ -29,9 +29,10 @@
         </thead>
         <tbody>
 {% for s in set %}
+{%- set botUrl = 'https://twitch.tv/' ~ s.name|e('url') -%}
             <tr>
                 <td>{% if s.type == 0 -%}
-                    <a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external nofollow">{{ s.name|e }}</a>
+                    <a href="{{ botUrl|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external nofollow">{{ s.name|e }}</a>
                 {%- else -%}
                     <a href="{{ urlFor('bot', { name: s.name }) }}" title="{{ s.name|e('html_attr') }} in the Twitch Bots Directory">{{ s.name|e }}</a>
                 {%- endif %}</td>
@@ -42,9 +43,9 @@
                         {{ s.description|e }}
                     {% endif %}
                 {% endspaceless %}</td>
-                <td>{% if s.channel is not empty %}<a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}" rel="external nofollow">{{ s.channel|e }}</a>{% else %}{{ defaultVal }}{% endif %}</td>
+                <td>{% if s.channel is not empty %}<a href="https://twitch.tv/{{ s.channel|e('url')|e('html_attr') }}" title="{{ s.channel|e('html_attr') }} on Twitch" rel="external nofollow">{{ s.channel|e }}</a>{% else %}{{ defaultVal }}{% endif %}</td>
                 <td><a href="https://twitch.tv/{{ s.name|e('url')|e('html_attr') }}/following" rel="external nofollow">{{ s.following|default(defaultVal) }}</a></td>
-                <td>{% if s.bio is not empty %}<q>{{ s.bio|e }}</q>{% else %}{{ defaultVal }}{% endif %}</td>
+                <td>{% if s.bio is not empty %}<q cite="{{ botUrl|e('html_attr') }}">{{ s.bio|e }}</q>{% else %}{{ defaultVal }}{% endif %}</td>
                 <td><a href="https://www.twitch.tv/{{ s.name|e('url')|e('html_attr') }}/videos/all" rel="external nofollow">{{ status(s.vods) }}</a></td>
                 <td>{{ status(s.offline) }}</td>
                 <td>{{ status(s.online) }}</td>
