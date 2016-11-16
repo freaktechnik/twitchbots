@@ -152,7 +152,8 @@ $app->get('/submit', function () use ($app, $model) {
         'username' => $_GET['username'],
         'type' => (int)$_GET['type'],
         'channel' => $_GET['channel'],
-        'description' => $_GET['description']
+        'description' => $_GET['description'],
+        'clientId' => $model->getClientID()
     ));
 })->name('submit');
 $app->map('/check', function () use ($app, $model, $getTemplateLastMod) {

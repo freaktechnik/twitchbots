@@ -93,6 +93,11 @@ class Model
         $this->client = $client;
 	}
 
+    public function getClientID(): string
+    {
+        return $this->config->get('client-ID');
+    }
+
     /**
      * @param string $formname
      * @return string
