@@ -103,7 +103,13 @@ $getLastMod = function($timestamp = 0) use ($lastUpdate) {
 };
 
 $piwikEvent = function(string $event, array $opts) use ($piwik_token, $app, $client) {
-    $url = "https://humanoids.be/stats/piwik.php?idsite=5&rec=1&action_name=Submit/".urlencode($event)."&urlref=".urlencode($_SERVER['HTTP_REFERER'])."&url=".urlencode($app->config('canonicalUrl'))."lib/submit&apiv=1&ua=".urlencode($_SERVER['HTTP_USER_AGENT'])."&lang=".urlencode($_SERVER['HTTP_ACCEPT_LANGUAGE'])."&cip=".urlencode($_SERVER['REMOTE_ADDR'])."&cvar=".urlencode(json_encode($opts))."&token_auth=".$piwik_token."&send_image=0&idgoal=1";
+    $url = "https://humanoids.be/stats/piwik.php?idsite=5&rec=1&action_name=Submit/".urlencode($event)."&url=".urlencode($app->config('canonicalUrl'))."lib/submit&apiv=1&token_auth=".$piwik_token."&send_image=0&idgoal=1";
+    foreach($opts as $i => $val) {
+        $url .=  "&dimension".$i."=".$val;
+    }
+    if($_SERVER['HTTP_DNT'] != 1) {
+        $url .= "&ua=".urlencode($_SERVER['HTTP_USER_AGENT'])."&lang=".urlencode($_SERVER['HTTP_ACCEPT_LANGUAGE'])."&cip=".urlencode($_SERVER['HTTP_X_FORWARDED_FOR'])."&urlref=".urlencode($_SERVER['HTTP_REFERER'])."&_id=".substr(session_id(), 16);
+    }
     $client->request('GET', $url, [
         'http_errors' => false,
         'synchronous' => false
@@ -376,10 +382,10 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
 
         $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
         $piwikParams = [
-            "1" => ["username", $app->request->params('username')],
-            "2" => ["type", $app->request->params('type')],
-            "3" => ["description", $app->request->params('description')],
-            "4" => ["channel", $app->request->params('channel')]
+            "1" => $app->request->params('username'),
+            "2" => $app->request->params('type'),
+            "3" => $app->request->params('description'),
+            "4" => $app->request->params('channel')
         ];
         try {
             if(!$model->checkToken("submit", $app->request->params('token'))) {
@@ -407,7 +413,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
             }
         }
         catch(Exception $e) {
-            $piwikParams['5'] = ['errorCode' => $e->getCode()];
+            $piwikParams['5'] = $e->getCode();
             $piwikEvent("Error", $piwikParams);
             $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error='.$e->getCode().$echoParam('username').$echoParam('type').$echoParam('channel').$echoParam('description').$correction, 303);
         }
