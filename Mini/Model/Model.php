@@ -205,6 +205,7 @@ class Model
 
     public function checkDone()
     {
+        $this->db->ping();
         $this->config->set('lock', '0');
     }
 
