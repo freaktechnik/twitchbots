@@ -41,7 +41,12 @@ class TypeCrawlerController {
     public function triggerCrawl(): array {
         $ret = array();
         foreach($this->crawlers as $crawler) {
-            $ret = array_merge($ret, $crawler->crawl());
+            try {
+                $crawlResult = $crawler->crawl();
+            } catch(Exception $e) {
+                continue;
+            }
+            $ret = array_merge($ret, $crawlResult);
         }
         return $ret;
     }
