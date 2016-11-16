@@ -68,10 +68,10 @@ function checkTwitchUser(username, cbk) {
     var url = "https://api.twitch.tv/kraken/users/" + username;
 
     var xhr = new XMLHttpRequest();
-    xhr.setRequestHeader('Client-ID', form.dataset.clientid);
-    xhr.setRequestHeader('Accept', 'application/vnd.twitchtv.v3+json');
 
     xhr.open("HEAD", url, true);
+    xhr.setRequestHeader('Client-ID', form.dataset.clientid);
+    xhr.setRequestHeader('Accept', 'application/vnd.twitchtv.v3+json');
     xhr.onreadystatechange = function(e) {
         if(xhr.readyState === 2) {
             // Only reject if the status is 404 not found.
