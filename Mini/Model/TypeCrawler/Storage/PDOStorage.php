@@ -29,6 +29,7 @@ class PDOStorage extends TypeCrawlerStorage {
     }
 
     public function set(string $name, $value) {
+        $this->db->ping();
         if($this->has($name)) {
             $sql = "UPDATE ".$this->table." SET value=? WHERE name=?";
         }
@@ -40,6 +41,7 @@ class PDOStorage extends TypeCrawlerStorage {
     }
 
     public function has(string $name): bool {
+        $this->db->ping();
         $sql = "SELECT value FROM ".$this->table." WHERE name=?";
         $query = $this->db->prepare($sql);
         $query->execute(array($this->type."_".$name));
