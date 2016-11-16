@@ -234,6 +234,10 @@ class Model
         try {
             $bots = $this->bots->getOldestBots($step);
 
+            //TODO store the Twitch ID of the user for now until we switch to API v5
+            // where it'll have to store the username of the bot instead.
+            // Will also have to update the channel's username.
+            // Will have to update date if any username changes.
             $bots = array_values(array_filter($bots, function($bot) {
                 return !$this->twitchUserExists($bot->name);
             }));
