@@ -75,7 +75,7 @@ class Model
 
         // note the PDO::FETCH_OBJ, returning object ($result->id) instead of array ($result["id"])
         // @see http://php.net/manual/de/pdo.construct.php
-        $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
+        $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
 
         // create new PDO db connection
         $this->db = new PingablePDO($dsn, $config['db_user'], $config['db_pass'], $options);
