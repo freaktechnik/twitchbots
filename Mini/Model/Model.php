@@ -229,8 +229,6 @@ class Model
 
     private function checkNBots(int $step): array
     {
-        // Make sure we get reserved.
-        $this->checkRunning();
         try {
             $bots = $this->bots->getOldestBots($step);
 
@@ -254,9 +252,6 @@ class Model
         }
         catch(Exception $e) {
             throw $e;
-        }
-        finally {
-            $this->checkDone();
         }
 
         return $bots;

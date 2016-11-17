@@ -42,53 +42,30 @@ $console
     ))
     ->setDescription('Run all check tasks')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $console) {
-        if($model->checkRunning()) {
-            $date = '['.date('r').'] ';
-            $output->writeln($date.'Check already running. No action taken');
-        }
-        else {
-            $bots = $console->find('check:bots');
-            $arguments = array(
-                'command' => 'check:bots',
-                '--ignoreLock' => true
-            );
-            $inputArr = new ArrayInput($arguments);
-            $bots->run($inputArr, $output);
+        $bots = $console->find('check:bots');
+        $arguments = array(
+            'command' => 'check:bots',
+            '--ignoreLock' => true
+        );
+        $inputArr = new ArrayInput($arguments);
+        $bots->run($inputArr, $output);
 
-            $submissions = $console->find('check:submissions');
-            $arguments = array(
-                'command' => 'check:submissions',
-                '--ignoreLock' => true
-            );
-            $inputArr = new ArrayInput($arguments);
-            $submissions->run($inputArr, $output);
+        $submissions = $console->find('check:submissions');
+        $arguments = array(
+            'command' => 'check:submissions',
+            '--ignoreLock' => true
+        );
+        $inputArr = new ArrayInput($arguments);
+        $submissions->run($inputArr, $output);
 
-            $types = $console->find('check:types');
-            $arguments = array(
-                'command' => 'check:types',
-                '--ignoreLock' => true
-            );
-            $inputArr = new ArrayInput($arguments);
-            $types->run($inputArr, $output);
-            $model->checkDone();
-        }
+        $types = $console->find('check:types');
+        $arguments = array(
+            'command' => 'check:types',
+            '--ignoreLock' => true
+        );
+        $inputArr = new ArrayInput($arguments);
+        $types->run($inputArr, $output);
     });
-
-$shouldRun = function (InputInterface $input, OutputInterface $output) use ($model): bool {
-    if(!(bool)$input->getOption('ignoreLock') && $model->checkRunning()) {
-        $date = '['.date('r').'] ';
-        $output->writeln($date.'Check already running. No action taken.');
-        return false;
-    }
-    else {
-        return true;
-    }
-};
-
-$ran = function (InputInterface $input) use ($model) {
-    if(!(bool)$input->getOption('ignoreLock'))
-        $model->checkDone();
-};
 
 $log = function(string $msg, OutputInterface $output) {
     $date = '['.date('r').'] ';
@@ -97,45 +74,27 @@ $log = function(string $msg, OutputInterface $output) {
 
 $console
     ->register('check:bots')
-    ->setDefinition(array(
-        new InputOption('ignoreLock', 'i', InputOption::VALUE_NONE, 'If the check lock should be ignored', null)
-    ))
     ->setDescription('Check a set of stored bots if they are still registered on Twitch.')
-    ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $shouldRun, $ran, $log) {
-        if($shouldRun($input, $output)) {
-            $bots = $model->checkBots();
+    ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $log) {
+        $bots = $model->checkBots();
 
-            $log('Checked bots. Removed '.count($bots), $output);
-            $ran($input);
-        }
+        $log('Checked bots. Removed '.count($bots), $output);
     });
-
-$defaultArguments = array(
-    new InputOption('ignoreLock', 'i', InputOption::VALUE_OPTIONAL, 'If the check lock should be ignored', null)
-);
 
 $console
     ->register('check:submissions')
-    ->setDefinition($defaultArguments)
     ->setDescription('Check submission meta data.')
-    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $shouldRun, $ran, $log) {
-        if($shouldRun($input, $output)) {
-            $count = $model->checkSubmissions();
-            $log('Checked '.$count.' submissions for being in chat', $output);
-            $ran($input);
-        }
+    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $log) {
+        $count = $model->checkSubmissions();
+        $log('Checked '.$count.' submissions for being in chat', $output);
     });
 
 $console
     ->register('check:types')
-    ->setDefinition($defaultArguments)
     ->setDescription('Check known lists from bot vendors for new bots')
-    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $shouldRun, $ran, $log) {
-        if($shouldRun($input, $output)) {
-            $addedCount = $model->typeCrawl();
-            $log('Added '.$addedCount.' bots based on lists from bot vendors', $output);
-            $ran($input);
-        }
+    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $log) {
+        $addedCount = $model->typeCrawl();
+        $log('Added '.$addedCount.' bots based on lists from bot vendors', $output);
     });
 
 $console->run();

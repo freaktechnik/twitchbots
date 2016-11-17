@@ -373,6 +373,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
             print_r($model->checkBots());
             echo 'Checked '.$model->checkSubmissions().' submissions.';
             echo 'Added '.$model->typeCrawl().' bots based on vendor lists';
+            $model->checkDone();
         }
     });
 
