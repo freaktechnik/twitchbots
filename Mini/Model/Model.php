@@ -227,6 +227,12 @@ class Model
         return $this->checkNBots($botsPerHour);
     }
 
+    private function checkBot($bot)
+    {
+        $this->bots->touchBot($bot->name);
+        return !$this->twitchUserExists($bot->name);
+    }
+
     private function checkNBots(int $step): array
     {
         try {
@@ -236,9 +242,7 @@ class Model
             // where it'll have to store the username of the bot instead.
             // Will also have to update the channel's username.
             // Will have to update date if any username changes.
-            $bots = array_values(array_filter($bots, function($bot) {
-                return !$this->twitchUserExists($bot->name);
-            }));
+            $bots = array_values(array_filter($bots, [$this, 'checkBot']));
 
             $this->db->ping();
             if(count($bots) > 1) {
