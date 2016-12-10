@@ -71,8 +71,8 @@ class Auth {
         return $this->auth0Client->getUser()['nickname'];
     }
 
-    public function logout($to = NULL): string
+    public function logout($to = NULL)
     {
-        return $this->auth0Client->logout();
+        $this->auth0Client->logout();
     }
 }
