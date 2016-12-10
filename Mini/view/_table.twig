@@ -66,7 +66,7 @@
                 <td>
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
-                        <button name="reject" type="submit" class="btn btn-success btn-xs">-</button>
+                        <button name="reject" type="submit" class="btn btn-danger btn-xs">-</button>
                     </form>
                 </td>
                 {% endif %}
