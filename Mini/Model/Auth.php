@@ -52,7 +52,7 @@ class Auth {
 
     public function isLoggedIn(): bool
     {
-        $userInfo = $auth0Client->getUser();
+        $userInfo = $this->auth0Client->getUser();
 
         if (!$userInfo) {
             return false;
