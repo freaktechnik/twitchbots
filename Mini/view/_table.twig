@@ -34,6 +34,11 @@
         <tbody>
 {% for s in set %}
 {%- set botUrl = 'https://twitch.tv/' ~ s.name|e('url') -%}
+{% if s.description matches '/^\\d+$/' %}
+    {% set isType = true %}
+{% else %}
+    {% set isType = false %}
+{% endif %}
             <tr>
                 <td>{% if s.type == 0 -%}
                     <a href="{{ botUrl|e('html_attr') }}" title="{{ s.name|e('html_attr') }} on Twitch" rel="external nofollow">{{ s.name|e }}</a>
@@ -41,7 +46,7 @@
                     <a href="{{ urlFor('bot', { name: s.name }) }}" title="{{ s.name|e('html_attr') }} in the Twitch Bots Directory">{{ s.name|e }}</a>
                 {%- endif %}</td>
                 <td>{% spaceless %}
-                    {% if s.description matches '/^\\d+$/' %}
+                    {% if isType %}
                         <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}">{{ s.description|e }}</a>
                     {% else %}
                         {{ s.description|e }}
@@ -61,7 +66,7 @@
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="approve" value="1" type="submit" class="btn btn-success btn-xs">+</button>
+                        <button name="approve" value="1" type="submit" class="btn btn-success btn-xs"{% if not isType or s.type == 1 %} disabled{% endif %}>+</button>
                     </form>
                 </td>
                 <td>
