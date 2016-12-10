@@ -426,9 +426,14 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
     });
 
     $app->get('/login', function () use ($app, $model) {
-        $app->render('login.twig', array(
-            'login' => $model->login->getIdentifier()
-        ));
+        if(!$model->login->isLoggedIn()) {
+            $app->render('login.twig', array(
+                'login' => $model->login->getIdentifier()
+            ));
+        }
+        else {
+            $app->redirect($app->request->getUrl().$app->urlFor('submissions'));
+        }
     })->name('login');
 
     $app->get('/logout', function () use ($app, $model) {
