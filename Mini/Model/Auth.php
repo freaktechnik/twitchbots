@@ -71,8 +71,9 @@ class Auth {
         return $this->auth0Client->getUser()['email'];
     }
 
-    public function logout($to = NULL)
+    public function logout()
     {
         $this->auth0Client->logout();
+        session_destroy();
     }
 }
