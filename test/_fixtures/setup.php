@@ -47,11 +47,10 @@ function create_tables($pdo) {
         FOREIGN KEY (type) REFERENCES types(id)
     ) DEFAULT CHARSET=ascii');
     create_config_table($pdo);
-    $pdo->query('CREATE TABLE IF NOT EXISTS check_tokens (
+    $pdo->query('CREATE TABLE IF NOT EXISTS authorized_users (
         id int(10) unsigned NOT NULL AUTO_INCREMENT,
-        token varchar(535) CHARACTER SET ascii NOT NULL,
-        PRIMARY KEY (id),
-        UNIQUE KEY(token)
+        email MEDIUMTEXT CHARACTER SET ascii NOT NULL,
+        PRIMARY KEY (id)
     ) DEFAULT CHARSET=ascii AUTO_INCREMENT=2');
     $pdo->query('CREATE OR REPLACE VIEW count AS SELECT count(name) AS count FROM bots');
     $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, type, multichannel, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
