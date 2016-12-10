@@ -431,7 +431,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
 
     $app->get('/logout', function () use ($app, $model) {
         $model->login->logout();
-        $app->redirect($app->request->getUrl());
+        $app->redirect($app->request->getUrl().$app->urlFor('index'));
     })->name('logout');
 
     $app->get('/callback', function () use ($app, $model) {
