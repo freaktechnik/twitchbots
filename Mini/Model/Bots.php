@@ -130,7 +130,7 @@ class Bots extends PaginatingStore {
         $this->cleanUpTempTable($tempTable);
     }
 
-    public function addBot(string $name, int $type, $channel = null, $query = null)
+    public function addBot(string $name, int $type, $channel = null)
     {
         $structure = "(name,type,channel,date) VALUES (?,?,?,NOW())";
         $query = $this->prepareInsert($structure);

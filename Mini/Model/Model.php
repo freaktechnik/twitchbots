@@ -561,4 +561,22 @@ class Model
 
         return $count;
     }
+
+    /**
+     * Approves a submission. Currently only supports submissions and ones with
+     * a numeric description.
+     */
+    public function approveSubmission(int $id): bool
+    {
+        $submission = $this->submissions->getSubmission($id);
+
+        if(!is_numeric($submission->description) || $submission->type != 0) {
+            return false;
+        }
+
+        $this->bots->addBot($submission->name, (int)$submission->description, $submission->channel);
+        $this->submissions->removeSubmission($id);
+
+        return true;
+    }
 }

@@ -448,6 +448,22 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
             $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
         }
     });
+
+    $app->get('/subaction', function() use ($app, $model) {
+        if($model->login->isLoggedIn()) {
+            if($app->request->params('approve')) {
+                $model->approveSubmission((int)$app->request->params('id'));
+            }
+            else if($app->request->params('reject')) {
+                $model->submissions->removeSubmission((int)$app->request->params('id'));
+            }
+            //TODO respect tab user came from
+            $app->redirect($app->request->getUrl().$app->urlFor('submissions'), 303);
+        }
+        else {
+            $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
+        }
+    })->name('submission-action');
 });
 
 $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {

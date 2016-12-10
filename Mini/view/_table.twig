@@ -7,7 +7,7 @@
 <span class="glyphicon glyphicon-question-sign status-unknown" title="No data"></span>
 {%- endif %}
 {%- endmacro -%}
-{%- macro table(set, id, active) -%}
+{%- macro table(set, id, active, buttons) -%}
 {%- from _self import status -%}
 {% set defaultVal = status(null) %}
 <div class="table-responsive tab-pane{% if active %} active{% endif %}" role="tabpanel" id="{{ id|e('html_attr') }}">
@@ -25,6 +25,10 @@
                 <th>Modded</th>
                 <th>Following Channel</th>
                 <th>Score</th>
+                {% if buttons %}
+                <th>A</th>
+                <th>R</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -52,6 +56,20 @@
                 <td><a href="https://twitchstuff.3v.fi/mods/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow">{{ status(s.ismod) }}</a></td>
                 <td>{{ status(s.following_channel) }}</td>
                 <td>{{ s.score }}</td>
+                {% if buttons %}
+                <td>
+                    <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
+                        <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
+                        <button name="approve" type="submit" class="btn btn-success btn-xs">+</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
+                        <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
+                        <button name="reject" type="submit" class="btn btn-success btn-xs">-</button>
+                    </form>
+                </td>
+                {% endif %}
             </tr>
 {% endfor %}
         </tbody>
