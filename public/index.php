@@ -219,9 +219,12 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
         $app->lastModified(time());
     }
 
+    $token = $model->getToken("submissions");
+
     $app->render('submissions.twig', array(
         'submissions' => $submissions,
         'corrections' => $corrections,
+        'token' => $token,
         'login' => $model->login->getIdentifier()
     ));
 })->name('submissions');
@@ -450,11 +453,11 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
     });
 
     $app->post('/subaction', function() use ($app, $model) {
-        if($model->login->isLoggedIn()) {
-            if($app->request->params('approve')) {
+        if($model->login->isLoggedIn() && $model->checkToken("submissions", $app->request->params('token'))) {
+            if($app->request->params('approve') == "1") {
                 $model->approveSubmission((int)$app->request->params('id'));
             }
-            else if($app->request->params('reject')) {
+            else if($app->request->params('reject') == "1") {
                 $model->submissions->removeSubmission((int)$app->request->params('id'));
             }
             //TODO respect tab user came from

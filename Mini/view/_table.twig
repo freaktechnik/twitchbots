@@ -7,7 +7,7 @@
 <span class="glyphicon glyphicon-question-sign status-unknown" title="No data"></span>
 {%- endif %}
 {%- endmacro -%}
-{%- macro table(set, id, active, buttons) -%}
+{%- macro table(set, id, active, buttons, token) -%}
 {%- from _self import status -%}
 {% set defaultVal = status(null) %}
 <div class="table-responsive tab-pane{% if active %} active{% endif %}" role="tabpanel" id="{{ id|e('html_attr') }}">
@@ -60,13 +60,15 @@
                 <td>
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
-                        <button name="approve" type="submit" class="btn btn-success btn-xs">+</button>
+                        <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
+                        <button name="approve" value="1" type="submit" class="btn btn-success btn-xs">+</button>
                     </form>
                 </td>
                 <td>
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
-                        <button name="reject" type="submit" class="btn btn-danger btn-xs">-</button>
+                        <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
+                        <button name="reject" value="1" type="submit" class="btn btn-danger btn-xs">-</button>
                     </form>
                 </td>
                 {% endif %}

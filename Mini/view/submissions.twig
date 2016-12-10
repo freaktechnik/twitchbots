@@ -11,8 +11,8 @@
 </div>
 <form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
     <div class="form-group">
-        <label>Logged in as:</label>
-        <output>{{ login|e }}</output>
+        <label for="loginmail">Logged in as:</label>
+        <output class="form-control" id="loginmail">{{ login|e }}</output>
     </div>
     <button class="btn btn-default" type="submit">Logout</button>
 </form>
@@ -25,8 +25,8 @@
     </li>
 </ul>
 <div class="tab-content">
-    {{ table(submissions, "submissions", true, true) }}
-    {{ table(corrections, "corrections", false, true) }}
+    {{ table(submissions, "submissions", true, true, token) }}
+    {{ table(corrections, "corrections", false, true, token) }}
 </div>
 <script type="application/javascript" src="{{ siteUrl('/js/tabs.js')|e('html_attr') }}"></script>
 {% endblock %}
