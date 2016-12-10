@@ -221,7 +221,8 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
 
     $app->render('submissions.twig', array(
         'submissions' => $submissions,
-        'corrections' => $corrections
+        'corrections' => $corrections,
+        'login' => $model->login->getIdentifier()
     ));
 })->name('submissions');
 
@@ -427,9 +428,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
 
     $app->get('/login', function () use ($app, $model) {
         if(!$model->login->isLoggedIn()) {
-            $app->render('login.twig', array(
-                'login' => $model->login->getIdentifier()
-            ));
+            $app->render('login.twig');
         }
         else {
             $app->redirect($app->request->getUrl().$app->urlFor('submissions'));
