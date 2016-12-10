@@ -575,6 +575,7 @@ class Model
         }
 
         $this->bots->addBot($submission->name, (int)$submission->description, $submission->channel);
+        //TODO actually remove submissions by name if type==0, don't do that if type==1
         $this->submissions->removeSubmission($id);
 
         return true;
