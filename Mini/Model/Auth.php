@@ -57,6 +57,7 @@ class Auth {
         if (!$userInfo) {
             return false;
         } else {
+            print_r($userInfo);
             if($this->isAuthorizedUser($userInfo['email'])) {
                 return true;
             }
