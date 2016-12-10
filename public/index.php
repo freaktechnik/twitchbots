@@ -431,18 +431,18 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
             $app->render('login.twig');
         }
         else {
-            $app->redirect($app->request->getUrl().$app->urlFor('submissions'));
+            $app->redirect($app->request->getUrl().$app->urlFor('submissions'), 303);
         }
     })->name('login');
 
     $app->get('/logout', function () use ($app, $model) {
         $model->login->logout();
-        $app->redirect($app->request->getUrl().$app->urlFor('index'));
+        $app->redirect($app->request->getUrl().$app->urlFor('index'), 303);
     })->name('logout');
 
     $app->get('/callback', function () use ($app, $model) {
         if($model->login->isLoggedIn()) {
-            $app->redirect($app->request->getUrl().$app->urlFor('submissions'));
+            $app->redirect($app->request->getUrl().$app->urlFor('submissions'), 303);
         }
         else {
             $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
