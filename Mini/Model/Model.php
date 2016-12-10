@@ -537,21 +537,6 @@ class Model
         return $count;
     }
 
-    public function canCheck(string $token): bool
-    {
-        if(strlen($token) == 0 || !preg_match('/^[A-Za-z0-9]+$/', $token)) {
-            throw new Exception('Invalid token');
-        }
-
-        $sql = "SELECT * FROM check_tokens WHERE token=?";
-        $query = $this->db->prepare($sql);
-        $query->execute(array($token));
-        $results = $query->fetchAll();
-        return count($results) > 0 && in_array($token, array_map(function($result) {
-            return $result->token;
-        }, $results), true);
-    }
-
     public function typeCrawl(): int
     {
         $storage = new StorageFactory('PDOStorage', array($this->db, 'config'));
