@@ -9,9 +9,13 @@
 <div class="page-header">
     <h1>Submission Queue</h1>
 </div>
-<p>Logged in as: {{ login|e}} <form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
+<form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
+    <div class="form-group">
+        <label>Logged in as:</label>
+        <output value="{{ login|e('html_attr') }}">
+    </div>
     <button class="btn btn-default" type="submit">Logout</button>
-</form></p>
+</form>
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
         <a href="#submissions" role="tab" aria-controls="submissions">Submissions <span class="badge">{{ submissions|length }}</span></a>
