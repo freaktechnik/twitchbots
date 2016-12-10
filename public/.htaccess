@@ -8,5 +8,8 @@ Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; prelo
 
 RewriteEngine On
 
+
+RewriteRule ^/assets/main.js js/load-bootstrap.js [QSA,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA]
