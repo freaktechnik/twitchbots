@@ -64,6 +64,8 @@ class Model
 
     private $_followsCache;
 
+    public $login;
+
     /**
      * When creating the model, the configs for database connection creation are needed
      * @param $config
@@ -91,6 +93,14 @@ class Model
             'headers' => array('Client-ID' => $this->config->get('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
         ));
         $this->client = $client;
+
+        $this->login = new Auth(
+            $this->config->get('auth0_clientId'),
+            $this->config->get('auth0_clientSecret'),
+            $this->config->get('auth0_redirectUrl'),
+            $this->config->get('auth0_domain'),
+            $this->db
+        );
 	}
 
     public function getClientID(): string

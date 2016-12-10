@@ -14,7 +14,8 @@
         "geshi/geshi": "dev-master",
         "kevinrob/guzzle-cache-middleware": "^1.4",
         "Doctrine/Cache": "^1.6",
-        "guzzlehttp/guzzle": "^6.2"
+        "guzzlehttp/guzzle": "^6.2",
+        "auth0/auth0-php": "~4.0"
     },
     "autoload": {
         "psr-4": {

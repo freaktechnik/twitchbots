@@ -204,6 +204,9 @@ $app->get('/about', function () use ($app, $getTemplateLastMod) {
     $app->render('about.twig');
 });
 $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
+    if(!$model->login->isLoggedIn()) {
+        $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
+    }
     $app->expires('+1 minute');
     $submissions = $model->submissions->getSubmissions(\Mini\Model\Submissions::SUBMISSION);
     $corrections = $model->submissions->getSubmissions(\Mini\Model\Submissions::CORRECTION);
@@ -352,17 +355,8 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
 
 $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
     $app->get('/check', function ()  use ($app, $model) {
-        if(!isset($_GET['token'])) {
-            $app->halt(400, 'Token missing');
-        }
-        try {
-            $canCheck = $model->canCheck($_GET['token']);
-        }
-        catch(Exception $e) {
-            $canCheck = false;
-        }
-        if(!$canCheck) {
-            $app->halt(403, 'Invalid token');
+        if(!$model->login->isLoggedIn()) {
+            $app->halt(401, 'Not logged in');
         }
 
         if($model->checkRunning()) {
@@ -422,12 +416,35 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
         $piwikEvent($event, $piwikParams);
         $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1'.$correction, 303);
     });
+
+    $app->get('/auth0.js', function () use($app, $model) {
+        $libConfig = $model->login->getConfig();
+
+        $app->render('auth0.js.twig', $libConfig);
+    });
+
+    $app->get('/login', function () use ($app) {
+        $app->render('login.twig');
+    })->name('login');
+
+    $app->get('/logout', function () use ($app, $model) {
+        $model->login->logout();
+        $app->redirect($app->request->getUrl());
+    })->name('logout');
+
+    $app->get('/callback', function () use ($app, $model) {
+        if($model->login->isLoggedIn()) {
+            $app->redirect($app->request->getUrl().$app->urlFor('submissions'));
+        }
+        else {
+            $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
+        }
+    });
 });
 
 $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
     $app->contentType('application/xml;charset=utf8');
 
-    $subLastUpdate = $model->submissions->getLastUpdate();
     $botLastUpdate = $model->bots->getLastUpdate();
     $typeLastUpdate = $model->types->getLastUpdate();
     $templateUpdates = array(
@@ -437,8 +454,7 @@ $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, 
         "submit" => $getTemplateLastMod('submit.twig'),
         "check" => $getTemplateLastMod('check.twig'),
         "api" => $getTemplateLastMod('api.twig'),
-        "about" => $getTemplateLastMod('about.twig'),
-        "submissions" => $getTemplateLastMod('submissions.twig')
+        "about" => $getTemplateLastMod('about.twig')
     );
     $app->lastModified(max(max($templateUpdates), $subLastUpdate, $botLastUpdate, $typeLastUpdate));
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
@@ -480,12 +496,6 @@ $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, 
     $url->addChild('loc', $app->config('canonicalUrl').'about');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod($templateUpdates['about']));
-
-    $url = $sitemap->addChild('url');
-    $url->addChild('loc', $app->config('canonicalUrl').'submissions');
-    $url->addChild('changefreq', 'daily');
-    $url->addChild('lastmod', $getLastMod(max($templateUpdates['submissions'], $subLastUpdate)));
-    $url->addChild('priority', '0.2');
 
     echo $sitemap->asXML();
 });

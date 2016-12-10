@@ -1,0 +1,14 @@
+var lock = new Auth0Lock('{{ clientId }}', '{{ domain }}', {
+  auth: {
+    redirectUrl: '{{ redirectUrl }}',
+    responseType: 'code',
+    params: {
+      scope: 'openid email'
+    }
+  }
+});
+document.getElementById("login").addEventListener("click", function()  {
+    lock.show({
+        allowSignUp: false
+    });
+}, false);

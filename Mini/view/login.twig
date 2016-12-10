@@ -1,0 +1,9 @@
+{% extends "_base.twig" %}
+{% block title %}Login{% endblock %}
+{% block extraresources %}
+<script src="https://cdn.auth0.com/js/lock/10.6/lock.min.js" type="application/javascript"></script>
+{% endblock %}
+{% block content %}
+<button class="btn btn-primary">Login</button>
+<script src="{{ siteUrl('/lib/auth0.js') }}" type="application/javascript"></script>
+{% endblock %}

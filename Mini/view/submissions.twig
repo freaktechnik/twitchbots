@@ -2,13 +2,14 @@
 {% extends "_base.twig" %}
 {% block title %}Submissions{% endblock %}
 {% block extraresources %}
-<link rel="canonical" href="{{ canonicalUrl }}submissions">
-<link rel="stylesheet" href="{{ siteUrl('/css/status.css') }}" type="text/css">
+<link rel="canonical" href="{{ canonicalUrl|e('html_attr') }}submissions">
+<link rel="stylesheet" href="{{ siteUrl('/css/status.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
 {% block content %}
 <div class="page-header">
     <h1>Submission Queue</h1>
 </div>
+<a href="{{ urlFor('logout')|e('html_attr') }}">Logout</a>
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
         <a href="#submissions" role="tab" aria-controls="submissions">Submissions <span class="badge">{{ submissions|length }}</span></a>
