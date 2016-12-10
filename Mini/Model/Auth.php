@@ -15,9 +15,11 @@ class Auth {
 
     function __construct(string $clientId, string $clientSecret, string $cbk, string $domain, PingablePDO $db)
     {
-        $this->auth0 = new Authentication($domain, $clientId);
+        if(!empty($clientId)) {
+            $this->auth0 = new Authentication($domain, $clientId);
 
-        $this->auth0Client = $this->auth0->get_oauth_client($clientSecret, $cbk);
+            $this->auth0Client = $this->auth0->get_oauth_client($clientSecret, $cbk);
+        }
 
         $this->clientId = $clientId;
         $this->redirectUrl = $cbk;
