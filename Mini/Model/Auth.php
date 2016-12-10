@@ -1,7 +1,7 @@
 <?php
-use Auth0\SDK\API\Authentication;
+namespace Mini\Model;
 
-namespace \Mini\Model;
+use Auth0\SDK\API\Authentication;
 
 class Auth {
     private $auth0;
