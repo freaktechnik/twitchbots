@@ -223,7 +223,7 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
         'submissions' => $submissions,
         'corrections' => $corrections
     ));
-});
+})->name('submissions');
 
 $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
     $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
