@@ -425,8 +425,10 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
         $app->render('auth0.js.twig', $libConfig);
     });
 
-    $app->get('/login', function () use ($app) {
-        $app->render('login.twig');
+    $app->get('/login', function () use ($app, $model) {
+        $app->render('login.twig', array(
+            'login' => $model->login->getIdentifier()
+        ));
     })->name('login');
 
     $app->get('/logout', function () use ($app, $model) {

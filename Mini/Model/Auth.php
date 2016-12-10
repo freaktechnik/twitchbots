@@ -57,7 +57,6 @@ class Auth {
         if (!$userInfo) {
             return false;
         } else {
-            print_r($userInfo);
             if($this->isAuthorizedUser($userInfo['email'])) {
                 return true;
             }
@@ -67,9 +66,9 @@ class Auth {
         }
     }
 
-    public function getUsername(): string
+    public function getIdentifier(): string
     {
-        return $this->auth0Client->getUser()['nickname'];
+        return $this->auth0Client->getUser()['email'];
     }
 
     public function logout($to = NULL)
