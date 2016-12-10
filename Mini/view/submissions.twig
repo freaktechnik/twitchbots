@@ -9,7 +9,9 @@
 <div class="page-header">
     <h1>Submission Queue</h1>
 </div>
-<p>Logged in as: {{ login|e}} <a href="{{ urlFor('logout')|e('html_attr') }}">Logout</a></p>
+<p>Logged in as: {{ login|e}} <form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
+    <button class="btn btn-default" type="submit">Logout</button>
+</form></p>
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
         <a href="#submissions" role="tab" aria-controls="submissions">Submissions <span class="badge">{{ submissions|length }}</span></a>
