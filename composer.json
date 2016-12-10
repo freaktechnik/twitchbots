@@ -24,7 +24,7 @@
     },
     "config": {
         "component-dir": "public/assets",
-        "component-baseurl": null
+        "component-baseurl": "/assets"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8",

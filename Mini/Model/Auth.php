@@ -29,8 +29,8 @@ class Auth {
 
     private function isAuthorizedUser(string $email): bool
     {
-        $q = $this->db->prepare("SELECT email FROM authorized_users WHERE email LIKE ?");
-        $q->execute($email);
+        $q = $this->db->prepare("SELECT email FROM authorized_users WHERE email=?");
+        $q->execute(array($email));
 
         $result = $q->fetch();
         if(!$result) {
