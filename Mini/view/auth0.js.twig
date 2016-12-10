@@ -1,14 +1,16 @@
-var lock = new Auth0Lock('{{ clientId }}', '{{ domain }}', {
-  auth: {
-    redirectUrl: '{{ redirectUrl }}',
-    responseType: 'code',
-    params: {
-      scope: 'openid email'
-    }
-  }
-});
-document.getElementById("login").addEventListener("click", function()  {
-    lock.show({
-        allowSignUp: false
+require(["auth0Lock"], function(Auth0Lock) {
+    var lock = new Auth0Lock('{{ clientId }}', '{{ domain }}', {
+      auth: {
+        redirectUrl: '{{ redirectUrl }}',
+        responseType: 'code',
+        params: {
+          scope: 'openid email'
+        }
+      }
     });
-}, false);
+    document.getElementById("login").addEventListener("click", function()  {
+        lock.show({
+            allowSignUp: false
+        });
+    }, false);
+});
