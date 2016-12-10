@@ -449,7 +449,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
         }
     });
 
-    $app->get('/subaction', function() use ($app, $model) {
+    $app->post('/subaction', function() use ($app, $model) {
         if($model->login->isLoggedIn()) {
             if($app->request->params('approve')) {
                 $model->approveSubmission((int)$app->request->params('id'));
