@@ -209,7 +209,7 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
     if(!$model->login->isLoggedIn()) {
         $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
     }
-    $app->expires('+1 minute');
+    //$app->expires('+1 minute');
     $submissions = $model->submissions->getSubmissions(\Mini\Model\Submissions::SUBMISSION);
     $corrections = $model->submissions->getSubmissions(\Mini\Model\Submissions::CORRECTION);
     if(count($submissions) + count($corrections) > 0) {
