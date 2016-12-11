@@ -26,8 +26,8 @@
                 <th>Following Channel</th>
                 <th>Score</th>
                 {% if buttons %}
-                <th>A</th>
-                <th>R</th>
+                <th aria-label="Approve Submission"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></th>
+                <th aria-label="Reject Submission"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></th>
                 {% endif %}
             </tr>
         </thead>
@@ -66,14 +66,14 @@
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="approve" value="1" type="submit" class="btn btn-success btn-xs"{% if not isType or s.type == 1 %} disabled{% endif %}>+</button>
+                        <button name="approve" value="1" type="submit" class="btn btn-success btn-xs"{% if not isType or s.type == 1 %} disabled{% endif %} aria-label="Approve"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
                     </form>
                 </td>
                 <td>
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="reject" value="1" type="submit" class="btn btn-danger btn-xs">-</button>
+                        <button name="reject" value="1" type="submit" class="btn btn-danger btn-xs" aria-label="Reject"><span class="glyphicon glyphicon-remove" aria-hidden="true"></button>
                     </form>
                 </td>
                 {% endif %}
