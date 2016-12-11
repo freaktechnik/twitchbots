@@ -3,6 +3,12 @@ namespace Mini\Model;
 
 use Auth0\SDK\API\Authentication;
 
+/* CREATE TABLE IF NOT EXISTS authorized_users (
+    id int(10) unsigned NOT NULL AUTO_INCREMENT,
+    email MEDIUMTEXT CHARACTER SET ascii NOT NULL,
+    PRIMARY KEY (id)
+) DEFAULT CHARSET=ascii */
+
 class Auth {
     private $auth0;
     private $auth0Client;

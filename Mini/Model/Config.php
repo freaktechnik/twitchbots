@@ -2,6 +2,12 @@
 
 namespace Mini\Model;
 
+/* CREATE TABLE IF NOT EXISTS config (
+    name varchar(120) CHARACTER SET ascii NOT NULL,
+    value varchar(100) CHARACTER SET ascii DEFAULT NULL,
+    PRIMARY KEY (name)
+) DEFAULT CHARSET=ascii */
+
 class Config extends Store {
     function __construct(PingablePDO $db)
     {

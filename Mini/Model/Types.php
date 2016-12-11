@@ -4,6 +4,16 @@ namespace Mini\Model;
 
 use PDO;
 
+/* CREATE TABLE IF NOT EXISTS types (
+    id int(10) unsigned NOT NULL AUTO_INCREMENT,
+    name varchar(535) CHARACTER SET ascii NOT NULL,
+    multichannel tinyint(1) NOT NULL,
+    url text CHARACTER SET ascii NOT NULL,
+    date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY name (name)
+) DEFAULT CHARSET=ascii */
+
 class Types extends PaginatingStore {
     function __construct(PingablePDO $db, int $pageSize = 50)
     {
