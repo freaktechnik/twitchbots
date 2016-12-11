@@ -14,6 +14,6 @@
     cursor: default;
 }
 
-a .status-ok, a .status-unknown, a.status-nok {
+a .status-ok, a .status-unknown, a .status-nok {
     cursor: pointer;
 }
