@@ -424,6 +424,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
     });
 
     $app->get('/auth0.js', function () use($app, $model) {
+        $app->response->headers->set('Content-Type', 'application/javascript;charset=utf8');
         $libConfig = $model->login->getConfig();
 
         $app->render('auth0.js.twig', $libConfig);
