@@ -625,6 +625,12 @@ class Model
             throw new Exception("User could not be found");
         }
 
-        return json_decode($response->getBody(), true)['_id'];
+        $users = json_decode($response->getBody(), true)['users'];
+        if(count($users) > 0){
+            return $users[0]['_id'];
+        }
+        else {
+            throw new Exception("User could not be found");
+        }
     }
 }
