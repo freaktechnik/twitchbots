@@ -5,13 +5,16 @@ namespace Mini\Model;
 use PDO;
 
 /* CREATE TABLE IF NOT EXISTS bots (
+    twitch_id int(10) UNSIGNED DEFAULT NULL COMMENT `Twitch user ID`,
     name varchar(535) CHARACTER SET ascii NOT NULL COMMENT `Twitch username of the bot`,
     type int(10) unsigned DEFAULT NULL COMMENT `Type of the bot`,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last content modification ts`,
     cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last crawl or update ts`,
     channel varchar(535) CHARACTER SET ascii DEFAULT NULL COMMENT `Channel the bot is in`,
+    channel_id int(10) UNSIGNED DEFAULT NULL COMMENT `Channel Twitch ID`,
     PRIMARY KEY (name),
-    FOREIGN KEY (type) REFERENCES types(id)
+    FOREIGN KEY (type) REFERENCES types(id),
+    UNIQUE KEY twitch_id (twitch_id)
 ) DEFAULT CHARSET=ascii */
 
 class Bots extends PaginatingStore {
@@ -171,5 +174,18 @@ class Bots extends PaginatingStore {
         }
         $query = $this->prepareUpdate($sql);
         $query->execute(array($username));
+    }
+
+    public function updateBot(stdClass $updatedBot)
+    {
+        $sql = "twitch_id=?, type=?, date=NOW(), channel=?, channel_id=? WHERE name=?";
+        $query = $this->prepareUpdate($sql);
+        $query->execute([
+            $updatedBot->twitch_id,
+            $updatedBot->type,
+            $updatedBot->channel,
+            $updatedBot->channel_id,
+            $updatedBot->name
+        ]);
     }
 }

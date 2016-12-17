@@ -38,13 +38,16 @@ function create_tables($pdo) {
         UNIQUE KEY name (name)
     ) DEFAULT CHARSET=ascii AUTO_INCREMENT=37');
     $pdo->query('CREATE TABLE IF NOT EXISTS bots (
+        twitch_id int(10) unsigned DEFAULT NULL,
         name varchar(535) CHARACTER SET ascii NOT NULL,
         type int(10) unsigned DEFAULT NULL,
         cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         date timestamp NOT NULL DEFAULT 0,
         channel varchar(535) CHARACTER SET ascii DEFAULT NULL,
+        channel_id int(10) unsigned DEFAULT NULL,
         PRIMARY KEY (name),
-        FOREIGN KEY (type) REFERENCES types(id)
+        FOREIGN KEY (type) REFERENCES types(id),
+        UNIQUE KEY twitch_id (twitch_id)
     ) DEFAULT CHARSET=ascii');
     create_config_table($pdo);
     $pdo->query('CREATE TABLE IF NOT EXISTS authorized_users (

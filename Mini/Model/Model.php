@@ -92,6 +92,14 @@ class Model
         $this->twitchHeaders = array_merge(self::$requestOptions, array(
             'headers' => array('Client-ID' => $this->config->get('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
         ));
+        $this->twitchHeadersV5 = array_merge(self::$requestOptions, [
+            'headers' => [
+                'Client-ID' => $this->config->get('client-ID'),
+                'Accept' => 'application/vnd.twitchtv.v5+json'
+            ]
+        ]);
+
+
         $this->client = $client;
 
         $this->login = new Auth(
@@ -240,7 +248,23 @@ class Model
     private function checkBot($bot)
     {
         $this->bots->touchBot($bot->name);
-        return !$this->twitchUserExists($bot->name);
+
+        $exists = $this->twitchUserExists($bot->name);
+
+        if($exists) {
+            // Set the twitch IDs in the DB
+            $modified = false;
+            if(empty($bot->twitch_id)) {
+                $bot->twitch_id = $this->getChannelID($bot->name);
+                $modified = true;
+            }
+            if(!empty($bot->channel) && empty($bot->channel_id)) {
+                $bot->channel_id = $this->getChannelID($bot->channel);
+                $modified = true;
+            }
+            $this->bots->updateBot($bot);
+        }
+        return !$exists;
     }
 
     private function checkNBots(int $step): array
@@ -579,5 +603,17 @@ class Model
         $this->submissions->removeSubmission($id);
 
         return true;
+    }
+
+    private function getChannelID(string $username): int
+    {
+        $url = 'https://api.twitch.tv/kraken/users/?login='.$username;
+        $response = $this->client->get($url, $this->twitchHeadersV5);
+
+        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
+            throw new Exception("User could not be found");
+        }
+
+        return json_decode($response->getBody(), true)['_id'];
     }
 }

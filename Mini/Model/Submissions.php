@@ -157,7 +157,7 @@ class Submissions extends PaginatingStore {
             $condition .= " AND description=?";
             $args[] = $description;
         }
-        $query = $this->preapreDelete($condition);
+        $query = $this->prepareDelete($condition);
         $query->execute($args);
     }
 }
