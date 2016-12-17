@@ -579,7 +579,12 @@ class Model
         for($i = 0; $i < $max; $i += 1) {
             $bot = $foundBots[$i];
             if(empty($this->bots->getBot($bot->name)) && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel, true))) {
-                $this->bots->addBot($bot->name, $bot->type, $bot->channel);
+                $twitchId = $this->getChannelID($bot->name);
+                $channelId = null;
+                if(!empty($bot->channel)) {
+                    $channelId = $this->getChannelID($bot->channel);
+                }
+                $this->bots->addBot($twitchId, $bot->name, $bot->type, $bot->channel, $channelId);
                 $count += 1;
 
                 // Remove any matching submissions.
