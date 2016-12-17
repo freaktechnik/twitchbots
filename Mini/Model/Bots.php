@@ -178,7 +178,7 @@ class Bots extends PaginatingStore {
         $query->execute(array($username));
     }
 
-    public function updateBot(stdClass $updatedBot)
+    public function updateBot(\stdClass $updatedBot)
     {
         $sql = "twitch_id=?, type=?, date=NOW(), channel=?, channel_id=? WHERE name=?";
         $query = $this->prepareUpdate($sql);
