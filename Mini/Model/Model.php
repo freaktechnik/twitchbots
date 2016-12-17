@@ -259,8 +259,12 @@ class Model
                 $modified = true;
             }
             if(!empty($bot->channel) && empty($bot->channel_id)) {
-                $bot->channel_id = $this->getChannelID($bot->channel);
-                $modified = true;
+                try {
+                    $bot->channel_id = $this->getChannelID($bot->channel);
+                    $modified = true;
+                } catch(Exception $e) {
+                    // channel id could not be fetched.
+                }
             }
             $this->bots->updateBot($bot);
         }
@@ -598,7 +602,14 @@ class Model
             return false;
         }
 
-        $this->bots->addBot($submission->name, (int)$submission->description, $submission->channel);
+        $twitchId = $this->getChannelID($submission->name);
+
+        $channelId = null;
+        if(!empty($submission->channel)) {
+            $channelId = $this->getChannelID($submission->channel);
+        }
+
+        $this->bots->addBot($twitchId, $submission->name, (int)$submission->description, $submission->channel, $channelId);
         //TODO actually remove submissions by name if type==0, don't do that if type==1
         $this->submissions->removeSubmission($id);
 

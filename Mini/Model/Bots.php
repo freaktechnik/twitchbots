@@ -133,13 +133,15 @@ class Bots extends PaginatingStore {
         $this->cleanUpTempTable($tempTable);
     }
 
-    public function addBot(string $name, int $type, $channel = null)
+    public function addBot(int $id, string $name, int $type, string $channel = null, int $channelId = null)
     {
-        $structure = "(name,type,channel,date) VALUES (?,?,?,NOW())";
+        $structure = "(twitch_id,name,type,channel,channel_id,date) VALUES (?,?,?,?,?,NOW())";
         $query = $this->prepareInsert($structure);
-        $query->bindValue(1, strtolower($name), PDO::PARAM_STR);
-        $query->bindValue(2, $type, PDO::PARAM_INT);
-        $query->bindValue(3, strtolower($channel), PDO::PARAM_STR);
+        $query->bindValue(1, $id, PDO::PARAM_INT);
+        $query->bindValue(2, strtolower($name), PDO::PARAM_STR);
+        $query->bindValue(3, $type, PDO::PARAM_INT);
+        $query->bindValue(4, strtolower($channel), PDO::PARAM_STR);
+        $query->bindValue(5, $channelId, PDO::PARAM_INT);
         $query->execute();
     }
 
