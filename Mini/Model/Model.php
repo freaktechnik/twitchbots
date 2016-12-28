@@ -341,7 +341,11 @@ class Model
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$channel, $this->twitchHeaders);
         $user = json_decode($response->getBody());
-        return $user->bio;
+        if(isset($user->bio)) {
+            return $user->bio;
+        } else {
+            return NULL;
+        }
     }
 
     private function hasVODs(string $channel): bool
