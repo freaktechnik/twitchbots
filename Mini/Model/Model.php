@@ -267,7 +267,9 @@ class Model
                     // channel id could not be fetched.
                 }
             }
-            $this->bots->updateBot($bot);
+            if($modified) {
+                $this->bots->updateBot($bot);
+            }
         }
         return !$exists;
     }
