@@ -58,6 +58,7 @@ class Model
     private $config;
 
     private $twitchHeaders;
+    private $twitchHeadersV5;
 
     private static $requestOptions = array('http_errors' => false);
 
@@ -346,8 +347,10 @@ class Model
     private function hasVODs(string $channel): bool
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channel.'/videos', $this->twitchHeaders);
+        $highlights = json_decode($response->getBody());
+        $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channel.'/videos?broadcasts=true', $this->twitchHeaders);
         $vods = json_decode($response->getBody());
-        return $vods->_total > 0;
+        return $highlights->_total > 0 || $vods->_total > 0;
     }
 
     private function getFollowing(string $name): \stdClass
