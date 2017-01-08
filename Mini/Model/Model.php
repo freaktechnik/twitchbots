@@ -326,16 +326,16 @@ class Model
         return array_key_exists('moderators', $chatters) && in_array($user, $chatters['moderators']);
     }
 
-    private function isChannelLive(string $channel): bool
+    private function isChannelLive(int $channelId): bool
     {
-        $response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$channel, $this->twitchHeaders);
+        $response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$channelId, $this->twitchHeadersV5);
         $stream = json_decode($response->getBody());
         return isset($stream->stream);
     }
 
-    private function getBio(string $channel)//: ?string
+    private function getBio(int $channelId)//: ?string
     {
-        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$channel, $this->twitchHeaders);
+        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$channelId, $this->twitchHeadersV5);
         $user = json_decode($response->getBody());
         if(isset($user->bio)) {
             return $user->bio;
@@ -344,19 +344,17 @@ class Model
         }
     }
 
-    private function hasVODs(string $channel): bool
+    private function hasVODs(int $channelId): bool
     {
-        $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channel.'/videos', $this->twitchHeaders);
-        $highlights = json_decode($response->getBody());
-        $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channel.'/videos?broadcasts=true', $this->twitchHeaders);
+        $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channelId.'/videos?broadcast_type=archive,highlight,upload', $this->twitchHeadersV5);
         $vods = json_decode($response->getBody());
         return $highlights->_total > 0 || $vods->_total > 0;
     }
 
-    private function getFollowing(string $name): \stdClass
+    private function getFollowing(int $id): \stdClass
     {
         if(!isset($this->_followsCache)) {
-            $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$name.'/follows/channels', $this->twitchHeaders);
+            $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$id.'/follows/channels', $this->twitchHeadersV5);
 
             if($response->getStatusCode() >= 400) {
                 throw new Exception("Can not get followers for ".$name);
@@ -367,10 +365,10 @@ class Model
         return $this->_followsCache;
     }
 
-    private function getFollowingChannel(string $name, string $channel): bool
+    private function getFollowingChannel(int $id, int $channelId): bool
     {
-        $url = 'https://api.twitch.tv/kraken/users/'.$name.'/follows/channels/'.$channel;
-        $response = $this->client->head($url, $this->twitchHeaders);
+        $url = 'https://api.twitch.tv/kraken/users/'.$id.'/follows/channels/'.$channelId;
+        $response = $this->client->head($url, $this->twitchHeadersV5);
 
         if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
             throw new Exception("Can't get following relation");
@@ -407,7 +405,7 @@ class Model
         // Update following if needed
         if(!isset($submission->following)) {
             try {
-                $follows = $this->getFollowing($submission->name);
+                $follows = $this->getFollowing($submission->twitch_id);
             }
             catch(Exception $e) {
                 $follows = new \stdClass();
@@ -424,7 +422,7 @@ class Model
     {
         if(!isset($submission->bio)) {
             try {
-                $bio = $this->getBio($submission->name);
+                $bio = $this->getBio($submission->twitch_id);
             }
             catch(Exception $e) {
                 return false;
@@ -440,7 +438,7 @@ class Model
     {
         if(!isset($submission->vods)) {
             try {
-                $hasVODs = $this->hasVODs($submission->name);
+                $hasVODs = $this->hasVODs($submission->twitch_id);
             }
             catch(Exception $e) {
                 return false;
@@ -459,8 +457,8 @@ class Model
         if(!isset($submission->following_channel)) {
             if(isset($this->_followsCache)) {
                 $follows = $this->_followsCache;
-                $follows_channel = $follows->_total > 0 && in_array($submission->channel, array_map(function($chan) {
-                    return strtolower($chan->channel->name);
+                $follows_channel = $follows->_total > 0 && in_array($submission->channel_id, array_map(function($chan) {
+                    return strtolower($chan->channel->_id);
                 }, $follows->follows));
                 if(!$follows_channel && $follows->_total > count($follows->follows)) {
                     unset($follows_channel);
@@ -468,7 +466,7 @@ class Model
             }
             if(!isset($follows_channel)) {
                 try {
-                    $follows_channel = $this->getFollowingChannel($submission->name, $submission->channel);
+                    $follows_channel = $this->getFollowingChannel($submission->twitch_id, $submission->channel_id);
                 }
                 catch(Exception $e) {
                     return false;
@@ -491,6 +489,12 @@ class Model
             $this->db->ping();
             $didSomething = false;
 
+            if(empty($submission->twitch_id)) {
+                $submission->twitch_id = $this->getChannelID($submission->name);
+                $this->submissions->setTwitchID($submission->id, $submission->twitch_id);
+                $didSomething = true;
+            }
+
             if($this->checkFollowing($submission)) {
                 $didSomething = true;
             }
@@ -502,6 +506,12 @@ class Model
             }
 
             if(!empty($submission->channel)) {
+                if(empty($submission->channel_id)) {
+                    $submission->channel_id = $this->getChannelID($submission->name);
+                    $this->submissions->setTwitchID($submissions->id, $submission->channel_id, "channel");
+                    $didSomething = true;
+                }
+
                 if($this->checkFollowingChannel($submission) && !$didSomething) {
                     $didSomething = true;
                 }
@@ -509,12 +519,12 @@ class Model
                 $ranModCheck = isset($submission->ismod);
                 // Update online or offline and mod if needed
                 if(!$submission->online || !isset($submission->offline)) {
-                    $live = $this->isChannelLive($submission->channel);
+                    $live = $this->isChannelLive($submission->channel_id);
                     if(($live && !$submission->online) || (!$live && !isset($submission->offline))) {
                         $isMod = null;
                         try {
                             $chatters = $this->getChatters($submission->channel);
-                            $isInChannel = $this->isInChannel($submission->name, $chatters);
+                            $isInChannel = $this->isInChannel($submission->twitch_id, $chatters);
 
                             if($isInChannel && !$submission->ismod) {
                                 $isMod = $this->isMod($submission->name, $chatters);

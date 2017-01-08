@@ -145,6 +145,13 @@ class Submissions extends PaginatingStore {
         $query->execute(array($hasVODs, $id));
     }
 
+    public function setTwitchID(int $id, int $twitchID, string $type = "twitch")
+    {
+        $sql = $type."_id=? WHERE id=?";
+        $query = $this->prepareUpdate($sql);
+        $query->execute([$twitchId, $id]);
+    }
+
     public function removeSubmission(int $id)
     {
         $query = $this->prepareDelete("WHERE id=?");
