@@ -364,16 +364,11 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
         if(!$model->login->isLoggedIn()) {
             $app->halt(401, 'Not logged in');
         }
-
-        if($model->checkRunning()) {
-            $app->halt(500, 'Check already running');
-        }
         else {
             echo 'Checked bots. Removed: ';
             print_r($model->checkBots());
             echo 'Checked '.$model->checkSubmissions().' submissions.';
             echo 'Added '.$model->typeCrawl().' bots based on vendor lists';
-            $model->checkDone();
         }
     });
 

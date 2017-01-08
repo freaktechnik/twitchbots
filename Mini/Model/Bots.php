@@ -167,18 +167,18 @@ class Bots extends PaginatingStore {
     }
 
     /**
-     * @param $username: Username of the bot to touch.
+     * @param $id: User ID of the bot to touch.
      * @param $hard: If there are content modifications of the bot this should
      *               be true.
      */
-    public function touchBot(string $username, bool $hard = false)
+    public function touchBot(int $id, bool $hard = false)
     {
-        $sql = "cdate=NOW() WHERE name=?";
+        $sql = "cdate=NOW() WHERE twitch_id=?";
         if($hard) {
             $sql = "date=NOW(), ".$sql;
         }
         $query = $this->prepareUpdate($sql);
-        $query->execute(array($username));
+        $query->execute(array($id));
     }
 
     public function updateBot(\stdClass $updatedBot)

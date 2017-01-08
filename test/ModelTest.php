@@ -90,7 +90,11 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertTrue($this->model->hasBot('butler_of_ec0ke'));
         $this->assertFalse($this->model->hasBot('freaktechnik'));
-        $this->httpMock->append(new Response(200));
+        $this->httpMock->append(new Response(200, [
+            'bots' => [
+                '_id' => 3
+            ]
+        ]));
         $this->model->addSubmission('freaktechnik', 1);
         $this->assertTrue($this->model->hasBot('freaktechnik'));
     }
@@ -103,15 +107,27 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
-        $this->httpMock->append(new Response(200));
+        $this->httpMock->append(new Response(200, json_decode([
+            'bots' => [
+                '_id' => 1
+            ]
+        ])));
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
 
-        $this->httpMock->append(new Response(200));
+        $this->httpMock->append(new Response(200, json_decode([
+            'bots' => [
+                '_id' => 2
+            ]
+        ])));
 
         $this->model->addSubmission("nightboot", 1);
 
-        $this->httpMock->append(new Response(200));
+        $this->httpMock->append(new Response(200, [
+            'bots' => [
+                '_id' => 4
+            ]
+        ]));
         $this->model->addSubmission("notactuallyaboot", 44, "", "");
 
         $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
@@ -162,9 +178,17 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddExistingSubmissionThrows()
     {
-        $this->httpMock->append(new Response(200));
+        $this->httpMock->append(new Response(200, json_decode([
+            'bots' => [
+                '_id' => 1
+            ]
+        ])));
         $this->model->addSubmission("test", 1);
-        $this->httpMock->append(new Response(200));
+        $this->httpMock->append(new Response(200, json_decode([
+            'bots' => [
+                '_id' => 1
+            ]
+        ])));
         $this->model->addSubmission("test", 2);
     }
     /**
@@ -175,7 +199,11 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddSubmissionExistingBotThrows()
     {
-        $this->httpMock->append(new Response(200));
+        $this->httpMock->append(new Response(200, [
+            'bots' => [
+                '_id' => 2
+            ]
+        ]));
         $this->model->addSubmission("nightbot", 2);
     }
 
@@ -198,7 +226,11 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddSubmissionBotIsChannelThrows()
     {
-        $this->httpMock->append(new Response(200));
+        $this->httpMock->append(new Response(200, json_decode([
+            'bots' => [
+                '_id' => 5
+            ]
+        ])));
         $this->model->addSubmission("ec0ke", 2);
     }
 
@@ -288,18 +320,6 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testAddCorrectionSameTypeThrows()
     {
         $this->model->addCorrection("nightbot", 1);
-    }
-
-    /**
-     * @covers ::checkRunning
-     * @covers ::checkDone
-     */
-    public function testLock()
-    {
-        $this->assertFalse($this->model->checkRunning());
-        $this->assertTrue($this->model->checkRunning());
-        $this->model->checkDone();
-        $this->assertFalse($this->model->checkRunning());
     }
 
     /**

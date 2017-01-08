@@ -155,19 +155,21 @@ class Model
             $type = $description;
         }
 
-        $this->commonSubmissionChecks($username, $type, $channel);
+        $channelId = $this->commonSubmissionChecks($username, $type, $channel);
 
-        if(!$this->twitchUserExists($username)) {
+        try {
+            $id = $this->getChannelID($username);
+        } catch(Exception $e) {
             throw new Exception("Cannot add a user that doesn't exist on Twitch", 2);
         }
-        else if($this->hasBot($username)) {
+        if($this->hasBot($id)) {
             throw new Exception("Cannot add an already existing bot", 3);
         }
         else if(!empty($this->bots->getBotsByChannel($username))) {
             throw new Exception("Bot cannot be the channel to an existing bot", 13);
         }
 
-        $this->submissions->append($username, $type, Submissions::SUBMISSION, $channel);
+        $this->submissions->append($id, $username, $type, Submissions::SUBMISSION, $channel, $channelId);
     }
 
 
@@ -182,15 +184,22 @@ class Model
         else if(!empty($channel) && !empty($this->bots->getBot($channel))) {
             throw new Exception("Given channel is already a bot", 12);
         }
-        else if(!empty($channel) && !$this->twitchUserExists($channel, true)) {
-            throw new Exception("Given channel isn't a Twitch channel", 6);
+
+        $channelId = NULL;
+        if(!empty($channel)) {
+            try {
+                $channelId = $this->getChannelID($channel);
+            } catch(Exception $e) {
+                throw new Exception("Given channel isn't a Twitch channel", 6);
+            }
         }
+        return $channelId;
     }
 
-    public function hasBot(string $username): bool
+    public function hasBot(int $id): bool
     {
-        if(!$this->submissions->hasSubmission($username)) {
-            if(!$this->bots->getBot($username)) {
+        if(!$this->submissions->hasSubmission($id)) {
+            if(!$this->bots->getBotById($id)) {
                 return false;
             }
         }
@@ -202,9 +211,6 @@ class Model
         if($type == 0) {
             if(empty($description)) {
                 throw new Exception("Description can not be empty", 9);
-            }
-            else if($this->submissions->hasCorrection($username, $description)) {
-                throw new Exception("Identical correction already exists", 11);
             }
             $type = $description;
         }
@@ -218,30 +224,16 @@ class Model
         else if($existingBot->type == $type) {
             throw new Exception("Metadata must be different", 5);
         }
-
-        $this->submissions->append($username, $type, Submissions::CORRECTION, $existingBot->channel);
-    }
-
-
-    public function checkRunning(): bool
-    {
-        if((int)$this->config->get('lock') == 1) {
-            return true;
+        else if($type == 0 && $this->submissions->hasCorrection($existingBot->twitch_id, $description)) {
+            throw new Exception("Identical correction already exists", 11);
         }
 
-        $this->config->set('lock', '1');
-        return false;
+        $this->submissions->append($existingBot->twitch_id, $username, $type, Submissions::CORRECTION, $existingBot->channel, $existingBot->channel_id);
     }
 
-    public function checkDone()
+    public function twitchUserExists(int $id, $noJustin = false): bool
     {
-        $this->db->ping();
-        $this->config->set('lock', '0');
-    }
-
-    public function twitchUserExists(string $name, $noJustin = false): bool
-    {
-        $response = $this->client->head("https://api.twitch.tv/kraken/channels/".$name, $this->twitchHeaders);
+        $response = $this->client->head("https://api.twitch.tv/kraken/users/".$id, $this->twitchHeadersV5);
         $http_code = $response->getStatusCode();
         return $http_code != 404 && (!$noJustin || $http_code != 422);
     }
@@ -254,23 +246,25 @@ class Model
 
     private function checkBot($bot)
     {
-        $this->bots->touchBot($bot->name);
+        $this->bots->touchBot($bot->twitch_id);
 
-        $exists = $this->twitchUserExists($bot->name);
+        $exists = $this->twitchUserExists($bot->twitch_id);
 
         if($exists) {
             // Set the twitch IDs in the DB
             $modified = false;
-            if(empty($bot->twitch_id)) {
-                $bot->twitch_id = $this->getChannelID($bot->name);
+
+            $apiUsername = $this->getChannelName($bot->twitch_id);
+            if($apiUsername != $bot->name) {
+                $bot->name = $apiUsername;
                 $modified = true;
             }
-            if(!empty($bot->channel) && empty($bot->channel_id)) {
-                try {
-                    $bot->channel_id = $this->getChannelID($bot->channel);
+
+            if(!empty($bot->channel_id)) {
+                $channelUsername = $this->getChannelName($bot->channel_id);
+                if($channelUsername != $bot->channel) {
+                    $bot->channel = $channelUsername;
                     $modified = true;
-                } catch(Exception $e) {
-                    // channel id could not be fetched.
                 }
             }
             if($modified) {
@@ -285,17 +279,11 @@ class Model
         try {
             $bots = $this->bots->getOldestBots($step);
 
-            //TODO store the Twitch ID of the user for now until we switch to API v5
-            // where it'll have to store the username of the bot instead.
-            // Will also have to update the channel's username.
-            // Will have to update date if any username changes.
             $bots = array_values(array_filter($bots, [$this, 'checkBot']));
 
             $this->db->ping();
             if(count($bots) > 1) {
-                $this->bots->removeBots(array_map(function($bot) {
-                    return $bot->name;
-                }, $bots));
+                $this->bots->removeBots(array_column($bots, 'name'));
             }
             else if(count($bots) == 1) {
                 $this->bots->removeBot($bots[0]->name);
@@ -595,7 +583,7 @@ class Model
         $max = count($foundBots);
         for($i = 0; $i < $max; $i += 1) {
             $bot = $foundBots[$i];
-            if(empty($this->bots->getBot($bot->name)) && $this->twitchUserExists($bot->name) && (empty($bot->channel) || $this->twitchUserExists($bot->channel, true))) {
+            if(empty($this->bots->getBot($bot->name)) && $this->twitchUserExists($bot->twitch_id) && (empty($bot->channel) || $this->twitchUserExists($bot->twitch_id, true))) {
                 $twitchId = $this->getChannelID($bot->name);
                 $channelId = null;
                 if(!empty($bot->channel)) {
@@ -654,5 +642,18 @@ class Model
         else {
             throw new Exception("User could not be found");
         }
+    }
+
+    private function getChannelName(int $id): string
+    {
+        $url = 'https://api.twitch.tv/kraken/users/' . $id;
+        $response = $this->client->get($url, $this->twitchHeadersV5);
+
+        if($response->getStatusCode() >= 400) {
+            throw new Exception("Could not get username for ".$id);
+        }
+
+        $user = json_decode($response->getBody(), true);
+        return $user['name'];
     }
 }

@@ -6,11 +6,13 @@ use PDO;
 
 /* CREATE TABLE IF NOT EXISTS submissions (
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
+    twitch_id int(10) unsigned NOT NULL,
     name varchar(535) CHARACTER SET ascii NOT NULL,
     description text NOT NULL,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     type int(1) unsigned NOT NULL DEFAULT 0,
     channel varchar(535) CHARACTER SET ascii DEFAULT NULL,
+    channel_id int(10) unsgined DEFAULT NULL,
     offline boolean DEFAULT NULL,
     online boolean DEFAULT NULL,
     ismod boolean DEFAULT NULL,
@@ -19,7 +21,7 @@ use PDO;
     bio text DEFAULT NULL,
     vods boolean DEFAULT NULL,
     PRIMARY KEY (id)
-) DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 */
+) DEFAULT CHARSET=utf8 */
 
 class Submissions extends PaginatingStore {
     const SUBMISSION = 0;
@@ -30,10 +32,10 @@ class Submissions extends PaginatingStore {
         parent::__construct($db, "submissions", $pageSize);
     }
 
-    public function append(string $username, $type, int $correction = self::SUBMISSION, string $channel = NULL)
+    public function append(int $id, string $username, $type, int $correction = self::SUBMISSION, string $channel = NULL, int $channelId = NULL)
     {
-        $query = $this->prepareInsert("(name,description,type,channel) VALUES (?,?,?,?)");
-        $params = array($username, $type, $correction, $channel);
+        $query = $this->prepareInsert("(twitch_id,name,description,type,channel,channel_id) VALUES (?,?,?,?,?,?)");
+        $params = array($id, $username, $type, $correction, $channel, $channelId);
 
         $query->execute($params);
     }
@@ -62,10 +64,10 @@ class Submissions extends PaginatingStore {
         return $query->fetch();
     }
 
-    public function has(string $username, int $type = NULL, string $description = NULL)
+    public function has(int $id, int $type = NULL, string $description = NULL)
     {
-        $where = "WHERE name=?";
-        $params = array($username);
+        $where = "WHERE twitch_id=?";
+        $params = array($id);
 
         if(!empty($type)) {
             $where .= " AND type=?";
@@ -81,15 +83,15 @@ class Submissions extends PaginatingStore {
         return !empty($query->fetch());
     }
 
-    public function hasSubmission(string $username): bool
+    public function hasSubmission(int $id): bool
     {
         return $this->has($username, self::SUBMISSION);
     }
 
 
-    public function hasCorrection(string $username, string $description): bool
+    public function hasCorrection(int $id,  string $description): bool
     {
-        return $this->has($username, self::CORRECTION, $description);
+        return $this->has($id, self::CORRECTION, $description);
     }
 
 

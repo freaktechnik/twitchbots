@@ -62,8 +62,8 @@ class SubmissionsTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertEquals(count($this->submissions->getSubmissions()), $this->getConnection()->getRowCount('submissions'), "Not an empty array with no submissions");
 
-        $this->submissions->append("test", "lorem ipsum", Submissions::SUBMISSION);
-        $this->submissions->append("nightboot", "1", Submissions::CORRECTION);
+        $this->submissions->append(1, "test", "lorem ipsum", Submissions::SUBMISSION);
+        $this->submissions->append(2, "nightboot", "1", Submissions::CORRECTION);
         $this->assertEquals(2, $this->getConnection()->getRowCount('submissions'), "Test setup failed");
 
         $submissions = $this->submissions->getSubmissions();
