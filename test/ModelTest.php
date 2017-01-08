@@ -88,15 +88,15 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testHasBot()
     {
-        $this->assertTrue($this->model->hasBot('butler_of_ec0ke'));
-        $this->assertFalse($this->model->hasBot('freaktechnik'));
+        $this->assertTrue($this->model->hasBot(4));
+        $this->assertFalse($this->model->hasBot(31));
         $this->httpMock->append(new Response(200, [
             'bots' => [
-                '_id' => 3
+                '_id' => 31
             ]
         ]));
         $this->model->addSubmission('freaktechnik', 1);
-        $this->assertTrue($this->model->hasBot('freaktechnik'));
+        $this->assertTrue($this->model->hasBot(31));
     }
 
     /**
@@ -109,7 +109,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->httpMock->append(new Response(200, json_decode([
             'bots' => [
-                '_id' => 1
+                '_id' => 31
             ]
         ])));
 
@@ -117,7 +117,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->httpMock->append(new Response(200, json_decode([
             'bots' => [
-                '_id' => 2
+                '_id' => 32
             ]
         ])));
 
@@ -125,7 +125,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->httpMock->append(new Response(200, [
             'bots' => [
-                '_id' => 4
+                '_id' => 33
             ]
         ]));
         $this->model->addSubmission("notactuallyaboot", 44, "", "");
@@ -180,13 +180,13 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->httpMock->append(new Response(200, json_decode([
             'bots' => [
-                '_id' => 1
+                '_id' => 31
             ]
         ])));
         $this->model->addSubmission("test", 1);
         $this->httpMock->append(new Response(200, json_decode([
             'bots' => [
-                '_id' => 1
+                '_id' => 31
             ]
         ])));
         $this->model->addSubmission("test", 2);
@@ -201,7 +201,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->httpMock->append(new Response(200, [
             'bots' => [
-                '_id' => 2
+                '_id' => 15
             ]
         ]));
         $this->model->addSubmission("nightbot", 2);
@@ -341,10 +341,10 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testTwitchUserExists()
     {
         $this->httpMock->append(new Response(200));
-        $this->assertTrue($this->model->twitchUserExists('butler_of_ec0ke'));
+        $this->assertTrue($this->model->twitchUserExists(4));
         $this->httpMock->append(new Response(302));
-        $this->assertTrue($this->model->twitchUserExists('xanbot'));
+        $this->assertTrue($this->model->twitchUserExists(29));
         $this->httpMock->append(new Response(404));
-        $this->assertFalse($this->model->twitchUserExists('zeldbot'));
+        $this->assertFalse($this->model->twitchUserExists(30));
     }
 }

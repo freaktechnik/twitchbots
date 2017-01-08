@@ -10,98 +10,84 @@
             <value>Nightbot</value>
             <value>1</value>
             <value>https://www.nightbot.tv/</value>
-
         </row>
         <row>
             <value>2</value>
             <value>Moobot</value>
             <value>1</value>
             <value>http://twitch.moobot.tv/</value>
-
         </row>
         <row>
             <value>3</value>
             <value>CoeBot</value>
             <value>1</value>
             <value>http://coebot.tv/</value>
-
         </row>
         <row>
             <value>4</value>
             <value>Xanbot</value>
             <value>1</value>
             <value>http://www.twitch.tv/xangold</value>
-
         </row>
         <row>
             <value>5</value>
             <value>DarpaBot</value>
             <value>1</value>
             <value>http://www.twitch.tv/darpabot</value>
-
         </row>
         <row>
             <value>6</value>
             <value>Vivbot</value>
             <value>1</value>
             <value>http://vivbot.com/</value>
-
         </row>
         <row>
             <value>7</value>
             <value>WizeBot</value>
             <value>1</value>
             <value>https://wizebot.tv</value>
-
         </row>
         <row>
             <value>8</value>
             <value>ohbot</value>
             <value>1</value>
-            <value>www.twitch.tv/ohbot</value>
-
+            <value>https://www.twitch.tv/ohbot</value>
         </row>
         <row>
             <value>9</value>
             <value>Revlo</value>
             <value>1</value>
             <value>https://www.revlo.co/</value>
-
         </row>
         <row>
             <value>10</value>
             <value>Gengar</value>
             <value>1</value>
             <value>http://www.twitch.tv/gengar</value>
-
         </row>
         <row>
             <value>11</value>
             <value>KappBot</value>
             <value>1</value>
             <value>http://www.twitch.tv/kappbot</value>
-
         </row>
         <row>
             <value>12</value>
             <value>Mikuia</value>
             <value>1</value>
             <value>http://mikuia.tv/</value>
-
         </row>
         <row>
             <value>13</value>
             <value>Quoteconut</value>
             <value>1</value>
             <value>http://www.twitch.tv/quoteconut</value>
-
         </row>
         <row>
             <value>14</value>
             <value>TheCatbot</value>
             <value>1</value>
             <value>http://www.twitch.tv/thecatbot</value>
-
         </row>
         <row>
             <value>15</value>
@@ -259,123 +245,155 @@
         </row>
     </table>
     <table name="bots">
+        <column>twitch_id</column>
         <column>name</column>
         <column>type</column>
         <column>channel</column>
+        <column>channel_id</column>
         <row>
+            <value>1</value>
             <value>ackbot</value>
             <value>24</value>
         </row>
         <row>
+            <value>2</value>
             <value>amalthes</value>
             <value>32</value>
         </row>
         <row>
+            <value>3</value>
             <value>beamlink</value>
             <value>21</value>
         </row>
         <row>
+            <value>4</value>
             <value>butler_of_ec0ke</value>
             <value>22</value>
             <value>ec0ke</value>
+            <value>5</value>
         </row>
         <row>
+            <value>6</value>
             <value>coebot</value>
             <value>3</value>
         </row>
         <row>
+            <value>7</value>
             <value>darpabot</value>
             <value>5</value>
         </row>
         <row>
+            <value>8</value>
             <value>gengar</value>
             <value>10</value>
         </row>
         <row>
+            <value>9</value>
             <value>housebot</value>
             <value>34</value>
         </row>
         <row>
+            <value>10</value>
             <value>kappbot</value>
             <value>11</value>
         </row>
         <row>
+            <value>11</value>
             <value>mikuia</value>
             <value>12</value>
         </row>
         <row>
+            <value>12</value>
             <value>monstercat</value>
             <value>19</value>
         </row>
         <row>
+            <value>13</value>
             <value>moobot</value>
             <value>2</value>
         </row>
         <row>
+            <value>14</value>
             <value>ncsmusicbot</value>
             <value>22</value>
         </row>
         <row>
+            <value>15</value>
             <value>nightbot</value>
             <value>1</value>
         </row>
         <row>
+            <value>16</value>
             <value>ohbot</value>
             <value>8</value>
         </row>
         <row>
+            <value>17</value>
             <value>pugbot</value>
             <value>22</value>
         </row>
         <row>
+            <value>18</value>
             <value>quoteconut</value>
             <value>13</value>
         </row>
         <row>
+            <value>19</value>
             <value>revlobot</value>
             <value>9</value>
         </row>
         <row>
+            <value>20</value>
             <value>rhymesayers</value>
             <value>20</value>
         </row>
         <row>
+            <value>21</value>
             <value>sickbot33</value>
             <value>23</value>
         </row>
         <row>
+            <value>22</value>
             <value>tecsbot</value>
             <value>35</value>
         </row>
         <row>
+            <value>23</value>
             <value>thecatbot</value>
             <value>14</value>
         </row>
         <row>
+            <value>24</value>
             <value>thedragon</value>
             <value>15</value>
         </row>
         <row>
+            <value>25</value>
             <value>theroflbotr</value>
             <value>16</value>
         </row>
         <row>
+            <value>26</value>
             <value>vivbot</value>
             <value>6</value>
         </row>
         <row>
+            <value>27</value>
             <value>wizebot</value>
             <value>7</value>
         </row>
         <row>
+            <value>28</value>
             <value>wooferedmilk</value>
             <value>17</value>
         </row>
         <row>
+            <value>29</value>
             <value>xanbot</value>
             <value>4</value>
         </row>
         <row>
+            <value>30</value>
             <value>zeldbot</value>
             <value>18</value>
         </row>
