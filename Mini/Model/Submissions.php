@@ -85,7 +85,7 @@ class Submissions extends PaginatingStore {
 
     public function hasSubmission(int $id): bool
     {
-        return $this->has($username, self::SUBMISSION);
+        return $this->has($id, self::SUBMISSION);
     }
 
 
