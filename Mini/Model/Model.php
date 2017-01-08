@@ -60,6 +60,13 @@ class Model
     private $twitchHeaders;
     private $twitchHeadersV5;
 
+    private static $venticHeaders =  [
+        'headers' => [
+            'User-Agent' => 'Twitchbots.info'
+        ],
+        'http_errors' => false
+    ];
+
     private static $requestOptions = array('http_errors' => false);
 
 
@@ -387,9 +394,9 @@ class Model
 
     private function getModStatus(string $username, string $channel): bool
     {
-        $url = "https://twitchstuff.3v.fi/api/mods/" . $username;
+        $url = "https://twitchstuff.3v.fi/modlookup/api/user/" . $username;
 
-        $response = $this->client->get($url, array(), self::$requestOptions);
+        $response = $this->client->get($url, array(), self::$venticHeaders);
 
         if($response->getStatusCode() >= 400) {
             throw new Exception("Could not get mod status");
@@ -397,13 +404,7 @@ class Model
 
         $response = json_decode($response->getBody(), true);
 
-        if($response['count'] > 0 && in_array(strtolower($channel), array_map(function($i) {
-            return $i['name'];
-        }, $response['channels']))) {
-            return true;
-        }
-
-        return false;
+        return $response['count'] > 0 && in_array(strtolower($channel), array_column($response['channels'], 'name'));
     }
 
     private function checkFollowing(\stdClass $submission): bool
