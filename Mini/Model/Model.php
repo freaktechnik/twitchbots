@@ -60,14 +60,9 @@ class Model
     private $twitchHeaders;
     private $twitchHeadersV5;
 
-    private static $venticHeaders =  [
-        'headers' => [
-            'User-Agent' => 'Twitchbots.info'
-        ],
-        'http_errors' => false
-    ];
+    private $venticHeaders;
 
-    private static $requestOptions = array('http_errors' => false);
+    private static $requestOptions = ['http_errors' => false];
 
 
     private $_followsCache;
@@ -106,7 +101,11 @@ class Model
                 'Accept' => 'application/vnd.twitchtv.v5+json'
             ]
         ]);
-
+        $this->venticHeaders = array_merge(self::$requestOptions, [
+            'headers' => [
+                'User-Agent' => $this->config->get('3v-ua')
+            ]
+        ]);
 
         $this->client = $client;
 
@@ -396,7 +395,7 @@ class Model
     {
         $url = "https://twitchstuff.3v.fi/modlookup/api/user/" . $username;
 
-        $response = $this->client->get($url, array(), self::$venticHeaders);
+        $response = $this->client->get($url, array(), $this->venticHeaders);
 
         if($response->getStatusCode() >= 400) {
             throw new Exception("Could not get mod status");

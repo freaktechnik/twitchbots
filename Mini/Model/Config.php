@@ -9,6 +9,26 @@ namespace Mini\Model;
 ) DEFAULT CHARSET=ascii */
 
 class Config extends Store {
+    private static $shema = [
+        "3v-ua" => "string",
+        "client-ID" => "string",
+        "auth0_clientId" => "string",
+        "auth0_clientSecret" => "string",
+        "auth0_domain" => "string",
+        "auth0_redirectUrl" => "string",
+        "checks_per_day" => "number"
+    ];
+
+    private static $labels = [
+        "3v-ua" => "3v.fi Mod Lookup API User-Agent",
+        "client-ID" => "Twitch Client ID",
+        "auth0_clientId" => "Auth0 Client ID",
+        "auth0_clientSecret" => "Auth0 Client Secret",
+        "auth0_comain" => "Auth0 Domain",
+        "auth0_redirectUrl" => "Auth0 redirect URL",
+        "checks_per_day" => "Scheduled crawls per day"
+    ];
+
     function __construct(PingablePDO $db)
     {
         parent::__construct($db, "config");
