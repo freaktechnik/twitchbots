@@ -91,8 +91,10 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($this->model->hasBot(4));
         $this->assertFalse($this->model->hasBot(31));
         $this->httpMock->append(new Response(200, [], json_encode([
-            'bots' => [
-                '_id' => 31
+            'users' => [
+                [
+                    '_id' => 31
+                ]
             ]
         ])));
         $this->model->addSubmission('freaktechnik', 1);
@@ -108,24 +110,30 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
         $this->httpMock->append(new Response(200, [], json_encode([
-            'bots' => [
-                '_id' => 31
+            'users' => [
+                [
+                    '_id' => 31
+                ]
             ]
         ])));
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
 
         $this->httpMock->append(new Response(200, [], json_encode([
-            'bots' => [
-                '_id' => 32
+            'users' => [
+                [
+                    '_id' => 32
+                ]
             ]
         ])));
 
         $this->model->addSubmission("nightboot", 1);
 
         $this->httpMock->append(new Response(200, [], json_encode([
-            'bots' => [
-                '_id' => 33
+            'users' => [
+                [
+                    '_id' => 33
+                ]
             ]
         ])));
         $this->model->addSubmission("notactuallyaboot", 44, "", "");
@@ -179,14 +187,18 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testAddExistingSubmissionThrows()
     {
         $this->httpMock->append(new Response(200, [], json_encode([
-            'bots' => [
-                '_id' => 31
+            'users' => [
+                [
+                    '_id' => 31
+                ]
             ]
         ])));
         $this->model->addSubmission("test", 1);
         $this->httpMock->append(new Response(200, [], json_encode([
-            'bots' => [
-                '_id' => 31
+            'users' => [
+                [
+                    '_id' => 31
+                ]
             ]
         ])));
         $this->model->addSubmission("test", 2);
@@ -200,8 +212,10 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testAddSubmissionExistingBotThrows()
     {
         $this->httpMock->append(new Response(200, [], json_encode([
-            'bots' => [
-                '_id' => 15
+            'users' => [
+                [
+                    '_id' => 15
+                ]
             ]
         ])));
         $this->model->addSubmission("nightbot", 2);
@@ -227,8 +241,10 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     public function testAddSubmissionBotIsChannelThrows()
     {
         $this->httpMock->append(new Response(200, [], json_encode([
-            'bots' => [
-                '_id' => 5
+            'users' => [
+                [
+                    '_id' => 5
+                ]
             ]
         ])));
         $this->model->addSubmission("ec0ke", 2);
