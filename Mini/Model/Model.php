@@ -593,17 +593,21 @@ class Model
         $max = count($foundBots);
         for($i = 0; $i < $max; $i += 1) {
             $bot = $foundBots[$i];
-            if(empty($this->bots->getBot($bot->name)) && $this->twitchUserExists($bot->twitch_id) && (empty($bot->channel) || $this->twitchUserExists($bot->twitch_id, true))) {
+            try {
                 $twitchId = $this->getChannelID($bot->name);
-                $channelId = null;
-                if(!empty($bot->channel)) {
-                    $channelId = $this->getChannelID($bot->channel);
-                }
-                $this->bots->addBot($twitchId, $bot->name, $bot->type, $bot->channel, $channelId);
-                $count += 1;
+                if(empty($this->bots->getBotByID($twitchId))) {
+                    $channelId = NULL;
+                    if(!empty($bot->channel)) {
+                        $channelId = $this->getChannelID($bot->channel);
+                    }
+                    $this->bots->addBot($twitchId, $bot->name, $bot->type, $bot->channel, $channelId);
+                    $count += 1;
 
-                // Remove any matching submissions.
-                $this->submissions->removeSubmissions($bot->name, (string)$bot->type);
+                    // Remove any matching submissions.
+                    $this->submissions->removeSubmissions($bot->name, (string)$bot->type);
+                }
+            } catch(Exception $e) {
+                //TODO log error?
             }
         }
 
