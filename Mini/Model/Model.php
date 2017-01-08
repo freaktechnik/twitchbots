@@ -391,9 +391,10 @@ class Model
         return $response->getStatusCode() < 400;
     }
 
-    private function getModStatus(string $username, string $channel): bool
+    private function getModStatus(string $username, string $channel, int $page = 0): bool
     {
-        $url = "https://twitchstuff.3v.fi/modlookup/api/user/" . $username;
+        $pageSize = 100;
+        $url = "https://twitchstuff.3v.fi/modlookup/api/user/" . $username . "?limit=" . $pageSize . "&offset=" . $page * $pageSize;
 
         $response = $this->client->get($url, array(), $this->venticHeaders);
 
@@ -403,7 +404,14 @@ class Model
 
         $response = json_decode($response->getBody(), true);
 
-        return $response['count'] > 0 && in_array(strtolower($channel), array_column($response['channels'], 'name'));
+        if($response['count'] > 0 && in_array(strtolower($channel), array_column($response['channels'], 'name'))) {
+            return true;
+        }
+
+        if($response['count'] > ($page + 1) * $pageSize) {
+            return $this->getModStatus($username, $channel, $page + 1);
+        }
+        return false;
     }
 
     private function checkFollowing(\stdClass $submission): bool

@@ -12,9 +12,9 @@ use PDO;
     cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last crawl or update ts`,
     channel varchar(535) CHARACTER SET ascii DEFAULT NULL COMMENT `Channel the bot is in`,
     channel_id int(10) UNSIGNED DEFAULT NULL COMMENT `Channel Twitch ID`,
-    PRIMARY KEY (name),
+    PRIMARY KEY (twitch_id),
     FOREIGN KEY (type) REFERENCES types(id),
-    UNIQUE KEY twitch_id (twitch_id)
+    UNIQUE KEY name (name)
 ) DEFAULT CHARSET=ascii */
 
 class Bots extends PaginatingStore {
