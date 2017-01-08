@@ -199,7 +199,7 @@ class Model
     public function hasBot(int $id): bool
     {
         if(!$this->submissions->hasSubmission($id)) {
-            if(!$this->bots->getBotById($id)) {
+            if(!$this->bots->getBotByID($id)) {
                 return false;
             }
         }

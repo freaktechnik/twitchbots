@@ -193,4 +193,12 @@ class Bots extends PaginatingStore {
             $updatedBot->name
         ]);
     }
+
+    public function getBotByID(int $id)
+    {
+        $query = $this->prepareSelect("*", "WHERE twitch_id=?");
+        $query->execute(array($id));
+
+        return $query->fetch();
+    }
 }

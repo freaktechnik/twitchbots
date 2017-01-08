@@ -107,7 +107,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
-        $this->httpMock->append(new Response(200, json_encode([
+        $this->httpMock->append(new Response(200, [], json_encode([
             'bots' => [
                 '_id' => 31
             ]
@@ -115,7 +115,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
 
-        $this->httpMock->append(new Response(200, json_encode([
+        $this->httpMock->append(new Response(200, [], json_encode([
             'bots' => [
                 '_id' => 32
             ]
@@ -178,13 +178,13 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddExistingSubmissionThrows()
     {
-        $this->httpMock->append(new Response(200, json_encode([
+        $this->httpMock->append(new Response(200, [], json_encode([
             'bots' => [
                 '_id' => 31
             ]
         ])));
         $this->model->addSubmission("test", 1);
-        $this->httpMock->append(new Response(200, json_encode([
+        $this->httpMock->append(new Response(200, [], json_encode([
             'bots' => [
                 '_id' => 31
             ]
@@ -226,7 +226,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddSubmissionBotIsChannelThrows()
     {
-        $this->httpMock->append(new Response(200, json_encode([
+        $this->httpMock->append(new Response(200, [], json_encode([
             'bots' => [
                 '_id' => 5
             ]
