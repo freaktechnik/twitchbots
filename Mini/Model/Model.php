@@ -196,7 +196,7 @@ class Model
         return $channelId;
     }
 
-    public function hasBot(int $id): bool
+    public function hasBot(string $id): bool
     {
         if(!$this->submissions->hasSubmission($id)) {
             if(!$this->bots->getBotByID($id)) {
@@ -231,7 +231,7 @@ class Model
         $this->submissions->append($existingBot->twitch_id, $username, $type, Submissions::CORRECTION, $existingBot->channel, $existingBot->channel_id);
     }
 
-    public function twitchUserExists(int $id, $noJustin = false): bool
+    public function twitchUserExists(string $id, $noJustin = false): bool
     {
         $response = $this->client->head("https://api.twitch.tv/kraken/users/".$id, $this->twitchHeadersV5);
         $http_code = $response->getStatusCode();
@@ -326,14 +326,14 @@ class Model
         return array_key_exists('moderators', $chatters) && in_array($user, $chatters['moderators']);
     }
 
-    private function isChannelLive(int $channelId): bool
+    private function isChannelLive(string $channelId): bool
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$channelId, $this->twitchHeadersV5);
         $stream = json_decode($response->getBody());
         return isset($stream->stream);
     }
 
-    private function getBio(int $channelId)//: ?string
+    private function getBio(string $channelId)//: ?string
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$channelId, $this->twitchHeadersV5);
         $user = json_decode($response->getBody());
@@ -344,14 +344,14 @@ class Model
         }
     }
 
-    private function hasVODs(int $channelId): bool
+    private function hasVODs(string $channelId): bool
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channelId.'/videos?broadcast_type=archive,highlight,upload', $this->twitchHeadersV5);
         $vods = json_decode($response->getBody());
         return $highlights->_total > 0 || $vods->_total > 0;
     }
 
-    private function getFollowing(int $id): \stdClass
+    private function getFollowing(string $id): \stdClass
     {
         if(!isset($this->_followsCache)) {
             $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$id.'/follows/channels', $this->twitchHeadersV5);
@@ -365,7 +365,7 @@ class Model
         return $this->_followsCache;
     }
 
-    private function getFollowingChannel(int $id, int $channelId): bool
+    private function getFollowingChannel(string $id, string $channelId): bool
     {
         $url = 'https://api.twitch.tv/kraken/users/'.$id.'/follows/channels/'.$channelId;
         $response = $this->client->head($url, $this->twitchHeadersV5);
@@ -640,7 +640,7 @@ class Model
         return true;
     }
 
-    private function getChannelID(string $username): int
+    private function getChannelID(string $username): string
     {
         $url = 'https://api.twitch.tv/kraken/users/?login='.$username;
         $response = $this->client->get($url, $this->twitchHeadersV5);
@@ -658,7 +658,7 @@ class Model
         }
     }
 
-    private function getChannelName(int $id): string
+    private function getChannelName(string $id): string
     {
         $url = 'https://api.twitch.tv/kraken/users/' . $id;
         $response = $this->client->get($url, $this->twitchHeadersV5);

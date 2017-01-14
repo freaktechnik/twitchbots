@@ -6,13 +6,13 @@ use PDO;
 
 /* CREATE TABLE IF NOT EXISTS submissions (
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
-    twitch_id int(10) unsigned NOT NULL,
+    twitch_id varchar(20) NOT NULL,
     name varchar(535) CHARACTER SET ascii NOT NULL,
     description text NOT NULL,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     type int(1) unsigned NOT NULL DEFAULT 0,
     channel varchar(535) CHARACTER SET ascii DEFAULT NULL,
-    channel_id int(10) unsgined DEFAULT NULL,
+    channel_id varchar(20) DEFAULT NULL,
     offline boolean DEFAULT NULL,
     online boolean DEFAULT NULL,
     ismod boolean DEFAULT NULL,
@@ -32,7 +32,7 @@ class Submissions extends PaginatingStore {
         parent::__construct($db, "submissions", $pageSize);
     }
 
-    public function append(int $id, string $username, $type, int $correction = self::SUBMISSION, string $channel = NULL, int $channelId = NULL)
+    public function append(string $id, string $username, $type, int $correction = self::SUBMISSION, string $channel = NULL, string $channelId = NULL)
     {
         $query = $this->prepareInsert("(twitch_id,name,description,type,channel,channel_id) VALUES (?,?,?,?,?,?)");
         $params = array($id, $username, $type, $correction, $channel, $channelId);
@@ -64,7 +64,7 @@ class Submissions extends PaginatingStore {
         return $query->fetch();
     }
 
-    public function has(int $id, int $type = NULL, string $description = NULL)
+    public function has(string $id, int $type = NULL, string $description = NULL)
     {
         $where = "WHERE twitch_id=?";
         $params = array($id);
@@ -83,19 +83,19 @@ class Submissions extends PaginatingStore {
         return !empty($query->fetch());
     }
 
-    public function hasSubmission(int $id): bool
+    public function hasSubmission(string $id): bool
     {
         return $this->has($id, self::SUBMISSION);
     }
 
 
-    public function hasCorrection(int $id,  string $description): bool
+    public function hasCorrection(string $id,  string $description): bool
     {
         return $this->has($id, self::CORRECTION, $description);
     }
 
 
-    public function setInChat(int $id, $inChannel, bool $live)
+    public function setInChat(string $id, $inChannel, bool $live)
     {
         if($live) {
             $sql = "online=? WHERE id=?";

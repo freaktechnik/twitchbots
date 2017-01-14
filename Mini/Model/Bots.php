@@ -5,13 +5,13 @@ namespace Mini\Model;
 use PDO;
 
 /* CREATE TABLE IF NOT EXISTS bots (
-    twitch_id int(10) UNSIGNED DEFAULT NULL COMMENT `Twitch user ID`,
+    twitch_id varchar(20) DEFAULT NULL COMMENT `Twitch user ID`,
     name varchar(535) CHARACTER SET ascii NOT NULL COMMENT `Twitch username of the bot`,
     type int(10) unsigned DEFAULT NULL COMMENT `Type of the bot`,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last content modification ts`,
     cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last crawl or update ts`,
     channel varchar(535) CHARACTER SET ascii DEFAULT NULL COMMENT `Channel the bot is in`,
-    channel_id int(10) UNSIGNED DEFAULT NULL COMMENT `Channel Twitch ID`,
+    channel_id varchar(20) DEFAULT NULL COMMENT `Channel Twitch ID`,
     PRIMARY KEY (twitch_id),
     FOREIGN KEY (type) REFERENCES types(id),
     UNIQUE KEY name (name)
@@ -133,7 +133,7 @@ class Bots extends PaginatingStore {
         $this->cleanUpTempTable($tempTable);
     }
 
-    public function addBot(int $id, string $name, int $type, string $channel = null, int $channelId = null)
+    public function addBot(string $id, string $name, int $type, string $channel = null, string $channelId = null)
     {
         if(!empty($channel)) {
             $channel = strtolower($channel);
@@ -171,7 +171,7 @@ class Bots extends PaginatingStore {
      * @param $hard: If there are content modifications of the bot this should
      *               be true.
      */
-    public function touchBot(int $id, bool $hard = false)
+    public function touchBot(string $id, bool $hard = false)
     {
         $sql = "cdate=NOW() WHERE twitch_id=?";
         if($hard) {
@@ -194,7 +194,7 @@ class Bots extends PaginatingStore {
         ]);
     }
 
-    public function getBotByID(int $id)
+    public function getBotByID(string $id)
     {
         $query = $this->prepareSelect("*", "WHERE twitch_id=?");
         $query->execute(array($id));
