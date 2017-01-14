@@ -149,7 +149,7 @@ class Submissions extends PaginatingStore {
     {
         $sql = $type."_id=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
-        $query->execute([$twitchId, $id]);
+        $query->execute([$twitchID, $id]);
     }
 
     public function removeSubmission(int $id)
