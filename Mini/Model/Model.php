@@ -508,7 +508,7 @@ class Model
             if(!empty($submission->channel)) {
                 if(empty($submission->channel_id)) {
                     $submission->channel_id = $this->getChannelID($submission->name);
-                    $this->submissions->setTwitchID($submissions->id, $submission->channel_id, "channel");
+                    $this->submissions->setTwitchID($submission->id, $submission->channel_id, "channel");
                     $didSomething = true;
                 }
 
