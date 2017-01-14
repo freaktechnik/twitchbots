@@ -75,7 +75,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
         parent::setUp();
     }
 
-    private function queueTwitchUser(int $id) {
+    private function queueTwitchUser(string $id) {
         $this->httpMock->append(new Response(200, [], json_encode([
             'users' => [
                 [
@@ -113,15 +113,15 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
-        $this->queueTwitchUser(31);
+        $this->queueTwitchUser("31");
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
 
-        $this->queueTwitchUser(32);
+        $this->queueTwitchUser("32");
 
         $this->model->addSubmission("nightboot", 1);
 
-        $this->queueTwitchUser(33);
+        $this->queueTwitchUser("33");
         $this->model->addSubmission("notactuallyaboot", 44, "", "");
 
         $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
@@ -172,9 +172,9 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddExistingSubmissionThrows()
     {
-        $this->queueTwitchUser(31);
+        $this->queueTwitchUser("31");
         $this->model->addSubmission("test", 1);
-        $this->queueTwitchUser(31);
+        $this->queueTwitchUser("31");
         $this->model->addSubmission("test", 2);
     }
     /**
@@ -185,7 +185,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddSubmissionExistingBotThrows()
     {
-        $this->queueTwitchUser(15);
+        $this->queueTwitchUser("15");
         $this->model->addSubmission("nightbot", 2);
     }
 
@@ -208,7 +208,7 @@ class ModelTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testAddSubmissionBotIsChannelThrows()
     {
-        $this->queueTwitchUser(5);
+        $this->queueTwitchUser("5");
         $this->model->addSubmission("ec0ke", 2);
     }
 
