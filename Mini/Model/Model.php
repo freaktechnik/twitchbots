@@ -348,7 +348,7 @@ class Model
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channelId.'/videos?broadcast_type=archive,highlight,upload', $this->twitchHeadersV5);
         $vods = json_decode($response->getBody());
-        return $highlights->_total > 0 || $vods->_total > 0;
+        return $vods->_total > 0;
     }
 
     private function getFollowing(string $id): \stdClass
