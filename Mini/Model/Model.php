@@ -524,7 +524,7 @@ class Model
                         $isMod = null;
                         try {
                             $chatters = $this->getChatters($submission->channel);
-                            $isInChannel = $this->isInChannel($submission->twitch_id, $chatters);
+                            $isInChannel = $this->isInChannel($submission->name, $chatters);
 
                             if($isInChannel && !$submission->ismod) {
                                 $isMod = $this->isMod($submission->name, $chatters);
