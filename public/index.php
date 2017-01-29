@@ -397,7 +397,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                     $app->request->params('type'),
                     $app->request->params('description')
                 );
-                $submission = "Correction";
+                $event = "Correction";
             }
             else {
                 $model->addSubmission(
