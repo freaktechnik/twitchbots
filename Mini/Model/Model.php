@@ -604,7 +604,7 @@ class Model
                     $count += 1;
 
                     // Remove any matching submissions.
-                    $this->submissions->removeSubmissions($bot->name, (string)$bot->type);
+                    $this->submissions->removeSubmissions($bot->name);
                 }
             } catch(Exception $e) {
                 //TODO log error?
