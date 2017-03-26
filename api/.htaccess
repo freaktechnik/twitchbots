@@ -15,3 +15,7 @@ RewriteRule ^(.*)$ https://api.twitchbots.info/$1 [QSA,R=301,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA,L]
+
+<IfModule LiteSpeed> 
+  CacheEnable public /
+</IfModule> 
