@@ -27,7 +27,7 @@
         "component-baseurl": "/assets"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8",
-        "phpunit/dbunit": "^2.0"
+        "phpunit/dbunit": "^3.0",
+        "phpunit/phpunit": "^6.1"
     }
 }
