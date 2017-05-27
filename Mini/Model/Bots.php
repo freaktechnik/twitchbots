@@ -6,16 +6,16 @@ use PDO;
 
 /* CREATE TABLE IF NOT EXISTS bots (
     twitch_id varchar(20) DEFAULT NULL COMMENT `Twitch user ID`,
-    name varchar(535) CHARACTER SET ascii NOT NULL COMMENT `Twitch username of the bot`,
+    name varchar(535) CHARACTER SET utf8 NOT NULL COMMENT `Twitch username of the bot`,
     type int(10) unsigned DEFAULT NULL COMMENT `Type of the bot`,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last content modification ts`,
     cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last crawl or update ts`,
-    channel varchar(535) CHARACTER SET ascii DEFAULT NULL COMMENT `Channel the bot is in`,
+    channel varchar(535) CHARACTER SET utf8 DEFAULT NULL COMMENT `Channel the bot is in`,
     channel_id varchar(20) DEFAULT NULL COMMENT `Channel Twitch ID`,
     PRIMARY KEY (twitch_id),
     FOREIGN KEY (type) REFERENCES types(id),
     UNIQUE KEY name (name)
-) DEFAULT CHARSET=ascii */
+) DEFAULT CHARSET=utf8 */
 
 class Bots extends PaginatingStore {
     function __construct(PingablePDO $db, int $pageSize = 50)

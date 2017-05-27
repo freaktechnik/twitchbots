@@ -7,11 +7,11 @@ use PDO;
 /* CREATE TABLE IF NOT EXISTS submissions (
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
     twitch_id varchar(20) NOT NULL,
-    name varchar(535) CHARACTER SET ascii NOT NULL,
+    name varchar(535) CHARACTER SET utf8 NOT NULL,
     description text NOT NULL,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     type int(1) unsigned NOT NULL DEFAULT 0,
-    channel varchar(535) CHARACTER SET ascii DEFAULT NULL,
+    channel varchar(535) CHARACTER SET utf8 DEFAULT NULL,
     channel_id varchar(20) DEFAULT NULL,
     offline boolean DEFAULT NULL,
     online boolean DEFAULT NULL,
