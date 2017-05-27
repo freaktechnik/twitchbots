@@ -43,7 +43,7 @@ class ModelTest extends TestCase
         parent::__construct();
     }
 
-    public function getConnection(): PHPUnit\DbUnit\IDatabase\DefaultConnection
+    public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
