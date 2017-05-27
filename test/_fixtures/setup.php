@@ -4,7 +4,7 @@ use \Mini\Model\PingablePDO;
 
 function clear_table($pdo, $table) {
     $pdo->query('SET FOREIGN_KEY_CHECKS = 0');
-    $pdo->query('TRUNCATE TABLE \''.$table.'\'');
+    $pdo->query('TRUNCATE TABLE '.$table);
     $pdo->query('SET FOREIGN_KEY_CHECKS = 1');
 }
 
