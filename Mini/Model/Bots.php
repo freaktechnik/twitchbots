@@ -124,10 +124,10 @@ class Bots extends PaginatingStore {
         $query->execute(array($username));
     }
 
-    public function removeBots(array $usernames)
+    public function removeBots(array $ids)
     {
-        $tempTable = $this->createTempTable($usernames);
-        $where = 'INNER JOIN '.$tempTable.' AS t ON t.value = `table`.name';
+        $tempTable = $this->createTempTable($ids);
+        $where = 'INNER JOIN '.$tempTable.' AS t ON t.value = `table`.twitch_id';
         $query = $this->prepareDelete($where);
         $query->execute();
         $this->cleanUpTempTable($tempTable);

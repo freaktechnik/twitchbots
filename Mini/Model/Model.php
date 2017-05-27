@@ -283,7 +283,7 @@ class Model
 
             $this->db->ping();
             if(count($bots) > 1) {
-                $this->bots->removeBots(array_column($bots, 'name'));
+                $this->bots->removeBots(array_column($bots, 'twitch_id'));
             }
             else if(count($bots) == 1) {
                 $this->bots->removeBot($bots[0]->name);

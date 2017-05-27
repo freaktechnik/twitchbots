@@ -6,12 +6,12 @@ Header set Referrer-Policy "no-referrer-when-downgrade"
 SetEnvIf Host ^(www\.)?twitchbots\.info$ MODE=production
 Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload" "expr=%{MODE} == 'production'"
 
-<IfModule LiteSpeed> 
+<IfModule LiteSpeed>
   CacheEnable public /
-  
+
   CacheDisable public /lib
   CacheEnable private /lib
-  
+
   CacheDisable public /submissions
   CacheEnable private /submissions
 </IfModule>

@@ -228,12 +228,12 @@ class BotsTest extends PHPUnit_Extensions_Database_TestCase
     public function testRemoveBots()
     {
         $initialCount = $this->bots->getCount();
-        $this->bots->removeBots(array('ackbot', 'nightbot'));
+        $this->bots->removeBots(array(1, 15));
 
         $this->assertEquals($initialCount - 2, $this->bots->getCount());
 
         $queryTable = $this->getConnection()->createQueryTable(
-            'bots', "SELECT * FROM bots WHERE name IN ('ackbot','nightbot')"
+            'bots', "SELECT * FROM bots WHERE twitch_id IN (1,15)"
         );
         $this->assertEquals(0, $queryTable->getRowCount());
     }
