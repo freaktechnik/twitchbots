@@ -16,12 +16,12 @@ class DBTestCase extends TestCase {
 
     public static function setUpBeforeClass()
     {
-        self::$pdo = create_pdo($GLOBALS);
-        if(self::$configOnly) {
-            create_config_table(self::$pdo);
+        static::$pdo = create_pdo($GLOBALS);
+        if(static::$configOnly) {
+            create_config_table(static::$pdo);
         }
         else {
-            create_tables(self::$pdo);
+            create_tables(static::$pdo);
         }
 
         parent::setUpBeforeClass();
@@ -29,7 +29,7 @@ class DBTestCase extends TestCase {
 
     public static function tearDownAfterClass()
     {
-        self::$pdo = null;
+        static::$pdo = null;
 
         parent::tearDownAfterClass();
     }
@@ -37,7 +37,7 @@ class DBTestCase extends TestCase {
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
-            $this->conn = $this->createDefaultDBConnection(self::$pdo->getOriginalPDO(), ':memory:');
+            $this->conn = $this->createDefaultDBConnection(static::$pdo->getOriginalPDO(), ':memory:');
         }
 
         return $this->conn;
@@ -45,6 +45,6 @@ class DBTestCase extends TestCase {
 
     public function getDataSet(): PHPUnit\DbUnit\DataSet\XmlDataSet
     {
-        return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/'.self::$dataSet.'.xml');
+        return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/'.static::$dataSet.'.xml');
     }
 }

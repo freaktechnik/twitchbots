@@ -2,7 +2,7 @@
 
 require_once "DBTestCase.php";
 
-use \Mini\Model\PingablePDO;
+use \Mini\Model\ShimStore;
 /**
  * @coversDefaultClass \Mini\Model\Store
  */
@@ -18,7 +18,7 @@ class StoreTest extends DBTestCase
 
     public function setUp()
     {
-        $this->store = new \Mini\Model\ShimStore(self::$pdo, 'config');
+        $this->store = ShimStore(self::$pdo, 'config');
 
         parent::setUp();
     }
