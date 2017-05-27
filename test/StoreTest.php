@@ -1,64 +1,23 @@
 <?php
 
-include_once('_fixtures/setup.php');
-
 use \Mini\Model\PingablePDO;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\DbUnit\TestCaseTrait;
-
 /**
  * @coversDefaultClass \Mini\Model\Store
  */
-class StoreTest extends TestCase
+class StoreTest extends DBTestCase
 {
-    use TestCaseTrait {
-        setUp as setUpDB;
-        tearDown as tearDownDB;
-    }
-
-    // Database connection efficieny
-    static private $pdo = null;
-    private $conn = null;
+    static protected $configOnly = true;
+    static protected $dataSet = 'pdostorage';
 
     /**
      * @var \Mini\Model\Store
      */
     private $store;
 
-    public static function setUpBeforeClass()
-    {
-        self::$pdo = create_pdo($GLOBALS);
-        create_config_table(self::$pdo);
-
-        parent::setUpBeforeClass();
-    }
-
-    public static function tearDownAfterClass()
-    {
-        self::$pdo = null;
-
-        parent::tearDownAfterClass();
-    }
-
-    public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
-    {
-        if ($this->conn === null) {
-            $this->conn = $this->createDefaultDBConnection(self::$pdo->getOriginalPDO(), ':memory:');
-        }
-
-        return $this->conn;
-    }
-
-    public function getDataSet(): PHPUnit\DbUnit\DataSet\XmlDataSet
-    {
-        return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/pdostorage.xml');
-    }
-
     public function setUp()
     {
         $this->store = new \Mini\Model\ShimStore(self::$pdo, 'config');
 
-        $this->setUpDB();
         parent::setUp();
     }
 
@@ -66,7 +25,6 @@ class StoreTest extends TestCase
     {
         $this->store = null;
 
-        $this->tearDownDB();
         parent::tearDown();
     }
 

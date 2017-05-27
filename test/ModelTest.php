@@ -1,22 +1,12 @@
 <?php
 
-include_once('_fixtures/setup.php');
-
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\DbUnit\TestCaseTrait;
 
 /**
  * @coversDefaultClass \Mini\Model\Model
  */
-class ModelTest extends TestCase
+class ModelTest extends DBTestCase
 {
-    use TestCaseTrait;
-
-    // Database connection efficieny
-    static private $pdo = null;
-    private $conn = null;
-
     /**
      * @var \Mini\Model\Model
      */
@@ -32,40 +22,11 @@ class ModelTest extends TestCase
      */
     const pageSize = 100;
 
-    public static function setUpBeforeClass()
-    {
-        self::$pdo = create_pdo($GLOBALS)->getOriginalPDO();
-        create_tables(self::$pdo);
-
-        parent::setUpBeforeClass();
-    }
-
-    public static function tearDownAfterClass()
-    {
-        self::$pdo = null;
-
-        parent::tearDownAfterClass();
-    }
-
     public function __construct()
     {
         ob_start();
 
         parent::__construct();
-    }
-
-    public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
-    {
-        if ($this->conn === null) {
-            $this->conn = $this->createDefaultDBConnection(self::$pdo, ':memory:');
-        }
-
-        return $this->conn;
-    }
-
-    public function getDataSet(): PHPUnit\DbUnit\DataSet\XmlDataSet
-    {
-        return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/bots.xml');
     }
 
     public function setUp()

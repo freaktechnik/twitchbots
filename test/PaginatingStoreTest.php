@@ -1,22 +1,12 @@
 <?php
 
-include_once('_fixtures/setup.php');
-
 use \Mini\Model\PingablePDO;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\DbUnit\TestCaseTrait;
 
 /**
  * @coversDefaultClass \Mini\Model\PaginatingStore
  */
-class PaginatingStoreTest extends TestCase
+class PaginatingStoreTest extends DBTestCase
 {
-    use TestCaseTrait;
-
-    // Database connection efficieny
-    static private $pdo = null;
-    private $conn = null;
-
     /**
      * @var \Mini\Model\PaginatingStore
      */
@@ -26,35 +16,6 @@ class PaginatingStoreTest extends TestCase
      * @var int
      */
     const pageSize = 100;
-
-    public static function setUpBeforeClass()
-    {
-        self::$pdo = create_pdo($GLOBALS);
-        create_tables(self::$pdo);
-
-        parent::setUpBeforeClass();
-    }
-
-    public static function tearDownAfterClass()
-    {
-        self::$pdo = null;
-
-        parent::tearDownAfterClass();
-    }
-
-    public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
-    {
-        if ($this->conn === null) {
-            $this->conn = $this->createDefaultDBConnection(self::$pdo->getOriginalPDO(), ':memory:');
-        }
-
-        return $this->conn;
-    }
-
-    public function getDataSet(): PHPUnit\DbUnit\DataSet\XmlDataSet
-    {
-        return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/bots.xml');
-    }
 
     public function setUp()
     {
