@@ -14,7 +14,7 @@ class StoreTest extends TestCase
     use TestCaseTrait {
         setUp as setUpDB;
         tearDown as tearDownDB;
-    };
+    }
 
     // Database connection efficieny
     static private $pdo = null;
