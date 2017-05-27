@@ -34,7 +34,7 @@ class ModelTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$pdo = create_pdo($GLOBALS);
+        self::$pdo = create_pdo($GLOBALS)->getOriginalPDO();
         create_tables(self::$pdo);
 
         parent::setUpBeforeClass();
