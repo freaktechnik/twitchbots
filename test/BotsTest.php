@@ -38,7 +38,7 @@ class BotsTest extends TestCase
         parent::__construct();
     }
 
-    public function getConnection(): PHPUnit_Extensions_Database_DB_IDatabaseConnection
+    public function getConnection(): PHPUnit\DbUnit\IDatabase\DefaultConnection
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
@@ -50,7 +50,7 @@ class BotsTest extends TestCase
         return $this->conn;
     }
 
-    public function getDataSet(): PHPUnit_Extensions_Database_DataSet_IDataSet
+    public function getDataSet(): PHPUnit\DbUnit\Database\DataSet
     {
         return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/bots.xml');
     }

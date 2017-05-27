@@ -36,7 +36,7 @@ class SubmissionsTest extends TestCase
         parent::__construct();
     }
 
-    public function getConnection(): PHPUnit_Extensions_Database_DB_IDatabaseConnection
+    public function getConnection(): PHPUnit\DbUnit\IDatabase\DefaultConnection
     {
         if ($this->conn === null) {
             if (self::$pdo == null) {
