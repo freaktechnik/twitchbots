@@ -21,7 +21,7 @@ class DBTestCase extends TestCase {
             create_config_table(self::$pdo);
         }
         else {
-            create_tables();
+            create_tables(self::$pdo);
         }
 
         parent::setUpBeforeClass();
