@@ -7,7 +7,7 @@ use PHPUnit\DbUnit\TestCaseTrait;
 class DBTestCase extends TestCase {
     use TestCaseTrait;
 
-    const TABLES = [
+    protected const TABLES = [
         "config" => [
             'name varchar(120) CHARACTER SET ascii NOT NULL,
              value varchar(100) CHARACTER SET ascii DEFAULT NULL,
@@ -85,7 +85,7 @@ class DBTestCase extends TestCase {
     public static function setUpBeforeClass()
     {
         $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
-        static::$pdo = new PingablePDO('mysql:dbname='.$globals['DB_NAME'].';host='.$globals['DB_HOST'].';port='.$globals['DB_PORT'], $globals['DB_USER'], $globals['DB_PASSWD'], $options);
+        static::$pdo = new PingablePDO('mysql:dbname='.$GLOBALS['DB_NAME'].';host='.$GLOBALS['DB_HOST'].';port='.$GLOBALS['DB_PORT'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'], $options);
         foreach(static::$tables as $t) {
             self::createTable($t);
         }
