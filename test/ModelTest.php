@@ -64,6 +64,7 @@ class ModelTest extends TestCase
     public function setUp()
     {
         ob_start();
+        @session_start();
         $this->httpMock = new \GuzzleHttp\Handler\MockHandler();
         $client = new \GuzzleHttp\Client(array(
             'handler' => \GuzzleHttp\HandlerStack::create($this->httpMock)
