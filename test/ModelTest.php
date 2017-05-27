@@ -32,15 +32,21 @@ class ModelTest extends TestCase
      */
     const pageSize = 100;
 
-    public function __construct()
+    public static function setUpBeforeClass()
     {
-        // We need this so sessions work
+        self::$pdo = create_pdo($GLOBALS);
+        create_tables(self::$pdo);
         ob_start();
 
-        $this->getConnection();
-        create_tables(self::$pdo);
+        parent::setUpBeforeClass();
+    }
 
-        parent::__construct();
+    public static function tearDownAfterClass()
+    {
+        self::$pdo = null;
+        ob_end_clean();
+
+        parent::tearDownAfterClass();
     }
 
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
@@ -77,6 +83,13 @@ class ModelTest extends TestCase
             'testing' => true
         ), $client);
         parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        $this->httpMock = null;
+        $this->model = null;
+        parent::tearDown();
     }
 
     private function queueTwitchUser(string $id) {
