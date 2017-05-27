@@ -22,21 +22,26 @@ class PDOStorageTest extends TestCase
      */
     private $model;
 
-    public function __construct()
+    public static function setUpBeforeClass()
     {
-        $this->getConnection();
-
+        self::$pdo = create_pdo($GLOBALS);
         create_config_table(self::$pdo);
+        ob_start();
 
-        parent::__construct();
+        parent::setUpBeforeClass();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$pdo = null;
+        ob_end_clean();
+
+        parent::tearDownAfterClass();
     }
 
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
-            if (self::$pdo == null) {
-                self::$pdo = create_pdo($GLOBALS);
-            }
             $this->conn = $this->createDefaultDBConnection(self::$pdo->getOriginalPDO(), ':memory:');
         }
 
@@ -50,9 +55,14 @@ class PDOStorageTest extends TestCase
 
     public function setUp()
     {
-        $this->getConnection();
         $this->model = new \Mini\Model\TypeCrawler\Storage\PDOStorage(1, self::$pdo, 'config');
         parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        $this->model = null;
+        parent::tearDown();
     }
 
     /**

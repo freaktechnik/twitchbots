@@ -25,23 +25,26 @@ class SubmissionsTest extends TestCase
      */
     const pageSize = 100;
 
-    public function __construct()
+    public static function setUpBeforeClass()
     {
-        // We need this so sessions work
+        self::$pdo = create_pdo($GLOBALS);
+        create_tables(self::$pdo);
         ob_start();
 
-        $this->getConnection();
-        create_tables(self::$pdo);
+        parent::setUpBeforeClass();
+    }
 
-        parent::__construct();
+    public static function tearDownAfterClass()
+    {
+        self::$pdo = null;
+        ob_end_clean();
+
+        parent::tearDownAfterClass();
     }
 
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
-            if (self::$pdo == null) {
-                self::$pdo = create_pdo($GLOBALS);
-            }
             $this->conn = $this->createDefaultDBConnection(self::$pdo->getOriginalPDO(), ':memory:');
         }
 
@@ -57,6 +60,12 @@ class SubmissionsTest extends TestCase
     {
         $this->submissions = new Submissions(self::$pdo, self::pageSize);
         parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        $this->submissions = null;
+        parent::tearDown();
     }
 
     /**

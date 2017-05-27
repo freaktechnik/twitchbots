@@ -32,17 +32,16 @@ class BotsTest extends TestCase
         self::$pdo = create_pdo($GLOBALS);
         create_tables(self::$pdo);
         ob_start();
+
+        parent::setUpBeforeClass();
     }
 
     public static function tearDownAfterClass()
     {
         self::$pdo = null;
         ob_end_clean();
-    }
 
-    public function __construct()
-    {
-        parent::__construct();
+        parent::tearDownAfterClass();
     }
 
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
@@ -63,6 +62,12 @@ class BotsTest extends TestCase
     {
         $this->bots = new \Mini\Model\Bots(self::$pdo, self::pageSize);
         parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        $this->bots = null;
+        parent::tearDown();
     }
 
     /**
