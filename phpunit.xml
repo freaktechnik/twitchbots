@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<phpunit bootstrap="vendor/autoload.php">
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-isntance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    forceCoverAnnotation="true"
+    colors="true">
     <php>
         <var name="DB_NAME" value="twitchbots" />
         <var name="DB_HOST" value="localhost" />
