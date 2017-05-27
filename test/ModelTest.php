@@ -36,7 +36,6 @@ class ModelTest extends TestCase
     {
         self::$pdo = create_pdo($GLOBALS);
         create_tables(self::$pdo);
-        ob_start();
 
         parent::setUpBeforeClass();
     }
@@ -44,7 +43,6 @@ class ModelTest extends TestCase
     public static function tearDownAfterClass()
     {
         self::$pdo = null;
-        ob_end_clean();
 
         parent::tearDownAfterClass();
     }
@@ -65,6 +63,7 @@ class ModelTest extends TestCase
 
     public function setUp()
     {
+        ob_start();
         $this->httpMock = new \GuzzleHttp\Handler\MockHandler();
         $client = new \GuzzleHttp\Client(array(
             'handler' => \GuzzleHttp\HandlerStack::create($this->httpMock)
@@ -86,6 +85,7 @@ class ModelTest extends TestCase
     {
         $this->httpMock = null;
         $this->model = null;
+        ob_end_clean();
         parent::tearDown();
     }
 
