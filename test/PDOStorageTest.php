@@ -1,6 +1,6 @@
 <?php
 
-include_once('_fixtures/setup.php');
+require_once "DBTestCase.php";
 
 use \Mini\Model\PingablePDO;
 

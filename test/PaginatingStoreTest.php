@@ -1,5 +1,7 @@
 <?php
 
+require_once "DBTestCase.php";
+
 use \Mini\Model\PingablePDO;
 
 /**
