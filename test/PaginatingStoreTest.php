@@ -31,7 +31,6 @@ class PaginatingStoreTest extends TestCase
     {
         self::$pdo = create_pdo($GLOBALS);
         create_tables(self::$pdo);
-        ob_start();
 
         parent::setUpBeforeClass();
     }
@@ -39,7 +38,6 @@ class PaginatingStoreTest extends TestCase
     public static function tearDownAfterClass()
     {
         self::$pdo = null;
-        ob_end_clean();
 
         parent::tearDownAfterClass();
     }

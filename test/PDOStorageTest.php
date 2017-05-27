@@ -26,7 +26,6 @@ class PDOStorageTest extends TestCase
     {
         self::$pdo = create_pdo($GLOBALS);
         create_config_table(self::$pdo);
-        ob_start();
 
         parent::setUpBeforeClass();
     }
@@ -34,7 +33,6 @@ class PDOStorageTest extends TestCase
     public static function tearDownAfterClass()
     {
         self::$pdo = null;
-        ob_end_clean();
 
         parent::tearDownAfterClass();
     }

@@ -29,7 +29,6 @@ class TypesTest extends TestCase
     {
         self::$pdo = create_pdo($GLOBALS);
         create_tables(self::$pdo);
-        ob_start();
 
         parent::setUpBeforeClass();
     }
@@ -37,7 +36,6 @@ class TypesTest extends TestCase
     public static function tearDownAfterClass()
     {
         self::$pdo = null;
-        ob_end_clean();
 
         parent::tearDownAfterClass();
     }
@@ -45,9 +43,6 @@ class TypesTest extends TestCase
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
-            if (self::$pdo == null) {
-                self::$pdo = create_pdo($GLOBALS);
-            }
             $this->conn = $this->createDefaultDBConnection(self::$pdo->getOriginalPDO(), ':memory:');
         }
 

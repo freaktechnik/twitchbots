@@ -86,7 +86,6 @@ class ModelTest extends TestCase
     {
         $this->httpMock = null;
         $this->model = null;
-        ob_end_clean();
         parent::tearDown();
     }
 
