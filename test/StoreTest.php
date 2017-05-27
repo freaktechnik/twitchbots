@@ -5,7 +5,7 @@ include_once('_fixtures/setup.php');
 use \Mini\Model\PingablePDO;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
-use PHPUnit\DbUnit\Operation\{Factory,Operation};
+use PHPUnit\DbUnit\Operation\{Factory,Operation,Composite};
 
 /**
  * @coversDefaultClass \Mini\Model\Store
@@ -40,7 +40,10 @@ class StoreTest extends TestCase
 
     protected function getSetUpOperation(): Operation
     {
-        return Factory::CLEAN_INSERT(true);
+        return new Composite([
+            Factory::DELETE_ALL(),
+            Factory::INSERT()
+        ]);
     }
 
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
