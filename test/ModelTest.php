@@ -52,9 +52,6 @@ class ModelTest extends TestCase
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
-            if (self::$pdo == null) {
-                self::$pdo = new PDO('mysql:dbname='.$GLOBALS['DB_NAME'].';host='.$GLOBALS['DB_HOST'].';port='.$GLOBALS['DB_PORT'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD']);
-            }
             $this->conn = $this->createDefaultDBConnection(self::$pdo, ':memory:');
         }
 
