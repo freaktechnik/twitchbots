@@ -50,7 +50,7 @@ class BotsTest extends TestCase
         return $this->conn;
     }
 
-    public function getDataSet(): PHPUnit\DbUnit\Database\DataSet
+    public function getDataSet(): PHPUnit\DbUnit\DataSet\XmlDataSet
     {
         return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/bots.xml');
     }

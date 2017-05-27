@@ -55,7 +55,7 @@ class ModelTest extends TestCase
         return $this->conn;
     }
 
-    public function getDataSet(): PHPUnit_Extensions_Database_DataSet_IDataSet
+    public function getDataSet(): PHPUnit\DbUnit\DataSet\XmlDataSet
     {
         return $this->createXMLDataSet(dirname(__FILE__).'/_fixtures/bots.xml');
     }
