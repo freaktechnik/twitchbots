@@ -1,9 +1,11 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @coversDefaultClass \Mini\Model\TypeCrawler\Storage\StorageFactory
  */
-class StorageFactoryTest extends PHPUnit_Framework_TestCase
+class StorageFactoryTest extends TestCase
 {
     public function testGetStorage()
     {

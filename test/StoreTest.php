@@ -3,12 +3,16 @@
 include_once('_fixtures/setup.php');
 
 use \Mini\Model\PingablePDO;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\DbUnit\TestCaseTrait;
 
 /**
  * @coversDefaultClass \Mini\Model\Store
  */
-class StoreTest extends PHPUnit_Extensions_Database_TestCase
+class StoreTest extends TestCase
 {
+    use TestCaseTrait;
+
     // Database connection efficieny
     static private $pdo = null;
     private $conn = null;

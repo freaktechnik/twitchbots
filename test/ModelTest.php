@@ -3,12 +3,16 @@
 include_once('_fixtures/setup.php');
 
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\DbUnit\TestCaseTrait;
 
 /**
  * @coversDefaultClass \Mini\Model\Model
  */
-class ModelTest extends PHPUnit_Extensions_Database_TestCase
+class ModelTest extends TestCase
 {
+    use TestCaseTrait;
+
     // Database connection efficieny
     static private $pdo = null;
     private $conn = null;

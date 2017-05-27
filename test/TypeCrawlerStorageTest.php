@@ -1,11 +1,12 @@
 <?php
 
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage
  */
-class TypeCrawlerStorageTest extends PHPUnit_Framework_TestCase
+class TypeCrawlerStorageTest extends TestCase
 {
     /**
      * @expectedException Exception

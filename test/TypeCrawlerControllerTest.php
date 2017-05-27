@@ -1,9 +1,11 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @coversDefaultClass \Mini\Model\TypeCrawler\TypeCrawlerController
  */
-class TypeCrawlerControllerTest extends PHPUnit_Framework_TestCase
+class TypeCrawlerControllerTest extends TestCase
 {
     public function testCrawl()
     {

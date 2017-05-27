@@ -1,12 +1,16 @@
 <?php
 
 use \Mini\Model\PingablePDO;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\DbUnit\TestCaseTrait;
 
 /**
  * @coversDefaultClass \Mini\Model\Types
  */
-class TypesTest extends PHPUnit_Extensions_Database_TestCase
+class TypesTest extends TestCase
 {
+    use TestCaseTrait;
+
     // Database connection efficieny
     static private $pdo = null;
     private $conn = null;
