@@ -68,8 +68,8 @@ class DBTestCase extends TestCase {
     static protected $pdo = null;
     static protected $dataSet = 'bots';
     static protected $tables = [
-        'bots',
         'types',
+        'bots',
         'submissions',
         'config',
         'authorized_users'
