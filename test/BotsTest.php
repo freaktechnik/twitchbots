@@ -57,6 +57,7 @@ class BotsTest extends TestCase
 
     public function setUp()
     {
+        $this->getConnection();
         $this->bots = new \Mini\Model\Bots(self::$pdo, self::pageSize);
         parent::setUp();
     }
@@ -211,7 +212,7 @@ class BotsTest extends TestCase
     }
 
     /**
-     * @covers ::removeBot
+     * @covers ::removeBottestGetType
      */
     public function testRemoveBot()
     {
