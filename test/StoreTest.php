@@ -5,6 +5,7 @@ include_once('_fixtures/setup.php');
 use \Mini\Model\PingablePDO;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
+use PHPUnit\DbUnit\Operation\{Factory,Operation};
 
 /**
  * @coversDefaultClass \Mini\Model\Store
@@ -37,6 +38,11 @@ class StoreTest extends TestCase
         parent::tearDownAfterClass();
     }
 
+    protected fucntion getSetUpOperation(): Operation
+    {
+        return Factory::CLEAN_INSERT(true);
+    }
+
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
@@ -53,7 +59,6 @@ class StoreTest extends TestCase
 
     public function setUp()
     {
-
         $this->store = new \Mini\Model\ShimStore(self::$pdo, 'config');
         parent::setUp();
     }
