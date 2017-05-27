@@ -15,7 +15,7 @@ function create_config_table($pdo) {
         value varchar(100) CHARACTER SET ascii DEFAULT NULL,
         PRIMARY KEY (name)
     ) DEFAULT CHARSET=ascii');
-    clear_table('config');
+    clear_table($pdo, 'config');
 }
 
 function create_tables($pdo) {
@@ -68,10 +68,10 @@ function create_tables($pdo) {
     $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, type, multichannel, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
     $pdo->query('CREATE OR REPLACE VIEW typelist AS SELECT id, types.name AS name, multichannel, COUNT(DISTINCT(bots.name)) AS count FROM types LEFT JOIN bots ON bots.type = types.id GROUP BY id ORDER BY name ASC');
 
-    clear_table('types');
-    clear_table('bots');
-    clear_table('submissions');
-    clear_table('authorized_users');
+    clear_table($pdo, 'types');
+    clear_table($pdo, 'bots');
+    clear_table($pdo, 'submissions');
+    clear_table($pdo, 'authorized_users');
 }
 
 function create_pdo(&$globals) {
