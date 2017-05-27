@@ -67,7 +67,13 @@ class DBTestCase extends TestCase {
     // Database connection efficieny
     static protected $pdo = null;
     static protected $dataSet = 'bots';
-    static protected $tables = array_keys(self::TABLES);
+    static protected $tables = [
+        'bots',
+        'types',
+        'submissions',
+        'config',
+        'authorized_users'
+    ];
     private $conn = null;
 
     private static function createTable($table)

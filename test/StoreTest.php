@@ -8,7 +8,7 @@ use \Mini\Model\ShimStore;
  */
 class StoreTest extends DBTestCase
 {
-    static protected $configOnly = true;
+    static protected $tables = ['config'];
     static protected $dataSet = 'pdostorage';
 
     /**

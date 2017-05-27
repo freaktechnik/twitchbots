@@ -10,7 +10,7 @@ use \Mini\Model\PingablePDO;
 class PDOStorageTest extends DBTestCase
 {
     protected static $dataSet = 'pdostorage';
-    protected static $configOnly = true;
+    protected static $tables = ['config'];
 
     /**
      * @var \Mini\Model\TypeCrawler\Storage\PDOStorage
