@@ -18,7 +18,7 @@ class StoreTest extends DBTestCase
 
     public function setUp()
     {
-        $this->store = ShimStore(self::$pdo, 'config');
+        $this->store = new ShimStore(self::$pdo, 'config');
 
         parent::setUp();
     }
