@@ -7,7 +7,7 @@ use PHPUnit\DbUnit\TestCaseTrait;
 class DBTestCase extends TestCase {
     use TestCaseTrait;
 
-    protected const TABLES = [
+    const TABLES = [
         "config" => [
             'name varchar(120) CHARACTER SET ascii NOT NULL,
              value varchar(100) CHARACTER SET ascii DEFAULT NULL,
