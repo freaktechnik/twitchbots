@@ -6,7 +6,7 @@ use PDO;
 
 /* CREATE TABLE IF NOT EXISTS bots (
     twitch_id varchar(20) DEFAULT NULL COMMENT `Twitch user ID`,
-    name varchar(535) CHARACTER SET utf8 NOT NULL COMMENT `Twitch username of the bot`,
+    name varchar(255) CHARACTER SET utf8 NOT NULL COMMENT `Twitch username of the bot`,
     type int(10) unsigned DEFAULT NULL COMMENT `Type of the bot`,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last content modification ts`,
     cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last crawl or update ts`,

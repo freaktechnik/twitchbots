@@ -6,7 +6,7 @@ use PDO;
 
 /* CREATE TABLE IF NOT EXISTS types (
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
-    name varchar(535) CHARACTER SET utf8 NOT NULL,
+    name varchar(255) CHARACTER SET utf8 NOT NULL,
     multichannel tinyint(1) NOT NULL,
     url text CHARACTER SET ascii NOT NULL,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
