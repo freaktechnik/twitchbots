@@ -27,23 +27,27 @@ class BotsTest extends TestCase
      */
     const pageSize = 100;
 
+    public static function setUpBeforeClass()
+    {
+        self::$pdo = create_pdo($GLOBALS);
+        create_tables(self::$pdo);
+        ob_start();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$pdo = null;
+        ob_end_clean();
+    }
+
     public function __construct()
     {
-        // We need this so sessions work
-        ob_start();
-
-        $this->getConnection();
-        create_tables(self::$pdo);
-
         parent::__construct();
     }
 
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
-            if (self::$pdo == null) {
-                self::$pdo = create_pdo($GLOBALS);
-            }
             $this->conn = $this->createDefaultDBConnection(self::$pdo->getOriginalPDO(), ':memory:');
         }
 
@@ -57,7 +61,6 @@ class BotsTest extends TestCase
 
     public function setUp()
     {
-        $this->getConnection();
         $this->bots = new \Mini\Model\Bots(self::$pdo, self::pageSize);
         parent::setUp();
     }
@@ -212,7 +215,7 @@ class BotsTest extends TestCase
     }
 
     /**
-     * @covers ::removeBottestGetType
+     * @covers ::removeBot
      */
     public function testRemoveBot()
     {
