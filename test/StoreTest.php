@@ -38,7 +38,7 @@ class StoreTest extends TestCase
         parent::tearDownAfterClass();
     }
 
-    protected fucntion getSetUpOperation(): Operation
+    protected function getSetUpOperation(): Operation
     {
         return Factory::CLEAN_INSERT(true);
     }
