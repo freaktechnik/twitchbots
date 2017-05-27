@@ -47,6 +47,13 @@ class ModelTest extends TestCase
         parent::tearDownAfterClass();
     }
 
+    public function __construct()
+    {
+        ob_start();
+
+        parent::__construct();
+    }
+
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
@@ -63,8 +70,6 @@ class ModelTest extends TestCase
 
     public function setUp()
     {
-        ob_start();
-        @session_start();
         $this->httpMock = new \GuzzleHttp\Handler\MockHandler();
         $client = new \GuzzleHttp\Client(array(
             'handler' => \GuzzleHttp\HandlerStack::create($this->httpMock)
