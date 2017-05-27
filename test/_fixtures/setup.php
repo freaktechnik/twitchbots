@@ -2,6 +2,12 @@
 
 use \Mini\Model\PingablePDO;
 
+function clear_table($pdo, $table) {
+    $pdo->query('SET FOREIGN_KEY_CHECKS = 0');
+    $pdo->query('TRUNCATE TABLE \''.$table.'\'');
+    $pdo->query('SET FOREIGN_KEY_CHECKS = 1');
+}
+
 // General test set up helpers.
 function create_config_table($pdo) {
     $pdo->query('CREATE TABLE IF NOT EXISTS config (
@@ -9,6 +15,7 @@ function create_config_table($pdo) {
         value varchar(100) CHARACTER SET ascii DEFAULT NULL,
         PRIMARY KEY (name)
     ) DEFAULT CHARSET=ascii');
+    clear_table('config');
 }
 
 function create_tables($pdo) {
@@ -60,6 +67,11 @@ function create_tables($pdo) {
     $pdo->query('CREATE OR REPLACE VIEW count AS SELECT count(name) AS count FROM bots');
     $pdo->query('CREATE OR REPLACE VIEW list AS SELECT bots.name AS name, type, multichannel, types.name AS typename FROM bots LEFT JOIN types ON bots.type = types.id ORDER BY name ASC');
     $pdo->query('CREATE OR REPLACE VIEW typelist AS SELECT id, types.name AS name, multichannel, COUNT(DISTINCT(bots.name)) AS count FROM types LEFT JOIN bots ON bots.type = types.id GROUP BY id ORDER BY name ASC');
+
+    clear_table('types');
+    clear_table('bots');
+    clear_table('submissions');
+    clear_table('authorized_users');
 }
 
 function create_pdo(&$globals) {
