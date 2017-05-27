@@ -5,14 +5,16 @@ include_once('_fixtures/setup.php');
 use \Mini\Model\PingablePDO;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
-use PHPUnit\DbUnit\Operation\{Factory,Operation,Composite};
 
 /**
  * @coversDefaultClass \Mini\Model\Store
  */
 class StoreTest extends TestCase
 {
-    use TestCaseTrait;
+    use TestCaseTrait {
+        setUp as setUpDB;
+        tearDown as tearDownDB;
+    };
 
     // Database connection efficieny
     static private $pdo = null;
@@ -38,14 +40,6 @@ class StoreTest extends TestCase
         parent::tearDownAfterClass();
     }
 
-    protected function getSetUpOperation(): Operation
-    {
-        return new Composite([
-            Factory::DELETE_ALL(),
-            Factory::INSERT()
-        ]);
-    }
-
     public function getConnection(): PHPUnit\DbUnit\Database\DefaultConnection
     {
         if ($this->conn === null) {
@@ -63,12 +57,16 @@ class StoreTest extends TestCase
     public function setUp()
     {
         $this->store = new \Mini\Model\ShimStore(self::$pdo, 'config');
+
+        $this->setUpDB();
         parent::setUp();
     }
 
     public function tearDown()
     {
         $this->store = null;
+
+        $this->tearDownDB();
         parent::tearDown();
     }
 
