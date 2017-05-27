@@ -35,7 +35,7 @@ class DBTestCase extends TestCase {
         ],
         "types" => [
             'id int(10) unsigned NOT NULL AUTO_INCREMENT,
-              name varchar(535) CHARACTER SET utf8 NOT NULL,
+              name varchar(255) CHARACTER SET utf8 NOT NULL,
               multichannel tinyint(1) NOT NULL,
               url text CHARACTER SET ascii NOT NULL,
               date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -45,7 +45,7 @@ class DBTestCase extends TestCase {
         ],
         "bots" => [
             'twitch_id varchar(20) CHARACTER SET ascii DEFAULT NULL,
-              name varchar(535) CHARACTER SET utf8 NOT NULL,
+              name varchar(255) CHARACTER SET utf8 NOT NULL,
               type int(10) unsigned DEFAULT NULL,
               cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
               date timestamp NOT NULL DEFAULT 0,
