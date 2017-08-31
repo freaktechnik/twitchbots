@@ -534,6 +534,7 @@ class Model
                 catch(Exception $e) {
                     if($e->getCode() == 404 || $e->getCode() == 422) {
                         $this->submissions->removeSubmission($submission->id);
+                        continue;
                     }
                 }
             }
