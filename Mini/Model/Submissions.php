@@ -159,6 +159,20 @@ class Submissions extends PaginatingStore {
         $query->execute([$twitchID, $id]);
     }
 
+    public function updateName(int $id, string $name)
+    {
+        $sql = "name=? WHERE id=?";
+        $query = $this->prepareUpdate($sql);
+        $query->execute([$name, $id]);
+    }
+
+    public function updateChannelName(int $id, string $name)
+    {
+        $sql = "channel=? WHERE id=?";
+        $query = $this->prepareUpdate($sql);
+        $query->execute([$name, $id]);
+    }
+
     public function removeSubmission(int $id)
     {
         $query = $this->prepareDelete("WHERE id=?");

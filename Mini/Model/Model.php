@@ -535,6 +535,14 @@ class Model
                     //TODO delete submission?
                 }
             }
+            else {
+                $apiName = $this->getChannelName($submission->twitch_id);
+                if($apiName != $submission->name) {
+                    $submission->name = $apiName;
+                    $this->submissions->updateName($submission->id, $submission->name);
+                    $didSomething = true;
+                }
+            }
 
             if($this->checkFollowing($submission)) {
                 $didSomething = true;
@@ -558,6 +566,14 @@ class Model
                     }
                     catch(Exception $e) {
                         //TODO empty channel string?
+                    }
+                }
+                else {
+                    $apiName = $this->getChannelName($submission->channel_id);
+                    if($apiName != $submission->channel) {
+                        $submission->name = $apiName;
+                        $this->submissions->updateChannelName($submission->id, $submission->name);
+                        $didSomething = true;
                     }
                 }
 
@@ -678,11 +694,21 @@ class Model
             return false;
         }
 
-        $twitchId = $this->getChannelID($submission->name);
+        if(!empty($submission->twitch_id)) {
+            $twitchId = $submission->twitch_id;
+        }
+        else {
+            $twitchId = $this->getChannelID($submission->name);
+        }
 
         $channelId = null;
         if(!empty($submission->channel)) {
-            $channelId = $this->getChannelID($submission->channel);
+            if(!empty($submission->channel_id)) {
+                $channelId = $submission->channel_id;
+            }
+            else {
+                $channelId = $this->getChannelID($submission->channel);
+            }
         }
 
         if(is_numeric($submission->description)) {
