@@ -612,7 +612,7 @@ class Model
 
             if($didSomething) {
                 ++$count;
-                if($submission->verified && $submission->type === 0) {
+                if($submission->verified && $submission->type == 0) {
                     $this->approveSubmission($submission->id);
                 }
             }
