@@ -678,7 +678,7 @@ class Model
         if(is_numeric($submission->description)) {
             $this->bots->addBot($twitchId, $submission->name, (int)$submission->description, $submission->channel, $channelId);
         }
-        else {
+        else if(!$submission->verified){
             //TODO add ui for editor to assign a type/create a type, since this just discards the description.
             $this->bots->addBot($twitchId, $submission->name, null, $submission->channel, $channelId);
         }
