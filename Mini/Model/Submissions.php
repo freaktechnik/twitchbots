@@ -173,6 +173,12 @@ class Submissions extends PaginatingStore {
         $query->execute([$name, $id]);
     }
 
+    public function clearChannel(int $id) {
+        $sql = "(channel=NULL,channel_id=NULL,following_channel=NULL,offline=NULL,online=NULL,ismod=NULL) WHERE id=?";
+        $query = $this->prepareUpdate($sql);
+        $query->execute([ $id ]);
+    }
+
     public function removeSubmission(int $id)
     {
         $query = $this->prepareDelete("WHERE id=?");

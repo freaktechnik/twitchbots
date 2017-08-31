@@ -567,7 +567,9 @@ class Model
                         $didSomething = true;
                     }
                     catch(Exception $e) {
-                        //TODO empty channel string?
+                        if($e->getCode() == 404 || $e->getCode() == 422) {
+                            $this->submissions->clearChannel($submission->id);
+                        }
                     }
                 }
                 else {
