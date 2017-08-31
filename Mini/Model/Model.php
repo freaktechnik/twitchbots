@@ -532,7 +532,9 @@ class Model
                     $didSomething = true;
                 }
                 catch(Exception $e) {
-                    //TODO delete submission?
+                    if($e->getCode() == 404 || $e->getCode() == 422) {
+                        $this->submissions->removeSubmission($submission->id);
+                    }
                 }
             }
             else {
@@ -748,7 +750,7 @@ class Model
         $response = $this->client->get($url, $this->twitchHeadersV5);
 
         if($response->getStatusCode() >= 400) {
-            throw new Exception("Could not get username for ".$id);
+            throw new Exception("Could not get username for ".$id, $response->getStatusCode());
         }
 
         $user = json_decode($response->getBody(), true);
