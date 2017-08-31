@@ -17,5 +17,5 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA,L]
 
 <IfModule LiteSpeed>
-  CacheEnable public /
+  CacheEnable public /twitchbots/api
 </IfModule>
