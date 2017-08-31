@@ -4,6 +4,7 @@ namespace Mini\Model\TypeCrawler;
 
 use \Mini\Model\TypeCrawler\Storage\StorageFactory;
 
+//TODO disable crawlers if the type is disabled in the DB.
 class TypeCrawlerController {
     /** @var array */
     private $crawlers;

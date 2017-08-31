@@ -277,6 +277,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             $app->lastModified(max(array($lastModified, strtotime($type->date))));
             $app->expires('+1 day');
             unset($type->date);
+            unset($type->enabled);
 
             $type->multiChannel = $type->multichannel == "1";
             unset($type->multichannel);

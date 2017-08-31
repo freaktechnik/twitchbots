@@ -10,6 +10,7 @@ use PDO;
     multichannel tinyint(1) NOT NULL,
     url text CHARACTER SET ascii NOT NULL,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    enabled boolean DEFAULT 1,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) DEFAULT CHARSET=utf8 */
@@ -30,9 +31,12 @@ class Types extends PaginatingStore {
         return $query->fetch();
     }
 
+    /**
+     * Only returns enabled types.
+     */
     public function getAllTypes(): array
     {
-        $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id GROUP BY table.id ORDER BY count DESC, table.name ASC");
+        $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id WHERE enabled=1 GROUP BY table.id ORDER BY count DESC, table.name ASC");
         $query->execute();
 
         return $query->fetchAll();

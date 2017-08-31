@@ -40,6 +40,7 @@ class DBTestCase extends TestCase {
               multichannel tinyint(1) NOT NULL,
               url text CHARACTER SET ascii NOT NULL,
               date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              enabled boolean DEFAULT 1,
               PRIMARY KEY (id),
               UNIQUE KEY name (name)',
               'AUTO_INCREMENT=37'

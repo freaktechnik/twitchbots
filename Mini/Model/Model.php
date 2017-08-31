@@ -540,7 +540,7 @@ class Model
             if($this->checkHasVODs($submission) && !$didSomething) {
                 $didSomething = true;
             }
-            if($this->checkVerified($submission) && !$didSomething) {
+            if($submission->type === 0 && $this->checkVerified($submission) && !$didSomething) {
                 $didSomething = true;
             }
 
