@@ -664,7 +664,7 @@ class Model
     {
         $submission = $this->submissions->getSubmission($id);
 
-        if(!is_numeric($submission->description) || $submission->type != 0) {
+        if($submission->type != 0) {
             return false;
         }
 
@@ -675,8 +675,14 @@ class Model
             $channelId = $this->getChannelID($submission->channel);
         }
 
-        $this->bots->addBot($twitchId, $submission->name, (int)$submission->description, $submission->channel, $channelId);
-        //TODO actually remove submissions by name if type==0, don't do that if type==1
+        if(is_numeric($submission->description)) {
+            $this->bots->addBot($twitchId, $submission->name, (int)$submission->description, $submission->channel, $channelId);
+        }
+        else {
+            //TODO add ui for editor to assign a type/create a type, since this just discards the description.
+            $this->bots->addBot($twitchId, $submission->name, null, $submission->channel, $channelId);
+        }
+        //TODO actually remove submissions by twitch_id if type==0, don't do that if type==1
         $this->submissions->removeSubmission($id);
 
         return true;

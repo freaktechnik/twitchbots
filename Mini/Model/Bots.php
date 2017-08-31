@@ -133,7 +133,7 @@ class Bots extends PaginatingStore {
         $this->cleanUpTempTable($tempTable);
     }
 
-    public function addBot(string $id, string $name, int $type, string $channel = null, string $channelId = null)
+    public function addBot(string $id, string $name, int $type = null, string $channel = null, string $channelId = null)
     {
         if(!empty($channel)) {
             $channel = strtolower($channel);
