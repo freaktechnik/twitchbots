@@ -7,11 +7,13 @@ SetEnvIf Host ^(www\.)?twitchbots\.info$ MODE=production
 Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload" "expr=%{MODE} == 'production'"
 
 <IfModule LiteSpeed>
-  CacheEnable public /
+  CacheEnable public /twitchbots/public
 
-  CacheDisable public /lib
+  CacheDisable public /twitchbots/public/lib
+  CacheEnable private /twitchbots/public/lib
 
-  CacheDisable public /submissions
+  CacheDisable public /twitchbots/public/submissions
+  CacheEnable private /twitchbots/public/submissions
 </IfModule>
 
 RewriteEngine On
