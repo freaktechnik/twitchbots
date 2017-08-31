@@ -10,10 +10,8 @@ Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; prelo
   CacheEnable public /
 
   CacheDisable public /lib
-  CacheEnable private /lib
 
   CacheDisable public /submissions
-  CacheEnable private /submissions
 </IfModule>
 
 RewriteEngine On
