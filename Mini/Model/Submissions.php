@@ -149,7 +149,7 @@ class Submissions extends PaginatingStore {
     public function setVerified(int $id, bool $verified) {
         $sql = 'verified=? WHERE id=?';
         $query = $this->prepareUpdate($sql);
-        $query->execute([ $hasVODs, $id ]);
+        $query->execute([ $verified, $id ]);
     }
 
     public function setTwitchID(int $id, int $twitchID, string $type = "twitch")

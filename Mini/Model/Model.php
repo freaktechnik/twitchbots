@@ -410,12 +410,12 @@ class Model
 
         $json = json_decode($response->getBody(), true);
 
-        if($json->is_known_bot) {
+        if($json['is_known_bot']) {
             return true;
         }
         // Legacy, so handle its presence gracefully
-        else if(isset($json->is_verified_bot)) {
-            return $json->is_verified_bot;
+        else if(isset($json['is_verified_bot'])) {
+            return $json['is_verified_bot'];
         }
         return false;
     }
