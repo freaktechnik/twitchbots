@@ -42,7 +42,7 @@ $client = new \GuzzleHttp\Client(array('handler' => $stack));
 $cspBase = "default-src 'none'; style-src 'self'; script-src 'self' https://humanoids.be https://cdn.auth0.com https://cdn.eu.auth0.com; font-src 'self'; connect-src https://api.twitchbots.info https://api.twitch.tv https://twitchbots.eu.auth0.com; form-action 'self'; frame-ancestors 'none'; reflected-xss block; child-src https://humanoids.be; frame-src https://humanoids.be; img-src https://humanoids.be 'self' https://cdn.auth0.com";
 
 // Configs for mode "development" (Slim's default), see the GitHub readme for details on setting the environment
-$app->configureMode('development', function () use ($app) {
+$app->configureMode('development', function () use ($app, $cspBase) {
     // Set the configs for development environment
     include_once __DIR__.'/../lib/config.php';
     $app->config(array(
@@ -62,7 +62,7 @@ $app->configureMode('development', function () use ($app) {
 });
 
 // Configs for mode "production"
-$app->configureMode('production', function () use ($app) {
+$app->configureMode('production', function () use ($app, $cspBase) {
     // Set the configs for production environment
     include_once __DIR__.'/../lib/config.php';
     $app->config(array(
