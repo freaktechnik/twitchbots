@@ -539,7 +539,15 @@ class Model
                 }
             }
             else {
-                $apiName = $this->getChannelName($submission->twitch_id);
+                try {
+                    $apiName = $this->getChannelName($submission->twitch_id);
+                }
+                catch(Exception $e) {
+                    if($e->getCode() == 404 || $e->getCode() == 422) {
+                        $this->submissions->removeSubmission($submission->id);
+                        continue;
+                    }
+                }
                 if($apiName != $submission->name) {
                     $submission->name = $apiName;
                     $this->submissions->updateName($submission->id, $submission->name);
@@ -574,7 +582,14 @@ class Model
                     }
                 }
                 else {
-                    $apiName = $this->getChannelName($submission->channel_id);
+                    try {
+                        $apiName = $this->getChannelName($submission->channel_id);
+                    }
+                    catch(Exception $e) {
+                        if($e->getCode() == 404 || $e->getCode() == 422) {
+                            $this->submissions->clearChannel($submission->id);
+                        }
+                    }
                     if($apiName != $submission->channel) {
                         $submission->name = $apiName;
                         $this->submissions->updateChannelName($submission->id, $submission->name);
