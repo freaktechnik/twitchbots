@@ -39,7 +39,7 @@ $client = new \GuzzleHttp\Client(array('handler' => $stack));
 
 /******************************************* THE CONFIGS *******************************************************/
 //TODO load auth0 domain from db?
-$cspBase = "default-src 'none'; style-src 'self'; script-src 'self' https://humanoids.be https://cdn.auth0.com https://cdn.eu.auth0.com; font-src 'self'; connect-src https://api.twitchbots.info https://api.twitch.tv https://twitchbots.eu.auth0.com; form-action 'self'; frame-ancestors 'none'; reflected-xss block; child-src https://humanoids.be; frame-src https://humanoids.be; img-src https://humanoids.be 'self' https://cdn.auth0.com";
+$cspBase = "default-src 'none'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'sha256-drxkAgexP3vnyyGpnrTDzfU4RVDNGsNBpVWCC4e5DJo='; script-src 'self' https://humanoids.be https://cdn.auth0.com https://cdn.eu.auth0.com; font-src 'self'; connect-src https://api.twitchbots.info https://api.twitch.tv https://twitchbots.eu.auth0.com; form-action 'self'; frame-ancestors 'none'; reflected-xss block; child-src https://humanoids.be; frame-src https://humanoids.be; img-src https://humanoids.be 'self' https://cdn.auth0.com";
 
 // Configs for mode "development" (Slim's default), see the GitHub readme for details on setting the environment
 $app->configureMode('development', function () use ($app, $cspBase) {
