@@ -400,6 +400,26 @@ class Model
         return false;
     }
 
+    private function getBotVerified(string $id): bool {
+        $url = "https://api.twitch.tv/kraken/users/".$id."/chat";
+        $response = $this->client->get($url, $this->twitchHeadersV5);
+
+        if($response->getStatusCode() >= 400) {
+            throw new Exception("Could not get verified status");
+        }
+
+        $json = json_decode($response->getBody(), true);
+
+        if($json->is_known_bot) {
+            return true;
+        }
+        // Legacy, so handle its presence gracefully
+        else if(isset($json->is_verified_bot)) {
+            return $json->is_verified_bot;
+        }
+        return false;
+    }
+
     private function checkFollowing(\stdClass $submission): bool
     {
         // Update following if needed
@@ -480,6 +500,22 @@ class Model
         return false;
     }
 
+    private function checkVerified(\stdClass $submission): bool {
+        if(!isset($submission->verified)) {
+            try {
+                $verified = $this->getBotVerified($submission->twitch_id);
+            }
+            catch(Exception $e) {
+                return false;
+            }
+
+            $this->submissions->setVerified($submission->id, $verified);
+            $submission->verified = $verified;
+            return true;
+        }
+        return false;
+    }
+
     public function checkSubmissions(): int
     {
         $submissions = $this->submissions->getSubmissions();
@@ -502,6 +538,9 @@ class Model
                 $didSomething = true;
             }
             if($this->checkHasVODs($submission) && !$didSomething) {
+                $didSomething = true;
+            }
+            if($this->checkVerified($submission) && !$didSomething) {
                 $didSomething = true;
             }
 
@@ -573,6 +612,9 @@ class Model
 
             if($didSomething) {
                 ++$count;
+                if($submission->verified && $submission->type === 0) {
+                    $this->approveSubmission($submission->id);
+                }
             }
             unset($this->_followsCache);
         }

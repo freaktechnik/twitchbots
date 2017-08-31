@@ -20,6 +20,7 @@ use PDO;
     following_channel boolean DEFAULT NULL,
     bio text DEFAULT NULL,
     vods boolean DEFAULT NULL,
+    verified boolean DEFAULT NULL,
     PRIMARY KEY (id)
 ) DEFAULT CHARSET=utf8 */
 
@@ -143,6 +144,12 @@ class Submissions extends PaginatingStore {
         $sql = "vods=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute(array($hasVODs, $id));
+    }
+
+    public function setVerified(int $id, bool $verified) {
+        $sql = 'verified=? WHERE id=?';
+        $query = $this->prepareUpdate($sql);
+        $query->execute([ $hasVODs, $id ]);
     }
 
     public function setTwitchID(int $id, int $twitchID, string $type = "twitch")

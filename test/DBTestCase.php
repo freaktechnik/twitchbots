@@ -30,6 +30,7 @@ class DBTestCase extends TestCase {
             following_channel boolean DEFAULT NULL,
             bio text DEFAULT NULL,
             vods boolean DEFAULT NULL,
+            verified boolean DEFAULT NULL,
             PRIMARY KEY (id)',
             'AUTO_INCREMENT=9'
         ],
