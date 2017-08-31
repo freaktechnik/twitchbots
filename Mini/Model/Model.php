@@ -526,9 +526,14 @@ class Model
             $didSomething = false;
 
             if(empty($submission->twitch_id)) {
-                $submission->twitch_id = $this->getChannelID($submission->name);
-                $this->submissions->setTwitchID($submission->id, $submission->twitch_id);
-                $didSomething = true;
+                try {
+                    $submission->twitch_id = $this->getChannelID($submission->name);
+                    $this->submissions->setTwitchID($submission->id, $submission->twitch_id);
+                    $didSomething = true;
+                }
+                catch(Exception $e) {
+                    //TODO delete submission?
+                }
             }
 
             if($this->checkFollowing($submission)) {
@@ -546,9 +551,14 @@ class Model
 
             if(!empty($submission->channel)) {
                 if(empty($submission->channel_id)) {
-                    $submission->channel_id = $this->getChannelID($submission->channel);
-                    $this->submissions->setTwitchID($submission->id, $submission->channel_id, "channel");
-                    $didSomething = true;
+                    try {
+                        $submission->channel_id = $this->getChannelID($submission->channel);
+                        $this->submissions->setTwitchID($submission->id, $submission->channel_id, "channel");
+                        $didSomething = true;
+                    }
+                    catch(Exception $e) {
+                        //TODO empty channel string?
+                    }
                 }
 
                 if($this->checkFollowingChannel($submission) && !$didSomething) {
