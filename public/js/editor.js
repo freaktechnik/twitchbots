@@ -23,7 +23,7 @@ require(['bootstrap', 'jquery'], function() {
         const id = currentRow.querySelector('input[name="id"]').value;
         const token = currentRow.querySelector('input[name="token"]').value;
 
-        const body = new URLSearchParams();
+        const body = new FormData();
         body.append('id', id);
         body.append('token', token);
         body.append('channel', channel);
