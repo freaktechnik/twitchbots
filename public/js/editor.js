@@ -1,8 +1,8 @@
 require(['bootstrap', 'jquery'], function() {
     const editButtons = document.querySelectorAll(".submission-edit");
     const editor = document.querySelector("#editor form");
-    const channelField = form.querySelector("#channel");
-    const typeField = form.querySelector("#type");
+    const channelField = editor.querySelector("#channel");
+    const typeField = editor.querySelector("#type");
 
     let currentRow;
     const updateEditor = (e) => {
