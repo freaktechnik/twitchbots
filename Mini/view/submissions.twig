@@ -41,8 +41,8 @@
     </li>
 </ul>
 <div class="tab-content">
-    {{ table(submissions, "submissions", true, true, token) }}
-    {{ table(corrections, "corrections", false, true, token) }}
+    {{ table(submissions, "submissions", true, true, token, types) }}
+    {{ table(corrections, "corrections", false, true, token, types) }}
 </div>
 <div class="modal fade" tabindex="-1" id="editor" aria-labelledby="editorTitle" role="dialog">
     <div class="modal-dialog" role="document">

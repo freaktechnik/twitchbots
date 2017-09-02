@@ -7,7 +7,7 @@
 <span class="glyphicon glyphicon-question-sign status-unknown" title="No data"></span>
 {%- endif %}
 {%- endmacro -%}
-{%- macro table(set, id, active, buttons, token) -%}
+{%- macro table(set, id, active, buttons, token, types) -%}
 {%- from _self import status -%}
 {% set defaultVal = status(null) %}
 <div class="table-responsive tab-pane{% if active %} active{% endif %}" role="tabpanel" id="{{ id|e('html_attr') }}">
@@ -60,7 +60,11 @@
                 {%- endif %}</td>
                 <td>{% spaceless %}
                     {% if isType %}
-                        <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}">{{ s.description|e }}</a>
+                        {% for t in types %}
+                            {% if t.id == s.description %}
+                                {% set type = t.name %}
+                        {% endfor %}
+                        <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}" title="{{ s.description|e('html_url') }}">{{ type|e }}</a>
                     {% else %}
                         {{ s.description|e }}
                     {% endif %}
