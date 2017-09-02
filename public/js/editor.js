@@ -16,9 +16,6 @@ require(['bootstrap', 'jquery'], function() {
     const save = (e) => {
         e.preventDefault();
 
-        currentRow.cells[2].textContent = channel;
-        currentRow.cells[1].textContent = description;
-
         const body = new FormData(editor);
 
         fetch('/lib/subedit', {
@@ -30,6 +27,8 @@ require(['bootstrap', 'jquery'], function() {
                 throw r.status;
             }
             else {
+                currentRow.cells[2].textContent = channelField.value;
+                currentRow.cells[1].textContent = typeField.value;
                 $('#editor').modal('hide');
             }
         }).catch(console.error);
