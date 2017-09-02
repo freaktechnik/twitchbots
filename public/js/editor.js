@@ -22,9 +22,8 @@ require(['bootstrap', 'jquery'], function() {
         const id = currentRow.querySelector('input[name="id"]').value;
         const token = currentRow.querySelector('input[name="token"]').value;
 
-        fetch({
+        fetch('/lib/subedit', {
             method: 'POST',
-            url: '/lib/subedit',
             body: {
                 id,
                 token,
