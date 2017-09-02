@@ -9,6 +9,7 @@ require(['bootstrap', 'jquery'], function() {
         currentRow = e.target.parentNode.parentNode;
         channelField.value = currentRow.cells[2].textContent;
         typeField.value = currentRow.cells[1].textContent;
+        editor.querySelector('.channel-name').textContent = currentRow.cells[0].textContent;
     };
     const save = (e) => {
         e.preventDefault();
