@@ -7,7 +7,12 @@ const idField = editor.querySelector('input[name="id"]');
 const updateEditor = (e) => {
     const currentRow = e.target.parentNode.parentNode;
     channelField.value = currentRow.cells[2].textContent;
-    typeField.value = currentRow.cells[1].textContent;
+    if(currentRow.cells[1].childElementCount > 0) {
+        typeField.value = currentRow.cells[1].querySelector("a").title;
+    }
+    else {
+        typeField.value = currentRow.cells[1].textContent;
+    }
     idField.value = currentRow.querySelector('input[name="id"]').value;
     document.querySelector('#editor .channel-name').textContent = currentRow.cells[0].textContent;
 };
