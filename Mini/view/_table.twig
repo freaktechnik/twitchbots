@@ -60,11 +60,14 @@
                 {%- endif %}</td>
                 <td>{% spaceless %}
                     {% if isType %}
-                        {% for t in types %}
+                        {% set break = false %}
+                        {% for t in types if not break %}
                             {% if t.id == s.description %}
                                 {% set type = t.name %}
+                                {% set break = true %}
+                                <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}" title="{{ s.description|e('html_url') }}">{{ type|e }}</a>
+                            {% endif %}
                         {% endfor %}
-                        <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}" title="{{ s.description|e('html_url') }}">{{ type|e }}</a>
                     {% else %}
                         {{ s.description|e }}
                     {% endif %}
