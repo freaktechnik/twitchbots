@@ -4,9 +4,8 @@ const channelField = editor.querySelector("#channel");
 const typeField = editor.querySelector("#type");
 const idField = editor.querySelector('input[name="id"]');
 
-let currentRow;
 const updateEditor = (e) => {
-    currentRow = e.target.parentNode.parentNode;
+    const currentRow = e.target.parentNode.parentNode;
     channelField.value = currentRow.cells[2].textContent;
     typeField.value = currentRow.cells[1].textContent;
     idField.value = currentRow.querySelector('input[name="id"]').value;
