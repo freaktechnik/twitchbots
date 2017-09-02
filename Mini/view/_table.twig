@@ -100,7 +100,7 @@
 </div>
 {% if buttons %}
 <script type="text/javascript" src="{{ siteUrl("/js/editor.js")|e('html_attr') }}"></script>
-<dialog class="modal fade" tabindex="-1" id="editor" aria-labelledby="editorTitle">
+<div class="modal fade" tabindex="-1" id="editor" aria-labelledby="editorTitle" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <header class="modal-hader">
@@ -126,6 +126,6 @@
             </section>
         </div>
     </div>
-</dialog>
+</div>
 {% endif %}
 {%- endmacro -%}
