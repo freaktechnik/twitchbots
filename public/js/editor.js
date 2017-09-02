@@ -27,8 +27,36 @@ require(['bootstrap', 'jquery'], function() {
                 throw r.status;
             }
             else {
-                currentRow.cells[2].textContent = channelField.value;
-                currentRow.cells[1].textContent = typeField.value;
+                if(channelField.value != currentRow.cells[2].textContent) {
+                    currentRow.cells[2].innerHTML = "";
+                    if(channelField.value.length) {
+                        const link = document.createElement("a");
+                        link.href = `https://twitch.tv/${channelField.value}`;
+                        link.textContent = channelField.value;
+                        currentRow.cells[2].appendChild(link);
+                    }
+                    else {
+                        const icon = document.createElement("span");
+                        icon.classList.add("glyphicon");
+                        icon.classList.add("glyphicon-question-sign");
+                        icon.classList.add("status-unknown");
+                        icon.title = "No data";
+                        currentRow.cells[2].appendChild(icon);
+                    }
+
+                }
+                if(typeField.value != currentRow.cells[1].textContent) {
+                    if(isNaN(typeField.value)) {
+                        currentRow.cells[1].textContent = typeField.value;
+                    }
+                    else {
+                        const link = document.createElement("a");
+                        link.href = `/types/${typeField.value}`;
+                        link.textContent = typeField.value;
+                        currentRow.cells[1].innerHTML = "";
+                        currentRow.cells[1].appendChild(link);
+                    }
+                }
                 $('#editor').modal('hide');
             }
         }).catch(console.error);
