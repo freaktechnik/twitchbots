@@ -226,7 +226,8 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
         'submissions' => $submissions,
         'corrections' => $corrections,
         'token' => $token,
-        'login' => $model->login->getIdentifier()
+        'login' => $model->login->getIdentifier(),
+        'types' => $types = $model->types->getAllTypes()
     ));
 })->name('submissions');
 
