@@ -21,9 +21,9 @@
         <a href="#corrections" role="tab" aria-controls="corrections">Corrections <span class="badge">{{ corrections|length }}</span></a>
     </li>
     <li>
-        <a href="#typeeditor" class="btn btn-default" data-toggle="modal" data-target="#typeeditor">Add type</a>
+        <a href="#typeeditor" data-toggle="modal" data-target="#typeeditor"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add type</a>
     </li>
-    <li>
+    <li class="pull-right">
         <form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
             <div class="form-group">
                 <label for="loginmail">Logged in as:</label>
