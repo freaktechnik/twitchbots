@@ -465,16 +465,12 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
         }
     })->name('submission-action');
 
-    $app->post('/subedit', function() use ($sapp, $model) {
-        try {
-            if($model->login->isLoggedIn() && $model->checkToken('submissions', $app->request->params('token'))) {
-                $model->updateSubmission((int)$app->request->params('id'), $app->request->params('description'), $app->request->params('channel'));
-            }
-            else {
-                $app->halt(403, 'Not authenticated to update submissions');
-            }
-        } catch(Exception $e) {
-            $app->halt(500, $e->getMessage().'    '.$e->getTraceAsString());
+    $app->post('/subedit', function() use ($app, $model) {
+        if($model->login->isLoggedIn() && $model->checkToken('submissions', $app->request->params('token'))) {
+            $model->updateSubmission((int)$app->request->params('id'), $app->request->params('description'), $app->request->params('channel'));
+        }
+        else {
+            $app->halt(403, 'Not authenticated to update submissions');
         }
     })->name('submission-edit');
 });
