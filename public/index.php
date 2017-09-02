@@ -464,6 +464,15 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
             $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
         }
     })->name('submission-action');
+
+    $app->post('/subedit', function() use ($sapp, $model) {
+        if($model->login->isLoggedIn() && $model->checkToken('submissions', $app->request->params('token'))) {
+            $model->updateSubmission((int)$app->request->params('id'), $app->request->params('description'), $app->request->params('channel'));
+        }
+        else {
+            $app->halt(403, 'Not authenticated to update submissions');
+        }
+    })->name('submission-edit');
 });
 
 $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {

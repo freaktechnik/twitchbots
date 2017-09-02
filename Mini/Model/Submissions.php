@@ -179,6 +179,12 @@ class Submissions extends PaginatingStore {
         $query->execute([ $id ]);
     }
 
+    public function updateDescription(int $id, string $description) {
+        $sql = "description=?`WHERE id=?`";
+        $query = $this->prepareUpdate($sql);
+        $query->execute([ $description, $id ]);
+    }
+
     public function removeSubmission(int $id)
     {
         $query = $this->prepareDelete("WHERE id=?");

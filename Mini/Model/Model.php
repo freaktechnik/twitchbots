@@ -774,4 +774,18 @@ class Model
         $user = json_decode($response->getBody(), true);
         return $user['name'];
     }
+
+    public function updateSubmission(int $id, string $description, string $channel)
+    {
+        $submission = $this->submissions->getSubmission($id);
+
+        if($submission->description != $description) {
+            $this->submissions->updateDescription($id, $description);
+        }
+
+        if($submission->channel != $channel) {
+            $this->submissions->clearChannel($id);
+            $this->submissions->updateChannelName($id, $channel);
+        }
+    }
 }
