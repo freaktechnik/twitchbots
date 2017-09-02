@@ -23,14 +23,15 @@ require(['bootstrap', 'jquery'], function() {
         const id = currentRow.querySelector('input[name="id"]').value;
         const token = currentRow.querySelector('input[name="token"]').value;
 
+        const body = new URLSearchParams();
+        body.append('id', id);
+        body.append('token', token);
+        body.append('channel', channel);
+        body.append('description', description);
+
         fetch('/lib/subedit', {
             method: 'POST',
-            body: {
-                id,
-                token,
-                channel,
-                description
-            },
+            body,
             credentials: 'same-origin'
         }).then((r) => {
             if(!r.ok) {
