@@ -62,10 +62,9 @@
                     {% if isType %}
                         {% set break = false %}
                         {% for t in types if not break %}
-                            {% if t.id == s.description %}
-                                {% set type = t.name %}
+                            {% if t.id|number_format(0, '', '') == s.description %}
                                 {% set break = true %}
-                                <a href="{{ urlFor('type', { id: s.description})|e('html_attr') }}" title="{{ s.description|e('html_url') }}">{{ type|e }}</a>
+                                <a href="{{ urlFor('type', { id: t.id})|e('html_attr') }}" title="{{ s.description|e('html_url') }}">{{ t.name|e }}</a>
                             {% endif %}
                         {% endfor %}
                     {% else %}
