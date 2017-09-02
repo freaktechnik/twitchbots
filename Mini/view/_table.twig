@@ -108,7 +108,7 @@
                 <h1 id="editorTitle" class="modal-title">Edit <span class="channel-name">Channel</span></h1>
             </header>
             <section class="modal-body">
-                <form class="form-horizontal">
+                <form class="form-horizontal" method="POST" action="{{ urlFor('submission-edit')|e('html_attr') }}">
                     <div class="form-group">
                         <label for="channel" class="col-sm-4 control-label">Channel's Twitch Username</label>
                         <div class="col-sm-8">
