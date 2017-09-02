@@ -64,7 +64,7 @@
                         {% for t in types if not break %}
                             {% if t.id|number_format(0, '', '') == s.description %}
                                 {% set break = true %}
-                                <a href="{{ urlFor('type', { id: t.id})|e('html_attr') }}" title="{{ s.description|e('html_url') }}">{{ t.name|e }}</a>
+                                <a href="{{ urlFor('type', { id: t.id})|e('html_attr') }}" title="{{ s.description|e('html_attr') }}">{{ t.name|e }}</a>
                             {% endif %}
                         {% endfor %}
                     {% else %}
