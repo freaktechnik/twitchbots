@@ -13,6 +13,13 @@
 {% if addedtype %}
     {{ alert('success', 'Added your new type with the id #{addedtype}') }}
 {% endif %}
+{% if success %}
+    {% if success == 'approve' %}
+        {{ alert('success', 'Bot approved.') }}
+    {% else %}
+        {{ alert('success', 'Bot rejected.') }}
+    {% endif %}
+{% endif %}
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
         <a href="#submissions" role="tab" aria-controls="submissions">Submissions <span class="badge">{{ submissions|length }}</span></a>

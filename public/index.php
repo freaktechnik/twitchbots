@@ -228,7 +228,8 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
         'token' => $token,
         'login' => $model->login->getIdentifier(),
         'types' => $types = $model->types->getAllTypes(),
-        'addedType' => $app->request->params('addedtype')
+        'addedType' => $app->request->params('addedtype'),
+        'success' => $app->request->params('success')
     ));
 })->name('submissions');
 
@@ -453,6 +454,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
 
     $app->post('/subaction', function() use ($app, $model) {
         if($model->login->isLoggedIn() && $model->checkToken("submissions", $app->request->params('token'))) {
+            $submission = $model->submissions->getSubmission((int)$app->request->params('id'));
             if($app->request->params('approve') == "1") {
                 $model->approveSubmission((int)$app->request->params('id'));
             }
@@ -460,7 +462,11 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                 $model->submissions->removeSubmission((int)$app->request->params('id'));
             }
             //TODO respect tab user came from
-            $app->redirect($app->request->getUrl().$app->urlFor('submissions'), 303);
+            $query = '?success='.($app->request->params('approve') ? 'approve' : 'reject');
+            if($submission->type == 1) {
+                $query .= '#corrections';
+            }
+            $app->redirect($app->request->getUrl().$app->urlFor('submissions').$query, 303);
         }
         else {
             $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
