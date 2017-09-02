@@ -13,20 +13,24 @@
 {% if addedtype %}
     {{ alert('success', 'Added your new type with the id #{addedtype}') }}
 {% endif %}
-<form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
-    <div class="form-group">
-        <label for="loginmail">Logged in as:</label>
-        <output class="form-control" id="loginmail">{{ login|e }}</output>
-    </div>
-    <button class="btn btn-default" type="submit">Logout</button>
-</form>
-<button class="btn btn-default" data-toggle="modal" data-target="#typeeditor">Add type</button>
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
         <a href="#submissions" role="tab" aria-controls="submissions">Submissions <span class="badge">{{ submissions|length }}</span></a>
     </li>
     <li role="presentation">
         <a href="#corrections" role="tab" aria-controls="corrections">Corrections <span class="badge">{{ corrections|length }}</span></a>
+    </li>
+    <li>
+        <a href="#typeeditor" class="btn btn-default" data-toggle="modal" data-target="#typeeditor">Add type</a>
+    </li>
+    <li>
+        <form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
+            <div class="form-group">
+                <label for="loginmail">Logged in as:</label>
+                <output class="form-control" id="loginmail">{{ login|e }}</output>
+            </div>
+            <button class="btn btn-default" type="submit">Logout</button>
+        </form>
     </li>
 </ul>
 <div class="tab-content">
