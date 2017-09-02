@@ -98,4 +98,9 @@ class Store {
     {
         $this->prepareQuery("DROP TABLE IF EXISTS `".$tableName."`")->execute();
     }
+
+    protected function getLastInsertedId(): string
+    {
+        return $this->db->lastInsertedId();
+    }
 }

@@ -72,6 +72,6 @@ class Types extends PaginatingStore {
             $identifyableBy,
             $description
         ]);
-        return $query->fetch()->id;
+        return (int)$this->getLastInsertedId();
     }
 }
