@@ -3,31 +3,23 @@ require(['bootstrap', 'jquery'], function() {
     const editor = document.querySelector("#editor form");
     const channelField = editor.querySelector("#channel");
     const typeField = editor.querySelector("#type");
+    const idField = editor.querySelector('input[name="id"]');
 
     let currentRow;
     const updateEditor = (e) => {
         currentRow = e.target.parentNode.parentNode;
         channelField.value = currentRow.cells[2].textContent;
         typeField.value = currentRow.cells[1].textContent;
+        idField.value = currentRow.querySelector('input[name="id"]').value;
         document.querySelector('#editor .channel-name').textContent = currentRow.cells[0].textContent;
     };
     const save = (e) => {
         e.preventDefault();
 
-        const channel = channelField.value;
-        const description = typeField.value;
-
         currentRow.cells[2].textContent = channel;
         currentRow.cells[1].textContent = description;
 
-        const id = currentRow.querySelector('input[name="id"]').value;
-        const token = currentRow.querySelector('input[name="token"]').value;
-
-        const body = new FormData();
-        body.append('id', id);
-        body.append('token', token);
-        body.append('channel', channel);
-        body.append('description', description);
+        const body = new FormData(editor);
 
         fetch('/lib/subedit', {
             method: 'POST',
