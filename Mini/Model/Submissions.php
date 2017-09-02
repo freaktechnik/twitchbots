@@ -180,7 +180,7 @@ class Submissions extends PaginatingStore {
     }
 
     public function updateDescription(int $id, string $description) {
-        $sql = "description=?`WHERE id=?`";
+        $sql = "description=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $description, $id ]);
     }
