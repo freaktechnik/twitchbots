@@ -227,7 +227,8 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
         'corrections' => $corrections,
         'token' => $token,
         'login' => $model->login->getIdentifier(),
-        'types' => $types = $model->types->getAllTypes()
+        'types' => $types = $model->types->getAllTypes(),
+        'addedType' => $app->request->params('addedtype')
     ));
 })->name('submissions');
 
@@ -475,6 +476,24 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
             $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
         }
     })->name('submission-edit');
+
+    $app->post('/addtype', function() use ($app, $model) {
+        if($model->login->isLoggedIn() && $model->checkToken('submissions', $app->request->params('token'))) {
+            $typeId = $model->types->addType(
+                $app->request->params('name'),
+                $app->request->params('multichannel') == "1",
+                $app->request->params('url'),
+                $app->request->params('managed') == "1",
+                $app->request->params('customUsername') == "1",
+                $app->request->params('identifyableby'),
+                $app->request->params('description')
+            );
+            $app->redirect($app->request->getUrl().$app->urlFor('submissions').'?addedtype='.$typeId, 303);
+        }
+        else {
+            $app->redirect($app->request->getUrl().$app->urlFor('login'), 401);
+        }
+    })->name('add-type');
 });
 
 $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {

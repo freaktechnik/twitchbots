@@ -1,4 +1,5 @@
 {% from "_table.twig" import table %}
+{% from "_alerts.twig" import alert %}
 {% extends "_base.twig" %}
 {% block title %}Submissions{% endblock %}
 {% block extraresources %}
@@ -9,6 +10,9 @@
 <div class="page-header">
     <h1>Submission Queue</h1>
 </div>
+{% if addedtype %}
+    {{ alert('success', 'Added your new type with the id #{addedtype}') }}
+{% endif %}
 <form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
     <div class="form-group">
         <label for="loginmail">Logged in as:</label>
@@ -16,6 +20,7 @@
     </div>
     <button class="btn btn-default" type="submit">Logout</button>
 </form>
+<button class="btn btn-default" data-toggle="modal" data-target="#typeeditor">Add type</button>
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
         <a href="#submissions" role="tab" aria-controls="submissions">Submissions <span class="badge">{{ submissions|length }}</span></a>
@@ -59,6 +64,68 @@
                             <input type="hidden" name="id">
                             <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
                             <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id="typeeditor" aria-labelledby="typeEditorTitle" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <header class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 id="typeEditorTitle" class="modal-title">Add Type</span></h1>
+            </header>
+            <section class="modal-body">
+                <form class="form-horizontal" method="POST" action="{{ urlFor('add-type')|e('html_attr') }}">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-4 control-label">Type Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="name" id="name" placeholder="Bot Type" required autofocus maxlength="255">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="url" class="col-sm-4 control-label">URL</label>
+                        <div class="col-sm-8">
+                            <input type="url" class="form-control" id="url" name="url" placeholder="https://example.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="multichannel" class="col-sm-4 control-label">Multi channel</label>
+                        <div class="col-sm-8">
+                            <input type="checkbox" value="1" class="form-control" id="multichannel" name="multichannel">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="managed" class="col-sm-4 control-label">Managed</label>
+                        <div class="col-sm-8">
+                            <input type="checkbox" value="1" class="form-control" id="managed" name="managed">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="managed" class="col-sm-4 control-label">Custom username</label>
+                        <div class="col-sm-8">
+                            <input type="checkbox" value="1" class="form-control" id="customUsername" name="customUsername">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="identifyable" class="col-sm-4 control-label">Identifyable by</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="identifyable" name="identifyableby"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="col-sm-4 control-label">Description</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="description" name="description"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-8">
+                            <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
+                            <button type="submit" class="btn btn-success">Add Type</button>
                         </div>
                     </div>
                 </form>

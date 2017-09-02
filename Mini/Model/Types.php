@@ -9,6 +9,10 @@ use PDO;
     name varchar(255) CHARACTER SET utf8 NOT NULL,
     multichannel tinyint(1) NOT NULL,
     url text CHARACTER SET ascii NOT NULL,
+    managed tinyint(1) NOT NULL,
+    customUsername tinyint(1) DEFAULT NULL,
+    identifiableby text DEFAULT NULL,
+    description text DEFAULT NULL,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     enabled boolean DEFAULT 1,
     PRIMARY KEY (id),
@@ -53,5 +57,21 @@ class Types extends PaginatingStore {
         else {
             return array();
         }
+    }
+
+    public function addType(string $name, string $url, bool $multichannel, bool $managed, bool $customUsername, string $identifyableBy, string $description): int
+    {
+        $sql = "(name,url,multichannel,managed,customUsername,identifiableby,description) VALUES (?,?,?,?,?,?,?)";
+        $query = $this->prepareInsert($sql);
+        $query->execute([
+            $name,
+            $url,
+            $multichannel ? 1 : 0,
+            $managed ? 1 : 0,
+            $customUsername ? 1 : 0,
+            $identifyableBy,
+            $description
+        ]);
+        return $query->fetch()->id;
     }
 }
