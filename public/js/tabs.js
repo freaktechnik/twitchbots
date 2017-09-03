@@ -3,7 +3,7 @@ require(['bootstrap', 'jquery'], function() {
         e.preventDefault();
         $(this).tab('show');
     });
-    if(navigator.location.hash) {
-        $('.nav-tabs a[href="' + navigator.location.hash + '"]').tab('show');
+    if(window.location.hash) {
+        $('.nav-tabs a[href="' + window.location.hash + '"]').tab('show');
     }
 });
