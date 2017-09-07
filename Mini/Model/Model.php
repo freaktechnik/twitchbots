@@ -501,7 +501,7 @@ class Model
     }
 
     private function checkVerified(\stdClass $submission): bool {
-        if(!isset($submission->verified)) {
+        if(!isset($submission->verified) || !$submission->verified) {
             try {
                 $verified = $this->getBotVerified($submission->twitch_id);
             }
