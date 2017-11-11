@@ -420,6 +420,19 @@ class Model
         return false;
     }
 
+    private function getBTTVBots(string $channel): array {
+        $url = "https://api.betterttv.net/2/channels/".$channel;
+        $response = $this->client->get($url);
+
+        if($response->getStatusCode() >= 400) {
+            throw new Error("Could not get BTTV bots");
+        }
+
+        $json = json_decode($response->getBody(), true);
+
+        return $json['bots'];
+    }
+
     private function checkFollowing(\stdClass $submission): bool
     {
         // Update following if needed
@@ -516,6 +529,23 @@ class Model
         return false;
     }
 
+    public function checkBTTVBot(\stdClass $submission): bool {
+        if(isset($submission->channel)) {
+            try {
+                $bttvBots = $this->getBTTVBots($submission->channel);
+            }
+            catch(Exception $e) {
+                return false;
+            }
+            if(in_array($submission->name, $bttvBots)) {
+                $this->submissions->setVerified($submission->id, true);
+                $submission->verified = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function checkSubmissions(): int
     {
         $submissions = $this->submissions->getSubmissions();
@@ -555,16 +585,19 @@ class Model
                 }
             }
 
-            if($this->checkFollowing($submission)) {
+            if($submission->type == 0 && $this->checkVerified($submission) && !$didSomething) {
+                $didSomething = true;
+            }
+            if($submission->type == 0 && $this->checkBTTVBot($submission) && !$didSomething) {
+                $didSomething = true;
+            }
+            if($this->checkFollowing($submission) && !$didSomething) {
                 $didSomething = true;
             }
             if($this->checkBio($submission) && !$didSomething) {
                 $didSomething = true;
             }
             if($this->checkHasVODs($submission) && !$didSomething) {
-                $didSomething = true;
-            }
-            if($submission->type == 0 && $this->checkVerified($submission) && !$didSomething) {
                 $didSomething = true;
             }
 
