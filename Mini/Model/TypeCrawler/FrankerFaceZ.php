@@ -4,7 +4,7 @@ namespace Mini\Model\TypeCrawler;
 
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 
-class Pajbot extends TypeCrawler {
+class FrankerFaceZ extends TypeCrawler {
     /** @var int */
     protected static $crawlInterval = 604800;
     /** @var int */
