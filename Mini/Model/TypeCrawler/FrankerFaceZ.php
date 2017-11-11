@@ -21,7 +21,8 @@ class FrankerFaceZ extends TypeCrawler {
     }
 
     protected function doCrawl(): array {
-        $url = "https://api.frankerfacez.com/v1/badges";
+        $badgeId = "2";
+        $url = "https://api.frankerfacez.com/v1/badge/".$badgeId;
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -30,15 +31,7 @@ class FrankerFaceZ extends TypeCrawler {
 
         $response = json_decode($json, true);
 
-        $badgeId;
-        foreach($response['badges'] as $badge) {
-            if($badge['name'] === 'bot') {
-                $badgeId = strval($badge['id']);
-                break;
-            }
-        }
-
-        if(!empty($response['users']) && !empty($badgeId)) {
+        if(!empty($response['users'][$badgeId])) {
             $ret = array();
             foreach($response['users'][$badgeId] as $element) {
                 $name = $element;
