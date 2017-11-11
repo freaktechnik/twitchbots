@@ -537,6 +537,7 @@ class Model
             catch(Exception $e) {
                 return false;
             }
+            //TODO maybe be a little more cautious with this and set a different flag.
             if(in_array($submission->name, $bttvBots)) {
                 $this->submissions->setVerified($submission->id, true);
                 $submission->verified = true;
@@ -818,7 +819,9 @@ class Model
 
         if($submission->channel != $channel) {
             $this->submissions->clearChannel($id);
-            $this->submissions->updateChannelName($id, $channel);
+            if(!empty($channel)) {
+                $this->submissions->updateChannelName($id, $channel);
+            }
         }
     }
 }
