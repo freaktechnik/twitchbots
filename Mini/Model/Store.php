@@ -101,7 +101,7 @@ class Store {
 
     protected function getLastInsertedId()
     {
-        $query = $this->db->prepareSelect("LAST_INSERT_ID() as lid");
+        $query = $this->prepareSelect("LAST_INSERT_ID() as lid");
         $query->execute();
         return $query->fetch()->lid;
     }
