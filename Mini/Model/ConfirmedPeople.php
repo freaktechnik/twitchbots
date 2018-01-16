@@ -2,8 +2,6 @@
 
 namespace Mini\Model;
 
-use PDO;
-
 /* CREATE TABLE IF NOT EXISTS confirmed_people (
     twitch_id varchar(20) DEFAULT NULL COMMENT `Twitch user ID`,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last content modification ts`,
@@ -34,7 +32,7 @@ class ConfirmedPeople extends Store {
         return !empty($query->fetch());
     }
 
-    public function add($twitch_id: string) {
+    public function add(string $twitch_id) {
         $sql = "(twitch_id) VALUES (?)";
         $query = $this->prepareInsert($sql);
         $query->execute([
