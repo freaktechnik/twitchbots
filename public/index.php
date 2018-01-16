@@ -111,7 +111,7 @@ $piwikEvent = function(string $event, array $opts) use ($piwik_token, $app, $cli
     }
     // Respect Do not track.
     if($_SERVER['HTTP_DNT'] != 1) {
-        $url .= "&ua=".urlencode($_SERVER['HTTP_USER_AGENT'])."&lang=".urlencode($_SERVER['HTTP_ACCEPT_LANGUAGE'])."&cip=".urlencode($_SERVER['HTTP_X_FORWARDED_FOR'])."&urlref=".urlencode($_SERVER['HTTP_REFERER'])."&_id=".substr(session_id(), 16);
+        $url .= "&ua=".urlencode($_SERVER['HTTP_USER_AGENT'])."&lang=".urlencode($_SERVER['HTTP_ACCEPT_LANGUAGE'])."&cip=".urlencode($_SERVER['REMOTE_ADDR'])."&urlref=".urlencode($_SERVER['HTTP_REFERER'])."&_id=".substr(session_id(), 16);
     }
     $client->request('GET', $url, [
         'http_errors' => false,
