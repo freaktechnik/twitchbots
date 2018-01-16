@@ -12,8 +12,9 @@
 <div class="page-header">
     <h1>{{ type.name|e }} and bots of this type</h1>
 </div>
-<p class="lead">{% if type.enabled and type.url %}<a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.name|e }}</a>{% else %}{{ type.name|e }}{% endif %} is a Twitch bot type that {% if type.multichannel %}supports{% else %}doesn't support{% endif %} being in multiple channels at once. The following users are known to be of this type:</p>
+<p class="lead">{% if type.enabled and type.url %}<a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.name|e }}</a>{% else %}{{ type.name|e }}{% endif %} is a Twitch bot type that {% if type.multichannel %}supports{% else %}doesn't support{% endif %} being in multiple channels at once.</p>
 {% if type.description %}<p>{{ type.description }}</p>{% endif %}
+<h2>Known Accounts</h2>
 <div class="list-group">
     {% for bot in bots %}
     <a href="{{ urlFor('bot', { name: bot.name })|e('html_attr') }}" class="list-group-item">{{ bot.name|e }}</a>
