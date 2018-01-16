@@ -41,7 +41,7 @@
 {% elseif error == 13 %}
     {% set level = 'danger' %}
     {% set message = "The Twitch user given as bot is already registered as channel to at least one bot in the database. If that's wrong, please <a href='#{ siteUrl('/about')|e('html_attr') }'>contact us</a>." %}
-{% elseif error = 14 %}
+{% elseif error == 14 %}
     {% set level = 'danger' %}
     {% set message = "The Twitch user given as bot is verified to be a real human. They can not be added as a bot." %}
 {% endif %}
