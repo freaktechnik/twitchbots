@@ -8,7 +8,7 @@ use PDO;
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
     name varchar(255) CHARACTER SET utf8 NOT NULL,
     multichannel tinyint(1) NOT NULL,
-    url text CHARACTER SET ascii NOT NULL,
+    url text CHARACTER SET ascii,
     managed tinyint(1) NOT NULL,
     customUsername tinyint(1) DEFAULT NULL,
     identifiableby text DEFAULT NULL,
@@ -59,18 +59,18 @@ class Types extends PaginatingStore {
         }
     }
 
-    public function addType(string $name, string $url, bool $multichannel, bool $managed, bool $customUsername, string $identifyableBy, string $description): int
+    public function addType(string $name, bool $multichannel, bool $managed, bool $customUsername, string $identifyableBy, string $description, string $url = null): int
     {
-        $sql = "(name,url,multichannel,managed,customUsername,identifiableby,description) VALUES (?,?,?,?,?,?,?)";
+        $sql = "(name,multichannel,managed,customUsername,identifiableby,description,url) VALUES (?,?,?,?,?,?,?)";
         $query = $this->prepareInsert($sql);
         $query->execute([
             $name,
-            $url,
             $multichannel ? 1 : 0,
             $managed ? 1 : 0,
             $customUsername ? 1 : 0,
             $identifyableBy,
-            $description
+            $description,
+            $url
         ]);
         return (int)$this->getLastInsertedId();
     }

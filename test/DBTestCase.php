@@ -38,7 +38,7 @@ class DBTestCase extends TestCase {
             'id int(10) unsigned NOT NULL AUTO_INCREMENT,
               name varchar(255) CHARACTER SET utf8 NOT NULL,
               multichannel tinyint(1) NOT NULL,
-              url text CHARACTER SET ascii NOT NULL,
+              url text CHARACTER SET ascii,
               managed tinyint(1) NOT NULL,
               customUsername tinyint(1) DEFAULT NULL,
               identifiableby text DEFAULT NULL,

@@ -51,10 +51,21 @@ class Model
      */
     private $pageSize;
 
-    // Database table abstractions
+    /**
+     * @var Bots
+     */
     public $bots;
+    /**
+     * @var Types
+     */
     public $types;
+    /**
+     * @var Submissions
+     */
     public $submissions;
+    /**
+     * @var Config
+     */
     private $config;
 
     private $twitchHeaders;

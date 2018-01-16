@@ -487,12 +487,12 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
         if($model->login->isLoggedIn() && $model->checkToken('submissions', $app->request->params('token'))) {
             $typeId = $model->types->addType(
                 $app->request->params('name'),
-                $app->request->params('url'),
                 $app->request->params('multichannel') == "1",
                 $app->request->params('managed') == "1",
                 $app->request->params('customUsername') == "1",
                 $app->request->params('identifyableby'),
-                $app->request->params('description')
+                $app->request->params('description'),
+                $app->request->params('url') ?? null
             );
             $app->redirect($app->request->getUrl().$app->urlFor('submissions').'?addedtype='.$typeId, 303);
         }
