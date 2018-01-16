@@ -67,6 +67,10 @@ class Model
      * @var Config
      */
     private $config;
+    /**
+     * @var ConfirmedPeople
+     */
+    private $confirmedPeople;
 
     private $twitchHeaders;
     private $twitchHeadersV5;
@@ -102,6 +106,7 @@ class Model
         $this->types = new Types($this->db, $this->pageSize);
         $this->config = new Config($this->db);
         $this->submissions = new Submissions($this->db, $this->pageSize);
+        $this->confirmedPeople = new ConfirmedPeople($this->db);
 
         $this->twitchHeaders = array_merge(self::$requestOptions, array(
             'headers' => array('Client-ID' => $this->config->get('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
@@ -143,11 +148,6 @@ class Model
 	    return generate_token($formname);
     }
 
-    /**
-     * @param string $formname
-     * @param string $token
-     * @return boolean
-     */
     public function checkToken(string $formname, string $token): bool
     {
         return validate_token($formname, $token);
@@ -178,6 +178,9 @@ class Model
         }
         else if(!empty($this->bots->getBotsByChannel($username))) {
             throw new Exception("Bot cannot be the channel to an existing bot", 13);
+        }
+        else if($this->confirmedPeople->has($id)) {
+            throw new Exception("Cannot add this user", 14);
         }
 
         $this->submissions->append($id, $username, $type, Submissions::SUBMISSION, $channel, $channelId);
