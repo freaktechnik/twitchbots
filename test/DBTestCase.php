@@ -67,6 +67,12 @@ class DBTestCase extends TestCase {
             email MEDIUMTEXT CHARACTER SET ascii NOT NULL,
             PRIMARY KEY (id)',
             'AUTO_INCREMENT=2'
+        ],
+        "confirmed_people" => [
+            'twitch_id varchar(20) DEFAULT NULL COMMENT `Twitch user ID`,
+            date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT `Last content modification ts`,
+            PRIMARY KEY (twitch_id)',
+            ''
         ]
     ];
 
