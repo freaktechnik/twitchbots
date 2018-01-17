@@ -82,7 +82,14 @@ class DBTestCase extends TestCase {
      */
     static protected $pdo = null;
     static protected $dataSet = 'bots';
-    static protected $tables = array_keys(self::TABLES);
+    static protected $tables = [
+        'config',
+        'submissions',
+        'types',
+        'bots',
+        'authorized_users',
+        'confirmed_people',
+    ];
     private $conn = null;
 
     private static function createTable($table)
