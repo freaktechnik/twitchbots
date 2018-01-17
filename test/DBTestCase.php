@@ -76,16 +76,13 @@ class DBTestCase extends TestCase {
         ]
     ];
 
-    // Database connection efficieny
+    /**
+     * Database connection efficiency
+     * @var PingablePDO
+     */
     static protected $pdo = null;
     static protected $dataSet = 'bots';
-    static protected $tables = [
-        'types',
-        'bots',
-        'submissions',
-        'config',
-        'authorized_users'
-    ];
+    static protected $tables = array_keys(self::TABLES);
     private $conn = null;
 
     private static function createTable($table)
@@ -98,7 +95,7 @@ class DBTestCase extends TestCase {
     {
         $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
         static::$pdo = new PingablePDO('mysql:dbname='.$GLOBALS['DB_NAME'].';host='.$GLOBALS['DB_HOST'].';port='.$GLOBALS['DB_PORT'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'], $options);
-        foreach(static::$tables as $t) {
+        foreach(array_keys(self::TABLES) as $t) {
             self::createTable($t);
         }
 
