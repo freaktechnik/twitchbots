@@ -44,6 +44,9 @@
 {% elseif error == 14 %}
     {% set level = 'danger' %}
     {% set message = "The Twitch user given as bot is verified to be a real human. They can not be added as a bot." %}
+{% elseif error %}
+    {% set level = 'danger' %}
+    {% set message = "Unknown error with the code #{error}." %}
 {% endif %}
 {% extends "_base.twig" %}
 {% block title %}Submit bot{% endblock %}

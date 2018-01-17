@@ -11,7 +11,7 @@ namespace Mini\Model;
 class ConfirmedPeople extends Store {
     function __construct(PingablePDO $db)
     {
-        parent::__construct($db, "confrimed_people");
+        parent::__construct($db, "confirmed_people");
     }
 
     public function getAll(): array {
