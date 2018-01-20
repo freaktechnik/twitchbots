@@ -1,5 +1,6 @@
 @media (min-width: 1000px) {
     .container .jumbotron {
+        position: relative;
         margin-top: -7em;
     }
 }

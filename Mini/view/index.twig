@@ -8,8 +8,8 @@
 <link rel="stylesheet" href="{{ siteUrl('css/splash.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
 {% block content %}
-<img src="{{ siteUrl("img/splash.svg#mobile")|e('html_attr') }}" srcset="{{ siteUrl("img/splash.svg#mobile")|e('html_attr') }} 1000w, {{ siteUrl("img/splash.svg")|e('html_attr') }} 1100w" id="splash">
 </div>
+<img src="{{ siteUrl("img/splash.svg#mobile")|e('html_attr') }}" srcset="{{ siteUrl("img/splash.svg#mobile")|e('html_attr') }} 1000w, {{ siteUrl("img/splash.svg")|e('html_attr') }} 1100w" sizes="(max-width: 999px) 100vw, 100vw" id="splash">
 <div class="container">
     <div class="jumbotron">
         <h1>Twitch Service-Bot Directory</h1>
