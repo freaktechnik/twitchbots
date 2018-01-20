@@ -708,12 +708,12 @@ class Model
 
             if($didSomething) {
                 ++$count;
-                if($submission->verified &&
-                   $submission->type == 0 &&
-                   is_numeric($submission->description) &&
-                   ($submission->online ||
-                    $this->types->getType((int)$submission->description)->multichannel
-                   )) {
+                if(   $submission->verified
+                   && $submission->type == 0
+                   && (   $submission->online
+                       || (   is_numeric($submission->description)
+                           && $this->types->getType((int)$submission->description)->multichannel
+                  )) {
                     $this->approveSubmission($submission->id);
                 }
             }
@@ -795,9 +795,8 @@ class Model
                 $this->bots->addBot($twitchId, $submission->name, (int)$submission->description, $submission->channel, $channelId);
             }
             else if(!$submission->verified){
-                //TODO add ui for editor to assign a type/create a type, since this just discards the description.
-                // or add a correction with the description, since else verified bots can't be approved.
                 $this->bots->addBot($twitchId, $submission->name, null, $submission->channel, $channelId);
+                $this->submissions->append($twitchId, $submission->name, 'From submissions: '.$submission->description, Submissions::CORRECTION, $existingBot->channel, $channelId);
             }
             else {
                 return false;
