@@ -799,6 +799,9 @@ class Model
                 // or add a correction with the description, since else verified bots can't be approved.
                 $this->bots->addBot($twitchId, $submission->name, null, $submission->channel, $channelId);
             }
+            else {
+                return false;
+            }
         }
 
         $this->submissions->removeSubmission($id);
