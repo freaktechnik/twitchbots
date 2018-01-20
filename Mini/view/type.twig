@@ -44,7 +44,16 @@
     <dd>{% if type.multichannel %}No{% else %}Yes{% endif %}</dd>
     {% if type.apiVersion is not null %}
     <dt>API version</dt>
-    <dd>{% if type.apiVersion == 0 %}<span class="badge bg-error">Justin.tv API</span>{% elseif type.apiVersion == 1 %}<span class="badge bg-error">Kraken v1</span>{% elseif type.apiVersion == 2 %}<span class="badge bg-warning">Kraken v3</span>{% elseif type.apiVersion == 3 %}<span class="badge bg-warning">Kraken v5</span>{% else %}<span class="badge">Helix</span>{% endif %}</dd>
+    <dd>{% if type.apiVersion == 0 %}
+        <span class="badge alert-error">Justin.tv API</span>
+    {% elseif type.apiVersion == 1 %}
+        <span class="badge alert-error">Kraken v1</span>
+    {% elseif type.apiVersion == 2 %}
+        <span class="badge alert-warning">Kraken v3</span>
+    {% elseif type.apiVersion == 3 %}
+        <span class="badge alert-warning">Kraken v5</span>
+    {% else %}
+        <span class="badge">Helix</span>{% endif %}</dd>
     {% endif %}
 </dl>
 <h2>Known Accounts</h2>
