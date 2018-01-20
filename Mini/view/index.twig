@@ -12,10 +12,14 @@
 <img src="{{ siteUrl("img/mobile.svg")|e('html_attr') }}" srcset="{{ siteUrl("img/splash.svg")|e('html_attr') }} 1100w, {{ siteUrl("img/mobile.svg")|e('html_attr') }} 1000w" sizes="(min-width: 1000px) 100vw, 1000px" id="splash">
 <div class="container">
     <div class="jumbotron">
-        <h1>Twitch Service-Bot Directory</h1>
-        <p class="lead">{{ description|e }}</p>
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>Twitch Service-Bot Directory</h1>
+                <p class="lead">{{ description|e }}</p>
+            </div>
+        </div>
     </div>
-    <section>
+    <section class="row">
         <div class="col-md-4 text-center">
             <h1>{{ bots|e }}</h1>
             <p>Known bots</p>
