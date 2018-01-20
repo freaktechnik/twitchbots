@@ -713,7 +713,7 @@ class Model
                    && (   $submission->online
                        || (   is_numeric($submission->description)
                            && $this->types->getType((int)$submission->description)->multichannel
-                  )) {
+                  ))) {
                     $this->approveSubmission($submission->id);
                 }
             }
