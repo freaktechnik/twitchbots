@@ -12,8 +12,22 @@
 <div class="page-header">
     <h1>{{ type.name|e }} and bots of this type</h1>
 </div>
-<p class="lead">{% if type.enabled and type.url %}<a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.name|e }}</a>{% else %}{{ type.name|e }}{% endif %} is a Twitch bot type that {% if type.multichannel %}supports{% else %}doesn't support{% endif %} being in multiple channels at once.</p>
-{% if type.description %}<p>{{ type.description }}</p>{% endif %}
+{% if type.description %}<p class="lead">{{ type.description }}</p>{% endif %}
+<dl class="dl-horizontal">
+    {% if type.enabled and type.url %}
+    <dt>Website</dt>
+    <dd><a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.url|e }}</dd>
+    {% endif %}
+    {% if not type.customUsername not null %}
+    <dt>Custom username</dt>
+    <dd>{% if type.customUsername %}Yes{% else %}No{% endif %}</dd>
+    {% endif %}
+    <dt>Local software</dt>
+    <dd>{% if type.managed %}No{% else %}Yes{% endif %}</dd>
+    <dt>One instance per channel</dt>
+    <dd>{% if type.multichannel %}No{% else %}Yes{% endif %}</dd>
+    {% endif %}
+</dl>
 <h2>Known Accounts</h2>
 <div class="list-group">
     {% for bot in bots %}
