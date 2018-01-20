@@ -838,4 +838,11 @@ class Model
             }
         }
     }
+
+    public function markSubmissionAsPerson(int $id)
+    {
+        $submission = $this->submissions->getSubmission($id);
+        $this->confirmedPeople->add($submission->twitch_id);
+        $this->submissions->removeSubmission($id);
+    }
 }

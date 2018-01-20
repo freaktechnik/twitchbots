@@ -65,7 +65,7 @@ class Submissions extends PaginatingStore {
         return $query->fetch();
     }
 
-    public function has(string $id, int $type = NULL, string $description = NULL)
+    public function has(string $id, int $type = NULL, string $description = NULL): bool
     {
         $where = "WHERE twitch_id=?";
         $params = array($id);

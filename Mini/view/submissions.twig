@@ -16,6 +16,8 @@
 {% if success %}
     {% if success == 'approve' %}
         {{ alert('success', 'Bot approved.') }}
+    {% elseif success == 'person' %}
+        {{ alert('success', 'Marked as confirmed person.') }}
     {% else %}
         {{ alert('success', 'Bot rejected.') }}
     {% endif %}

@@ -454,15 +454,22 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
 
     $app->post('/subaction', function() use ($app, $model) {
         if($model->login->isLoggedIn() && $model->checkToken("submissions", $app->request->params('token'))) {
-            $submission = $model->submissions->getSubmission((int)$app->request->params('id'));
+            $submissionId = (int)$app->request->params('id');
+            $submission = $model->submissions->getSubmission($submissionId);
+            $paramType = 'error';
             if($app->request->params('approve') == "1") {
-                $model->approveSubmission((int)$app->request->params('id'));
+                $model->approveSubmission($submissionId);
+                $paramType = 'approve';
             }
             else if($app->request->params('reject') == "1") {
-                $model->submissions->removeSubmission((int)$app->request->params('id'));
+                $model->submissions->removeSubmission($submissionId);
+                $paramType = 'reject';
             }
-            //TODO respect tab user came from
-            $query = '?success='.($app->request->params('approve') ? 'approve' : 'reject');
+            else if($app->request->params('person') == "1") {
+                $model->markSubmissionAsPerson($submissionId);
+                $paramType = 'person';
+            }
+            $query = '?success='.$paramType;
             if($submission->type == 1) {
                 $query .= '#corrections';
             }
