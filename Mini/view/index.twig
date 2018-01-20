@@ -8,28 +8,28 @@
 <link rel="stylesheet" href="{{ siteUrl('css/splash.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
 {% block content %}
-<div class="page-header">
-    <h1>Find out if a Twitch user is a chat bot</h1>
-    <p class="lead">{{ description|e }}</p>
+<img src="{{ siteUrl("img/splash.svg#mobile")|e('html_attr') }}" srcset="{{ siteUrl("img/splash.svg#mobile")|e('html_attr') }} 1000w, {{ siteUrl("img/splash.svg")|e('html_attr') }} 1100w" id="splash">
 </div>
-</div>
-<img src="{{ siteUrl("img/splash.svg")|e('html_attr') }}" id="splash">
 <div class="container">
-<section>
-    <div class="col-md-4 text-center jumbotron">
-        <h1>{{ bots|e }}</h1>
-        <p>Known bots</p>
-        <a href="{{ urlFor('bots')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Check out bots</a>
+    <div class="jumbotron">
+        <h1>Twitch Service-Bot Directory</h1>
+        <p class="lead">{{ description|e }}</p>
     </div>
-    <div class="col-md-4 text-center jumbotron">
-        <h1>{{ types|e }}</h1>
-        <p>Twitch bot types</p>
-        <a href="{{ urlFor('types')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Browse bot types</a>
-    </div>
-    <div class="col-md-4 text-center jumbotron">
-        <h1>1M+</h1>
-        <p>Unknown bots</p>
-        <a href="{{ urlFor('submit')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Add your bot</a>
-    </div>
-</section>
+    <section>
+        <div class="col-md-4 text-center">
+            <h1>{{ bots|e }}</h1>
+            <p>Known bots</p>
+            <a href="{{ urlFor('bots')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Check out bots</a>
+        </div>
+        <div class="col-md-4 text-center">
+            <h1>{{ types|e }}</h1>
+            <p>Twitch bot types</p>
+            <a href="{{ urlFor('types')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Browse bot types</a>
+        </div>
+        <div class="col-md-4 text-center">
+            <h1>&gt;100</h1>
+            <p>Unknown bots</p>
+            <a href="{{ urlFor('submit')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Add your bot</a>
+        </div>
+    </section>
 {% endblock %}
