@@ -796,7 +796,9 @@ class Model
             }
             else {
                 $this->bots->addBot($twitchId, $submission->name, null, $submission->channel, $channelId);
-                $this->submissions->append($twitchId, $submission->name, 'From submissions: '.$submission->description, Submissions::CORRECTION, $existingBot->channel, $channelId);
+                if(!empty($submission->description) && strlen($submission->description) > 5) {
+                    $this->submissions->append($twitchId, $submission->name, 'From submissions: '.$submission->description, Submissions::CORRECTION, $existingBot->channel, $channelId);
+                }
             }
         }
 
