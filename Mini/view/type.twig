@@ -16,7 +16,7 @@
 <dl class="dl-horizontal">
     {% if type.enabled and type.url %}
     <dt>Website</dt>
-    <dd><a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.url|e }}</dd>
+    <dd><a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.url|e }}</a></dd>
     {% endif %}
     {% if not type.customUsername not null %}
     <dt>Custom username</dt>
