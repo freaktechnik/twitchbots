@@ -555,6 +555,8 @@ class Model
             if(in_array($submission->name, $bttvBots)) {
                 $this->submissions->setVerified($submission->id, true);
                 $submission->verified = true;
+                $this->submissions->setInChat($submission->id, true, true);
+                $submission->online = true;
                 return true;
             }
         }
@@ -706,7 +708,12 @@ class Model
 
             if($didSomething) {
                 ++$count;
-                if($submission->verified && $submission->type == 0) {
+                if($submission->verified &&
+                   $submission->type == 0 &&
+                   is_numeric($submission->description) &&
+                   ($submission->online ||
+                    $this->types->getType((int)$submission->description)->multichannel
+                   )) {
                     $this->approveSubmission($submission->id);
                 }
             }
