@@ -757,8 +757,7 @@ class Model
     public function approveSubmission(int $id): bool
     {
         $submission = $this->submissions->getSubmission($id);
-
-        if($submission->type != 0) {
+        if($submission->type != 0 && !is_numberic($submission->description)) {
             return false;
         }
 
@@ -769,24 +768,32 @@ class Model
             $twitchId = $this->getChannelID($submission->name);
         }
 
-        $channelId = null;
-        if(!empty($submission->channel)) {
-            if(!empty($submission->channel_id)) {
-                $channelId = $submission->channel_id;
+        if($submission->type != 0) {
+            $bot = $this->bots->getBotByID($twitchId);
+            $bot->type = (int)$submission->description;
+            $this->bots->updateBot($bot);
+        }
+        else {
+            $channelId = null;
+            if(!empty($submission->channel)) {
+                if(!empty($submission->channel_id)) {
+                    $channelId = $submission->channel_id;
+                }
+                else {
+                    $channelId = $this->getChannelID($submission->channel);
+                }
             }
-            else {
-                $channelId = $this->getChannelID($submission->channel);
+
+            if(is_numeric($submission->description)) {
+                $this->bots->addBot($twitchId, $submission->name, (int)$submission->description, $submission->channel, $channelId);
+            }
+            else if(!$submission->verified){
+                //TODO add ui for editor to assign a type/create a type, since this just discards the description.
+                // or add a correction with the description, since else verified bots can't be approved.
+                $this->bots->addBot($twitchId, $submission->name, null, $submission->channel, $channelId);
             }
         }
 
-        if(is_numeric($submission->description)) {
-            $this->bots->addBot($twitchId, $submission->name, (int)$submission->description, $submission->channel, $channelId);
-        }
-        else if(!$submission->verified){
-            //TODO add ui for editor to assign a type/create a type, since this just discards the description.
-            $this->bots->addBot($twitchId, $submission->name, null, $submission->channel, $channelId);
-        }
-        //TODO actually remove submissions by twitch_id if type==0, don't do that if type==1
         $this->submissions->removeSubmission($id);
 
         return true;
@@ -842,7 +849,13 @@ class Model
     public function markSubmissionAsPerson(int $id)
     {
         $submission = $this->submissions->getSubmission($id);
-        $this->confirmedPeople->add($submission->twitch_id);
+        if(!empty($submission->twitch_id)) {
+            $twitchId = $submission->twitch_id;
+        }
+        else {
+            $twitchId = $this->getChannelID($submission->name);
+        }
+        $this->confirmedPeople->add($twitchId);
         $this->submissions->removeSubmission($id);
     }
 }
