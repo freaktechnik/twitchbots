@@ -794,12 +794,9 @@ class Model
             if(is_numeric($submission->description)) {
                 $this->bots->addBot($twitchId, $submission->name, (int)$submission->description, $submission->channel, $channelId);
             }
-            else if(!$submission->verified){
+            else {
                 $this->bots->addBot($twitchId, $submission->name, null, $submission->channel, $channelId);
                 $this->submissions->append($twitchId, $submission->name, 'From submissions: '.$submission->description, Submissions::CORRECTION, $existingBot->channel, $channelId);
-            }
-            else {
-                return false;
             }
         }
 
