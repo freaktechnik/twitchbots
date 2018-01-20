@@ -107,7 +107,7 @@
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="person" value="1" type="submit" class="btn btn-danger btn-xs"{% if s.type == 1 %} disabled{% endif %} aria-label="Mark as Person"><span class="glyphicon glyphicon-user" aria-hidden="true"></button>
+                        <button name="person" value="1" type="submit" class="btn btn-warning btn-xs"{% if s.type == 1 %} disabled{% endif %} aria-label="Mark as Person"><span class="glyphicon glyphicon-user" aria-hidden="true"></button>
                     </form>
                 </td>
                 {% endif %}
