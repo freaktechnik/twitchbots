@@ -17,7 +17,7 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - source .travis/trust-server.sh
-  - ssh humanoid@humanoids.be 'cd dev/twitchbots && git pull && php70 composer.phar install --no-dev --optimize-autoloader && rm -r cache/*'
+  - ssh humanoid@humanoids.be 'cd dev/twitchbots && git pull && php70 composer.phar install --no-dev --optimize-autoloader'
 deploy:
   provider: script
   script: .travis/deploy.sh
