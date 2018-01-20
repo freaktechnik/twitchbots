@@ -492,6 +492,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
 
     $app->post('/addtype', function() use ($app, $model) {
         if($model->login->isLoggedIn() && $model->checkToken('submissions', $app->request->params('token'))) {
+            $apiVersion = $app->request->params('apiVersion');
             $typeId = $model->types->addType(
                 $app->request->params('name'),
                 $app->request->params('multichannel') == "1",
@@ -499,7 +500,12 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                 $app->request->params('customUsername') == "1",
                 $app->request->params('identifyableby'),
                 $app->request->params('description'),
-                $app->request->params('url') ?? null
+                $app->request->params('url') ?? null,
+                $app->request->params('sourceUrl') ?? null,
+                $app->request->params('commandsUrl') ?? null,
+                (int)$app->request->params('payment'),
+                $app->request->params('hasFreeTier') == "1",
+                $apiVersion == "" ? null : (int)$apiVersion
             );
             $app->redirect($app->request->getUrl().$app->urlFor('submissions').'?addedtype='.$typeId, 303);
         }

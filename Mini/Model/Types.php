@@ -78,9 +78,22 @@ class Types extends PaginatingStore {
         }
     }
 
-    public function addType(string $name, bool $multichannel, bool $managed, bool $customUsername, string $identifyableBy, string $description, string $url = null): int
+    public function addType(
+        string $name,
+        bool $multichannel,
+        bool $managed,
+        bool $customUsername,
+        string $identifyableBy,
+        string $description,
+        string $url = null,
+        string $sourceUrl = null,
+        string $commandsUrl = null,
+        int $payment = null,
+        bool $hasFreeTier = true,
+        int $apiVersion = null
+    ): int
     {
-        $sql = "(name,multichannel,managed,customUsername,identifiableby,description,url) VALUES (?,?,?,?,?,?,?)";
+        $sql = "(name,multichannel,managed,customUsername,identifiableby,description,url,sourceUrl,commandsUrl,payment,hasFreeTier,apiVersion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         $query = $this->prepareInsert($sql);
         $query->execute([
             $name,
@@ -89,7 +102,12 @@ class Types extends PaginatingStore {
             $customUsername ? 1 : 0,
             $identifyableBy,
             $description,
-            $url
+            $url ?? null,
+            $sourceUrl ?? null,
+            $commandsUrl ?? null,
+            $payment,
+            $hasFreeTier,
+            $apiVersion
         ]);
         return (int)$this->getLastInsertedId();
     }

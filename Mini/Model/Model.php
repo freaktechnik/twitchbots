@@ -82,6 +82,9 @@ class Model
 
     private $_followsCache;
 
+    /**
+     * @var Auth
+     */
     public $login;
 
     /**
