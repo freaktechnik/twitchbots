@@ -18,7 +18,7 @@
     <dt>Website</dt>
     <dd><a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.url|e }}</a></dd>
     {% endif %}
-    {% if not type.customUsername is null %}
+    {% if type.customUsername is not null %}
     <dt>Custom username</dt>
     <dd>{% if type.customUsername %}Yes{% else %}No{% endif %}</dd>
     {% endif %}
@@ -26,7 +26,6 @@
     <dd>{% if type.managed %}No{% else %}Yes{% endif %}</dd>
     <dt>One instance per channel</dt>
     <dd>{% if type.multichannel %}No{% else %}Yes{% endif %}</dd>
-    {% endif %}
 </dl>
 <h2>Known Accounts</h2>
 <div class="list-group">
