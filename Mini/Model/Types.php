@@ -8,18 +8,37 @@ use PDO;
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
     name varchar(255) CHARACTER SET utf8 NOT NULL,
     multichannel tinyint(1) NOT NULL,
-    url text CHARACTER SET ascii,
+    url text CHARACTER SET ascii DEFAULT NULL,
     managed tinyint(1) NOT NULL,
     customUsername tinyint(1) DEFAULT NULL,
     identifiableby text DEFAULT NULL,
     description text DEFAULT NULL,
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     enabled boolean DEFAULT 1,
+    sourceUrl text DEFAULT NULL,
+    commandsUrl text DEFAULT NULL,
+    payment int(2) DEFAULT NULL,
+    hasFreeTier tinyint(1) DEFAULT 1,
+    apiVersion int(10) DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) DEFAULT CHARSET=utf8 */
 
 class Types extends PaginatingStore {
+    const API_VERSIONS = [
+        'jtv',
+        'kraken v1',
+        'kraken v3',
+        'kraken v5',
+        'helix'
+    ];
+
+    const PAYMENT = [
+        'Free',
+        'Lifetime license',
+        'Subscription'
+    ];
+
     function __construct(PingablePDO $db, int $pageSize = 50)
     {
         parent::__construct($db, "types", $pageSize);

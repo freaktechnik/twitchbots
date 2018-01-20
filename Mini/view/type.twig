@@ -18,14 +18,34 @@
     <dt>Website</dt>
     <dd><a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.url|e }}</a></dd>
     {% endif %}
+    {% if type.sourceUrl %}
+    <dt>Source code</dt>
+    <dd><a href="{{ type.sourceUrl|e('html_attr') }}" rel="external nofollow noopener">{{ type.sourceUrl|e }}</a></dd>
+    {% endif %}
+    {% if type.commandsUrl %}
+    <dt>Commands</dt>
+    <dd><a href="{{ type.commandsUrl|e('html_attr') }}" rel="external nofollow noopener">{{ type.commandsUrl|e }}</a></dd>
+    {% endif %}
+    {% if type.payment is not null %}
+    <dt>Business model</dt>
+    <dd>{% if type.payment == 0 %}Free{% elseif type.payment == 1 %}Lifetime license{% else %}Subscription{% endif %}</dd>
+    {% if not type.payment == 0 %}
+    <dt>Free tier</dt>
+    <dd>{% if type.hasFreeTier %}Yes{% else %}No{% endif %}</dd>
+    {% endif %}
+    {% endif %}
     {% if type.customUsername is not null %}
     <dt>Custom username</dt>
     <dd>{% if type.customUsername %}Yes{% else %}No{% endif %}</dd>
     {% endif %}
     <dt>Local software</dt>
     <dd>{% if type.managed %}No{% else %}Yes{% endif %}</dd>
-    <dt>One instance per channel</dt>
+    <dt>Instance per channel</dt>
     <dd>{% if type.multichannel %}No{% else %}Yes{% endif %}</dd>
+    {% if type.apiVersion is not null %}
+    <dt>API version</dt>
+    <dd>{% if type.apiVersion == 0 %}<span class="badge bg-error">Justin.tv API</span>{% elseif type.apiVersion == 1 %}<span class="badge bg-error">Kraken v1</span>{% elseif type.apiVersion == 2 %}<span class="badge bg-warning">Kraken v3</span>{% elseif type.apiVersion == 3 %}<span class="badge bg-warning">Kraken v5</span>{% else %}<span class="badge">Helix</span>{% endif %}</dd>
+    {% endif %}
 </dl>
 <h2>Known Accounts</h2>
 <div class="list-group">
