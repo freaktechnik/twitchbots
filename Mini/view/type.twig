@@ -54,8 +54,11 @@
         <span class="badge alert-warning">Kraken v3</span>
     {%- elseif type.apiVersion == 3 %}
         <span class="badge alert-warning">Kraken v5</span>
-    {%- else %}
-        <span class="badge">Helix</span>{% endif %}</dd>
+    {%- elseif type.apiVersion == 4 %}
+        <span class="badge">Helix</span>
+    {%- elseif type.apiVersion == 5 %}
+        <span class="badge alert-warning">TMI Chatters</span>
+    {%- endif %}</dd>
     {%- endif %}
 </dl>
 <h2>Known Accounts</h2>
