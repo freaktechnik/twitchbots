@@ -8,6 +8,7 @@
 {% else %}
 <link rel="canonical" href="{{ canonicalUrl }}ypes/{{type.id }}?page={{page}}">
 {% endif %}
+<link rel="stylesheet" href="{{ siteUrl('/css/status.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
 {% block content %}
 <div class="page-header">
