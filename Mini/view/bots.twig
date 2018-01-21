@@ -19,7 +19,6 @@
         <thead>
             <tr>
                 <th>Username</th>
-                <th>Multi-channel</th>
                 <th>Type</th>
             </tr>
         </thead>
@@ -28,10 +27,8 @@
             <tr>
                 <td><a href="{{ urlFor('bot', { name: bot.name })|e('html_attr') }}">{{ bot.name|e }}</a></td>
                 {% if bot.typename is not empty %}
-                <td>{% if bot.multichannel %}Yes{% else %}No{% endif %}</td>
-                <td><a href="{{ urlFor('type', { id: bot.type }) }}">{{ bot.typename|e }}</a></td>
+                <td><a href="{{ urlFor('type', { id: bot.type })|e('html_attr') }}">{{ bot.typename|e }}</a></td>
                 {% else %}
-                <td>?</td>
                 <td><a href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}">Unknown (click to correct)</a></td>
                 {% endif %}
             </tr>

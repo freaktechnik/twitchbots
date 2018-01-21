@@ -1,5 +1,6 @@
 {% import "_pagination.twig" as pagination %}
 {% import "_table.twig" as table %}
+{% import "_type.twig" as typeUtils %}
 {% extends "_base.twig" %}
 {% block title %}{{ type.name|e }}{% endblock %}
 {% block extraresources %}
@@ -30,7 +31,7 @@
     {%- endif -%}
     {%- if type.payment is not null %}
     <dt>Business model</dt>
-    <dd>{% if type.payment == 0 %}Free{% elseif type.payment == 1 %}Lifetime license{% elseif type.payment == 2 %}Subscription{% elseif type.payment == 3 %}Transaction fees{% endif %}</dd>
+    <dd>{{ typeUtils.businessModel(type.payment) }}</dd>
     {% if not type.payment == 0 and not type.payment == 3 %}
     <dt>Free tier</dt>
     <dd>{{ table.status(type.hasFreeTier) }}</dd>
@@ -46,19 +47,7 @@
     <dd>{{ table.status(not type.multichannel) }}</dd>
     {%- if type.apiVersion is not null %}
     <dt>API version</dt>
-    <dd>{% if type.apiVersion == 0 %}
-        <span class="badge alert-danger">Justin.tv API</span>
-    {%- elseif type.apiVersion == 1 %}
-        <span class="badge alert-danger">Kraken v1</span>
-    {%- elseif type.apiVersion == 2 %}
-        <span class="badge alert-warning">Kraken v3</span>
-    {%- elseif type.apiVersion == 3 %}
-        <span class="badge alert-warning">Kraken v5</span>
-    {%- elseif type.apiVersion == 4 %}
-        <span class="badge">Helix</span>
-    {%- elseif type.apiVersion == 5 %}
-        <span class="badge alert-warning">TMI Chatters</span>
-    {%- endif %}</dd>
+    <dd>{{ typeUtils.apiVersion(type.apiVersion) }}</dd>
     {%- endif %}
 </dl>
 <h2>Known Accounts</h2>

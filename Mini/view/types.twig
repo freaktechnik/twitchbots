@@ -1,4 +1,6 @@
 {% import "_pagination.twig" as pagination %}
+{% import "_table.twig" as table %}
+{% import "_type.twig" as typeUtils %}
 {% extends "_base.twig" %}
 {% block title %}Known bot types{% endblock %}
 {% block extraresources %}
@@ -19,14 +21,18 @@
                 <th>Type</th>
                 <th>Multi-channel</th>
                 <th>Bot instance count</th>
+                <th>Open Source</th>
+                <th>Business model</th>
             </tr>
         </thead>
         <tbody>
         {% for type in types %}
             <tr>
-                <td><a href="{{ urlFor('type', { id: type.id }) }}">{{ type.name|e }}</a></td>
-                <td>{% if type.multichannel %}Yes{% else %}No{% endif %}</td>
+                <td><a href="{{ urlFor('type', { id: type.id })|e('html_attr') }}">{{ type.name|e }}</a></td>
+                <td>{{ table.status(type.multichannel) }}</td>
                 <td>{{ type.count|e }}</td>
+                <td>{{ table.status(type.sourceUrl is not null) }}</td>
+                <td>{{ typeUtils.businessModel(type.payment) }}</td>
             </tr>
         {% endfor %}
         </tbody>
