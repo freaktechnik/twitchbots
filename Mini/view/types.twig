@@ -24,6 +24,7 @@
                 <th>Bot instance count</th>
                 <th>Open Source</th>
                 <th>Business model</th>
+                <th>Managed</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,7 @@
                 <td>{{ type.count|e }}</td>
                 <td>{{ table.status(type.sourceUrl is not null) }}</td>
                 <td>{{ typeUtils.businessModel(type.payment) }}</td>
+                <td>{{ table.status(type.managed) }}</td>
             </tr>
         {% endfor %}
         </tbody>
