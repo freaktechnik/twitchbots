@@ -31,7 +31,7 @@
     {%- if type.payment is not null %}
     <dt>Business model</dt>
     <dd>{% if type.payment == 0 %}Free{% elseif type.payment == 1 %}Lifetime license{% elseif type.payment == 2 %}Subscription{% elseif type.payment == 3 %}Transaction fees{% endif %}</dd>
-    {% if not type.payment == 0 %}
+    {% if not type.payment == 0 and not type.payment == 3 %}
     <dt>Free tier</dt>
     <dd>{{ table.status(type.hasFreeTier) }}</dd>
     {%- endif -%}
