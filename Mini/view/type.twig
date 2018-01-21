@@ -47,9 +47,9 @@
     {%- if type.apiVersion is not null %}
     <dt>API version</dt>
     <dd>{% if type.apiVersion == 0 %}
-        <span class="badge alert-error">Justin.tv API</span>
+        <span class="badge alert-danger">Justin.tv API</span>
     {%- elseif type.apiVersion == 1 %}
-        <span class="badge alert-error">Kraken v1</span>
+        <span class="badge alert-danger">Kraken v1</span>
     {%- elseif type.apiVersion == 2 %}
         <span class="badge alert-warning">Kraken v3</span>
     {%- elseif type.apiVersion == 3 %}
