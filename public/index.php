@@ -458,16 +458,19 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
             $submission = $model->submissions->getSubmission($submissionId);
             $paramType = 'error';
             if($app->request->params('approve') == "1") {
-                $model->approveSubmission($submissionId);
-                $paramType = 'approve';
+                if($model->approveSubmission($submissionId)) {
+                    $paramType = 'approve';
+                }
             }
             else if($app->request->params('reject') == "1") {
-                $model->submissions->removeSubmission($submissionId);
-                $paramType = 'reject';
+                if($model->submissions->removeSubmission($submissionId)) {
+                    $paramType = 'reject';
+                }
             }
             else if($app->request->params('person') == "1") {
-                $model->markSubmissionAsPerson($submissionId);
-                $paramType = 'person';
+                if($model->markSubmissionAsPerson($submissionId)) {
+                    $paramType = 'person';
+                }
             }
             $query = '?success='.$paramType;
             if($submission->type == 1) {

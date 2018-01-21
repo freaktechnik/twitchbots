@@ -18,8 +18,10 @@
         {{ alert('success', 'Bot approved.') }}
     {% elseif success == 'person' %}
         {{ alert('success', 'Marked as confirmed person.') }}
-    {% else %}
+    {% elseif success == 'reject' %}
         {{ alert('success', 'Bot rejected.') }}
+    {% else %}
+        {{ alert('critical', 'Error') }}
     {% endif %}
 {% endif %}
 <ul class="nav nav-tabs" role="tablist">
