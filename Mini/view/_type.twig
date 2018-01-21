@@ -1,0 +1,36 @@
+{% macro businessModel(payment) %}
+{% spaceless %}
+{% if payment == 0 %}
+    Free
+{% elseif payment == 1 %}
+    Lifetime license
+{% elseif payment == 2 %}
+    Subscription
+{% elseif payment == 3 %}
+    Transaction fees
+{% else %}
+    {% from "_table.twig" import status %}
+    {{ status(null) }}
+{% endif %}
+{% endspaceless %}
+{% endmacro %}
+{% macro apiVersion(version) %}
+{% spaceless %}
+{% if version == 0 %}
+    <span class="badge alert-danger">Justin.tv API</span>
+{%- elseif version == 1 %}
+    <span class="badge alert-danger">Kraken v1</span>
+{%- elseif version == 2 %}
+    <span class="badge alert-warning">Kraken v3</span>
+{%- elseif version == 3 %}
+    <span class="badge alert-warning">Kraken v5</span>
+{%- elseif version == 4 %}
+    <span class="badge">Helix</span>
+{%- elseif version == 5 %}
+    <span class="badge alert-warning">TMI Chatters</span>
+{% else %}
+    {% from "_table.twig" import status %}
+    {{ status(null) }}
+{% endif %}
+{% endspaceless %}
+{% endmacro %}
