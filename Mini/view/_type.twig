@@ -1,6 +1,9 @@
 {% macro businessModel(payment) %}
+{% from "_table.twig" import status %}
 {% spaceless %}
-{% if payment == 0 %}
+{% if payment is null %}
+    {{ status(null) }}
+{% elseif payment == 0 %}
     Free
 {% elseif payment == 1 %}
     Lifetime license
@@ -9,7 +12,6 @@
 {% elseif payment == 3 %}
     Transaction fees
 {% else %}
-    {% from "_table.twig" import status %}
     {{ status(null) }}
 {% endif %}
 {% endspaceless %}
