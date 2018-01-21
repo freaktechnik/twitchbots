@@ -17,8 +17,11 @@
 {% endspaceless %}
 {% endmacro %}
 {% macro apiVersion(version) %}
+{% from "_table.twig" import status %}
 {% spaceless %}
-{% if version == 0 %}
+{% if version is null %}
+    {{ status(null) }}
+{% elseif version == 0 %}
     <span class="badge alert-danger">Justin.tv API</span>
 {%- elseif version == 1 %}
     <span class="badge alert-danger">Kraken v1</span>
@@ -31,7 +34,6 @@
 {%- elseif version == 5 %}
     <span class="badge alert-warning">Unsupported APIs</span>
 {% else %}
-    {% from "_table.twig" import status %}
     {{ status(null) }}
 {% endif %}
 {% endspaceless %}
