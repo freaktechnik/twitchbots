@@ -16,6 +16,10 @@
     <h1>{{ type.name|e }} and bots of this type</h1>
 </div>
 {% if type.description %}<p class="lead">{{ type.description }}</p>{% endif %}
+{% if not type.enabled -%}
+{%- import "_alerts.twig" as alerts -%}
+{{ alerts.alert('warning', 'This bot type has been marked as inactive') }}
+{%- endif -%}
 <dl class="dl-horizontal">
     {%- if type.enabled and type.url %}
     <dt>Website</dt>
