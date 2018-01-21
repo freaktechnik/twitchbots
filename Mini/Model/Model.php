@@ -767,7 +767,7 @@ class Model
     public function approveSubmission(int $id): bool
     {
         $submission = $this->submissions->getSubmission($id);
-        if($submission->type != 0 && !is_numberic($submission->description)) {
+        if($submission->type != 0 && !is_numeric($submission->description)) {
             return false;
         }
 
