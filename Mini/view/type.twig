@@ -68,5 +68,5 @@
     {% endfor %}
 </div>
 {{ pagination.print(page, pageCount, 3, 2) }}
-{% if type.enabled %}<p>The list is missing a {{ type.name|e }} bot user? <a href="{{ urlFor('submit') }}?type={{ type.id|e('url')|e('html_attr') }}">Submit a bot of this type</a>.</p>{% endif %}
+{% if type.enabled and type.customUsername %}<p>The list is missing a {{ type.name|e }} bot user? <a href="{{ urlFor('submit') }}?type={{ type.id|e('url')|e('html_attr') }}">Submit a bot of this type</a>.</p>{% endif %}
 {% endblock %}
