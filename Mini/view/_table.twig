@@ -7,8 +7,11 @@
 <span class="glyphicon glyphicon-question-sign status-unknown" title="No data"></span>
 {%- endif %}
 {%- endmacro -%}
+{%- macro warn() -%}
+<span class="glyphicon glyphicon-exclamation-sign status-warning" title="Warning"></span>
+{%- endmacro -%}
 {%- macro table(set, id, active, buttons, token, types) -%}
-{%- from _self import status -%}
+{%- from _self import status, warn -%}
 {% set defaultVal = status(null) %}
 <div class="table-responsive tab-pane{% if active %} active{% endif %}" role="tabpanel" id="{{ id|e('html_attr') }}">
     <table class="table table-striped">
@@ -69,9 +72,12 @@
                         {% for t in types if not break %}
                             {% if t.id|number_format(0, '', '') == s.description %}
                                 {% set break = true %}
-                                <a href="{{ urlFor('type', { id: t.id})|e('html_attr') }}" title="{{ s.description|e('html_attr') }}">{{ t.name|e }}</a>
+                                <a href="{{ urlFor('type', { id: t.id})|e('html_attr') }}" title="{{ s.description|e('html_attr') }}">{{ t.name|e }}{% if not t.customUsername %}{{ warn() }}{% endif %}</a>
                             {% endif %}
                         {% endfor %}
+                        {% if not break %}
+                        {{ warn() }}
+                        {% endif %}
                     {% else %}
                         {{ s.description|e }}
                     {% endif %}

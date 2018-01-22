@@ -10,10 +10,20 @@
     color: gray;
 }
 
-.status-ok, .status-unknown, .status-nok {
+.status-warning {
+    color: orange;
+}
+
+.status-ok,
+.status-unknown,
+.status-nok,
+.status-warning {
     cursor: default;
 }
 
-a .status-ok, a .status-unknown, a .status-nok {
+a .status-ok,
+a .status-unknown,
+a .status-nok,
+a .status-warning {
     cursor: pointer;
 }
