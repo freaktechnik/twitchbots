@@ -463,11 +463,11 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                 }
             }
             else if($app->request->params('reject') == "1") {
-                $model->submissions->removeSubmission($submissionId)
+                $model->submissions->removeSubmission($submissionId);
                 $paramType = 'reject';
             }
             else if($app->request->params('person') == "1") {
-                $model->markSubmissionAsPerson($submissionId)
+                $model->markSubmissionAsPerson($submissionId);
                 $paramType = 'person';
             }
             $query = '?success='.$paramType;
