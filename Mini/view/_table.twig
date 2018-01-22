@@ -72,7 +72,7 @@
                         {% for t in types if not break %}
                             {% if t.id|number_format(0, '', '') == s.description %}
                                 {% set break = true %}
-                                <a href="{{ urlFor('type', { id: t.id})|e('html_attr') }}" title="{{ s.description|e('html_attr') }}">{{ t.name|e }}{% if not t.customUsername %}{{ warn() }}{% endif %}</a>
+                                <a href="{{ urlFor('type', { id: t.id})|e('html_attr') }}" title="{{ s.description|e('html_attr') }}">{{ t.name|e }}{% if not t.customUsername and t.customUsername is not null %} {{ warn() }}{% endif %}</a>
                             {% endif %}
                         {% endfor %}
                         {% if not break %}
