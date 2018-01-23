@@ -780,7 +780,12 @@ class Model
 
         if($submission->type != 0) {
             $bot = $this->bots->getBotByID($twitchId);
-            $bot->type = (int)$submission->description;
+            if(is_numeric($submission->description)) {
+                $bot->type = (int)$submission->description;
+            }
+            else {
+                $bot->type = null;
+            }
             $this->bots->updateBot($bot);
         }
         else {
@@ -805,7 +810,12 @@ class Model
             }
         }
 
-        $this->submissions->removeSubmission($id);
+        if($submission->type == 0) {
+            $this->submissions->removeSubmission($id);
+        }
+        else {
+            $this->submissions->removeSubmissions($twitchId);
+        }
 
         return true;
     }

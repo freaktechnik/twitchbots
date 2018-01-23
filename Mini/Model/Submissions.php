@@ -96,7 +96,7 @@ class Submissions extends PaginatingStore {
     }
 
 
-    public function setInChat(string $id, $inChannel, bool $live)
+    public function setInChat(int $id, $inChannel, bool $live)
     {
         if($live) {
             $sql = "online=? WHERE id=?";
@@ -152,7 +152,7 @@ class Submissions extends PaginatingStore {
         $query->execute([ $verified, $id ]);
     }
 
-    public function setTwitchID(int $id, int $twitchID, string $type = "twitch")
+    public function setTwitchID(int $id, string $twitchID, string $type = "twitch")
     {
         $sql = $type."_id=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
@@ -191,10 +191,10 @@ class Submissions extends PaginatingStore {
         $query->execute(array($id));
     }
 
-    public function removeSubmissions(string $username, string $description = NULL)
+    public function removeSubmissions(string $twitchID, string $description = NULL)
     {
-        $condition = "WHERE name=?";
-        $args = array($username);
+        $condition = "WHERE twitch_id=?";
+        $args = array($twitchID);
         if(!empty($description)) {
             $condition .= " AND description=?";
             $args[] = $description;
