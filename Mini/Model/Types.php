@@ -44,7 +44,10 @@ class Types extends PaginatingStore {
         parent::__construct($db, "types", $pageSize);
     }
 
-    public function getType(int $id): Type
+    /**
+     * @return Type|bool
+     */
+    public function getType(int $id)
     {
         $sql = "SELECT * FROM types WHERE id=?";
         $query = $this->prepareSelect("*", "WHERE id=?");

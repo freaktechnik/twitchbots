@@ -61,7 +61,10 @@ class Submissions extends PaginatingStore {
         return $query->fetchAll();
     }
 
-    public function getSubmission(int $id): Submission
+    /**
+     * @return Submission|bool
+     */
+    public function getSubmission(int $id)
     {
         $query = $this->prepareSelect("*", "WHERE id=?");
         $query->execute(array($id));

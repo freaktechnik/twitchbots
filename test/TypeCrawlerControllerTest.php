@@ -11,7 +11,7 @@ class TypeCrawlerControllerTest extends TestCase
     {
         $storage = new \Mini\Model\TypeCrawler\Storage\StorageFactory('ShimTypeCrawlerStorage', array());
         $controller = new \Mini\Model\TypeCrawler\TypeCrawlerController($storage);
-        $controller->registerCrawler('ShimTypeCrawler');
+        $controller->registerCrawler(\Mini\Model\TypeCrawler\ShimTypeCrawler::class);
 
         $crawled = $controller->crawl(42);
         $this->assertCount(1, $crawled);

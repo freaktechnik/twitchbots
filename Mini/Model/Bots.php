@@ -119,10 +119,13 @@ class Bots extends PaginatingStore {
         return [];
     }
 
-    public function getBot(string $name): Bot
+    /**
+     * @return Bot|bool
+     */
+    public function getBot(string $name)
     {
         $query = $this->prepareSelect("*", "WHERE name=?");
-        $query->execute(array($name));
+        $query->execute([ $name ]);
 
         $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
         return $query->fetch();
@@ -213,7 +216,10 @@ class Bots extends PaginatingStore {
         ]);
     }
 
-    public function getBotByID(string $id): Bot
+    /**
+     * @return Bot|bool
+     */
+    public function getBotByID(string $id)
     {
         $query = $this->prepareSelect("*", "WHERE twitch_id=?");
         $query->execute([ $id ]);
