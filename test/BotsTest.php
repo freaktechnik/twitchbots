@@ -38,7 +38,7 @@ class BotsTest extends DBTestCase
 
         $this->assertEquals("butler_of_ec0ke", $bot->name);
         $this->assertEquals(22, $bot->type);
-        $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
+        $this->assertLessThanOrEqual(strtotime($bot->date), time());
         $this->assertEquals("ec0ke", $bot->channel);
         $this->assertInstanceOf(\Mini\Model\Bot::class, $bot);
     }
@@ -70,7 +70,7 @@ class BotsTest extends DBTestCase
             $this->assertObjectHasAttribute("name", $bot);
             $this->assertObjectHasAttribute("type", $bot);
             $this->assertObjectHasAttribute("date", $bot);
-            $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
+            $this->assertLessThanOrEqual(strtotime($bot->date), time());
             $this->assertInstanceOf(\Mini\Model\Bot::class, $bot);
         }
 
@@ -142,7 +142,7 @@ class BotsTest extends DBTestCase
             $this->assertObjectHasAttribute("name", $bot);
             $this->assertObjectHasAttribute("type", $bot);
             $this->assertObjectHasAttribute("date", $bot);
-            $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
+            $this->assertLessThanOrEqual(strtotime($bot->date), time());
             $this->assertInstanceOf(\Mini\Model\Bot::class, $bot);
         }
 
@@ -175,7 +175,7 @@ class BotsTest extends DBTestCase
             $this->assertObjectHasAttribute("date", $bot);
             $this->assertObjectNotHasAttribute("index", $bot);
             $this->assertObjectNotHasAttribute("value", $bot);
-            $this->assertGreaterThanOrEqual(strtotime($bot->date), time());
+            $this->assertLessThanOrEqual(strtotime($bot->date), time());
             $this->assertInstanceOf(\Mini\Model\Bot::class, $bot);
         }
 
