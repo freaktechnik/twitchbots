@@ -42,13 +42,12 @@ class Bots extends PaginatingStore {
         $query = $this->prepareSelect("count(*) as count", $where);
         $query->execute([ $type ]);
 
-        $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
-        /** @var RowCount|bool $result */
+        /** @var \stdClass|bool $result */
         $result = $query->fetch();
         if(is_bool($result)) {
             return 0;
         }
-        /** @var RowCount $result */
+        /** @var \stdClass $result */
         return (int)$result->count;
     }
 
