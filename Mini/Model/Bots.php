@@ -50,7 +50,7 @@ class Bots extends PaginatingStore {
             return 0;
         }
         /** @var \stdClass $result */
-        return (int)$result->count;
+        return $result->count;
     }
 
     public function getBots(int $page = 1): array
