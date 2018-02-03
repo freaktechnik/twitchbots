@@ -41,9 +41,11 @@ class Bots extends PaginatingStore {
 
         $query = $this->prepareSelect("count(*) as count", $where);
         $query->execute([ $type ]);
+        print_r($type);
 
         /** @var \stdClass|bool $result */
         $result = $query->fetch();
+        print_r($result);
         if(is_bool($result)) {
             return 0;
         }
