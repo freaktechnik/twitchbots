@@ -59,7 +59,8 @@ class Store {
 
         /** @var \stdClass $result */
         $result = $query->fetch();
-        return (int)$result->count;
+        print_r($result);
+        return $result->count;
     }
 
     public function getLastUpdate(string $condition = "", array $values = array()): int
