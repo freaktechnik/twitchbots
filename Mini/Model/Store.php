@@ -58,7 +58,7 @@ class Store {
         $query->execute();
 
         $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
-        /** @var RowCount $result */
+        /** @var \stdClass $result */
         $result = $query->fetch();
         return (int)$result->count;
     }

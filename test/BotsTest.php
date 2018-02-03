@@ -21,8 +21,8 @@ class BotsTest extends DBTestCase
 
     public function setUp()
     {
-        $this->bots = new \Mini\Model\Bots(self::$pdo, self::pageSize);
         parent::setUp();
+        $this->bots = new \Mini\Model\Bots(static::$pdo, self::pageSize);
     }
 
     public function tearDown()

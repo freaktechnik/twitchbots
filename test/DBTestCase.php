@@ -92,7 +92,7 @@ class DBTestCase extends TestCase {
     ];
     private $conn = null;
 
-    private static function createTable($table)
+    private static function createTable(string $table)
     {
         $tableInfo = self::TABLES[$table];
         static::$pdo->query('CREATE TABLE IF NOT EXISTS '.$table.' ('.$tableInfo[0].') DEFAULT CHARSET=utf8 '.$tableInfo[1]);

@@ -32,6 +32,11 @@ class PingablePDO {
         return $this->pdo->prepare($sql);
     }
 
+    public function query(string $sql)
+    {
+        return $this->pdo->query($sql);
+    }
+
     public function getOriginalPDO(): PDO
     {
         return $this->pdo;
