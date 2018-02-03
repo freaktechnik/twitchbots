@@ -15,7 +15,7 @@ class TypeCrawlerControllerTest extends TestCase
 
         $crawled = $controller->crawl(42);
         $this->assertCount(1, $crawled);
-        $this->assertInstanceOf('\\stdClass', $crawled[0]);
+        $this->assertInstanceOf(\Mini\Model\Bot::class, $crawled[0]);
         $this->assertEquals('test', $crawled[0]->name);
         $this->assertEquals('crawl', $crawled[0]->channel);
         $this->assertEquals(42, $crawled[0]->type);
