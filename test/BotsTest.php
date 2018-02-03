@@ -2,8 +2,6 @@
 
 require_once "DBTestCase.php";
 
-use \Mini\Model\PingablePDO;
-
 /**
  * @coversDefaultClass \Mini\Model\Bots
  */
@@ -21,8 +19,8 @@ class BotsTest extends DBTestCase
 
     public function setUp()
     {
-        parent::setUp();
         $this->bots = new \Mini\Model\Bots(static::$pdo, self::pageSize);
+        parent::setUp();
     }
 
     public function tearDown()
