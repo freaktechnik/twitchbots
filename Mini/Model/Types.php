@@ -44,38 +44,44 @@ class Types extends PaginatingStore {
         parent::__construct($db, "types", $pageSize);
     }
 
-    public function getType(int $id)
+    public function getType(int $id): Type
     {
         $sql = "SELECT * FROM types WHERE id=?";
         $query = $this->prepareSelect("*", "WHERE id=?");
         $query->bindValue(1, $id, PDO::PARAM_INT);
         $query->execute();
 
+        $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
         return $query->fetch();
     }
 
     /**
      * Only returns enabled types.
+     *
+     * @return Type[]
      */
     public function getAllTypes(): array
     {
         $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id WHERE enabled=1 GROUP BY table.id ORDER BY count DESC, table.name ASC");
         $query->execute();
 
+        $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
         return $query->fetchAll();
     }
 
+    /**
+     * @return Type[]
+     */
     public function getTypes($page = 1): array
     {
         if($page <= $this->getPageCount($this->pageSize)) {
             $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = `table`.id GROUP BY `table`.id ORDER BY `table`.name ASC LIMIT :start,:stop");
             $this->doPagination($query, $this->getOffset($page));
             $query->execute();
+            $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
             return $query->fetchAll();
         }
-        else {
-            return array();
-        }
+        return [];
     }
 
     public function addType(
@@ -109,6 +115,6 @@ class Types extends PaginatingStore {
             $hasFreeTier,
             $apiVersion
         ]);
-        return (int)$this->getLastInsertedId();
+        return $this->getLastInsertedId();
     }
 }

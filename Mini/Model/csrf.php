@@ -12,6 +12,9 @@
         unset($_SESSION[$key]);
     }
 
+    /**
+     * @return string|bool
+     */
     function get_from_session(string $key) {
         if(isset($_SESSION))
             return $_SESSION[$key];

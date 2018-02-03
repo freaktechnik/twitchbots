@@ -3,13 +3,17 @@
 namespace Mini\Model;
 
 use PDOStatement;
+use PDO;
 
 class Store {
     /**
      * The database connection
-     * @var PingablePDO
+     * @var PingablePDO $db
      */
     private $db;
+    /**
+     * @var string $table
+     */
     private $table;
 
     function __construct(PingablePDO $db, string $table) {
@@ -22,7 +26,7 @@ class Store {
         return $this->db->prepare($sql);
     }
 
-    protected function prepareSelect(string $select = "*", string $where = "", string $table = NULL): PDOStatement
+    protected function prepareSelect(string $select = "*", string $where = "", string $table = null): PDOStatement
     {
         $table = $table ?? $this->table;
         if($where != "") {
@@ -53,7 +57,10 @@ class Store {
         $query = $this->prepareSelect("count(*) AS count");
         $query->execute();
 
-        return (int)$query->fetch()->count;
+        $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
+        /** @var RowCount $result */
+        $result = $query->fetch();
+        return (int)$result->count;
     }
 
     public function getLastUpdate(string $condition = "", array $values = array()): int
@@ -66,13 +73,18 @@ class Store {
         $query = $this->prepareSelect("date", $where);
         $query->execute($values);
 
-        return strtotime($query->fetch()->date);
+        $query->setFetchMode(PDO::FETCH_CLASS, Row::class);
+        /** @var Row $result */
+        $result = $query->fetch();
+        return strtotime($result->date);
     }
 
     /**
      * Store the values and indexes from an array in a temporary table. Returns
      * the table name. The array indexes are in a column called "index" and the
      * values in a column called "value".
+     *
+     * @return string
      */
     protected function createTempTable(array $values): string
     {
@@ -99,10 +111,12 @@ class Store {
         $this->prepareQuery("DROP TABLE IF EXISTS `".$tableName."`")->execute();
     }
 
-    protected function getLastInsertedId()
+    protected function getLastInsertedId(): int
     {
         $query = $this->prepareSelect("LAST_INSERT_ID() as lid");
         $query->execute();
-        return $query->fetch()->lid;
+        /** @var \stdClass $result */
+        $result = $query->fetch();
+        return (int)$result->lid;
     }
 }

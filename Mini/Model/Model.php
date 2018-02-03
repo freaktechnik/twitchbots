@@ -3,12 +3,11 @@
 namespace Mini\Model;
 
 use PDO;
-use PDOStatement;
 use Exception;
 use \Mini\Model\TypeCrawler\Storage\StorageFactory;
 use \Mini\Model\TypeCrawler\TypeCrawlerController;
 use \Mini\Model\PingablePDO;
-use GuzzleHttp\{Client, Promise};
+use GuzzleHttp\Client;
 
 /**
  * Submission Exceptions:
@@ -35,61 +34,60 @@ class Model
 {
     /**
      * The database connection
-     * @var PingablePDO
+     * @var PingablePDO $db
      */
     private $db;
 
     /**
      * The guzzle client
-     * @var Client
+     * @var Client $client
      */
     private $client;
 
     /**
      * The default page size
-     * @var int
+     * @var int $pageSize
      */
     private $pageSize;
 
     /**
-     * @var Bots
+     * @var Bots $bots
      */
     public $bots;
     /**
-     * @var Types
+     * @var Types $types
      */
     public $types;
     /**
-     * @var Submissions
+     * @var Submissions $submissions
      */
     public $submissions;
     /**
-     * @var Config
+     * @var Config $config
      */
     private $config;
     /**
-     * @var ConfirmedPeople
+     * @var ConfirmedPeople $confirmedPeople
      */
     private $confirmedPeople;
 
-    private $twitchHeaders;
-    private $twitchHeadersV5;
+    private $twitchHeaders = [];
+    private $twitchHeadersV5 = [];
 
-    private $venticHeaders;
+    private $venticHeaders = [];
 
     private static $requestOptions = ['http_errors' => false];
 
-
+    /** @var \stdClass|null $_followsCache */
     private $_followsCache;
 
     /**
-     * @var Auth
+     * @var Auth $login
      */
     public $login;
 
     /**
      * When creating the model, the configs for database connection creation are needed
-     * @param $config
      */
     function __construct(array $config, Client $client)
     {
@@ -142,13 +140,9 @@ class Model
         return $this->config->get('client-ID');
     }
 
-    /**
-     * @param string $formname
-     * @return string
-     */
-	public function getToken(string $formname): string
-	{
-	    return generate_token($formname);
+    public function getToken(string $formname): string
+    {
+        return generate_token($formname);
     }
 
     public function checkToken(string $formname, string $token): bool
@@ -189,7 +183,9 @@ class Model
         $this->submissions->append($id, $username, $type, Submissions::SUBMISSION, $channel, $channelId);
     }
 
-
+    /**
+     * @return string|null
+     */
     private function commonSubmissionChecks(string $username, $type, string $channel = null)
     {
         if($username == "" || $type == "") {
@@ -223,7 +219,7 @@ class Model
         return true;
     }
 
-    public function addCorrection(string $username, int $type, string $description = NULL)
+    public function addCorrection(string $username, int $type, string $description = null)
     {
         if($type == 0) {
             if(empty($description)) {
@@ -255,13 +251,16 @@ class Model
         return $http_code != 404 && (!$noJustin || $http_code != 422);
     }
 
+    /**
+     * @return Bot[]
+     */
     public function checkBots(): array
     {
         $botsPerHour = $this->bots->getCount() / (int)$this->config->get('checks_per_day');
         return $this->checkNBots($botsPerHour);
     }
 
-    private function checkBot($bot)
+    private function checkBot(Bot $bot)
     {
         $this->bots->touchBot($bot->twitch_id);
 
@@ -291,11 +290,15 @@ class Model
         return !$exists;
     }
 
+    /**
+     * @return Bot[]
+     */
     private function checkNBots(int $step): array
     {
         try {
             $bots = $this->bots->getOldestBots($step);
 
+            /** @var Bot[] $bots */
             $bots = array_values(array_filter($bots, [$this, 'checkBot']));
 
             $this->db->ping();
@@ -346,6 +349,8 @@ class Model
     private function isChannelLive(string $channelId): bool
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$channelId, $this->twitchHeadersV5);
+
+        /** @var \stdClass $stream */
         $stream = json_decode($response->getBody());
         return isset($stream->stream);
     }
@@ -353,6 +358,7 @@ class Model
     private function getBio(string $channelId)//: ?string
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$channelId, $this->twitchHeadersV5);
+        /** @var \stdClass $user */
         $user = json_decode($response->getBody());
         if(isset($user->bio)) {
             return $user->bio;
@@ -364,6 +370,7 @@ class Model
     private function hasVODs(string $channelId): bool
     {
         $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channelId.'/videos?broadcast_type=archive,highlight,upload', $this->twitchHeadersV5);
+        /** @var \stdClass $vods */
         $vods = json_decode($response->getBody());
         return $vods->_total > 0;
     }
@@ -442,7 +449,7 @@ class Model
         $response = $this->client->get($url);
 
         if($response->getStatusCode() >= 400) {
-            throw new Error("Could not get BTTV bots");
+            throw new Exception("Could not get BTTV bots");
         }
 
         $json = json_decode($response->getBody(), true);
@@ -461,9 +468,11 @@ class Model
                 $follows = new \stdClass();
                 $follows->_total = 0;
             }
-            $this->submissions->setFollowing($submission->id, $follows->_total);
-            $submission->following = $follows->_total;
-            return true;
+            if($follows instanceof \stdClass) {
+                $this->submissions->setFollowing($submission->id, $follows->_total);
+                $submission->following = $follows->_total;
+                return true;
+            }
         }
         return false;
     }
@@ -507,11 +516,15 @@ class Model
         if(!isset($submission->following_channel)) {
             if(isset($this->_followsCache)) {
                 $follows = $this->_followsCache;
-                $follows_channel = $follows->_total > 0 && in_array($submission->channel_id, array_map(function($chan) {
-                    return strtolower($chan->channel->_id);
-                }, $follows->follows));
-                if(!$follows_channel && $follows->_total > count($follows->follows)) {
-                    unset($follows_channel);
+                if($follows instanceof \stdClass) {
+                    $follows_channel = $follows->_total > 0 && in_array($submission->channel_id, array_map(function(\stdClass $chan) {
+                        /** @var \stdClass $channel */
+                        $channel = $chan->channel;
+                        return strtolower($channel->_id);
+                    }, $follows->follows));
+                    if(!$follows_channel && $follows->_total > count($follows->follows)) {
+                        unset($follows_channel);
+                    }
                 }
             }
             if(!isset($follows_channel)) {
@@ -703,7 +716,7 @@ class Model
                     }
                     if($isMod !== null) {
                         $this->submissions->setModded($submission->id, $isMod);
-                        $submission->isMod = $isMod;
+                        $submission->ismod = $isMod;
                     }
                     $didSomething = true;
                 }
@@ -746,7 +759,9 @@ class Model
                     if(!empty($bot->channel)) {
                         $channelId = $this->getChannelID($bot->channel);
                     }
-                    $this->bots->addBot($twitchId, $bot->name, $bot->type, $bot->channel, $channelId);
+                    $bot->twitch_id = $twitchId;
+                    $bot->channel_id = $channelId;
+                    $this->bots->addBot($bot);
                     $count += 1;
 
                     // Remove any matching submissions.
@@ -799,13 +814,20 @@ class Model
                 }
             }
 
+            $bot = new Bot;
+            $bot->twitch_id = $twitchId;
+            $bot->name = $submission->name;
+            $bot->channel = $submission->channel;
+            $bot->channel_id = $channelId;
+
             if(is_numeric($submission->description)) {
-                $this->bots->addBot($twitchId, $submission->name, (int)$submission->description, $submission->channel, $channelId);
+                $bot->type = (int)$submission->description;
+                $this->bots->addBot($bot);
             }
             else {
-                $this->bots->addBot($twitchId, $submission->name, null, $submission->channel, $channelId);
+                $this->bots->addBot($bot);
                 if(!empty($submission->description) && strlen($submission->description) > 5) {
-                    $this->submissions->append($twitchId, $submission->name, 'From submissions: '.$submission->description, Submissions::CORRECTION, $existingBot->channel, $channelId);
+                    $this->submissions->append($twitchId, $submission->name, 'From submissions: '.$submission->description, Submissions::CORRECTION, $submission->channel, $channelId);
                 }
             }
         }

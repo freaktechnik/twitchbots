@@ -10,13 +10,19 @@ use Auth0\SDK\API\Authentication;
 ) DEFAULT CHARSET=ascii */
 
 class Auth {
+    /** @var Authentication $auth0 */
     private $auth0;
+    /** @var \Auth0\SDK\API\Oauth2Client $auth0Client */
     private $auth0Client;
 
+    /** @var string $clientId */
     private $clientId;
+    /** @var string $redirectUrl */
     private $redirectUrl;
+    /** @var string $domain */
     private $domain;
 
+    /** @var PingablePDO $db */
     private $db;
 
     function __construct(string $clientId, string $clientSecret, string $cbk, string $domain, PingablePDO $db)
@@ -49,11 +55,11 @@ class Auth {
 
     public function getConfig(): array
     {
-        return array(
+        return [
             'clientId' => $this->clientId,
             'redirectUrl' => $this->redirectUrl,
             'domain' => $this->domain
-        );
+        ];
     }
 
     public function isLoggedIn(): bool

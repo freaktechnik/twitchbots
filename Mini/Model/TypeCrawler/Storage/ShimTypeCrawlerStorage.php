@@ -4,6 +4,7 @@ namespace Mini\Model\TypeCrawler\Storage;
 
 class ShimTypeCrawlerStorage extends TypeCrawlerStorage
 {
+    /** @var int $lastCrawl */
     private $lastCrawl;
 
     function __construct(int $forType)

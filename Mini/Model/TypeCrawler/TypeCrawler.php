@@ -3,13 +3,15 @@
 namespace Mini\Model\TypeCrawler;
 
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
+use \Mini\Model\Bot;
+use Exception;
 
 class TypeCrawler {
-    /** @var int */
+    /** @var int $type */
     public static $type;
-    /** @var TypeCrawlerStorage */
+    /** @var TypeCrawlerStorage $storage */
     protected $storage;
-    /** @var int */
+    /** @var int $crawlInterval */
     protected static $crawlInterval = 3600;
 
     function __construct(TypeCrawlerStorage $storage) {
@@ -19,6 +21,9 @@ class TypeCrawler {
         }
     }
 
+    /**
+     * @return Bot[]
+     */
     public function crawl(): array {
         if($this->shouldCrawl()) {
             $bots = $this->doCrawl();
@@ -36,13 +41,14 @@ class TypeCrawler {
 
     /**
      * @codeCoverageIgnore
+     * @return Bot[]
      */
     protected function doCrawl(): array {
-        throw new Execption();
+        throw new Exception();
     }
 
-    protected function getBot(string $name, $channel = null): \stdClass {
-        $bot = new \stdClass;
+    protected function getBot(string $name, $channel = null): Bot {
+        $bot = new Bot;
         $bot->name = strtolower($name);
         $bot->type = $this::$type;
         $bot->channel = strtolower($channel);

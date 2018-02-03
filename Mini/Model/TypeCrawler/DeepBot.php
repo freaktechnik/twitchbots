@@ -6,13 +6,16 @@ use \Mini\Model\TypeCrawler\TypeCrawler;
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 
 class DeepBot extends TypeCrawler {
-    /** @var int */
+    /** @var int $type */
     public static $type = 22;
 
     function __construct(TypeCrawlerStorage $storage) {
         parent::__construct($storage);
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function doCrawl(): array {
         $url = "https://api.deepbot.tv/web/streamlist.php";
 
@@ -23,7 +26,7 @@ class DeepBot extends TypeCrawler {
 
         $response = json_decode($json, true);
 
-        $bots = array();
+        $bots = [];
         foreach($response['streams'] as $bot) {
             // Ignore insert time for now, since we don't know its timezone.
             if(strtolower($bot['user']) !== strtolower($bot['bot_name'])) { // && (int)$this->storage->get('lastCrawl') < strtotime($bot['insert_time'])) {

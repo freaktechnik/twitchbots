@@ -8,23 +8,29 @@ namespace Mini\Model;
     PRIMARY KEY (twitch_id)
 ) DEFAULT CHARSET=utf8 */
 
+use PDO;
+
 class ConfirmedPeople extends Store {
     function __construct(PingablePDO $db)
     {
         parent::__construct($db, "confirmed_people");
     }
 
+    /**
+     * @return ConfirmedPerson[]
+     */
     public function getAll(): array {
         $query = $this->prepareSelect("`table`.twitch_id");
         $query->execute();
 
+        $query->setFetchMode(PDO::FETCH_CLASS, ConfirmedPerson::class);
         return $query->fetchAll();
     }
 
     public function has(string $id)
     {
         $where = "WHERE twitch_id=?";
-        $params = array($id);
+        $params = [ $id ];
 
         $query = $this->prepareSelect("*", $where);
         $query->execute($params);

@@ -8,7 +8,7 @@ use PDO;
 class PaginatingStore extends Store {
     /**
      * The default page size
-     * @var int
+     * @var int $pageSize
      */
     protected $pageSize;
 
@@ -17,16 +17,14 @@ class PaginatingStore extends Store {
         parent::__construct($db, $table);
     }
 
-    public function getPageCount($limit = null, $count = null): int
+    public function getPageCount(int $limit = null, int $count = null): int
     {
         $limit = $limit ?? $this->pageSize;
         $count = $count ?? $this->getCount();
         if($limit > 0) {
             return ceil($count / (float)$limit);
         }
-        else {
-            return 0;
-        }
+        return 0;
     }
 
     public function getOffset(int $page): int

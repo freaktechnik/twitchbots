@@ -42,7 +42,11 @@ class Bots extends PaginatingStore {
         $query = $this->prepareSelect("count(*) as count", $where);
         $query->execute(array($type));
 
-        return (int)$query->fetch()->count;
+        $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
+        /** @var RowCount $result */
+        $result = $query->fetch();
+
+        return (int)$result->count;
     }
 
     public function getBots(int $page = 1): array
@@ -58,6 +62,9 @@ class Bots extends PaginatingStore {
         }
     }
 
+    /**
+     * @return Bot[]
+     */
     public function getAllRawBots(int $offset = 0, int $limit = null): array
     {
         $limit = $limit ?? $this->pageSize;
@@ -65,13 +72,15 @@ class Bots extends PaginatingStore {
             $query = $this->prepareSelect("*", "LIMIT :start,:stop");
             $this->doPagination($query, $offset, $limit);
             $query->execute();
+            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
             return $query->fetchAll();
         }
-        else {
-            return array();
-        }
+        return [];
     }
 
+    /**
+     * @return Bot[]
+     */
     public function getBotsByNames(array $names, int $offset = 0, int $limit = null): array
     {
         $limit = $limit ?? $this->pageSize;
@@ -83,16 +92,18 @@ class Bots extends PaginatingStore {
             $this->doPagination($query, $offset, $limit, 1, 2);
             $query->execute();
 
+            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
             $result = $query->fetchAll();
             $this->cleanUpTempTable($tempTable);
 
             return $result;
         }
-        else {
-            return array();
-        }
+        return [];
     }
 
+    /**
+     * @return Bot[]
+     */
     public function getBotsByType(int $type, int $offset = 0, int $limit = null): array
     {
         $limit = $limit ?? $this->pageSize;
@@ -102,18 +113,18 @@ class Bots extends PaginatingStore {
             $this->doPagination($query, $offset, $limit);
             $query->bindValue(":type", $type, PDO::PARAM_INT);
             $query->execute();
+            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
             return $query->fetchAll();
         }
-        else {
-            return array();
-        }
+        return [];
     }
 
-    public function getBot(string $name)
+    public function getBot(string $name): Bot
     {
         $query = $this->prepareSelect("*", "WHERE name=?");
         $query->execute(array($name));
 
+        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
         return $query->fetch();
     }
 
@@ -133,36 +144,44 @@ class Bots extends PaginatingStore {
         $this->cleanUpTempTable($tempTable);
     }
 
-    public function addBot(string $id, string $name, int $type = null, string $channel = null, string $channelId = null)
+    public function addBot(Bot $bot)
     {
-        if(!empty($channel)) {
-            $channel = strtolower($channel);
+        if(!empty($bot->channel)) {
+            $bot->channel = strtolower($bot->channel);
         }
         $structure = "(twitch_id,name,type,channel,channel_id,date) VALUES (?,?,?,?,?,NOW())";
         $query = $this->prepareInsert($structure);
-        $query->bindValue(1, $id, PDO::PARAM_INT);
-        $query->bindValue(2, strtolower($name), PDO::PARAM_STR);
-        $query->bindValue(3, $type, PDO::PARAM_INT);
-        $query->bindValue(4, $channel, PDO::PARAM_STR);
-        $query->bindValue(5, $channelId, PDO::PARAM_INT);
+        $query->bindValue(1, $bot->twitch_id, PDO::PARAM_INT);
+        $query->bindValue(2, strtolower($bot->name), PDO::PARAM_STR);
+        $query->bindValue(3, $bot->type, PDO::PARAM_INT);
+        $query->bindValue(4, $bot->channel, PDO::PARAM_STR);
+        $query->bindValue(5, $bot->channel_id, PDO::PARAM_INT);
         $query->execute();
     }
 
+    /**
+     * @return Bot[]
+     */
     public function getBotsByChannel(string $channel): array
     {
         $where = "WHERE channel=?";
         $query = $this->prepareSelect("*", $where);
-        $query->execute(array($channel));
+        $query->execute([ $channel ]);
 
+        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
         return $query->fetchAll();
     }
 
+    /**
+     * @return Bot[]
+     */
     public function getOldestBots(int $count = 10): array
     {
         $query = $this->prepareSelect("*", "WHERE cdate < DATE_SUB(NOW(), INTERVAL 24 HOUR) ORDER BY cdate ASC LIMIT ?");
         $query->bindValue(1, $count, PDO::PARAM_INT);
         $query->execute();
 
+        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
         return $query->fetchAll();
     }
 
@@ -181,24 +200,25 @@ class Bots extends PaginatingStore {
         $query->execute(array($id));
     }
 
-    public function updateBot(\stdClass $updatedBot)
+    public function updateBot(Bot $updatedBot)
     {
         $sql = "twitch_id=?, type=?, date=NOW(), channel=?, channel_id=? WHERE name=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([
             $updatedBot->twitch_id,
             $updatedBot->type,
-            $updatedBot->channel,
+            strtolower($updatedBot->channel),
             $updatedBot->channel_id,
-            $updatedBot->name
+            strtolower($updatedBot->name)
         ]);
     }
 
-    public function getBotByID(string $id)
+    public function getBotByID(string $id): Bot
     {
         $query = $this->prepareSelect("*", "WHERE twitch_id=?");
-        $query->execute(array($id));
+        $query->execute([ $id ]);
 
+        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
         return $query->fetch();
     }
 }

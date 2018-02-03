@@ -8,6 +8,8 @@ namespace Mini\Model;
     PRIMARY KEY (name)
 ) DEFAULT CHARSET=ascii */
 
+use PDO;
+
 class Config extends Store {
     private static $shema = [
         "3v-ua" => "string",
@@ -34,22 +36,22 @@ class Config extends Store {
         parent::__construct($db, "config");
     }
 
-	public function get(string $key): string
-	{
-	    $query = $this->prepareSelect("value", "WHERE name=?");
-	    $query->execute(array($key));
-	    $result = $query->fetch();
-	    if($result) {
-    	    return $result->value;
-    	}
-	    else {
-	        return "";
-	    }
-	}
+    public function get(string $key): string
+    {
+        $query = $this->prepareSelect("value", "WHERE name=?");
+        $query->execute([ $key ]);
+        $query->setFetchMode(PDO::FETCH_CLASS, ConfigItem::class);
+        /** @var ConfigItem $result */
+        $result = $query->fetch();
+        if($result) {
+            return $result->value;
+        }
+        return "";
+    }
 
-	public function set(string $key, string $value)
-	{
-	    $query = $this->prepareUpdate("value=? WHERE name=?");
-	    $query->execute(array($value, $key));
-	}
+    public function set(string $key, string $value)
+    {
+        $query = $this->prepareUpdate("value=? WHERE name=?");
+        $query->execute([ $value, $key ]);
+    }
 }

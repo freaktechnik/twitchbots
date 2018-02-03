@@ -6,15 +6,18 @@ use \Mini\Model\TypeCrawler\TypeCrawler;
 use \Mini\Model\TypeCrawler\Storage\TypeCrawlerStorage;
 
 class ModBot extends TypeCrawler {
-    /** @var int */
+    /** @var int $crawlInterval */
     protected static $crawlInterval = 86400;
-    /** @var int */
+    /** @var int $type */
     public static $type = 28;
 
     function __construct(TypeCrawlerStorage $storage) {
         parent::__construct($storage);
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function doCrawl(): array {
         $url = $this->storage->get('URL')."?from=".$this->storage->get('lastCrawl');
 
@@ -26,7 +29,7 @@ class ModBot extends TypeCrawler {
         $json = preg_replace('/,"Title":"[^}]+"/', "", $json);
         $response = json_decode(substr($json, 5, -6), true);
 
-        $bots = array();
+        $bots = [];
         foreach($response['streams'] as $bot) {
             if($bot['Channel'] !== $bot['Bot']) {
                 $bots[] = $this->getBot($bot['Bot'], $bot['Channel']);
