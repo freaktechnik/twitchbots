@@ -87,7 +87,6 @@ class BotsTest extends DBTestCase
     public function testGetCount()
     {
         $botCount = $this->bots->getCount();
-        print_r($botCount);
         $this->assertEquals($botCount, $this->getConnection()->getRowCount('bots'));
 
         $botCount = $this->bots->getCount(22);

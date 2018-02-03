@@ -57,9 +57,13 @@ class Store {
         $query = $this->prepareSelect("count(*) AS count");
         $query->execute();
 
-        /** @var \stdClass $result */
+        $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
+        /** @var RowCount|bool $result */
         $result = $query->fetch();
-        print_r($result);
+        if(is_bool($result)) {
+            return 0;
+        }
+        /** @var RowCount $result */
         return $result->count;
     }
 

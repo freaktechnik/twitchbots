@@ -54,7 +54,7 @@ class DBTestCase extends TestCase {
               name varchar(255) CHARACTER SET utf8 NOT NULL,
               type int(10) unsigned DEFAULT NULL,
               cdate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-              date timestamp NOT NULL DEFAULT 0,
+              date timestamp NOT NULL DEFAULT \'2017-01-01 00:00:00\',
               channel varchar(535) CHARACTER SET utf8 DEFAULT NULL,
               channel_id varchar(20) CHARACTER SET ascii DEFAULT NULL,
               PRIMARY KEY (name),
@@ -69,7 +69,7 @@ class DBTestCase extends TestCase {
             'AUTO_INCREMENT=2'
         ],
         "confirmed_people" => [
-            'twitch_id varchar(20) DEFAULT NULL,
+            'twitch_id varchar(20) NOT NULL,
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (twitch_id)',
             ''

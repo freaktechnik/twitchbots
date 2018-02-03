@@ -35,21 +35,22 @@ class Bots extends PaginatingStore {
     public function getCount(int $type = 0): int
     {
         $where = "";
+        $params = [];
         if($type != 0) {
             $where = "WHERE type=?";
+            $params[] = $type;
         }
 
         $query = $this->prepareSelect("count(*) as count", $where);
-        $query->execute([ $type ]);
-        print_r($type);
+        $query->execute($params);
 
-        /** @var \stdClass|bool $result */
+        /** @var RowCount|bool $result */
+        $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
         $result = $query->fetch();
-        print_r($result);
         if(is_bool($result)) {
             return 0;
         }
-        /** @var \stdClass $result */
+        /** @var RowCount $result */
         return $result->count;
     }
 
@@ -59,11 +60,10 @@ class Bots extends PaginatingStore {
             $query = $this->prepareSelect("*", "LIMIT :start,:stop", "list");
             $this->doPagination($query, $this->getOffset($page));
             $query->execute();
+            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
             return $query->fetchAll();
         }
-        else {
-            return array();
-        }
+        return [];
     }
 
     /**
