@@ -54,6 +54,7 @@ class SubmissionsTest extends DBTestCase
             $this->assertObjectHasAttribute("offline", $submission);
             $this->assertObjectHasAttribute("online", $submission);
             $this->assertObjectHasAttribute("ismod", $submission);
+            $this->assertInstanceOf(\Mini\Model\Submission::class, $submission);
         }
 
         // Sort order is descending by timestamp

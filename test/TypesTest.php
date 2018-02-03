@@ -49,6 +49,7 @@ class TypesTest extends DBTestCase
             $this->assertObjectHasAttribute("id", $bot);
             $this->assertObjectHasAttribute("multichannel", $bot);
             $this->assertObjectHasAttribute("count", $bot);
+            $this->assertInstanceOf(\Mini\Model\Type::class, $bot);
         }
 
         $bots = $this->types->getTypes(2);
@@ -69,6 +70,7 @@ class TypesTest extends DBTestCase
         $this->assertEquals(1, $type->id);
         $this->assertEquals(true, $type->multichannel);
         $this->assertEquals("https://www.nightbot.tv/", $type->url);
+        $this->assertInstanceOf(\Mini\Model\Type::class, $type);
     }
 
     /**
@@ -97,6 +99,7 @@ class TypesTest extends DBTestCase
             $this->assertObjectHasAttribute("multichannel", $type);
             $this->assertObjectHasAttribute("date", $type);
             $this->assertGreaterThanOrEqual(strtotime($type->date), time());
+            $this->assertInstanceOf(\Mini\Model\Type::class, $type);
         }
     }
 }
