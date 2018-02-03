@@ -8,6 +8,7 @@ require '../vendor/autoload.php';
 $mode = $_SERVER['MODE'] ?? 'development';
 
 // Initialize Slim (the router/micro framework used)
+/** @var \Slim\Slim $app */
 $app = new \Slim\Slim(array(
     'mode' => $mode
 ));
@@ -128,7 +129,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
 
     $app->group('/bot', function () use ($app, $model, $apiUrl, $fullUrlFor, $lastModified, $returnError) {
         $botsModel = $model->bots;
-        $mapBot = function ($bot) use ($fullUrlFor, $app) {
+        $mapBot = function (\Mini\Model\Bot $bot) use ($fullUrlFor, $app) {
             $bot->username = $bot->name;
             $bot->_links = array(
                 'self' => $fullUrlFor('bot', array('name' => $bot->name)),
@@ -225,7 +226,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
 
             echo json_encode($json);
         })->name('allbots');
-        $app->get('/:name', function ($name) use ($app, $botsModel, $apiUrl, $fullUrlFor, $lastModified) {
+        $app->get('/:name', function (string $name) use ($app, $botsModel, $apiUrl, $fullUrlFor, $lastModified) {
             $bot = $botsModel->getBot($name);
 
             if(!$bot) {
@@ -269,7 +270,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
         });
 
         $app->get('/:id', function ($id) use ($app, $typesModel, $apiUrl, $fullUrlFor, $lastModified) {
-            $type = $typesModel->getType($id);
+            $type = $typesModel->getType((int)$id);
             if(!$type) {
                 $app->notFound();
             }

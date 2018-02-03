@@ -47,7 +47,7 @@ class TypeCrawler {
         throw new Exception();
     }
 
-    protected function getBot(string $name, $channel = null): Bot {
+    protected function getBot(string $name, string $channel = null): Bot {
         $bot = new Bot;
         $bot->name = strtolower($name);
         $bot->type = $this::$type;

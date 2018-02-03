@@ -100,7 +100,7 @@ $getTemplateLastMod = function(string $templateName) {
     return max(filemtime('../Mini/view/_base.twig'), filemtime('../Mini/view/'.$templateName));
 };
 
-$getLastMod = function($timestamp = 0) use ($lastUpdate) {
+$getLastMod = function(int $timestamp = 0) use ($lastUpdate) {
     return date('c', max($lastUpdate, $timestamp));
 };
 
@@ -266,6 +266,7 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
         $types = $model->types->getAllTypes();
         $typeLastMod = $getTemplateLastMod('type.twig');
         foreach($types as $type) {
+            /** @var SimpleXMLElement $url */
             $url = $sitemap->addChild('url');
             $url->addChild('loc', $app->config('canonicalUrl').'types/'.$type->id);
             $url->addChild('changefreq', 'daily');
@@ -293,7 +294,7 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
 
         $bots = $model->bots->getBotsByType($id, $model->bots->getOffset($page));
 
-        $app->lastModified(max($getTemplateLastMod('type.twig'), strtotime($type->date), max(array_map(function($bot) { return strtotime($bot->date); }, $bots))));
+        $app->lastModified(max($getTemplateLastMod('type.twig'), strtotime($type->date), max(array_map(function(\Mini\Model\Bot $bot) { return strtotime($bot->date); }, $bots))));
         $app->render('type.twig', array(
             'type' => $type,
             'bots' => $bots,
@@ -333,6 +334,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         $bots = $model->bots->getAllRawBots(0, $model->bots->getCount());
         $botLastMod = $getTemplateLastMod('bot.twig');
         foreach($bots as $bot) {
+            /** @var SimpleXMLElement $url */
             $url = $sitemap->addChild('url');
             $url->addChild('loc', $app->config('canonicalUrl').'bots/'.$bot->name);
             $url->addChild('changefreq', 'weekly');
@@ -534,39 +536,46 @@ $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, 
     $app->lastModified(max(max($templateUpdates), $subLastUpdate, $botLastUpdate, $typeLastUpdate));
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl'));
     $url->addChild('changefreq', 'daily');
     $url->addChild('lastmod', $getLastMod(max($templateUpdates['index'], $botLastUpdate)));
     $url->addChild('priority', '1.0');
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'bots');
     $url->addChild('changefreq', 'daily');
     $url->addChild('lastmod', $getLastMod(max($templateUpdates['bots'], $botLastUpdate, $typeLastUpdate)));
     $url->addChild('priority', '0.6');
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'types');
     $url->addChild('changefreq', 'daily');
     $url->addChild('lastmod', $getLastMod(max($templateUpdates['types'], $botLastUpdate, $typeLastUpdate)));
     $url->addChild('priority', '0.6');
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'submit');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod(max($templateUpdates['submit'], $typeLastUpdate)));
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'check');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod($templateUpdates['check']));
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'api');
     $url->addChild('changefreq', 'weekly');
     $url->addChild('lastmod', $getLastMod($templateUpdates['api']));
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('url');
     $url->addChild('loc', $app->config('canonicalUrl').'about');
     $url->addChild('changefreq', 'weekly');
@@ -587,14 +596,17 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getTemplateLastMod, $ge
     $app->lastModified(max($botLastUpdate, $typeLastUpdate, $subLastUpdate, $templateUpdates['pages']));
     $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></sitemapindex>');
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('sitemap');
     $url->addChild('loc', $app->config('canonicalUrl').'pages_map.xml');
     $url->addChild('lastmod', $getLastMod(max($templateUpdates['pages'], $subLastUpdate, $typeLastUpdate, $botLastUpdate)));
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('sitemap');
     $url->addChild('loc', $app->config('canonicalUrl').'bots/sitemap.xml');
     $url->addChild('lastmod', $getLastMod(max($botLastUpdate, $templateUpdates['bot'])));
 
+    /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('sitemap');
     $url->addChild('loc', $app->config('canonicalUrl').'types/sitemap.xml');
     $url->addChild('lastmod', $getLastMod(max($typeLastUpdate, $templateUpdates['type'])));
