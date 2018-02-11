@@ -7,7 +7,7 @@ include_once __DIR__.'/../lib/config.php';
 
 use Symfony\Component\Console\Application;
 
-use Symfony\Component\Console\Input\{InputInterface, InputOption, ArrayInput};
+use Symfony\Component\Console\Input\{InputInterface, InputArgument, ArrayInput};
 use Symfony\Component\Console\Output\OutputInterface;
 
 /********************************************* GUZZLE **********************************************************/
@@ -42,24 +42,21 @@ $console
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $console) {
         $bots = $console->find('check:bots');
         $arguments = array(
-            'command' => 'check:bots',
-            '--ignoreLock' => true
+            'command' => 'check:bots'
         );
         $inputArr = new ArrayInput($arguments);
         $bots->run($inputArr, $output);
 
         $submissions = $console->find('check:submissions');
         $arguments = array(
-            'command' => 'check:submissions',
-            '--ignoreLock' => true
+            'command' => 'check:submissions'
         );
         $inputArr = new ArrayInput($arguments);
         $submissions->run($inputArr, $output);
 
         $types = $console->find('check:types');
         $arguments = array(
-            'command' => 'check:types',
-            '--ignoreLock' => true
+            'command' => 'check:types'
         );
         $inputArr = new ArrayInput($arguments);
         $types->run($inputArr, $output);
