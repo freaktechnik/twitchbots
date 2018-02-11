@@ -113,7 +113,7 @@ class Bots extends PaginatingStore {
         $limit = $limit ?? $this->pageSize;
         //TODO should these bounds checks be in the controller?
         if($limit > 0 && $offset < $this->getCount($type)) {
-            $query = $this->prepareSelect("*", "WHERE type=:type LIMIT :start,:stop");
+            $query = $this->prepareSelect("*", "WHERE type=:type ORDER BY name, channel, cdate LIMIT :start,:stop");
             $this->doPagination($query, $offset, $limit);
             $query->bindValue(":type", $type, PDO::PARAM_INT);
             $query->execute();
