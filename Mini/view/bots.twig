@@ -51,5 +51,9 @@
         </tbody>
     </table>
 </div>
-{{ pagination.print(page, pageCount, 3, 2, '&type=' ~ currentType) }}
+{% set filterParams = '' %}
+{% if currentType != 0 %}
+    {% set filterParams = '&type=' ~ currentType %}
+{% endif %}
+{{ pagination.print(page, pageCount, 3, 2, filterParams) }}
 {% endblock %}
