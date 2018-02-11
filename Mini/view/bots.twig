@@ -14,12 +14,19 @@
 </div>
 
 <form class="form-inline" method="GET" action="">
-    <select name="type" value="{{ currentType|default(0)|e('html_attr') }}">
-        <option value="0">All bots</option>
-        {% for t in types %}
-            <option value="{{ t.id|e('html_attr') }}">{{ t.name|e }}</option>
-        {% endfor %}
-    </select>
+    <div class="form-group">
+        <label for="type">Filter by type</label>
+        <select name="type" id="type" value="{{ currentType|default(0)|e('html_attr') }}">
+            <option value="0">All bots</option>
+            {% for t in types %}
+                <option value="{{ t.id|e('html_attr') }}">{{ t.name|e }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-default">
+        <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+        <span class="sr-only">Filter</span>
+    </button>
 </form>
 <div class="table-responsive">
     <table class="table table-striped">
