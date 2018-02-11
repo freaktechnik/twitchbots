@@ -343,6 +343,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
                 $bots = array_map(function(\Mini\Model\Bot $bot) use ($currentType, $typeName) {
                     $bot->type = $currentType;
                     $bot->typename = $typeName;
+                    return $bot;
                 }, $bots);
             }
         }
