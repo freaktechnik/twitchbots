@@ -73,10 +73,10 @@ class Types extends PaginatingStore {
      *
      * @return Type[]
      */
-    public function getAllTypes(): array
+    public function getAllTypes(string $orderBy = 'count'): array
     {
-        $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id WHERE enabled=1 GROUP BY table.id ORDER BY count DESC, table.name ASC");
-        $query->execute();
+        $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id WHERE enabled=1 GROUP BY table.id ORDER BY ? DESC, table.name ASC");
+        $query->execute([ $orderBy ]);
 
         $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
         return $query->fetchAll();

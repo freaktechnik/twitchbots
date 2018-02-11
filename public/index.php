@@ -322,10 +322,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         if(!is_numeric($page))
             $page = 1;
 
-        $types = $model->types->getAllTypes();
-        usort($types, function(\Mini\Model\Type $typeA, \Mini\Model\Type $typeB) {
-            return strcmp($typeA->name, $typeB->name);
-        });
+        $types = $model->types->getAllTypes('name');
 
         if($page <= $pageCount && $page > 0) {
             if($currentType == 0) {
