@@ -294,17 +294,4 @@ class ModelTest extends DBTestCase
 
         $this->assertEquals($initialCount - count($bots), $this->model->bots->getCount());
     }
-
-    /**
-     * @covers ::twitchUserExists
-     */
-    public function testTwitchUserExists()
-    {
-        $this->httpMock->append(new Response(200));
-        $this->assertTrue($this->model->twitchUserExists(4));
-        $this->httpMock->append(new Response(302));
-        $this->assertTrue($this->model->twitchUserExists(29));
-        $this->httpMock->append(new Response(404));
-        $this->assertFalse($this->model->twitchUserExists(30));
-    }
 }
