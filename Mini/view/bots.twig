@@ -16,10 +16,10 @@
 <form class="form-inline" method="GET" action="">
     <div class="form-group">
         <label for="type">Filter by type</label>
-        <select name="type" id="type" value="{{ currentType|default(0)|e('html_attr') }}">
-            <option value="0">All bots</option>
+        <select name="type" id="type">
+            <option value="0"{% if currentType == 0 %} selected{% endif %}>All bots</option>
             {% for t in types %}
-                <option value="{{ t.id|e('html_attr') }}">{{ t.name|e }}</option>
+                <option value="{{ t.id|e('html_attr') }}"{% if currentType == t.id %} selected{% endif %}>{{ t.name|e }}</option>
             {% endfor %}
         </select>
     </div>
