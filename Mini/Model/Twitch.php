@@ -42,7 +42,7 @@ class Twitch {
         return $http_code != 404 && (!$noJustin || $http_code != 422);
     }
 
-    private function getChatters(string $channel): array
+    public function getChatters(string $channel): array
     {
         $response = $this->client->get("https://tmi.twitch.tv/group/user/".$channel."/chatters", [], $this->requestOptions);
         if($response->getStatusCode() >= 400) {
@@ -52,7 +52,7 @@ class Twitch {
         return json_decode($response->getBody(), true)['chatters'];
     }
 
-    private function isChannelLive(string $channelId): bool
+    public function isChannelLive(string $channelId): bool
     {
         $response = $this->client->get(self::$krakenBase.'streams/'.$channelId, $this->twitchHeadersV5);
 
@@ -61,7 +61,7 @@ class Twitch {
         return isset($stream->stream);
     }
 
-    private function getBio(string $channelId)//: ?string
+    public function getBio(string $channelId)//: ?string
     {
         $response = $this->client->get(self::$krakenBase.'users/'.$channelId, $this->twitchHeadersV5);
         /** @var \stdClass $user */
@@ -73,7 +73,7 @@ class Twitch {
         }
     }
 
-    private function hasVODs(string $channelId): bool
+    public function hasVODs(string $channelId): bool
     {
         $response = $this->client->get(self::$krakenBase.'channels/'.$channelId.'/videos?broadcast_type=archive,highlight,upload', $this->twitchHeadersV5);
         /** @var \stdClass $vods */
@@ -81,7 +81,7 @@ class Twitch {
         return $vods->_total > 0;
     }
 
-    private function getFollowing(string $id): \stdClass
+    public function getFollowing(string $id): \stdClass
     {
         if(!in_array($id, $this->_followsCache)) {
             $response = $this->client->get(self::$krakenBase.'users/'.$id.'/follows/channels', $this->twitchHeadersV5);
@@ -95,7 +95,7 @@ class Twitch {
         return $this->_followsCache[$id];
     }
 
-    private function getFollowingChannel(string $id, string $channelId): bool
+    public function getFollowingChannel(string $id, string $channelId): bool
     {
         if(in_array($id, $this->_followsCache)) {
             $follows = $this->_followsCache[$id];
@@ -120,7 +120,7 @@ class Twitch {
         return $response->getStatusCode() < 400;
     }
 
-    private function getBotVerified(string $id): bool {
+    public function getBotVerified(string $id): bool {
         $url = self::$krakenBase."users/".$id."/chat";
         $response = $this->client->get($url, $this->twitchHeadersV5);
 
@@ -140,7 +140,7 @@ class Twitch {
         return false;
     }
 
-    private function getChannelID(string $username): string
+    public function getChannelID(string $username): string
     {
         $url = self::$krakenBase.'users/?login='.$username;
         $response = $this->client->get($url, $this->twitchHeadersV5);
@@ -158,7 +158,7 @@ class Twitch {
         }
     }
 
-    private function getChannelName(string $id): string
+    public function getChannelName(string $id): string
     {
         $url = self::$krakenBase.'users/'.$id;
         $response = $this->client->get($url, $this->twitchHeadersV5);
