@@ -799,7 +799,7 @@ class Model
                     }
 
                     $page += 1;
-                } while($response['count'] > $page * $pageSize && ($response['count'] <= $maxCountForDetails || $instCount !== 1));
+                } while($response['count'] > $page * $pageSize && $response['count'] <= $maxCountForDetails && $instCount !== 1);
             }
 
             if(!$estimated) {
