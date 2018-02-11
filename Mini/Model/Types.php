@@ -45,6 +45,24 @@ class Types extends PaginatingStore {
         parent::__construct($db, "types", $pageSize);
     }
 
+    public function getCount(bool $hideDisabled = false): int
+    {
+        if(!$hideDisabled) {
+            return parent::getCount();
+        }
+        $query = $this->prepareSelect("count(*) AS count", "WHERE enabled=1");
+        $query->execute();
+
+        $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
+        /** @var RowCount|bool $result */
+        $result = $query->fetch();
+        if(is_bool($result)) {
+            return 0;
+        }
+        /** @var RowCount $result */
+        return $result->count;
+    }
+
     /**
      * @return Type|bool
      */

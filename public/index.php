@@ -238,8 +238,9 @@ $app->get('/submissions', function () use ($app, $model, $getTemplateLastMod) {
 $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
     $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
         $app->expires('+1 day');
+        $showDisabled = $_GET['disabled'] == 1;
 
-        $pageCount = $model->types->getPageCount();
+        $pageCount = $model->types->getPageCount(null, $model->types->getCount(!$showDisabled));
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
             $page = 1;
@@ -248,8 +249,6 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
             $app->notFound();
 
         $app->lastModified(max($getTemplateLastMod('types.twig'), $model->bots->getLastUpdate(), $model->types->getLastUpdate()));
-
-        $showDisabled = $_GET['disabled'] == 1;
 
         $types = $model->types->getTypes($page, $showDisabled);
 
