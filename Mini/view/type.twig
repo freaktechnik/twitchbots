@@ -53,7 +53,7 @@
     <dt>API version</dt>
     <dd>{{ typeUtils.apiVersion(type.apiVersion) }}</dd>
     {%- endif %}
-    {%- if type.channelsEstimate is not null %}
+    {%- if type.enabled and type.channelsEstimate is not null %}
     <dt>Estimated active channels</dt>
     <dd>{{ type.channelsEstimate|e }}</dd>
     {%- endif %}
