@@ -2,10 +2,17 @@
 {% extends "_base.twig" %}
 {% block title %}Known bots{% endblock %}
 {% block extraresources %}
+{% set filterParams = '' %}
 {% if page == 1 %}
-<link rel="canonical" href="{{ canonicalUrl }}bots">
+    {% if currentType != 0 %}
+        {% set filterParams = '?type=' ~ currentType %}
+    {% endif %}
+<link rel="canonical" href="{{ canonicalUrl }}bots{{ filterParams }}">
 {% else %}
-<link rel="canonical" href="{{ canonicalUrl }}bots/?page={{page}}">
+    {% if currentType != 0 %}
+        {% set filterParams = '&type=' ~ currentType %}
+    {% endif %}
+<link rel="canonical" href="{{ canonicalUrl }}bots/?page={{page}}{{filterParams}}">
 {% endif %}
 {% endblock %}
 {% block content %}

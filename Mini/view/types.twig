@@ -4,10 +4,17 @@
 {% extends "_base.twig" %}
 {% block title %}Known bot types{% endblock %}
 {% block extraresources %}
+{% set filterParams = '' %}
 {% if page == 1 %}
-<link rel="canonical" href="{{ canonicalUrl }}types">
+    {% if showDisabled %}
+        {% set filterParams = '?disabled=1' %}
+    {% endif %}
+<link rel="canonical" href="{{ canonicalUrl }}types{{ filterParams }}">
 {% else %}
-<link rel="canonical" href="{{ canonicalUrl }}types/?page={{page}}">
+    {% if showDisabled %}
+        {% set filterParams = '?disabled=1' %}
+    {% endif %}
+<link rel="canonical" href="{{ canonicalUrl }}types/?page={{page}}{{filterParams}}">
 {% endif %}
 <link rel="stylesheet" href="{{ siteUrl('/css/status.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
