@@ -770,8 +770,9 @@ class Model
         $count = 0;
         $channels = [];
         $pageSize = 100;
-        // Duplicates stop mattering > 10000 active channels.
         $maxPagesPerInstance = 100;
+        // Duplicates stop mattering > 10000 active channels.
+        $maxCountForDetails = $pageSize * $maxPagesPerInstance;
         $bots = $this->bots->getBotsByType($typeID);
         foreach($bots as $bot) {
             $estimated = false;
@@ -785,18 +786,19 @@ class Model
                     $response = $this->getSwords($bot->name, $page, $pageSize);
 
                     if($response['count'] > 0) {
-                        if($response['count'] > $pageSize * $maxPagesPerInstance) {
+                        if($response['count'] > $maxCountForDetails) {
                             $count += $response['count'];
-                            continue;
                         }
-                        foreach($response['channels'] as $channel) {
-                            $channels[$channel['name']] = true;
-                            $estimated = true;
+                        else {
+                            foreach($response['channels'] as $channel) {
+                                $channels[$channel['name']] = true;
+                                $estimated = true;
+                            }
                         }
                     }
 
                     $page += 1;
-                } while($response['count'] > ($page) * $pageSize);
+                } while($response['count'] > ($page) * $pageSize && $response['count'] <= $maxCountForDetails);
             }
 
             if(!$estimated) {
