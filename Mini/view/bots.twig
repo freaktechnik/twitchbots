@@ -25,7 +25,7 @@
         <label for="type">Filter by type</label>
         <select name="type" id="type">
             <option value="0"{% if currentType == 0 %} selected{% endif %}>All bots</option>
-            <option value="null"{% if currentType is null %} selected{% endif %}>Unknown Type</option>
+            <option value="null"{% if currentType is null and not currentType == 0 %} selected{% endif %}>Unknown Type</option>
             {% for t in types %}
                 <option value="{{ t.id|e('html_attr') }}"{% if currentType == t.id %} selected{% endif %}>{{ t.name|e }}</option>
             {% endfor %}
