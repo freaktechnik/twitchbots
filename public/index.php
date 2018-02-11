@@ -318,11 +318,11 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         $types = $model->types->getAllTypes('name');
 
         if($page <= $pageCount && $page > 0) {
-            if($currentType == 'null') {
+            if($currentType === null) {
               $bots = $model->bots->getBotsWithoutType($model->bots->getOffset($page));
               $typeName = 'Unknown (click to correct)';
             }
-            else if($currentType == 0) {
+            else if($currentType === 0) {
                 $bots = $model->bots->getBots($page);
             }
             else {
