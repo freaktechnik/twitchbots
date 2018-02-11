@@ -112,7 +112,7 @@ $console
 $console
     ->register('estimate')
     ->setDefinition([
-        new InputOption('type', 't', InputOption::VALUE_REQUIRED, 'ID of type to check')
+        new InputArgument('type', InputARgument::REQUIRED, 'ID of type to check')
     ])
     ->setDescription('Estimate usage count for a type')
     ->setCode(function(InputInterface $input, OutputInterface $output) use ($model) {
