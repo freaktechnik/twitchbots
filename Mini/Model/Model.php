@@ -323,9 +323,8 @@ class Model
         return array_key_exists('moderators', $chatters) && in_array($user, $chatters['moderators']);
     }
 
-    private function getModStatus(string $username, string $channel, int $page = 0): bool
+    private function getSwords(string $username, int $page = 0, int $pageSize = 100): array
     {
-        $pageSize = 100;
         $url = "https://twitchstuff.3v.fi/modlookup/api/user/" . $username . "?limit=" . $pageSize . "&offset=" . $page * $pageSize;
 
         $response = $this->client->get($url, array(), $this->venticHeaders);
@@ -335,6 +334,14 @@ class Model
         }
 
         $response = json_decode($response->getBody(), true);
+
+        return $response;
+    }
+
+    private function getModStatus(string $username, string $channel, int $page = 0): bool
+    {
+        $pageSize = 100;
+        $response = $this->getSwords($username, $page, $pageSize);
 
         if($response['count'] > 0 && in_array(strtolower($channel), array_column($response['channels'], 'name'))) {
             return true;
@@ -755,5 +762,40 @@ class Model
         }
         $this->confirmedPeople->add($twitchId);
         $this->submissions->removeSubmission($id);
+    }
+
+    private function estimateActiveChannels(int $typeID): int
+    {
+        $type = $this->types->getTypeOrThrow($typeID);
+        $count = 0;
+        $channels = [];
+        $pageSize = 100;
+        $bots = $this->bots->getBotsByType($typeID);
+        foreach($bots as $bot) {
+            if(!empty($bot->channel_id)) {
+                $channels[$bot->channel_id] = true;
+            }
+            if($type->multichannel) {
+                $page = 0;
+                $results = 0;
+                do {
+                    $response = $this->getSwords($bot->name, $page, $pageSize);
+
+                    if($response['count'] > 0) {
+                        foreach($response['channels'] as $channel) {
+                            $channels[$channel['name']] = true;
+                            $results += 1;
+                        }
+                    }
+
+                    $page += 1;
+                } while($response['count'] > ($page) * $pageSize);
+
+                if($results == 0) {
+                    $count += 1;
+                }
+            }
+        }
+        $count += count(array_keys($channels));
     }
 }
