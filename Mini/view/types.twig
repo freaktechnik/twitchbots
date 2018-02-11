@@ -9,12 +9,12 @@
     {% if showDisabled %}
         {% set filterParams = '?disabled=1' %}
     {% endif %}
-<link rel="canonical" href="{{ canonicalUrl }}types{{ filterParams|e('html_attr') }}">
+<link rel="canonical" href="{{ canonicalUrl|e('html_attr') }}types{{ filterParams|e('html_attr') }}">
 {% else %}
     {% if showDisabled %}
         {% set filterParams = '?disabled=1' %}
     {% endif %}
-<link rel="canonical" href="{{ canonicalUrl }}types/?page={{page}}{{ filterParams|e('html_attr') }}">
+<link rel="canonical" href="{{ canonicalUrl|e('html_attr') }}types/?page={{page}}{{ filterParams|e('html_attr') }}">
 {% endif %}
 <link rel="stylesheet" href="{{ siteUrl('/css/status.css')|e('html_attr') }}" type="text/css">
 {% endblock %}

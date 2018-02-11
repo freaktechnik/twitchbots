@@ -7,12 +7,12 @@
     {% if currentType != 0 %}
         {% set filterParams = '?type=' ~ currentType %}
     {% endif %}
-<link rel="canonical" href="{{ canonicalUrl }}bots{{ filterParams|e('html_attr') }}">
+<link rel="canonical" href="{{ canonicalUrl|e('html_attr') }}bots{{ filterParams|e('html_attr') }}">
 {% else %}
     {% if currentType != 0 %}
         {% set filterParams = '&type=' ~ currentType %}
     {% endif %}
-<link rel="canonical" href="{{ canonicalUrl }}bots/?page={{page}}{{ filterParams|e('html_attr') }}">
+<link rel="canonical" href="{{ canonicalUrl|e('html_attr') }}bots/?page={{page}}{{ filterParams|e('html_attr') }}">
 {% endif %}
 {% endblock %}
 {% block content %}
