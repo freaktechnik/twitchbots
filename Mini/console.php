@@ -6,7 +6,6 @@ require __DIR__.'/../vendor/autoload.php';
 include_once __DIR__.'/../lib/config.php';
 
 use Symfony\Component\Console\Application;
-use Asm89\Twig\Lint\Output\OutputInterface;
 
 use Symfony\Component\Console\Input\{InputInterface, InputOption, ArrayInput};
 use Symfony\Component\Console\Output\OutputInterface;
