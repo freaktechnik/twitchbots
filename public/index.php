@@ -311,7 +311,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         $app->lastModified(max($model->bots->getLastUpdate(), $getTemplateLastMod('bots.twig')));
         $app->expires('+1 day');
 
-        $currentType = $_GET['type'] ?? 0;
+        $currentType = (int)$_GET['type'] ?? 0;
         if($currentType == 0) {
             $pageCount = $model->bots->getPageCount();
         }
