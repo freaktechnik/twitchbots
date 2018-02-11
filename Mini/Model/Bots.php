@@ -36,7 +36,10 @@ class Bots extends PaginatingStore {
     {
         $where = "";
         $params = [];
-        if($type != 0) {
+        if($type == -1) {
+            $where = "WHERE type IS NULL";
+        }
+        else if($type != 0) {
             $where = "WHERE type=?";
             $params[] = $type;
         }
@@ -116,6 +119,22 @@ class Bots extends PaginatingStore {
             $query = $this->prepareSelect("*", "WHERE type=:type ORDER BY name, channel, cdate LIMIT :start,:stop");
             $this->doPagination($query, $offset, $limit);
             $query->bindValue(":type", $type, PDO::PARAM_INT);
+            $query->execute();
+            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
+            return $query->fetchAll();
+        }
+        return [];
+    }
+
+    /**
+     * @return Bot[]
+     */
+    public function getBotsWithoutType(int $offest = 0, int $limit = null): array
+    {
+        $limit = $limit ?? $this->pageSize;
+        if($limit > 0 && $offset < $this->getCount(-1)) {
+            $query = $this->prepareSelect("*", "WHERE type IS NULL ORDER BY name, channel, cdate LIMIT :start,:stop");
+            $this->doPagination($query, $offset, $limit);
             $query->execute();
             $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
             return $query->fetchAll();

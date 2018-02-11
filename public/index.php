@@ -298,9 +298,12 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         $app->lastModified(max($model->bots->getLastUpdate(), $getTemplateLastMod('bots.twig')));
         $app->expires('+1 day');
 
-        $currentType = (int)$_GET['type'] ?? 0;
+        $currentType = $_GET['type'] ?? 0;
         if($currentType == 0) {
             $pageCount = $model->bots->getPageCount();
+        }
+        else if($currentType == 'null') {
+            $pageCount = $model->bots->getPageCount(null, $model->bots->getCount(-1));
         }
         else {
             $pageCount = $model->bots->getPageCount(null, $model->bots->getCount($currentType));
@@ -315,6 +318,10 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
             if($currentType == 0) {
                 $bots = $model->bots->getBots($page);
             }
+            else if($currentType == 'null') {
+                $bots = $model->bots->getBotsWithoutType($model->bots->getOffset($page));
+                $typeName = 'Unknown (click to correct)';
+            }
             else {
                 $bots = $model->bots->getBotsByType($currentType, $model->bots->getOffset($page));
                 $typeName;
@@ -324,8 +331,9 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
                         break;
                     }
                 }
-                $bots = array_map(function(\Mini\Model\Bot $bot) use ($currentType, $typeName) {
-                    $bot->type = $currentType;
+            }
+            if($currentType != 0) {
+                $bots = array_map(function(\Mini\Model\Bot $bot) use ($typeName) {
                     $bot->typename = $typeName;
                     return $bot;
                 }, $bots);
