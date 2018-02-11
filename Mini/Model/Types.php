@@ -136,4 +136,16 @@ class Types extends PaginatingStore {
         $query = $this->prepareUpdate('channelsEstimate=? WHERE id=?');
         $query->execute([ $count, $id ]);
     }
+
+    /**
+     * @return Type[]
+     */
+    public function getTop(int $count): array
+    {
+        $query = $this->prepareSelect("`table`.*", "WHERE enabled=1 ORDER BY channelsEstimate DESC, table.name ASC LIMIT ?");
+        $query->execute([ $count ]);
+
+        $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
+        return $query->fetchAll();
+    }
 }

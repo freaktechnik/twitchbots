@@ -36,4 +36,14 @@
             <a href="{{ urlFor('submit')|e('html_attr') }}" class="btn btn-lg btn-default" role="button">Add your bot</a>
         </div>
     </section>
+    <section class="row">
+        <div class="col-md-8 col-md-offset-2 col-xs-12">
+            <h2>Popular Types</h2>
+            <div class="list-group">
+                {% for type in topTypes %}
+                <a href="{{ urlFor('type', { id: type.id })|e('html_attr') }}" class="list-group-item">{{ type.name|e }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 {% endblock %}

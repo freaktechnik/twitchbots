@@ -135,10 +135,12 @@ $app->get('/', function () use ($app, $model, $getTemplateLastMod) {
 
     $botCount = $model->bots->getCount();
     $typeCount = $model->types->getCount();
+    $topTypes = $model->types->getTop(10);
 
     $app->render('index.twig', [
         'bots' => $botCount,
-        'types' => $typeCount
+        'types' => $typeCount,
+        'topTypes' => $topTypes
     ]);
 })->name('index');
 
