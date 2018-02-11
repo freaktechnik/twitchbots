@@ -299,14 +299,17 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         $app->expires('+1 day');
 
         $currentType = $_GET['type'] ?? 0;
-        if($currentType == 0) {
-            $pageCount = $model->bots->getPageCount();
+        if($currentType == 'null') {
+          $pageCount = $model->bots->getPageCount(null, $model->bots->getCount(-1));
+          $currentType = null;
         }
-        else if($currentType == 'null') {
-            $pageCount = $model->bots->getPageCount(null, $model->bots->getCount(-1));
+        else if($currentType == 0) {
+            $pageCount = $model->bots->getPageCount();
+            $currentType = (int)$currentType;
         }
         else {
             $pageCount = $model->bots->getPageCount(null, $model->bots->getCount($currentType));
+            $currentType = (int)$currentType;
         }
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
@@ -315,12 +318,12 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         $types = $model->types->getAllTypes('name');
 
         if($page <= $pageCount && $page > 0) {
-            if($currentType == 0) {
-                $bots = $model->bots->getBots($page);
+            if($currentType == 'null') {
+              $bots = $model->bots->getBotsWithoutType($model->bots->getOffset($page));
+              $typeName = 'Unknown (click to correct)';
             }
-            else if($currentType == 'null') {
-                $bots = $model->bots->getBotsWithoutType($model->bots->getOffset($page));
-                $typeName = 'Unknown (click to correct)';
+            else if($currentType == 0) {
+                $bots = $model->bots->getBots($page);
             }
             else {
                 $bots = $model->bots->getBotsByType($currentType, $model->bots->getOffset($page));
@@ -332,7 +335,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
                     }
                 }
             }
-            if($currentType != 0) {
+            if($currentType !== 0) {
                 $bots = array_map(function(\Mini\Model\Bot $bot) use ($typeName) {
                     $bot->typename = $typeName;
                     return $bot;
