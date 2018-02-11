@@ -45,7 +45,7 @@ class TwitchTest extends TestCase
     }
 
     /**
-     * @covers ::twitchUserExists
+     * @covers ::userExists
      */
     public function testTwitchUserExists()
     {
