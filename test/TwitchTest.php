@@ -54,6 +54,6 @@ class TwitchTest extends TestCase
         $this->httpMock->append(new Response(302));
         $this->assertTrue($this->twitch->userExists(29));
         $this->httpMock->append(new Response(404));
-        $this->assertFalse($this->twitch->uwitchUserExists(30));
+        $this->assertFalse($this->twitch->userExists(30));
     }
 }
