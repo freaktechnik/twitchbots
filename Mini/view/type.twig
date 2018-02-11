@@ -59,12 +59,6 @@
     {%- endif %}
 </dl>
 <small>Type meta data is best-effort. Please report wrong information.</small>
-<h2>Known Accounts</h2>
-<div class="list-group">
-    {% for bot in bots %}
-    <a href="{{ urlFor('bot', { name: bot.name })|e('html_attr') }}" class="list-group-item">{{ bot.name|e }}</a>
-    {% endfor %}
-</div>
-{{ pagination.print(page, pageCount, 3, 2) }}
-{% if type.enabled and type.customUsername %}<p>The list is missing a {{ type.name|e }} bot user? <a href="{{ urlFor('submit') }}?type={{ type.id|e('url')|e('html_attr') }}">Submit a bot of this type</a>.</p>{% endif %}
+
+<p><a href="{{ urlFor('bots')|e('html_attr') }}?type={{ type.id|e('html_attr') }}" class="btn btn-default">Known Bot instances</a></p>
 {% endblock %}

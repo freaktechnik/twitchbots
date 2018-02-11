@@ -56,4 +56,6 @@
     {% set filterParams = '&type=' ~ currentType %}
 {% endif %}
 {{ pagination.print(page, pageCount, 3, 2, filterParams) }}
+
+{% if currentType != 0 %}<p>The list is missing a bot user for this type? <a href="{{ urlFor('submit') }}?type={{ currentType|e('url')|e('html_attr') }}">Submit a bot of this type</a>.</p>{% endif %}
 {% endblock %}

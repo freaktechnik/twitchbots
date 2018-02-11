@@ -286,22 +286,9 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
         if(!$type)
             $app->notFound();
 
-        $pageCount = max(1, $model->bots->getPageCount(null, $model->bots->getCount($id)));
-        $page = $_GET['page'] ?? 1;
-        if(!is_numeric($page))
-            $page = 1;
-
-        if($page > $pageCount || $page < 0)
-            $app->notFound();
-
-        $bots = $model->bots->getBotsByType($id, $model->bots->getOffset($page));
-
         $app->lastModified(max($getTemplateLastMod('type.twig'), strtotime($type->date), max(array_map(function(\Mini\Model\Bot $bot) { return strtotime($bot->date); }, $bots))));
         $app->render('type.twig', array(
-            'type' => $type,
-            'bots' => $bots,
-            'page' => $page,
-            'pageCount' => $pageCount
+            'type' => $type
         ));
     })->conditions(array('id' => '[1-9][0-9]*'))->name('type');
 });
@@ -316,7 +303,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
             $pageCount = $model->bots->getPageCount();
         }
         else {
-            $pageCount = $model->bots->getPageCount($app->config('database')['page_size'], $model->bots->getCount($currentType));
+            $pageCount = $model->bots->getPageCount(null, $model->bots->getCount($currentType));
         }
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
