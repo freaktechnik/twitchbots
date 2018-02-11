@@ -33,6 +33,7 @@ class TwitchTest extends TestCase
         $client = new \GuzzleHttp\Client(array(
             'handler' => \GuzzleHttp\HandlerStack::create($this->httpMock)
         ));
+        $this->twitch = new \Mini\Model\Twitch($client, 'test', ['http_errors' => false]);
         parent::setUp();
     }
 
