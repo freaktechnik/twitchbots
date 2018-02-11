@@ -135,6 +135,15 @@ class Bots extends PaginatingStore {
         return $query->fetch();
     }
 
+    public function getBotOrThrow(string $name): Bot
+    {
+        $bot = $this->getBot($name);
+        if(!$bot) {
+            throw new \Exception("Bot does not exist");
+        }
+        return $bot;
+    }
+
 
     public function removeBot(string $username)
     {
@@ -230,5 +239,14 @@ class Bots extends PaginatingStore {
 
         $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
         return $query->fetch();
+    }
+
+    public function getBotByIDOrThrow(string $id): Bot
+    {
+        $bot = $this->getBotByID($id);
+        if(!$bot) {
+            throw new \Exception("Bot does not exist");
+        }
+        return $bot;
     }
 }

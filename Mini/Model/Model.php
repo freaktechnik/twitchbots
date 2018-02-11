@@ -70,16 +70,14 @@ class Model
      * @var ConfirmedPeople $confirmedPeople
      */
     private $confirmedPeople;
-
-    private $twitchHeaders = [];
-    private $twitchHeadersV5 = [];
+    /**
+     * @var Twitch $twitch
+     */
+    private $twitch;
 
     private $venticHeaders = [];
 
     private static $requestOptions = ['http_errors' => false];
-
-    /** @var \stdClass|null $_followsCache */
-    private $_followsCache;
 
     /**
      * @var Auth $login
@@ -108,16 +106,8 @@ class Model
         $this->config = new Config($this->db);
         $this->submissions = new Submissions($this->db, $this->pageSize);
         $this->confirmedPeople = new ConfirmedPeople($this->db);
+        $this->twitch = new Twitch($client, $this->config->get('client-ID'), self::$requestOptions);
 
-        $this->twitchHeaders = array_merge(self::$requestOptions, array(
-            'headers' => array('Client-ID' => $this->config->get('client-ID'), 'Accept' => 'application/vnd.twitchtv.v3+json')
-        ));
-        $this->twitchHeadersV5 = array_merge(self::$requestOptions, [
-            'headers' => [
-                'Client-ID' => $this->config->get('client-ID'),
-                'Accept' => 'application/vnd.twitchtv.v5+json'
-            ]
-        ]);
         $this->venticHeaders = array_merge(self::$requestOptions, [
             'headers' => [
                 'User-Agent' => $this->config->get('3v-ua')
@@ -166,7 +156,7 @@ class Model
         $channelId = $this->commonSubmissionChecks($username, $type, $channel);
 
         try {
-            $id = $this->getChannelID($username);
+            $id = $this->twitch->getChannelID($username);
         } catch(Exception $e) {
             throw new Exception("Cannot add a user that doesn't exist on Twitch", 2);
         }
@@ -201,7 +191,7 @@ class Model
         $channelId = NULL;
         if(!empty($channel)) {
             try {
-                $channelId = $this->getChannelID($channel);
+                $channelId = $this->twitch->getChannelID($channel);
             } catch(Exception $e) {
                 throw new Exception("Given channel isn't a Twitch channel", 6);
             }
@@ -230,11 +220,15 @@ class Model
 
         $this->commonSubmissionChecks($username, $type);
 
-        $existingBot = $this->bots->getBot($username);
-        if(empty($existingBot)) {
+        try {
+            $existingBot = $this->bots->getBotOrThrow($username);
+        }
+        catch(Exception $e)
+        {
             throw new Exception("Cannot correct an inexistent bot", 4);
         }
-        else if($existingBot->type == $type) {
+        /** @var Bot $existingBot */
+        if($existingBot->type == $type) {
             throw new Exception("Metadata must be different", 5);
         }
         else if($type == 0 && $this->submissions->hasCorrection($existingBot->twitch_id, $description)) {
@@ -242,13 +236,6 @@ class Model
         }
 
         $this->submissions->append($existingBot->twitch_id, $username, $type, Submissions::CORRECTION, $existingBot->channel, $existingBot->channel_id);
-    }
-
-    public function twitchUserExists(string $id, $noJustin = false): bool
-    {
-        $response = $this->client->head("https://api.twitch.tv/kraken/users/".$id, $this->twitchHeadersV5);
-        $http_code = $response->getStatusCode();
-        return $http_code != 404 && (!$noJustin || $http_code != 422);
     }
 
     /**
@@ -264,20 +251,20 @@ class Model
     {
         $this->bots->touchBot($bot->twitch_id);
 
-        $exists = $this->twitchUserExists($bot->twitch_id);
+        $exists = $this->twitch->userExists($bot->twitch_id);
 
         if($exists) {
             // Set the twitch IDs in the DB
             $modified = false;
 
-            $apiUsername = $this->getChannelName($bot->twitch_id);
+            $apiUsername = $this->twitch->getChannelName($bot->twitch_id);
             if($apiUsername != $bot->name) {
                 $bot->name = $apiUsername;
                 $modified = true;
             }
 
             if(!empty($bot->channel_id)) {
-                $channelUsername = $this->getChannelName($bot->channel_id);
+                $channelUsername = $this->twitch->getChannelName($bot->channel_id);
                 if($channelUsername != $bot->channel) {
                     $bot->channel = $channelUsername;
                     $modified = true;
@@ -316,16 +303,6 @@ class Model
         return $bots;
     }
 
-    private function getChatters(string $channel): array
-    {
-        $response = $this->client->get("https://tmi.twitch.tv/group/user/".$channel."/chatters", array(), self::$requestOptions);
-        if($response->getStatusCode() >= 400) {
-            throw new Exception("No chatters returned");
-        }
-
-        return json_decode($response->getBody(), true)['chatters'];
-    }
-
     private function isInChannel(string $user, array $chatters): bool
     {
         $user = strtolower($user);
@@ -344,61 +321,6 @@ class Model
         $user = strtolower($user);
 
         return array_key_exists('moderators', $chatters) && in_array($user, $chatters['moderators']);
-    }
-
-    private function isChannelLive(string $channelId): bool
-    {
-        $response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$channelId, $this->twitchHeadersV5);
-
-        /** @var \stdClass $stream */
-        $stream = json_decode($response->getBody());
-        return isset($stream->stream);
-    }
-
-    private function getBio(string $channelId)//: ?string
-    {
-        $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$channelId, $this->twitchHeadersV5);
-        /** @var \stdClass $user */
-        $user = json_decode($response->getBody());
-        if(isset($user->bio)) {
-            return $user->bio;
-        } else {
-            return NULL;
-        }
-    }
-
-    private function hasVODs(string $channelId): bool
-    {
-        $response = $this->client->get('https://api.twitch.tv/kraken/channels/'.$channelId.'/videos?broadcast_type=archive,highlight,upload', $this->twitchHeadersV5);
-        /** @var \stdClass $vods */
-        $vods = json_decode($response->getBody());
-        return $vods->_total > 0;
-    }
-
-    private function getFollowing(string $id): \stdClass
-    {
-        if(!isset($this->_followsCache)) {
-            $response = $this->client->get('https://api.twitch.tv/kraken/users/'.$id.'/follows/channels', $this->twitchHeadersV5);
-
-            if($response->getStatusCode() >= 400) {
-                throw new Exception("Can not get followers for ".$name);
-            }
-
-            $this->_followsCache = json_decode($response->getBody());
-        }
-        return $this->_followsCache;
-    }
-
-    private function getFollowingChannel(string $id, string $channelId): bool
-    {
-        $url = 'https://api.twitch.tv/kraken/users/'.$id.'/follows/channels/'.$channelId;
-        $response = $this->client->head($url, $this->twitchHeadersV5);
-
-        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
-            throw new Exception("Can't get following relation");
-        }
-
-        return $response->getStatusCode() < 400;
     }
 
     private function getModStatus(string $username, string $channel, int $page = 0): bool
@@ -424,26 +346,6 @@ class Model
         return false;
     }
 
-    private function getBotVerified(string $id): bool {
-        $url = "https://api.twitch.tv/kraken/users/".$id."/chat";
-        $response = $this->client->get($url, $this->twitchHeadersV5);
-
-        if($response->getStatusCode() >= 400) {
-            throw new Exception("Could not get verified status");
-        }
-
-        $json = json_decode($response->getBody(), true);
-
-        if($json['is_known_bot']) {
-            return true;
-        }
-        // Legacy, so handle its presence gracefully
-        else if(isset($json['is_verified_bot'])) {
-            return $json['is_verified_bot'];
-        }
-        return false;
-    }
-
     private function getBTTVBots(string $channel): array {
         $url = "https://api.betterttv.net/2/channels/".$channel;
         $response = $this->client->get($url);
@@ -462,7 +364,7 @@ class Model
         // Update following if needed
         if(!isset($submission->following)) {
             try {
-                $follows = $this->getFollowing($submission->twitch_id);
+                $follows = $this->twitch->getFollowing($submission->twitch_id);
             }
             catch(Exception $e) {
                 $follows = new \stdClass();
@@ -481,7 +383,7 @@ class Model
     {
         if(!isset($submission->bio)) {
             try {
-                $bio = $this->getBio($submission->twitch_id);
+                $bio = $this->twitch->getBio($submission->twitch_id);
             }
             catch(Exception $e) {
                 return false;
@@ -497,7 +399,7 @@ class Model
     {
         if(!isset($submission->vods)) {
             try {
-                $hasVODs = $this->hasVODs($submission->twitch_id);
+                $hasVODs = $this->twitch->hasVODs($submission->twitch_id);
             }
             catch(Exception $e) {
                 return false;
@@ -514,26 +416,11 @@ class Model
     {
         // Update following_channel if needed
         if(!isset($submission->following_channel)) {
-            if(isset($this->_followsCache)) {
-                $follows = $this->_followsCache;
-                if($follows instanceof \stdClass) {
-                    $follows_channel = $follows->_total > 0 && in_array($submission->channel_id, array_map(function(\stdClass $chan) {
-                        /** @var \stdClass $channel */
-                        $channel = $chan->channel;
-                        return strtolower($channel->_id);
-                    }, $follows->follows));
-                    if(!$follows_channel && $follows->_total > count($follows->follows)) {
-                        unset($follows_channel);
-                    }
-                }
+            try {
+                $follows_channel = $this->twitch->getFollowingChannel($submission->twitch_id, $submission->channel_id);
             }
-            if(!isset($follows_channel)) {
-                try {
-                    $follows_channel = $this->getFollowingChannel($submission->twitch_id, $submission->channel_id);
-                }
-                catch(Exception $e) {
-                    return false;
-                }
+            catch(Exception $e) {
+                return false;
             }
 
             $this->submissions->setFollowingChannel($submission->id, $follows_channel);
@@ -546,7 +433,7 @@ class Model
     private function checkVerified(\stdClass $submission): bool {
         if(!isset($submission->verified) || !$submission->verified) {
             try {
-                $verified = $this->getBotVerified($submission->twitch_id);
+                $verified = $this->twitch->getBotVerified($submission->twitch_id);
             }
             catch(Exception $e) {
                 return false;
@@ -590,7 +477,7 @@ class Model
 
             if(empty($submission->twitch_id)) {
                 try {
-                    $submission->twitch_id = $this->getChannelID($submission->name);
+                    $submission->twitch_id = $this->twitch->getChannelID($submission->name);
                     $this->submissions->setTwitchID($submission->id, $submission->twitch_id);
                     $didSomething = true;
                 }
@@ -603,7 +490,7 @@ class Model
             }
             else {
                 try {
-                    $apiName = $this->getChannelName($submission->twitch_id);
+                    $apiName = $this->twitch->getChannelName($submission->twitch_id);
                 }
                 catch(Exception $e) {
                     if($e->getCode() == 404 || $e->getCode() == 422) {
@@ -637,7 +524,7 @@ class Model
             if(!empty($submission->channel)) {
                 if(empty($submission->channel_id)) {
                     try {
-                        $submission->channel_id = $this->getChannelID($submission->channel);
+                        $submission->channel_id = $this->twitch->getChannelID($submission->channel);
                         $this->submissions->setTwitchID($submission->id, $submission->channel_id, "channel");
                         $didSomething = true;
                     }
@@ -649,7 +536,7 @@ class Model
                 }
                 else {
                     try {
-                        $apiName = $this->getChannelName($submission->channel_id);
+                        $apiName = $this->twitch->getChannelName($submission->channel_id);
                     }
                     catch(Exception $e) {
                         if($e->getCode() == 404 || $e->getCode() == 422) {
@@ -670,11 +557,11 @@ class Model
                 $ranModCheck = isset($submission->ismod);
                 // Update online or offline and mod if needed
                 if(!$submission->online || !isset($submission->offline)) {
-                    $live = $this->isChannelLive($submission->channel_id);
+                    $live = $this->twitch->isChannelLive($submission->channel_id);
                     if(($live && !$submission->online) || (!$live && !isset($submission->offline))) {
                         $isMod = null;
                         try {
-                            $chatters = $this->getChatters($submission->channel);
+                            $chatters = $this->twitch->getChatters($submission->channel);
                             $isInChannel = $this->isInChannel($submission->name, $chatters);
 
                             if($isInChannel && !$submission->ismod) {
@@ -728,12 +615,11 @@ class Model
                    && $submission->type == 0
                    && (   $submission->online
                        || (   is_numeric($submission->description)
-                           && $this->types->getType((int)$submission->description)->multichannel
+                           && $this->types->getTypeOrThrow((int)$submission->description)->multichannel
                   ))) {
                     $this->approveSubmission($submission->id);
                 }
             }
-            unset($this->_followsCache);
         }
 
         return $count;
@@ -753,11 +639,11 @@ class Model
         for($i = 0; $i < $max; $i += 1) {
             $bot = $foundBots[$i];
             try {
-                $twitchId = $this->getChannelID($bot->name);
+                $twitchId = $this->twitch->getChannelID($bot->name);
                 if(empty($this->bots->getBotByID($twitchId))) {
                     $channelId = NULL;
                     if(!empty($bot->channel)) {
-                        $channelId = $this->getChannelID($bot->channel);
+                        $channelId = $this->twitch->getChannelID($bot->channel);
                     }
                     $bot->twitch_id = $twitchId;
                     $bot->channel_id = $channelId;
@@ -781,7 +667,7 @@ class Model
      */
     public function approveSubmission(int $id): bool
     {
-        $submission = $this->submissions->getSubmission($id);
+        $submission = $this->submissions->getSubmissionOrThrow($id);
         if($submission->type != 0 && !is_numeric($submission->description)) {
             return false;
         }
@@ -790,11 +676,11 @@ class Model
             $twitchId = $submission->twitch_id;
         }
         else {
-            $twitchId = $this->getChannelID($submission->name);
+            $twitchId = $this->twitch->getChannelID($submission->name);
         }
 
         if($submission->type != 0) {
-            $bot = $this->bots->getBotByID($twitchId);
+            $bot = $this->bots->getBotByIDOrThrow($twitchId);
             if(is_numeric($submission->description)) {
                 $bot->type = (int)$submission->description;
             }
@@ -810,7 +696,7 @@ class Model
                     $channelId = $submission->channel_id;
                 }
                 else {
-                    $channelId = $this->getChannelID($submission->channel);
+                    $channelId = $this->twitch->getChannelID($submission->channel);
                 }
             }
 
@@ -842,40 +728,9 @@ class Model
         return true;
     }
 
-    private function getChannelID(string $username): string
-    {
-        $url = 'https://api.twitch.tv/kraken/users/?login='.$username;
-        $response = $this->client->get($url, $this->twitchHeadersV5);
-
-        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
-            throw new Exception("User could not be found");
-        }
-
-        $users = json_decode($response->getBody(), true)['users'];
-        if(count($users) > 0){
-            return $users[0]['_id'];
-        }
-        else {
-            throw new Exception("User could not be found");
-        }
-    }
-
-    private function getChannelName(string $id): string
-    {
-        $url = 'https://api.twitch.tv/kraken/users/' . $id;
-        $response = $this->client->get($url, $this->twitchHeadersV5);
-
-        if($response->getStatusCode() >= 400) {
-            throw new Exception("Could not get username for ".$id, $response->getStatusCode());
-        }
-
-        $user = json_decode($response->getBody(), true);
-        return $user['name'];
-    }
-
     public function updateSubmission(int $id, string $description, string $channel)
     {
-        $submission = $this->submissions->getSubmission($id);
+        $submission = $this->submissions->getSubmissionOrThrow($id);
 
         if($submission->description != $description) {
             $this->submissions->updateDescription($id, $description);
@@ -891,12 +746,12 @@ class Model
 
     public function markSubmissionAsPerson(int $id)
     {
-        $submission = $this->submissions->getSubmission($id);
+        $submission = $this->submissions->getSubmissionOrThrow($id);
         if(!empty($submission->twitch_id)) {
             $twitchId = $submission->twitch_id;
         }
         else {
-            $twitchId = $this->getChannelID($submission->name);
+            $twitchId = $this->twitch->getChannelID($submission->name);
         }
         $this->confirmedPeople->add($twitchId);
         $this->submissions->removeSubmission($id);

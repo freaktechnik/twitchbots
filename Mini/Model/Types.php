@@ -58,6 +58,15 @@ class Types extends PaginatingStore {
         return $query->fetch();
     }
 
+    public function getTypeOrThrow(int $id): Type
+    {
+        $type = $this->getType($id);
+        if(!$type) {
+            throw new \Exception("Type does not exist");
+        }
+        return $type;
+    }
+
     /**
      * Only returns enabled types.
      *

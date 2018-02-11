@@ -74,6 +74,15 @@ class Submissions extends PaginatingStore {
         return $query->fetch();
     }
 
+    public function getSubmissionOrThrow(int $id): Submission
+    {
+        $sub = $this->getSubmission($id);
+        if(!$sub) {
+            throw new \Exception("Submission does not exist");
+        }
+        return $sub;
+    }
+
     public function has(string $id, int $type = NULL, string $description = NULL): bool
     {
         $where = "WHERE twitch_id=?";
