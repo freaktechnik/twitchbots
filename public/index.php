@@ -322,6 +322,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         if(!is_numeric($page))
             $page = 1;
 
+        $types = $model->types->getAllTypes();
 
         if($page <= $pageCount && $page > 0) {
             if($currentType == 0) {
@@ -329,13 +330,22 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
             }
             else {
                 $bots = $model->bots->getBotsByType($currentType, $model->bots->getOffset($page));
+                $typeName;
+                foreach($types as $t) {
+                    if($t->id == $currentType) {
+                        $typeName = $t->name;
+                        break;
+                    }
+                }
+                $bots = array_map(function(\Mini\Model\Bot $bot) use ($currentType, $typeName) {
+                    $bot->type = $currentType;
+                    $bot->typename = $typeName;
+                }, $bots);
             }
         }
         else {
             $bots = [];
         }
-
-        $types = $model->types->getAllTypes();
 
         $app->render('bots.twig', array(
             'pageCount' => $pageCount,
