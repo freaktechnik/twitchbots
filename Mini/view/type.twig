@@ -53,6 +53,10 @@
     <dt>API version</dt>
     <dd>{{ typeUtils.apiVersion(type.apiVersion) }}</dd>
     {%- endif %}
+    {%- if type.channelsEstimate is not null %}
+    <dt>Estimated active channels</dt>
+    <dd>{{ type.channelsEstimate|e }}</dd>
+    {%- endif %}
 </dl>
 <small>Type meta data is best-effort. Please report wrong information.</small>
 <h2>Known Accounts</h2>
