@@ -774,6 +774,7 @@ class Model
         // Duplicates stop mattering > 10000 active channels.
         $maxCountForDetails = $pageSize * $maxPagesPerInstance;
         $bots = $this->bots->getBotsByType($typeID);
+        $instCount = count($bots);
         foreach($bots as $bot) {
             $estimated = false;
             if(!empty($bot->channel_id)) {
@@ -786,7 +787,7 @@ class Model
                     $response = $this->getSwords($bot->name, $page, $pageSize);
 
                     if($response['count'] > 0) {
-                        if($response['count'] > $maxCountForDetails) {
+                        if($response['count'] > $maxCountForDetails || $instCount == 1) {
                             $count += $response['count'];
                         }
                         else {
