@@ -47,5 +47,9 @@
         </tbody>
     </table>
 </div>
-{{ pagination.print(page, pageCount, 3, 2) }}
+{% filterParams = '' %}
+{% if showDisabled %}
+    {% set filterParams = '&disabled=1' %}
+{% endif %}
+{{ pagination.print(page, pageCount, 3, 2, filterParams) }}
 {% endblock %}
