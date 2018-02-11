@@ -764,7 +764,7 @@ class Model
         $this->submissions->removeSubmission($id);
     }
 
-    private function estimateActiveChannels(int $typeID): int
+    public function estimateActiveChannels(int $typeID): int
     {
         $type = $this->types->getTypeOrThrow($typeID);
         $count = 0;
