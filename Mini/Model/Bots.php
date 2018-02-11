@@ -129,7 +129,7 @@ class Bots extends PaginatingStore {
     /**
      * @return Bot[]
      */
-    public function getBotsWithoutType(int $offest = 0, int $limit = null): array
+    public function getBotsWithoutType(int $offset = 0, int $limit = null): array
     {
         $limit = $limit ?? $this->pageSize;
         if($limit > 0 && $offset < $this->getCount(-1)) {
