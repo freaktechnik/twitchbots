@@ -13,6 +13,14 @@
     <h1>Known Twitch service bots</h1>
 </div>
 
+<form class="form-inline" method="GET" action="">
+    <select name="type" value="{{ currentType|default(0)|e('html_attr') }}">
+        <option value="0">All bots</option>
+        {% for t in types %}
+            <option value="{{ t.id|e('html_attr') }}">{{ t.name|e }}</option>
+        {% endfor %}
+    </select>
+</form>
 <div class="table-responsive">
     <table class="table table-striped">
         <caption>Type information is best-effort: bot types are verified when possible and else just assumed correct. Please <a href="{{ urlFor('submit')|e('html_attr') }}?correction">submit a correction</a> if you spot something wrong.</caption>
@@ -36,5 +44,5 @@
         </tbody>
     </table>
 </div>
-{{ pagination.print(page, pageCount, 3, 2) }}
+{{ pagination.print(page, pageCount, 3, 2, '&type=' ~ currentType) }}
 {% endblock %}

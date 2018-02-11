@@ -311,20 +311,38 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         $app->lastModified(max($model->bots->getLastUpdate(), $getTemplateLastMod('bots.twig')));
         $app->expires('+1 day');
 
-        $pageCount = $model->bots->getPageCount();
+        $currentType = $_GET['type'] ?? 0;
+        if($currentType == 0) {
+            $pageCount = $model->bots->getPageCount();
+        }
+        else {
+            $pageCount = $model->bots->getPageCount($app->config('database')['page_size'], $model->bots->getCount($currentType));
+        }
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
             $page = 1;
 
-        if($page <= $pageCount && $page > 0)
-            $bots = $model->bots->getBots($page);
-        else
-            $bots = array();
+
+        if($page <= $pageCount && $page > 0) {
+            if($currentType == 0) {
+                $bots = $model->bots->getBots($page);
+            }
+            else {
+                $bots = $model->bots->getBotsByType($currentType, $model->bots->getOffset($page));
+            }
+        }
+        else {
+            $bots = [];
+        }
+
+        $types = $model->types->getAllTypes();
 
         $app->render('bots.twig', array(
             'pageCount' => $pageCount,
             'page' => $page,
-            'bots' => $bots
+            'bots' => $bots,
+            'currentType' => $currentType,
+            'types' => $types
         ));
     })->name('bots');
 
