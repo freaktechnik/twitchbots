@@ -366,7 +366,7 @@ class Model
         return $json['bots'];
     }
 
-    private function checkFollowing(\stdClass $submission): bool
+    private function checkFollowing(Submission $submission): bool
     {
         // Update following if needed
         if(!isset($submission->following)) {
@@ -386,7 +386,7 @@ class Model
         return false;
     }
 
-    private function checkBio(\stdClass $submission): bool
+    private function checkBio(Submission $submission): bool
     {
         if(!isset($submission->bio)) {
             try {
@@ -402,7 +402,7 @@ class Model
         return false;
     }
 
-    private function checkHasVODs(\stdClass $submission): bool
+    private function checkHasVODs(Submission $submission): bool
     {
         if(!isset($submission->vods)) {
             try {
@@ -419,7 +419,7 @@ class Model
         return false;
     }
 
-    private function checkFollowingChannel(\stdClass $submission): bool
+    private function checkFollowingChannel(Submission $submission): bool
     {
         // Update following_channel if needed
         if(!isset($submission->following_channel)) {
@@ -437,7 +437,7 @@ class Model
         return false;
     }
 
-    private function checkVerified(\stdClass $submission): bool {
+    private function checkVerified(Submission $submission): bool {
         if(!isset($submission->verified) || !$submission->verified) {
             try {
                 $verified = $this->twitch->getBotVerified($submission->twitch_id);
@@ -453,7 +453,7 @@ class Model
         return false;
     }
 
-    public function checkBTTVBot(\stdClass $submission): bool {
+    public function checkBTTVBot(Submission $submission): bool {
         if(isset($submission->channel)) {
             try {
                 $bttvBots = $this->getBTTVBots($submission->channel);
