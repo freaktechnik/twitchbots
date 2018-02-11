@@ -778,7 +778,7 @@ class Model
         foreach($bots as $bot) {
             $estimated = false;
             if(!empty($bot->channel_id)) {
-                $channels[$bot->channel_id] = true;
+                $channels[$bot->channel] = true;
                 $estimated = true;
             }
             if($type->multichannel) {
