@@ -249,13 +249,16 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
 
         $app->lastModified(max($getTemplateLastMod('types.twig'), $model->bots->getLastUpdate(), $model->types->getLastUpdate()));
 
-        $types = $model->types->getTypes($page);
+        $showDisabled = $_GET['disabled'] == 1;
 
-        $app->render('types.twig', array(
+        $types = $model->types->getTypes($page, $showDisabled);
+
+        $app->render('types.twig', [
             'types' => $types,
             'page' => $page,
-            'pageCount' => $pageCount
-        ));
+            'pageCount' => $pageCount,
+            'showDisabled' => $showDisabled
+        ]);
     })->name('types');
 
     $app->get('/sitemap.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {

@@ -85,10 +85,14 @@ class Types extends PaginatingStore {
     /**
      * @return Type[]
      */
-    public function getTypes($page = 1): array
+    public function getTypes(int $page = 1, bool $showDisabled = false): array
     {
         if($page <= $this->getPageCount($this->pageSize)) {
-            $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = `table`.id GROUP BY `table`.id ORDER BY `table`.name ASC LIMIT :start,:stop");
+            $where = '';
+            if(!$showDisabled) {
+                $where = 'WHERE table.enabled=1';
+            }
+            $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = `table`.id $where GROUP BY `table`.id ORDER BY `table`.name ASC LIMIT :start,:stop");
             $this->doPagination($query, $this->getOffset($page));
             $query->execute();
             $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
