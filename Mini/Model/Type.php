@@ -31,4 +31,6 @@ class Type extends Row {
     public $hasFreeTier = true;
     /** @var int|null $apiVersion */
     public $apiVersion = null;
+    /** @var int|null $channelsEstimate */
+    public $channelsEstimate = null;
 }

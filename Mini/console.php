@@ -100,5 +100,15 @@ $console
         $log('Added '.$addedCount.' bots based on lists from bot vendors', $output);
     });
 
+$console
+    ->register('estimate:all')
+    ->setDescription('Estimage usage counts for all types')
+    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $log) {
+        $types = $model->types->getAllTypes();
+        foreach($types as $type) {
+            $model->estimateActiveChannels($type->id);
+        }
+    });
+
 $console->run();
 ?>

@@ -797,5 +797,6 @@ class Model
             }
         }
         $count += count(array_keys($channels));
+        $this->types->setEstimate($typeID, $count);
     }
 }

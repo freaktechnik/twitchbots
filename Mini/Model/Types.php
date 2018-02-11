@@ -20,6 +20,7 @@ use PDO;
     payment int(2) DEFAULT NULL,
     hasFreeTier tinyint(1) DEFAULT 1,
     apiVersion int(10) DEFAULT NULL,
+    channelsEstimate int(10) DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) DEFAULT CHARSET=utf8 */
@@ -128,5 +129,11 @@ class Types extends PaginatingStore {
             $apiVersion
         ]);
         return $this->getLastInsertedId();
+    }
+
+    public function setEstimate(int $id, int $count)
+    {
+        $query = $this->prepareUpdate('channelsEstimate=? WHERE id=?');
+        $query->execute([ $count, $id ]);
     }
 }

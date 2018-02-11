@@ -45,6 +45,12 @@ class DBTestCase extends TestCase {
               description text DEFAULT NULL,
               date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
               enabled boolean DEFAULT 1,
+              sourceUrl text DEFAULT NULL,
+              commandsUrl text DEFAULT NULL,
+              payment int(2) DEFAULT NULL,
+              hasFreeTier tinyint(1) DEFAULT 1,
+              apiVersion int(10) DEFAULT NULL,
+              channelsEstimate int(10) DEFAULT NULL,
               PRIMARY KEY (id),
               UNIQUE KEY name (name)',
               'AUTO_INCREMENT=37'
