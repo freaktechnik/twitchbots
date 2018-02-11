@@ -106,6 +106,7 @@ $console
     ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $log) {
         $types = $model->types->getAllTypes();
         foreach($types as $type) {
+            $log('Estimating active channels for '.$type->name, $output);
             $model->estimateActiveChannels($type->id);
         }
     });

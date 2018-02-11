@@ -772,31 +772,33 @@ class Model
         $pageSize = 100;
         $bots = $this->bots->getBotsByType($typeID);
         foreach($bots as $bot) {
+            $estimated = false;
             if(!empty($bot->channel_id)) {
                 $channels[$bot->channel_id] = true;
+                $estimated = true;
             }
             if($type->multichannel) {
                 $page = 0;
-                $results = 0;
                 do {
                     $response = $this->getSwords($bot->name, $page, $pageSize);
 
                     if($response['count'] > 0) {
                         foreach($response['channels'] as $channel) {
                             $channels[$channel['name']] = true;
-                            $results += 1;
+                            $estimated = true;
                         }
                     }
 
                     $page += 1;
                 } while($response['count'] > ($page) * $pageSize);
+            }
 
-                if($results == 0) {
-                    $count += 1;
-                }
+            if(!$estimated) {
+              $count += 1;
             }
         }
         $count += count(array_keys($channels));
+        $this->db->ping();
         $this->types->setEstimate($typeID, $count);
     }
 }
