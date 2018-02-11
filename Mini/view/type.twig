@@ -20,45 +20,50 @@
 {%- import "_alerts.twig" as alerts -%}
 {{ alerts.alert('warning', 'This bot type has been marked as inactive') }}
 {%- endif -%}
-<dl class="dl-horizontal">
-    {%- if type.enabled and type.url %}
-    <dt>Website</dt>
-    <dd><a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.url|e }}</a></dd>
-    {%- endif -%}
-    {%- if type.sourceUrl %}
-    <dt>Source code</dt>
-    <dd><a href="{{ type.sourceUrl|e('html_attr') }}" rel="external nofollow noopener">{{ type.sourceUrl|e }}</a></dd>
-    {%- endif -%}
-    {%- if type.commandsUrl %}
-    <dt>Commands</dt>
-    <dd><a href="{{ type.commandsUrl|e('html_attr') }}" rel="external nofollow noopener">{{ type.commandsUrl|e }}</a></dd>
-    {%- endif -%}
-    {%- if type.payment is not null %}
-    <dt>Business model</dt>
-    <dd>{{ typeUtils.businessModel(type.payment) }}</dd>
-    {% if not type.payment == 0 and not type.payment == 3 %}
-    <dt>Free tier</dt>
-    <dd>{{ table.status(type.hasFreeTier) }}</dd>
-    {%- endif -%}
-    {%- endif -%}
-    {%- if type.customUsername is not null %}
-    <dt>Custom username</dt>
-    <dd>{{ table.status(type.customUsername) }}</dd>
-    {%- endif %}
-    <dt>Local software</dt>
-    <dd>{{ table.status(not type.managed) }}</dd>
-    <dt>Instance per channel</dt>
-    <dd>{{ table.status(not type.multichannel) }}</dd>
-    {%- if type.apiVersion is not null %}
-    <dt>API version</dt>
-    <dd>{{ typeUtils.apiVersion(type.apiVersion) }}</dd>
-    {%- endif %}
-    {%- if type.enabled and type.channelsEstimate is not null %}
-    <dt><abbr title="Estimation of channels this bot is used in">Active channels</abbr></dt>
-    <dd>~{{ type.channelsEstimate|e }}</dd>
-    {%- endif %}
-</dl>
+<div class="row">
+    <div class="col-md-6 col-xs-12">
+        <dl class="dl-horizontal">
+            {%- if type.enabled and type.url %}
+            <dt>Website</dt>
+            <dd><a href="{{ type.url|e('html_attr') }}" rel="external nofollow noopener">{{ type.url|e }}</a></dd>
+            {%- endif -%}
+            {%- if type.sourceUrl %}
+            <dt>Source code</dt>
+            <dd><a href="{{ type.sourceUrl|e('html_attr') }}" rel="external nofollow noopener">{{ type.sourceUrl|e }}</a></dd>
+            {%- endif -%}
+            {%- if type.commandsUrl %}
+            <dt>Commands</dt>
+            <dd><a href="{{ type.commandsUrl|e('html_attr') }}" rel="external nofollow noopener">{{ type.commandsUrl|e }}</a></dd>
+            {%- endif -%}
+            {%- if type.payment is not null %}
+            <dt>Business model</dt>
+            <dd>{{ typeUtils.businessModel(type.payment) }}</dd>
+            {% if not type.payment == 0 and not type.payment == 3 %}
+            <dt>Free tier</dt>
+            <dd>{{ table.status(type.hasFreeTier) }}</dd>
+            {%- endif -%}
+            {%- endif -%}
+            {%- if type.customUsername is not null %}
+            <dt>Custom username</dt>
+            <dd>{{ table.status(type.customUsername) }}</dd>
+            {%- endif %}
+            <dt>Local software</dt>
+            <dd>{{ table.status(not type.managed) }}</dd>
+            <dt>Instance per channel</dt>
+            <dd>{{ table.status(not type.multichannel) }}</dd>
+            {%- if type.apiVersion is not null %}
+            <dt>API version</dt>
+            <dd>{{ typeUtils.apiVersion(type.apiVersion) }}</dd>
+            {%- endif %}
+            {%- if type.enabled and type.channelsEstimate is not null %}
+            <dt><abbr title="Estimation of channels this bot is used in">Active channels</abbr></dt>
+            <dd>~{{ type.channelsEstimate|e }}</dd>
+            {%- endif %}
+        </dl>
+    </div>
+    <div class="col-md-6 col-xs-12 text-right">
+        <p><a href="{{ urlFor('bots')|e('html_attr') }}?type={{ type.id|e('html_attr') }}" class="btn btn-default">Known Bot instances</a></p>
+    </div>
+</div>
 <small>Type meta data is best-effort. Please report wrong information.</small>
-
-<p><a href="{{ urlFor('bots')|e('html_attr') }}?type={{ type.id|e('html_attr') }}" class="btn btn-default">Known Bot instances</a></p>
 {% endblock %}
