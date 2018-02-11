@@ -789,6 +789,7 @@ class Model
                     if($response['count'] > 0) {
                         if($response['count'] > $maxCountForDetails || $instCount === 1) {
                             $count += $response['count'];
+                            $estimated = true;
                         }
                         else {
                             foreach($response['channels'] as $channel) {
