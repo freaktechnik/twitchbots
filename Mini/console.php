@@ -6,6 +6,8 @@ require __DIR__.'/../vendor/autoload.php';
 include_once __DIR__.'/../lib/config.php';
 
 use Symfony\Component\Console\Application;
+use Asm89\Twig\Lint\Output\OutputInterface;
+
 use Symfony\Component\Console\Input\{InputInterface, InputOption, ArrayInput};
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -37,9 +39,6 @@ $model = new \Mini\Model\Model(array(
 
 $console
     ->register('check:all')
-    ->setDefinition(array(
-        new InputOption('amount', 'a', InputOption::VALUE_OPTIONAL, 'Number of bots to check', 10)
-    ))
     ->setDescription('Run all check tasks')
     ->setCode(function (InputInterface $input, OutputInterface $output) use ($model, $console) {
         $bots = $console->find('check:bots');
@@ -102,13 +101,24 @@ $console
 
 $console
     ->register('estimate:all')
-    ->setDescription('Estimage usage counts for all types')
+    ->setDescription('Estimate usage counts for all types')
     ->setCode(function(InputInterface $input, OutputInterface $output) use ($model, $log) {
         $types = $model->types->getAllTypes();
         foreach($types as $type) {
             $log('Estimating active channels for '.$type->name, $output);
             $model->estimateActiveChannels($type->id);
         }
+    });
+
+$console
+    ->register('estimate')
+    ->setDefinition([
+        new InputOption('type', 't', InputOption::VALUE_REQUIRED, 'ID of type to check')
+    ])
+    ->setDescription('Estimate usage count for a type')
+    ->setCode(function(InputInterface $input, OutputInterface $output) use ($model) {
+        $typeID = $input->getArgument('type');
+        $model->estimateActiveChannels($typeID);
     });
 
 $console->run();
