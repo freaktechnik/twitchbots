@@ -620,7 +620,8 @@ class Model
                 ++$count;
                 if(   $submission->verified
                    && $submission->type == 0
-                   && (   $submission->online
+                   && (   (   $submission->online
+                           && !is_numeric($submission->description))
                        || (   is_numeric($submission->description)
                            && $this->types->getTypeOrThrow((int)$submission->description)->multichannel
                   ))) {
