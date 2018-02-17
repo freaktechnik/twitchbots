@@ -623,7 +623,7 @@ class Model
                    && (   (   $submission->online
                            && !is_numeric($submission->description))
                        || (   is_numeric($submission->description)
-                           && $this->types->getTypeOrThrow((int)$submission->description)->multichannel
+                           && $this->types->getTypeOrThrow((int)$submission->description)->customUsername === true
                   ))) {
                     $this->approveSubmission($submission->id);
                 }
