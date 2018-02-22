@@ -60,7 +60,7 @@
     </table>
 </div>
 {% set filterParams = '' %}
-{% if currentType != 0 %}
+{% if currentType != 0 or currentType is null %}
     {% set filterParams = '&type=' ~ currentType %}
 {% endif %}
 {{ pagination.print(page, pageCount, 3, 2, filterParams) }}
