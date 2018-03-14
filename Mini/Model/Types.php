@@ -124,8 +124,8 @@ class Types extends PaginatingStore {
         bool $multichannel,
         bool $managed,
         bool $customUsername,
-        string $identifyableBy,
-        string $description,
+        string $identifyableBy = NULL,
+        string $description = NULL,
         string $url = null,
         string $sourceUrl = null,
         string $commandsUrl = null,
@@ -136,20 +136,19 @@ class Types extends PaginatingStore {
     {
         $sql = "(name,multichannel,managed,customUsername,identifiableby,description,url,sourceUrl,commandsUrl,payment,hasFreeTier,apiVersion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         $query = $this->prepareInsert($sql);
-        $query->execute([
-            $name,
-            $multichannel ? 1 : 0,
-            $managed ? 1 : 0,
-            $customUsername ? 1 : 0,
-            $identifyableBy,
-            $description,
-            $url ?? null,
-            $sourceUrl ?? null,
-            $commandsUrl ?? null,
-            $payment,
-            $hasFreeTier,
-            $apiVersion
-        ]);
+        $query->bindValue(1, $name);
+        $query->bindValue(2, $multichannel, PDO::PARAM_BOOL);
+        $query->bindValue(3, $managed, PDO::PARAM_BOOL);
+        $query->bindValue(4, $customUsername, PDO::PARAM_BOOL);
+        self::BindNullable($query, 5, $identifyableBy);
+        self::BindNullable($query, 6, $description);
+        self::BindNullable($query, 7, $url);
+        self::BindNullable($query, 8, $sourceUrl);
+        self::BindNullable($query, 9, $commandsUrl);
+        self::BindNullable($query, 10, $payment, PDO::PARAM_INT);
+        $query->bindValue(11, $hasFreeTier, PDO::PARAM_BOOL);
+        self::BindNullable($query, 12, $apiVersion, PDO::PARAM_INT);
+        $query->execute();
         return $this->getLastInsertedId();
     }
 

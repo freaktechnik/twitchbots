@@ -533,14 +533,14 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                 $app->request->params('multichannel') == "1",
                 $app->request->params('managed') == "1",
                 $app->request->params('customUsername') == "1",
-                $app->request->params('identifyableby'),
-                $app->request->params('description'),
+                $app->request->params('identifyableby') ?? null,
+                $app->request->params('description') ?? null,
                 $app->request->params('url') ?? null,
                 $app->request->params('sourceUrl') ?? null,
                 $app->request->params('commandsUrl') ?? null,
                 $payment == '' ?  null: (int)$payment,
                 $app->request->params('hasFreeTier') == "1",
-                $apiVersion == "" ? null : (int)$apiVersion
+                $apiVersion == '' ? null : (int)$apiVersion
             );
             $app->redirect($app->request->getUrl().$app->urlFor('submissions').'?addedtype='.$typeId, 303);
         }
