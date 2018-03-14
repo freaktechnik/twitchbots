@@ -317,7 +317,7 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
         if(!is_numeric($page))
             $page = 1;
 
-        $types = $model->types->getAllTypes('name');
+        $types = $model->types->getAllTypes('table.name', 'ASC');
 
         if($page <= $pageCount && $page > 0) {
             if($currentType === null) {
