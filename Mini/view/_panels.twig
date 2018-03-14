@@ -1,10 +1,5 @@
 {% macro bot(bot, heading) %}
 {% if bot.typename is not empty %}
-    {% if bot.multichannel %}
-        {% set multichannel = "Yes" %}
-    {% else %}
-        {% set multichannel = "No" %}
-    {% endif %}
     {% set btntext = "Correct" %}
 {% else %}
     {% set btntext = "Report type" %}
