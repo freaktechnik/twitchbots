@@ -304,31 +304,78 @@ class ModelTest extends DBTestCase
     }
 
     /**
-     * @covers ::getSwords
+     * @covers ::estimateActiveChannels
      * @covers ::<private>
+     * @uses \Mini\Model\Bots::getCount
+     * @uses \Mini\Model\Bots::getBotsByType
+     * @uses \Mini\Model\Types::getTypeOrThrow
+     * @uses \Mini\Model\Types::setEstimate
      */
-    public function testGetSwords()
+    public function estimateActiveChannelsMultichannel()
     {
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
-            'count' => 0,
+            'count' => 5,
             'channels' => []
         ])));
-        $response = $this->model->getSwords('test');
+        $preCount = count($this->httpHistory);
 
-        $this->assertEquals($response['status'], 200);
-        $this->assertEquals($response['count'], 0);
+        $response = $this->model->estimateActiveChannels(1);
 
+        $type = $this->model->types->getTypeOrThrow(1);
+        $this->assertEquals(5, $type->channelsEstimate);
+
+        $this->assertEquals($preCount + 1, count($this->httpHistory));
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals($latestRequest['request']->getRequestTarget(), 'https://twitchstuff.3v.fi/modlookup/api/user/test?limit=100&offset=0');
+        $this->assertEquals('https://twitchstuff.3v.fi/modlookup/api/user/test?limit=100&offset=0', $latestRequest['request']->getRequestTarget());
+    }
+
+    public function estimateActiveChannelsMultichannelMultiple()
+    {
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'status' => 200,
+            'count' => 100,
+            'channels' => [
+                [
+                    'name' => 'foo',
+                ],
+            ],
+        ])));
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'status' => 200,
+            'count' => 5,
+            'channels' => [
+                [
+                    'name' => 'bar',
+                ],
+                [
+                    'name' => 'foo',
+                ],
+            ],
+        ])));
+        $preCount = count($this->httpHistory);
+
+        $response = $this->model->estimateActiveChannels();
+
+        $type = $this->model->types->getTypeOrThrow(1);
+        $this->assertEquals(2, $type->channelsEstimate);
+
+        $this->assertEquals($preCount + 2, count($this->httpHistory));
+        /** @var \GuzzleHttp\Psr7\Request $latestRequest */
+        $latestRequest = array_pop($this->httpHistory);
+
+        $this->assertEquals('https://twitchstuff.3v.fi/modlookup/api/user/test?limit=100&offset=0', $latestRequest['request']->getRequestTarget());
     }
 
     /**
      * @expectedException Exception
      * @covers ::getSwords
      * @covers ::<private>
+     * @uses \Mini\Model\Bots::getCount
+     * @uses \Mini\Model\Bots::getBotsByType
+     * @uses \Mini\Model\Types::getTypeOrThrow
      */
     public function testGetSwordsError()
     {
@@ -337,24 +384,25 @@ class ModelTest extends DBTestCase
             'count' => 0,
             'channels' => []
         ])));
-        $response = $this->model->getSwords('test');
+        $response = $this->model->estimateActiveChannels(1);
     }
 
+    /**
+     * @covers ::estimateActiveChannels
+     * @covers ::<private>
+     * @uses \Mini\Model\Bots::getCount
+     * @uses \Mini\Model\Bots::getBotsByType
+     * @uses \Mini\Model\Types::getTypeOrThrow
+     * @uses \Mini\Model\Types::setEstimate
+     */
     public function testGetSwordsPagination()
     {
-        $this->httpMock->append(new Response(200, [], json_encode([
-            'status' => 200,
-            'count' => 0,
-            'channels' => []
-        ])));
-        $response = $this->model->getSwords('test', 5, 10);
+        $response = $this->model->estimateActiveChannels(22);
 
-        $this->assertEquals($response['status'], 200);
-        $this->assertEquals($response['count'], 0);
-
-        /** @var \GuzzleHttp\Psr7\Request $latestRequest */
-        $latestRequest = array_pop($this->httpHistory);
-
-        $this->assertEquals($latestRequest['request']->getRequestTarget(), 'https://twitchstuff.3v.fi/modlookup/api/user/test?limit=10&offset=50');
+        $expectedCount = $this->model->bots->getCount(22);
+        $type = $this->model->types->getTypeOrThrow(22);
+        $this->assertEquals($expectedCount, $type->channelsEstimate);
     }
+
+    //TODO test deduplicating channels without multi channel type
 }

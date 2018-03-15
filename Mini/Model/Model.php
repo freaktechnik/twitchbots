@@ -775,7 +775,7 @@ class Model
         // Duplicates stop mattering > 10000 active channels.
         $maxCountForDetails = $pageSize * $maxPagesPerInstance;
         $instCount = $this->bots->getCount($typeID);
-        $bots = $this->bots->getBotsByType($typeID, 0, $this->bots->getCount($typeID));
+        $bots = $this->bots->getBotsByType($typeID, 0, $instCount);
         foreach($bots as $bot) {
             $estimated = false;
             if(!empty($bot->channel_id)) {
