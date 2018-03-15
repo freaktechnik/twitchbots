@@ -40,11 +40,11 @@ class ModelTest extends DBTestCase
     {
         $this->httpMock = new \GuzzleHttp\Handler\MockHandler();
         $handlerStack = \GuzzleHttp\HandlerStack::create();
-        $handlerStack->push($this->httpMock);
         $handlerStack->push(\GuzzleHttp\Middleware::history($this->httpHistory));
-        $client = new \GuzzleHttp\Client(array(
+        $handlerStack->push($this->httpMock);
+        $client = new \GuzzleHttp\Client([
             'handler' => $handlerStack,
-        ));
+        ]);
 
         $this->model = new \Mini\Model\Model(array(
             'db_host' => $GLOBALS['DB_HOST'],
