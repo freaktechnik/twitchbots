@@ -10,14 +10,19 @@ use GuzzleHttp\Psr7\Response;
 class ModelTest extends DBTestCase
 {
     /**
-     * @var \Mini\Model\Model
+     * @var \Mini\Model\Model $model
      */
     private $model;
 
     /**
-     * @var \Aeris\GuzzleHttp\Mock
+     * @var \GuzzleHttp\Handler\MockHandler $httpMock
      */
     private $httpMock;
+
+    /**
+     * @var array $httpHistory
+     */
+    private $httpHistory = [];
 
     /**
      * @var int
@@ -34,8 +39,11 @@ class ModelTest extends DBTestCase
     public function setUp()
     {
         $this->httpMock = new \GuzzleHttp\Handler\MockHandler();
+        $handlerStack = \GuzzleHttp\HandlerStack::create();
+        $handlerStack->push($this->httpMock);
+        $handlerStack->push(\GuzzleHttp\Middleware::history($this->httpHistory));
         $client = new \GuzzleHttp\Client(array(
-            'handler' => \GuzzleHttp\HandlerStack::create($this->httpMock)
+            'handler' => $handlerStack,
         ));
 
         $this->model = new \Mini\Model\Model(array(
@@ -45,7 +53,7 @@ class ModelTest extends DBTestCase
             'db_user' => $GLOBALS['DB_USER'],
             'db_pass' => $GLOBALS['DB_PASSWD'],
             'page_size' => self::pageSize,
-            'testing' => true
+            'testing' => true,
         ), $client);
         parent::setUp();
     }
@@ -293,5 +301,60 @@ class ModelTest extends DBTestCase
         $bots = $this->model->checkBots();
 
         $this->assertEquals($initialCount - count($bots), $this->model->bots->getCount());
+    }
+
+    /**
+     * @covers ::getSwords
+     * @covers ::<private>
+     */
+    public function testGetSwords()
+    {
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'status' => 200,
+            'count' => 0,
+            'channels' => []
+        ])));
+        $response = $this->model->getSwords('test');
+
+        $this->assertEquals($response['status'], 200);
+        $this->assertEquals($response['count'], 0);
+
+        /** @var \GuzzleHttp\Psr7\Request $latestRequest */
+        $latestRequest = array_pop($this->httpHistory);
+
+        $this->assertEquals($latestRequest['request']->getRequestTarget(), 'https://twitchstuff.3v.fi/modlookup/api/user/test?limit=100&offset=0');
+    }
+
+    /**
+     * @expectedException Exception
+     * @covers ::getSwords
+     * @covers ::<private>
+     */
+    public function testGetSwordsError()
+    {
+        $this->httpMock->append(new Response(403, [], json_encode([
+            'status' => 403,
+            'count' => 0,
+            'channels' => []
+        ])));
+        $response = $this->model->getSwords('test');
+    }
+
+    public function testGetSwordsPagination()
+    {
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'status' => 200,
+            'count' => 0,
+            'channels' => []
+        ])));
+        $response = $this->model->getSwords('test', 5, 10);
+
+        $this->assertEquals($response['status'], 200);
+        $this->assertEquals($response['count'], 0);
+
+        /** @var \GuzzleHttp\Psr7\Request $latestRequest */
+        $latestRequest = array_pop($this->httpHistory);
+
+        $this->assertEquals($latestRequest['request']->getRequestTarget(), 'https://twitchstuff.3v.fi/modlookup/api/user/test?limit=10&offset=50');
     }
 }
