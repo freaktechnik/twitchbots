@@ -39,9 +39,8 @@ class ModelTest extends DBTestCase
     public function setUp()
     {
         $this->httpMock = new \GuzzleHttp\Handler\MockHandler();
-        $handlerStack = \GuzzleHttp\HandlerStack::create();
+        $handlerStack = \GuzzleHttp\HandlerStack::create($this->httpMock);
         $handlerStack->push(\GuzzleHttp\Middleware::history($this->httpHistory));
-        $handlerStack->push($this->httpMock);
         $client = new \GuzzleHttp\Client([
             'handler' => $handlerStack,
         ]);
