@@ -327,7 +327,7 @@ class Model
     {
         $url = "https://twitchstuff.3v.fi/modlookup/api/user/" . $username . "?limit=" . $pageSize . "&offset=" . $page * $pageSize;
 
-        $response = $this->client->get($url, array(), $this->venticHeaders);
+        $response = $this->client->get($url, $this->venticHeaders);
 
         if($response->getStatusCode() >= 400) {
             throw new Exception("Could not get mod status");
@@ -774,8 +774,8 @@ class Model
         $maxPagesPerInstance = 100;
         // Duplicates stop mattering > 10000 active channels.
         $maxCountForDetails = $pageSize * $maxPagesPerInstance;
+        $instCount = $this->bots->getCount($typeID);
         $bots = $this->bots->getBotsByType($typeID, 0, $this->bots->getCount($typeID));
-        $instCount = count($bots);
         foreach($bots as $bot) {
             $estimated = false;
             if(!empty($bot->channel_id)) {
@@ -785,12 +785,13 @@ class Model
             if($type->multichannel) {
                 $page = 0;
                 do {
-                    $response = $this->getSwords($bot->name, $page, $pageSize);
+                    $response = $this->getSwords($bot->name, $page, $instCount === 1 ? 1 : $pageSize);
 
                     if($response['count'] > 0) {
                         if($response['count'] > $maxCountForDetails || $instCount === 1) {
                             $count += $response['count'];
                             $estimated = true;
+                            break;
                         }
                         else {
                             foreach($response['channels'] as $channel) {
@@ -799,16 +800,21 @@ class Model
                             }
                         }
                     }
+                    else {
+                        break;
+                    }
 
                     $page += 1;
-                } while($instCount !== 1 && $response['count'] > $page * $pageSize && $response['count'] <= $maxCountForDetails);
+                } while($instCount > 1 && $response['count'] > $page * $pageSize && $response['count'] <= $maxCountForDetails);
             }
 
             if(!$estimated) {
-              $count += 1;
+                $count += 1;
             }
         }
-        $count += count(array_keys($channels));
+        if (!$type->multichannel || $instCount > 1) {
+            $count += count(array_keys($channels));
+        }
         $this->db->ping();
         $this->types->setEstimate($typeID, $count);
     }
