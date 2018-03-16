@@ -104,7 +104,7 @@ class ModelTest extends DBTestCase
      * @uses \Mini\Model\Bots::getBot
      * @uses \Mini\Model\ConfirmedPeople::has
      * @uses \Mini\Model\Submissions::append
-     * @uses ::hasBot
+     * @uses \Mini\Model\Model::hasBot
      */
     public function testAddSubmission()
     {
@@ -168,7 +168,7 @@ class ModelTest extends DBTestCase
      * @covers ::<private>
      * @uses \Mini\Model\Twitch::getChannelID
      * @uses \Mini\Model\Bots::getBot
-     * @uses ::hasBot
+     * @uses \Mini\Model\Model::hasBot
      */
     public function testAddExistingSubmissionThrows()
     {
@@ -184,7 +184,7 @@ class ModelTest extends DBTestCase
      * @covers ::<private>
      * @uses \Mini\Model\Twitch::getChannelID
      * @uses \Mini\Model\Bots::getBot
-     * @uses ::hasBot
+     * @uses \Mini\Model\Model::hasBot
      */
     public function testAddSubmissionExistingBotThrows()
     {
