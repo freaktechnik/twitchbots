@@ -88,10 +88,10 @@ class ModelTest extends DBTestCase
     public function testHasBot()
     {
         $this->assertTrue($this->model->hasBot(4));
-        $this->assertFalse($this->model->hasBot(31));
-        $this->queueTwitchUser(31);
+        $this->assertFalse($this->model->hasBot(33));
+        $this->queueTwitchUser(33);
         $this->model->addSubmission('freaktechnik', 1);
-        $this->assertTrue($this->model->hasBot(31));
+        $this->assertTrue($this->model->hasBot(33));
     }
 
     /**
@@ -102,15 +102,15 @@ class ModelTest extends DBTestCase
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
-        $this->queueTwitchUser("31");
+        $this->queueTwitchUser("33");
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
 
-        $this->queueTwitchUser("32");
+        $this->queueTwitchUser("34");
 
         $this->model->addSubmission("nightboot", 1);
 
-        $this->queueTwitchUser("33");
+        $this->queueTwitchUser("35");
         $this->model->addSubmission("notactuallyaboot", 44, "", "");
 
         $this->assertEquals(3, $this->getConnection()->getRowCount('submissions'), "Adding submission failed");
