@@ -357,8 +357,8 @@ class ModelTest extends DBTestCase
      */
     public function testAddCorrectionTwiceThrows()
     {
-        $this->model->addCorrection("nightbot", 2);
-        $this->model->addCorrection("nightbot", 2);
+        $this->model->addCorrection("nightbot", 0, 'lorem');
+        $this->model->addCorrection("nightbot", 0, 'lorem');
     }
 
     /**
