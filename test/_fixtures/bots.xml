@@ -454,6 +454,10 @@
             <value>checks_per_day</value>
             <value>24</value>
         </row>
+        <row>
+            <value>client-ID</value>
+            <value>loremipsum</value>
+        </row>
     </table>
     <table name="authorized_users">
         <column>id</column>
@@ -461,6 +465,12 @@
         <row>
             <value>1</value>
             <value>admin@twitchbots.info</value>
+        </row>
+    </table>
+    <table name="confirmed_people">
+        <column>twitch_id</column>
+        <row>
+            <value>100</value>
         </row>
     </table>
 </dataset>

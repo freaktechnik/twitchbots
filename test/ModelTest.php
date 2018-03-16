@@ -83,6 +83,17 @@ class ModelTest extends DBTestCase
     }
 
     /**
+     * @covers ::getClientID
+     * @uses \Mini\Model\Config::get
+     * @uses \Mini\Model\Store::prepareSelect
+     */
+    public function testGetClientID()
+    {
+        $clientID = $this->model->getClientID();
+        $this->assertEquals('loremipsum', $clientID);
+    }
+
+    /**
      * @covers ::hasBot
      * @uses \Mini\Model\Submissions::hasSubmission
      * @uses \Mini\Model\Bots::getBotByID
@@ -248,6 +259,22 @@ class ModelTest extends DBTestCase
     }
 
     /**
+     * @expectedException Exception
+     * @expectedExceptionCode 14
+     * @covers ::addSubmission
+     * @covers ::<private>
+     * @uses \Mini\Model\Bots::getBot
+     * @uses \Mini\Model\Twitch::getChannelID
+     * @uses \Mini\Model\Model::hasBot
+     * @uses \Mini\Model\Bots::getBotsByChannel
+     */
+    public function testAddSubmissionConfirmedPersonThrows()
+    {
+        $this->queueTwitchUser('100');
+        $this->model->addSubmission("bot", 22);
+    }
+
+    /**
      * @covers ::addCorrection
      * @covers ::<private>
      * @uses \Mini\Model\Bots::getBot
@@ -305,6 +332,7 @@ class ModelTest extends DBTestCase
     {
         $this->model->addCorrection("nightbot", 0, "");
     }
+
     /**
      * @expectedException Exception
      * @expectedExceptionCode 5
@@ -316,6 +344,21 @@ class ModelTest extends DBTestCase
     public function testAddCorrectionSameTypeThrows()
     {
         $this->model->addCorrection("nightbot", 1);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 11
+     * @covers ::addCorrection
+     * @covers ::<private>
+     * @uses \Mini\Model\Bots::getBot
+     * @uses \Mini\Model\Bots::getBotOrThrow
+     * @uses \Mini\Model\Twitch::getChannelID
+     */
+    public function testAddCorrectionSameTypeThrows()
+    {
+        $this->model->addCorrection("nightbot", 2);
+        $this->model->addCorrection("nightbot", 2);
     }
 
     /**
