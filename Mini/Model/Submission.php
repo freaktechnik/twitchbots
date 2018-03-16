@@ -33,4 +33,17 @@ class Submission extends Row {
     public $vods = null;
     /** @var bool|null $verified */
     public $verified = null;
+
+    public function shouldApprove(Type $type = null) : bool
+    {
+        if($this->verified && $this->type == 0) {
+            if(!is_numeric($this->description)) {
+                return $this->online === true;
+            }
+            else if ($type) {
+                return $type->customUsername === true;
+            }
+        }
+        return false;
+    }
 }

@@ -482,6 +482,7 @@ class Model
             $this->db->ping();
             $didSomething = false;
 
+            // Update bot username or get twitch id
             if(empty($submission->twitch_id)) {
                 try {
                     $submission->twitch_id = $this->twitch->getChannelID($submission->name);
@@ -512,23 +513,23 @@ class Model
                 }
             }
 
+            // Check bot verification endpoints
             if($submission->type == 0 && $this->checkVerified($submission) && !$didSomething) {
                 $didSomething = true;
             }
             if($submission->type == 0 && $this->checkBTTVBot($submission) && !$didSomething) {
                 $didSomething = true;
             }
-            if($this->checkFollowing($submission) && !$didSomething) {
-                $didSomething = true;
-            }
-            if($this->checkBio($submission) && !$didSomething) {
-                $didSomething = true;
-            }
-            if($this->checkHasVODs($submission) && !$didSomething) {
-                $didSomething = true;
+
+            // Get type if the user specified a type for the submission
+            $type = null;
+            if(is_numeric($submission->description)) {
+                $type = $this->types->getTypeOrThrow((int)$submission->description);
             }
 
+            // Update stuff that requires a channel to be set
             if(!empty($submission->channel)) {
+                // Update channel username or get twitch ID of it
                 if(empty($submission->channel_id)) {
                     try {
                         $submission->channel_id = $this->twitch->getChannelID($submission->channel);
@@ -557,74 +558,85 @@ class Model
                     }
                 }
 
-                if($this->checkFollowingChannel($submission) && !$didSomething) {
-                    $didSomething = true;
-                }
+                if(!$submission->shouldApprove($type)) {
+                    if($this->checkFollowingChannel($submission) && !$didSomething) {
+                        $didSomething = true;
+                    }
 
-                $ranModCheck = isset($submission->ismod);
-                // Update online or offline and mod if needed
-                if(!$submission->online || !isset($submission->offline)) {
-                    $live = $this->twitch->isChannelLive($submission->channel_id);
-                    if(($live && !$submission->online) || (!$live && !isset($submission->offline))) {
-                        $isMod = null;
+                    $ranModCheck = isset($submission->ismod);
+                    // Update online or offline and mod if needed
+                    if(!$submission->online || !isset($submission->offline)) {
+                        $live = $this->twitch->isChannelLive($submission->channel_id);
+                        if(($live && !$submission->online) || (!$live && !isset($submission->offline) && !$submission->verified)) {
+                            $isMod = null;
+                            try {
+                                $chatters = $this->twitch->getChatters($submission->channel);
+                                $isInChannel = $this->isInChannel($submission->name, $chatters);
+
+                                if($isInChannel && !$submission->ismod) {
+                                    $isMod = $this->isMod($submission->name, $chatters);
+                                }
+                                // Bot was not in user list and is not yet verified
+                                else if(!$ranModCheck && !$submission->verified) {
+                                    $isMod = $this->getModStatus($submission->name, $submission->channel);
+                                }
+                            }
+                            catch(Exception $e) {
+                                $isInChannel = NULL;
+                            }
+
+                            // Save the info about bot that was just acquired
+                            $this->submissions->setInChat($submission->id, $isInChannel, $live);
+                            if($live) {
+                                $submission->online = $isInChannel;
+                            }
+                            else {
+                                $submission->offline = $isInChannel;
+                            }
+
+                            if($isMod !== null) {
+                                $this->submissions->setModded($submission->id, $isMod);
+                                $submission->ismod = $isMod;
+                                $ranModCheck = true;
+                            }
+
+                            $didSomething = true;
+                        }
+                    }
+
+                    // If user wasn't in channel chat and mod not set, get mod status
+                    if(!$ranModCheck && !$submission->verified) {
                         try {
-                            $chatters = $this->twitch->getChatters($submission->channel);
-                            $isInChannel = $this->isInChannel($submission->name, $chatters);
-
-                            if($isInChannel && !$submission->ismod) {
-                                $isMod = $this->isMod($submission->name, $chatters);
-                            }
-                            else if(!$ranModCheck) {
-                                $isMod = $this->getModStatus($submission->name, $submission->channel);
-                            }
+                            $isMod = $this->getModStatus($submission->name, $submission->channel);
                         }
                         catch(Exception $e) {
-                            $isInChannel = NULL;
+                            $isMod = null;
                         }
-
-                        $this->submissions->setInChat($submission->id, $isInChannel, $live);
-                        if($live) {
-                            $submission->online = $isInChannel;
-                        }
-                        else {
-                            $submission->offline = $isInChannel;
-                        }
-
                         if($isMod !== null) {
                             $this->submissions->setModded($submission->id, $isMod);
                             $submission->ismod = $isMod;
-                            $ranModCheck = true;
                         }
-
                         $didSomething = true;
                     }
                 }
+            }
 
-                // If user wasn't in channel chat and mod not set, get mdo status
-                if(!$ranModCheck) {
-                    try {
-                        $isMod = $this->getModStatus($submission->name, $submission->channel);
-                    }
-                    catch(Exception $e) {
-                        $isMod = null;
-                    }
-                    if($isMod !== null) {
-                        $this->submissions->setModded($submission->id, $isMod);
-                        $submission->ismod = $isMod;
-                    }
+            // If the bot is not to be auto approved, get more metadata on it.
+            if(!$submission->shouldApprove($type)) {
+                if($this->checkFollowing($submission) && !$didSomething) {
+                    $didSomething = true;
+                }
+                if($this->checkBio($submission) && !$didSomething) {
+                    $didSomething = true;
+                }
+                if($this->checkHasVODs($submission) && !$didSomething) {
                     $didSomething = true;
                 }
             }
 
             if($didSomething) {
                 ++$count;
-                if(   $submission->verified
-                   && $submission->type == 0
-                   && (   (   $submission->online
-                           && !is_numeric($submission->description))
-                       || (   is_numeric($submission->description)
-                           && $this->types->getTypeOrThrow((int)$submission->description)->customUsername === true
-                  ))) {
+                if($submission->shouldApprove($type)) {
                     $this->approveSubmission($submission->id);
                 }
             }
