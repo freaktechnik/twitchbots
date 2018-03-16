@@ -339,7 +339,7 @@ class ModelTest extends DBTestCase
      * @uses \Mini\Model\Types::getTypeOrThrow
      * @uses \Mini\Model\Types::setEstimate
      */
-    public function estimateActiveChannelsMultichannel()
+    public function testEstimateActiveChannelsMultichannel()
     {
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
@@ -368,7 +368,7 @@ class ModelTest extends DBTestCase
      * @uses \Mini\Model\Types::getTypeOrThrow
      * @uses \Mini\Model\Types::setEstimate
      */
-    public function estimateActiveChannelsMultichannelMultiple()
+    public function testEstimateActiveChannelsMultichannelMultiple()
     {
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
