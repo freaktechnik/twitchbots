@@ -84,6 +84,8 @@ class ModelTest extends DBTestCase
 
     /**
      * @covers ::hasBot
+     * @uses \Mini\Model\Submissions::hasSubmission
+     * @uses \Mini\Model\Bots::getBotByID
      */
     public function testHasBot()
     {
@@ -97,6 +99,12 @@ class ModelTest extends DBTestCase
     /**
      * @covers ::addSubmission
      * @covers ::<private>
+     * @uses \Mini\Model\Twitch::getChannelID
+     * @uses \Mini\Model\Bots::getBotsByChannel
+     * @uses \Mini\Model\Bots::getBot
+     * @uses \Mini\Model\ConfirmedPeople::has
+     * @uses \Mini\Model\Submissions::append
+     * @uses ::hasBot
      */
     public function testAddSubmission()
     {
@@ -158,6 +166,9 @@ class ModelTest extends DBTestCase
      * @expectedExceptionCode 3
      * @covers ::addSubmission
      * @covers ::<private>
+     * @uses \Mini\Model\Twitch::getChannelID
+     * @uses \Mini\Model\Bots::getBot
+     * @uses ::hasBot
      */
     public function testAddExistingSubmissionThrows()
     {
@@ -171,6 +182,9 @@ class ModelTest extends DBTestCase
      * @expectedExceptionCode 3
      * @covers ::addSubmission
      * @covers ::<private>
+     * @uses \Mini\Model\Twitch::getChannelID
+     * @uses \Mini\Model\Bots::getBot
+     * @uses ::hasBot
      */
     public function testAddSubmissionExistingBotThrows()
     {
@@ -183,6 +197,7 @@ class ModelTest extends DBTestCase
      * @expectedExceptionCode 12
      * @covers ::addSubmission
      * @covers ::<private>
+     * @uses \Mini\Model\Bots::getBot
      */
     public function testAddSubmissionChannelIsBotThrows()
     {
@@ -194,6 +209,9 @@ class ModelTest extends DBTestCase
      * @expectedExceptionCode 13
      * @covers ::addSubmission
      * @covers ::<private>
+     * @uses \Mini\Model\Twitch::getChannelID
+     * @uses \Mini\Model\Bots::getBot
+     * @uses \Mini\Model\Bots::getBotsByChannel
      */
     public function testAddSubmissionBotIsChannelThrows()
     {
@@ -206,6 +224,8 @@ class ModelTest extends DBTestCase
      * @expectedExceptionCode 2
      * @covers ::addSubmission
      * @covers ::<private>
+     * @uses \Mini\Model\Twitch::getChannelID
+     * @uses \Mini\Model\Bots::getBot
      */
     public function testAddSubmissionNotOnTwitchThrows()
     {
@@ -218,6 +238,8 @@ class ModelTest extends DBTestCase
      * @expectedExceptionCode 6
      * @covers ::addSubmission
      * @covers ::<private>
+     * @uses \Mini\Model\Bots::getBot
+     * @uses \Mini\Model\Twitch::getChannelID
      */
     public function testAddSubmissionInexistentChannelThrows()
     {
@@ -228,6 +250,10 @@ class ModelTest extends DBTestCase
     /**
      * @covers ::addCorrection
      * @covers ::<private>
+     * @uses \Mini\Model\Bots::getBot
+     * @uses \Mini\Model\Bots::getBotOrThrow
+     * @uses \Mini\Model\Submissions::hasCorrection
+     * @uses \Mini\Model\Submissions::append
      */
     public function testAddCorrection()
     {
@@ -263,6 +289,8 @@ class ModelTest extends DBTestCase
      * @expectedExceptionCode 4
      * @covers ::addCorrection
      * @covers ::<private>
+     * @uses \Mini\Model\Bots::getBot
+     * @uses \Mini\Model\Bots::getBotOrThrow
      */
     public function testAddInexistingCorrectionThrows()
     {
@@ -272,7 +300,6 @@ class ModelTest extends DBTestCase
      * @expectedException Exception
      * @expectedExceptionCode 9
      * @covers ::addCorrection
-     * @covers ::<private>
      */
     public function testAddEmptyCorrectionDescriptionThrows()
     {
@@ -283,6 +310,8 @@ class ModelTest extends DBTestCase
      * @expectedExceptionCode 5
      * @covers ::addCorrection
      * @covers ::<private>
+     * @uses \Mini\Model\Bots::getBot
+     * @uses \Mini\Model\Bots::getBotOrThrow
      */
     public function testAddCorrectionSameTypeThrows()
     {
@@ -378,7 +407,7 @@ class ModelTest extends DBTestCase
 
     /**
      * @expectedException Exception
-     * @covers ::getSwords
+     * @covers ::estimateActiveChannels
      * @covers ::<private>
      * @uses \Mini\Model\Bots::getCount
      * @uses \Mini\Model\Bots::getBotsByType
