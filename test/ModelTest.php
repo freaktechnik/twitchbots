@@ -331,6 +331,14 @@ class ModelTest extends DBTestCase
         $this->assertEquals('https://twitchstuff.3v.fi/modlookup/api/user/test?limit=100&offset=0', $latestRequest['request']->getRequestTarget());
     }
 
+    /**
+     * @covers ::estimateActiveChannels
+     * @covers ::<private>
+     * @uses \Mini\Model\Bots::getCount
+     * @uses \Mini\Model\Bots::getBotsByType
+     * @uses \Mini\Model\Types::getTypeOrThrow
+     * @uses \Mini\Model\Types::setEstimate
+     */
     public function estimateActiveChannelsMultichannelMultiple()
     {
         $this->httpMock->append(new Response(200, [], json_encode([
