@@ -408,6 +408,8 @@ class ModelTest extends DBTestCase
         $this->assertEquals(2, $type->channelsEstimate);
 
         $this->assertEquals($preCount + 3, count($this->httpHistory));
+
+        // The requests in reverse.
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
@@ -456,8 +458,7 @@ class ModelTest extends DBTestCase
 
         $expectedCount = $this->model->bots->getCount(22);
         $type = $this->model->types->getTypeOrThrow(22);
-        $this->assertEquals($expectedCount, $type->channelsEstimate);
+        // One duplicate channel param in fixture
+        $this->assertEquals($expectedCount - 1, $type->channelsEstimate);
     }
-
-    //TODO test deduplicating channels without multi channel type
 }
