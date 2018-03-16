@@ -372,10 +372,19 @@ class ModelTest extends DBTestCase
     {
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
-            'count' => 100,
+            'count' => 101,
             'channels' => [
                 [
                     'name' => 'foo',
+                ],
+            ],
+        ])));
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'status' => 200,
+            'count' => 101,
+            'channels' => [
+                [
+                    'name' => 'bar',
                 ],
             ],
         ])));
@@ -398,11 +407,16 @@ class ModelTest extends DBTestCase
         $type = $this->model->types->getTypeOrThrow(37);
         $this->assertEquals(2, $type->channelsEstimate);
 
-        $this->assertEquals($preCount + 2, count($this->httpHistory));
+        $this->assertEquals($preCount + 3, count($this->httpHistory));
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
         $this->assertEquals('/modlookup/api/user/foo?limit=100&offset=0', $latestRequest['request']->getRequestTarget());
+
+        /** @var \GuzzleHttp\Psr7\Request $latestRequest */
+        $latestRequest = array_pop($this->httpHistory);
+
+        $this->assertEquals('/modlookup/api/user/bar?limit=100&offset=100', $latestRequest['request']->getRequestTarget());
 
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
