@@ -393,7 +393,7 @@ class ModelTest extends DBTestCase
         ])));
         $preCount = count($this->httpHistory);
 
-        $response = $this->model->estimateActiveChannels();
+        $response = $this->model->estimateActiveChannels(37);
 
         $type = $this->model->types->getTypeOrThrow(1);
         $this->assertEquals(2, $type->channelsEstimate);
