@@ -340,6 +340,7 @@
             <value>ncsmusicbot</value>
             <value>22</value>
             <value>foo</value>
+            <value>42</value>
         </row>
         <row>
             <value>15</value>
@@ -356,6 +357,7 @@
             <value>pugbot</value>
             <value>22</value>
             <value>foo</value>
+            <value>42</value>
         </row>
         <row>
             <value>18</value>

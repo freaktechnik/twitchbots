@@ -434,7 +434,7 @@ class ModelTest extends DBTestCase
      * @uses \Mini\Model\Bots::getBotsByType
      * @uses \Mini\Model\Types::getTypeOrThrow
      */
-    public function testGetSwordsError()
+    public function testEstimateActiveChannelsError()
     {
         $this->httpMock->append(new Response(403, [], json_encode([
             'status' => 403,
@@ -452,7 +452,7 @@ class ModelTest extends DBTestCase
      * @uses \Mini\Model\Types::getTypeOrThrow
      * @uses \Mini\Model\Types::setEstimate
      */
-    public function testGetSwordsPagination()
+    public function testEstimateActiveChannelsLocal()
     {
         $response = $this->model->estimateActiveChannels(22);
 
