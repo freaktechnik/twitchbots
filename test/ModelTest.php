@@ -355,7 +355,7 @@ class ModelTest extends DBTestCase
      * @uses \Mini\Model\Bots::getBotOrThrow
      * @uses \Mini\Model\Twitch::getChannelID
      */
-    public function testAddCorrectionSameTypeThrows()
+    public function testAddCorrectionTwiceThrows()
     {
         $this->model->addCorrection("nightbot", 2);
         $this->model->addCorrection("nightbot", 2);
