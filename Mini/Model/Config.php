@@ -11,11 +11,11 @@ namespace Mini\Model;
 use PDO;
 
 class Config extends Store {
-    private static $shema = [
+    private static $schema = [
         "3v-ua" => "string",
         "client-ID" => "string",
         "auth0_clientId" => "string",
-        "auth0_clientSecret" => "string",
+        "auth0_clientSecret" => "password",
         "auth0_domain" => "string",
         "auth0_redirectUrl" => "string",
         "checks_per_day" => "number"
