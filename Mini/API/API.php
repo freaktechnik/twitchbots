@@ -181,7 +181,7 @@ class API {
                 self::LINK_SELF => $this->fullUrlFor('type', [
                     'type' => $type->id
                 ]),
-                'bots' => $this->fullUrlFor('types').'?'.self::PARAM_TYPE.'='.$type->id,
+                'bots' => $this->fullUrlFor('bots').'?'.self::PARAM_TYPE.'='.$type->id,
                 self::LINK_WEB => $this->webUrl().'types/'.$type->id,
                 self::LINK_DOCUMENTATION => $this->webUrl().'api#type_id',
             ],
