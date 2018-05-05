@@ -207,7 +207,9 @@ class API {
 
     private function addEndpoint(string $path, callable $cbk) : \Slim\Route
     {
-        return $this->app->get($path, $cbk, [$this, 'sendResponse']);
+        return $this->app->get($path, $cbk, function() {
+            $this->sendResponse();
+        });
     }
 
     private function sendError(int $code, string $error)
