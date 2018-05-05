@@ -314,7 +314,7 @@ class API {
 
         $this->result = self::formatList(array_map([$this, 'formatBot'], $bots), 'bots', $total, [
             self::LINK_SELF => $this->fullUrlFor('bots').'?'.self::buildUrlParams($params),
-            self::LINK_WEB => $this->webUrl().($type != 0 ? '?type='.$type : ''),
+            self::LINK_WEB => $this->webUrl().'bots'.($type != 0 ? '?type='.$type : ''),
             self::LINK_DOCUMENTATION => $this->webUrl().'api#bot',
         ]);
     }
