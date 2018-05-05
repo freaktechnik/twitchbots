@@ -110,7 +110,24 @@ class API {
         return implode('&', $particles);
     }
 
-    private static function formatBot(Bot $bot) : array
+    private static function formatList(array $list, string $listName, int $total, array $links = []): array
+    {
+        $offset = self::getOffset();
+        $limit = self::getLimit();
+        if(array_key_exists(self::LINK_SELF, $links)) {
+            $baseUrl = $links[self::LINK_SELF].'&'.self::PARAM_OFFSET.'=';
+            $links[self::LINK_PREV] = $baseUrl.($offset > 0 ? max([ 0, $offset - $limit ]) : 'null');
+            $links[self::LINK_NEXT] = $baseUrl.($offset < $total - $limit && $total > $limit ? min([ $total - $limit, $offset + $limit ]) : 'null');
+            $links[self::LINK_SELF] = $baseUrl.$offset;
+        }
+        return [
+            'total' => $total,
+            $listName => $list,
+            self::PROP_LINKS => $links,
+        ];
+    }
+
+    private function formatBot(Bot $bot) : array
     {
         $links = [
             self::LINK_SELF => $this->fullUrlFor('bot', [
@@ -141,7 +158,7 @@ class API {
         ];
     }
 
-    private static function formatType(Type $type) : array
+    private function formatType(Type $type) : array
     {
         return [
             'id' => $type->id,
@@ -167,23 +184,6 @@ class API {
                 self::LINK_WEB => $this->webUrl().'types/'.$type->id,
                 self::LINK_DOCUMENTATION => $this->webUrl().'api#type_id',
             ],
-        ];
-    }
-
-    private static function formatList(array $list, string $listName, int $total, array $links = []): array
-    {
-        $offset = self::getOffset();
-        $limit = self::getLimit();
-        if(array_key_exists(self::LINK_SELF, $links)) {
-            $baseUrl = $links[self::LINK_SELF].'&'.self::PARAM_OFFSET.'=';
-            $links[self::LINK_PREV] = $baseUrl.($offset > 0 ? max([ 0, $offset - $limit ]) : 'null');
-            $links[self::LINK_NEXT] = $baseUrl.($offset < $total - $limit && $total > $limit ? min([ $total - $limit, $offset + $limit ]) : 'null');
-            $links[self::LINK_SELF] = $baseUrl.$offset;
-        }
-        return [
-            'total' => $total,
-            $listName => $list,
-            self::PROP_LINKS => $links,
         ];
     }
 
@@ -268,7 +268,7 @@ class API {
         $bots = $this->model->bots->getBotsByChannelID($channelID);
         $total = count($bots);
 
-        $this->result = $this->formatList(array_map([self::class, 'formatBot'], $bots), 'bots', $total, [
+        $this->result = self::formatList(array_map([$this, 'formatBot'], $bots), 'bots', $total, [
             self::LINK_SELF => $this->fullUrlFor('channel', [
                 'channelID' => $channelID
             ]).'?'.self::PARAM_LIMIT.'='.$limit,
@@ -311,7 +311,7 @@ class API {
             $params[self::PARAM_IDS] = implode(',', $ids);
         }
 
-        $this->result = $this->formatList(array_map([self::class, 'formatBot'], $bots), 'bots', $total, [
+        $this->result = self::formatList(array_map([$this, 'formatBot'], $bots), 'bots', $total, [
             self::LINK_SELF => $this->fullUrl('bots').'?'.self::buildUrlParams($params),
             self::LINK_WEB => $this->webUrl().($type != 0 ? '?type='.$type : ''),
             self::LINK_DOCUMENTATION => $this->webUrl().'api#bot',
@@ -349,7 +349,7 @@ class API {
             $params[self::PARAM_IDS] = implode(',', $ids);
         }
 
-        $this->result = $this->formatList(array_map([self::class, 'formatType'], $types), 'types', $total, [
+        $this->result = self::formatList(array_map([$this, 'formatType'], $types), 'types', $total, [
             self::LINK_SELF => $this->fullUrlFor('types').'?'.self::buildUrlParams($params),
             self::LINK_WEB => $this->webUrl().'types?disabled='.self::boolToParam($includeDisabled),
             self::LINK_DOCUMENTATION => $this->webUrl().'api#type',
