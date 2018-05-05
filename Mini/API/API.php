@@ -117,8 +117,8 @@ class API {
         $limit = self::getLimit();
         if(array_key_exists(self::LINK_SELF, $links)) {
             $baseUrl = $links[self::LINK_SELF].'&'.self::PARAM_OFFSET.'=';
-            $links[self::LINK_PREV] = $baseUrl.($offset > 0 ? max([ 0, $offset - $limit ]) : 'null');
-            $links[self::LINK_NEXT] = $baseUrl.($offset < $total - $limit && $total > $limit ? min([ $total - $limit, $offset + $limit ]) : 'null');
+            $links[self::LINK_PREV] = ($offset > 0 ? $baseUrl.max([ 0, $offset - $limit ]) : null);
+            $links[self::LINK_NEXT] = ($offset < $total - $limit && $total > $limit ? $baseUrl.min([ $total - $limit, $offset + $limit ]) : null);
             $links[self::LINK_SELF] = $baseUrl.$offset;
         }
         return [
