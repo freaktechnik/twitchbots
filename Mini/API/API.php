@@ -10,6 +10,7 @@ use \Slim\Slim;
 class API {
     const LIMIT = 100;
     const LAST_MODIFIED = 1525540985; // 2018-05-05T19:23:XX+0200
+    const NAME_PREFIX = 'v2';
 
     const PARAM_LIMIT = 'limit';
     const PARAM_OFFSET = 'offset';
@@ -48,24 +49,24 @@ class API {
                 $this->addEndpoint('/', function() {
                     $type = $_GET[self::PARAM_TYPE] ?? 0;
                     $this->getBots(self::getOffset(), self::getLimit(), $type, self::getBooleanParam(self::PARAM_MULTICHANNEL), self::getIncludeDisabled(), self::getIDs());
-                })->name('bots');
+                })->name(self::NAME_PREFIX.'bots');
                 $this->addEndpoint('/:channelID', function(string $channelID) {
                     $this->getBot($channelID);
-                })->name('bot');
+                })->name(self::NAME_PREFIX.'bot');
             });
             $this->app->group('/type', function() {
                 $this->addEndpoint('/', function() {
                     $this->getTypes(self::getOffset(), self::getLimit(), self::getIncludeDisabled(), self::getIDs());
-                })->name('types');
+                })->name(self::NAME_PREFIX.'types');
                 $this->addEndpoint('/:type', function(string $type) {
                     $this->getType((int)$type);
-                })->name('type')->conditions([ 'type' => '[1-9][0-9]*' ]);
+                })->name(self::NAME_PREFIX.'type')->conditions([ 'type' => '[1-9][0-9]*' ]);
             });
 
             $this->app->group('/channel', function() {
                 $this->addEndpoint('/:channelID/bots', function(string $channelID) {
                     $this->getBotsForChannel(self::getOffset(), self::getLimit(), $channelID);
-                })->name('channel');
+                })->name(self::NAME_PREFIX.'channel');
             });
         });
     }
@@ -235,7 +236,7 @@ class API {
 
     private function fullUrlFor(string $name, array $params = []) : string
     {
-        return $this->app->request->getUrl().$this->app->urlFor($name, $params);
+        return $this->app->request->getUrl().$this->app->urlFor(self::NAME_PREFIX.$name, $params);
     }
 
     private function webUrl() : string
