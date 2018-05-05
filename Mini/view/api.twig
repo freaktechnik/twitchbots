@@ -1,4 +1,5 @@
 {% import "_alerts.twig" as alerts %}
+{% import "_type.twig" as typeUtils %}
 {% extends "_base.twig" %}
 {% block title %}API{% endblock %}
 {% block extraresources %}
@@ -164,6 +165,18 @@
         <p>Replace <code>:id</code> with the id of the type you want to get.</p>
         <section>
             <h4>Response</h4>
+            <p>Values for the <code>businessModel<code> key (number or null):</p>
+            <ol start="0">
+            {%- for i in 0..3 -%}
+                <li>{{ typeUtils.businessModel(i) }}</li>
+            {%- endfor -%}
+            </ol>
+            <p>Values for the <code>apiVersion</code> key (number or null):</p>
+            <ol start="0">
+            {%- for i in 0..5 -%}
+                <li>{{ typeUtils.apiVersion(i) }}</li>
+            {%- endfor -%}
+            </ol>
             <code>GET {{apiUrl}}/v2/type/1</code>
 {{ "{
     \"id\": 1,
