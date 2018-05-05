@@ -268,4 +268,17 @@ class Bots extends PaginatingStore {
         }
         return $bot;
     }
+
+    /**
+     * @return Bot[]
+     */
+    public function getBotsByChannelID(string $channelID): array
+    {
+        $where = "WHERE channel_id=?";
+        $query = $this->prepareSelect("*", $where);
+        $query->execute([ $channelID ]);
+
+        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
+        return $query->fetchAll();
+    }
 }

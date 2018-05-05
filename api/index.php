@@ -2,6 +2,8 @@
 
 /******************************* LOADING & INITIALIZING BASE APPLICATION ****************************************/
 
+use Mini\API\API;
+
 // Load Composer's PSR-4 autoloader (necessary to load Slim, Mini etc.)
 require '../vendor/autoload.php';
 
@@ -45,7 +47,7 @@ $app->configureMode('development', function () use ($app) {
             'db_name' => $db,
             'db_user' => $db_user,
             'db_pass' => $db_pw,
-            'page_size' => 100
+            'page_size' => \Mini\API\API::LIMIT,
         ),
         'webUrl' => $app->request->getUrl().dirname($app->request->getRootUri(), 1).'/public/'
     ));
@@ -79,8 +81,6 @@ $model = new \Mini\Model\Model($app->config('model'), $client);
 
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
-// This API only returns JSON
-$app->contentType('application/json;charset=utf8');
 $app->response->headers->set('Access-Control-Allow-Origin', '*');
 
 $returnError = function(int $code, string $msg) {
@@ -98,8 +98,13 @@ $app->error(function ()  use ($returnError) {
     echo $returnError(500, 'Internal server error');
 });
 
+// Set up API v2
+$api = new API($model, $app);
+
 $app->group('/v1', function ()  use ($app, $model, $returnError) {
     $lastModified = 1451582891;
+    // This API only returns JSON
+    $app->contentType('application/json;charset=utf8');
 
     $apiUrl = function($path = null) use ($app) {
         if($path == null)
@@ -121,7 +126,6 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                 'type' => $url.'type/',
                 'self' => $url,
                 'web' => $app->config('webUrl'),
-                'documentation' => $app->config('webUrl').'api'
             )
         );
         echo json_encode($index);
@@ -133,7 +137,7 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             $bot->username = $bot->name;
             $bot->_links = array(
                 'self' => $fullUrlFor('bot', array('name' => $bot->name)),
-                'web' => $app->config('webUrl').'bots/'.$bot->name
+                'web' => $app->config('webUrl').'bots/'.$bot->name,
             );
             if(isset($bot->type))
                 $bot->_links['type'] = $fullUrlFor('type', array('id' => $bot->type));
@@ -169,7 +173,6 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                     'prev' => null,
                     'self' => $url.'?bots='.$_GET['bots'].'&offset='.$offset.'&limit='.$limit,
                     'web' => $app->config('webUrl').'bots',
-                    'documentation' => $app->config('webUrl').'api#bot'
                 )
             );
 
@@ -212,7 +215,6 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                     'prev' => null,
                     'self' => $url.'?offset='.$offset.'&limit='.$limit.$typeParam,
                     'web' => $app->config('webUrl').'bots',
-                    'documentation' => $app->config('webUrl').'api#bot_all'
                 )
             );
 
@@ -242,7 +244,6 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             $bot->_links = array(
                 'self' => $apiUrl(),
                 'web' => $app->config('webUrl').'bots/'.$bot->name,
-                'documentation' => $app->config('webUrl').'api#bot_name'
             );
             if(isset($bot->type))
                 $bot->_links['type'] = $fullUrlFor('type', array('id' => $bot->type));
@@ -262,7 +263,6 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                     'type' => $fullUrlFor('type', array('id' => '{id}')),
                     'self' => $apiUrl(),
                     'web' => $app->config('webUrl').'types',
-                    'documentation' => $app->config('webUrl').'api'
                 )
             );
 
@@ -287,7 +287,6 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
                 'self' => $apiUrl(),
                 'bots' => $fullUrlFor('allbots').'?type='.$id,
                 'web' => $app->config('webUrl').'types/'.$id,
-                'documentation' => $app->config('webUrl').'api#type_id'
             );
 
             echo json_encode($type);
