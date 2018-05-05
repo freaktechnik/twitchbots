@@ -207,10 +207,8 @@ class API {
 
     private function addEndpoint(string $path, callable $cbk) : \Slim\Route
     {
-        \Closure::bind($cbk, $this);
-        $boundSendResponse = function() {
-            $args = func_get_args();
-            call_user_func_array($cbk, $args);
+        $boundSendResponse = function(...$args) use($cbk) {
+            $cbk(...$args);
             $this->sendResponse();
         };
         \Closure::bind($boundSendResponse, $this);
