@@ -43,27 +43,27 @@ class API {
         $this->app->contentType('application/json;charset=utf8');
         $this->app->expires('+1 day');
 
-        $this->app->group('/v2', function() {
-            $this->app->group('/bot', function() {
-                $this->addEndpoint('/', function() {
+        $this->app->group('/v2', function() use($this) {
+            $this->app->group('/bot', function() use($this) {
+                $this->addEndpoint('/', function() use($this) {
                     $type = $_GET[self::PARAM_TYPE] ?? 0;
                     $this->getBots(self::getOffset(), self::getLimit(), $type, self::getBooleanParam(self::PARAM_MULTICHANNEL), self::getIncludeDisabled(), self::getIDs());
                 })->name('bots');
-                $this->addEndpoint('/:channelID', function(string $channelID) {
+                $this->addEndpoint('/:channelID', function(string $channelID) use($this) {
                     $this->getBot($channelID);
                 })->name('bot');
             });
-            $this->app->group('/type', function() {
-                $this->addEndpoint('/', function() {
+            $this->app->group('/type', function() use($this) {
+                $this->addEndpoint('/', function() use($this) {
                     $this->getTypes(self::getOffset(), self::getLimit(), self::getIncludeDisabled(), self::getIDs());
                 })->name('types');
-                $this->addEndpoint('/:type', function(string $type) {
+                $this->addEndpoint('/:type', function(string $type) use($this) {
                     $this->getType((int)$type);
                 })->name('type')->conditions([ 'type' => '[1-9][0-9]*' ]);
             });
 
-            $this->app->group('/channel', function() {
-                $this->addEndpoint('/:channelID/bots', function(string $channelID) {
+            $this->app->group('/channel', function() use($this) {
+                $this->addEndpoint('/:channelID/bots', function(string $channelID) use($this) {
                     $this->getBotsForChannel(self::getOffset(), self::getLimit(), $channelID);
                 })->name('channel');
             });
@@ -207,7 +207,7 @@ class API {
 
     private function addEndpoint(string $path, callable $cbk) : \Slim\Route
     {
-        return $this->app->get($path, $cbk, function() {
+        return $this->app->get($path, $cbk, function() use($this) {
             $this->sendResponse();
         });
     }
