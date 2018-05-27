@@ -93,6 +93,7 @@ $model = new \Mini\Model\Model($app->config('database'), $client);
 /************************************ THE ROUTES / CONTROLLERS *************************************************/
 
 $app->view->getEnvironment()->addGlobal('canonicalUrl', $app->config('canonicalUrl'));
+$app->view->getEnvironment()->addGlobal('baseUrl', 'https://'.$app->request->getHost());
 
 $lastUpdate = 1456073551;
 
