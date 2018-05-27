@@ -9,7 +9,7 @@
         <title>{% block title %}{% endblock %} - Twitch Bot Directory</title>
 
         <!-- Bootstrap -->
-        <link href="{{ siteUrl("/assets/require.css") }}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{{ siteUrl("/assets/require.css") }}" type="text/css">
         <script data-main="assets/main.js" src="{{ siteUrl("/assets/require.js") }}"></script>
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -30,6 +30,7 @@
 
         <meta name="msapplication-TileImage" content="{{ siteUrl("img/mstile-150x150.png")|e('html_attr') }}">
         <meta name="msapplication-TileColor" content="#9DA7EB">
+        <meta name="theme-color" content="#9DA7EB">
 
         {% block extraresources %}{% endblock %}
     </head>
