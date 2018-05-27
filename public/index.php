@@ -689,6 +689,11 @@ $app->get('/apis.json', function () use ($app, $lastUpdate) {
     echo json_encode($spec);
 });
 
+$app->get('/opensearch.xml', function () use ($app) {
+    $app->contentType("application/opensearchdescription+xml");
+    $app->render('opensearch.twig');
+})->name('opensearch');
+
 /******************************************* RUN THE APP *******************************************************/
 
 $app->run();
