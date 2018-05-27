@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
     <ShortName>Check Bot</ShortName>
     <LongName>Twitch Bot Directory Check</LongName>
     <Description>Look for known Twitch bots in the Twitch Bot Directory.</Description>
     <Tags>twitch bot</Tags>
     <Contact>contact@twitchbots.info</Contact>
     <Url type="text/html"
-       template="{{ urlFor('check') }}?username={searchTerms}"/>
+       template="{{ canonicalUrl }}{{ urlFor('check') }}">
+        <Param name="username" value="{searchTerms}"/>
+    </Url>
     <Url type="application/opensearchdescription+xml"
        rel="self"
-       template="{{ urlFor('opensearch') }}"/>
+       template="{{ canonicalUrl }}{{ urlFor('opensearch') }}"/>
     <Image height="16" width="16" type="image/png">{{ siteUrl("/img/favicon-16x16.png") }}</Image>
     <Image height="144" width="144" type="image/png">{{ siteUrl("/img/android-chrome-144x144.png") }}</Image>
     <Image height="150" width="150" type="image/png">{{ siteUrl("/img/mstile-150x150.png") }}</Image>
@@ -21,4 +24,5 @@
     <Language>en</Language>
     <OutputEncoding>UTF-8</OutputEncoding>
     <InputEncoding>UTF-8</InputEncoding>
+    <moz:SearchForm>{{ canonicalUrl }}{{ urlFor('check') }}</moz:SearchForm>
 </OpenSearchDescription>
