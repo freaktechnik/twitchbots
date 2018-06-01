@@ -69,7 +69,7 @@ class Store {
         return $query;
     }
 
-    public function getCount(ListDescriptor $descriptor = NULL): int
+    public function getCount(ListDescriptor $descriptor = null): int
     {
         if(!$descriptor) {
             $descriptor = new ListDescriptor();

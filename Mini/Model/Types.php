@@ -45,7 +45,7 @@ class Types extends PaginatingStore {
         parent::__construct($db, "types", $pageSize);
     }
 
-    public function getCount($hideDisabled = false): int
+    public function getCount($hideDisabled = null): int
     {
         if(!$hideDisabled || $hideDisabled instanceof ListDescriptor) {
             return parent::getCount();

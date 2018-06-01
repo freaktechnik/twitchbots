@@ -36,7 +36,7 @@ class Bots extends PaginatingStore {
      * @param int|ListDescriptor $type
      * @return int
      */
-    public function getCount($type = 0): int
+    public function getCount($type = null): int
     {
         if($type instanceof ListDescriptor) {
             return parent::getCount($type);
@@ -44,6 +44,7 @@ class Bots extends PaginatingStore {
 
         $where = "";
         $params = [];
+        $type = $type ?? 0;
         if($type == -1) {
             $where = "WHERE type IS NULL";
         }
