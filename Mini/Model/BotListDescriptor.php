@@ -37,8 +37,7 @@ class BotListDescriptor extends ListDescriptor
                 $this->addParam($this->type, PDO::PARAM_INT);
             }
             else {
-                $where[] = '`type` IS ?';
-                $this->addParam(null, PDO::PARAM_NULL);
+                $where[] = '`type` IS null';
             }
         }
 
