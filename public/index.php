@@ -654,49 +654,60 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getTemplateLastMod, $ge
     echo $sitemap->asXML();
 });
 
-$app->get('/apis.json', function () use ($app, $lastUpdate) {
-    $app->lastModified($lastUpdate);
+$app->get('/apis.json', function () use ($app) {
+    $lastApiUpdate = 1527896657;
+    $app->lastModified($lastApiUpdate);
     $app->expires('+1 week');
 
     $app->contentType('application/json;charset=utf8');
     $app->response->headers->set('Access-Control-Allow-Origin', '*');
 
-    $martin = array(
+    $martin = [
         "FN" => "Martin Giger",
         "email" => "martin@humanoids.be",
         "url" => "https://humanoids.be",
         "X-twitter" => "freaktechnik",
         "X-github" => "freaktechnik"
-    );
-    $tags = array("twitch", "chat", "bot", "stream", "spam", "mod", "coin", "token", "vanity");
+    ];
+    $tags = [ "twitch", "chat", "bot", "stream", "spam", "mod", "coin", "token", "vanity" ];
 
-    $spec = array(
+    $spec = [
         "name" => "Twitch Bot Directory",
         "description" => "Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots indexed are service or moderator bots.",
         "url" => $app->config('canonicalUrl')."apis.json",
         "tags" => $tags,
-        "image" => "https://i.imgur.com/oRoYDOd.png",
+        "image" => $app->config('canonicalUrl')."/img/icon.svg",
         "created" => "2016-02-14",
-        "modified" => date('Y-m-d', $lastUpdate),
-        "specificationVersion" => "0.14",
-        "apis" => array(
-            array(
+        "modified" => date('Y-m-d', $lastApiUpdate),
+        "specificationVersion" => "0.15",
+        "apis" => [
+            [
                 "name" => "Twitch Bots API",
                 "description" => "Check if a Twitch user is a bot and if it is a bot, what kind of bot it is.",
                 "humanURL" => $app->config('canonicalUrl').'api',
-                "baseURL" => $app->config('apiUrl'),
+                "baseURL" => $app->config('apiUrl').'/v2',
+                "version" => "v2",
+                "tags" => $tags,
+                "image" => $app->config('canonicalUrl')."/img/icon.svg",
+                "properties" => [],
+                "contact" => [ $martin ]
+            ],
+            [
+                "name" => "Twitch Bots API",
+                "description" => "Check if a Twitch user is a bot and if it is a bot, what kind of bot it is.",
+                "baseURL" => $app->config('apiUrl').'/v1',
                 "version" => "v1",
                 "tags" => $tags,
-                "image" => "https://i.imgur.com/oRoYDOd.png",
-                "properties" => array(),
-                "contact" => array( $martin )
-            )
-        ),
-        "maintainers" => array( $martin )
-    );
+                "image" => $app->config('canonicalUrl')."/img/icon.svg",
+                "properties" => [],
+                "contact" => [ $martin ]
+            ]
+        ],
+        "maintainers" => [ $martin ]
+    ];
 
     echo json_encode($spec);
-});
+})->name('apisjson');
 
 $app->get('/opensearch.xml', function () use ($app) {
     $app->contentType("application/opensearchdescription+xml");

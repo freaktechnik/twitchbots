@@ -10,8 +10,6 @@ use \Slim\Slim;
 use Mini\Model\BotListDescriptor;
 use Mini\Model\TypeListDescriptor;
 
-//TODO update API discovery thingies.
-
 class API {
     const LIMIT = 100;
     const LAST_MODIFIED = 1525540985; // 2018-05-05T19:23:XX+0200
