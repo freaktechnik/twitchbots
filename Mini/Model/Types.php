@@ -78,8 +78,7 @@ class Types extends PaginatingStore {
         $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = table.id WHERE enabled=1 GROUP BY table.id ORDER BY ".$orderBy." ".$dir.", table.name ASC");
         $query->execute();
 
-        $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_CLASS, Type::class);
     }
 
     /**
@@ -95,8 +94,7 @@ class Types extends PaginatingStore {
             $query = $this->prepareSelect("`table`.*, COUNT(DISTINCT(bots.name)) AS count", "LEFT JOIN bots on bots.type = `table`.id $where GROUP BY `table`.id ORDER BY `table`.name ASC LIMIT :start,:stop");
             $this->doPagination($query, $this->getOffset($page));
             $query->execute();
-            $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
-            return $query->fetchAll();
+            return $query->fetchAll(PDO::FETCH_CLASS, Type::class);
         }
         return [];
     }
@@ -162,7 +160,6 @@ class Types extends PaginatingStore {
     {
         $query = $this->prepareList($descriptor);
 
-        $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_CLASS, Type::class);
     }
 }

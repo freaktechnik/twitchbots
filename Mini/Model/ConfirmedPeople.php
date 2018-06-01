@@ -23,8 +23,7 @@ class ConfirmedPeople extends Store {
         $query = $this->prepareSelect("`table`.twitch_id");
         $query->execute();
 
-        $query->setFetchMode(PDO::FETCH_CLASS, ConfirmedPerson::class);
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_CLASS, ConfirmedPerson::class);
     }
 
     public function has(string $id)

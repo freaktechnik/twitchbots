@@ -57,8 +57,7 @@ class Submissions extends PaginatingStore {
         }
         $query->execute();
 
-        $query->setFetchMode(PDO::FETCH_CLASS, Submission::class);
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_CLASS, Submission::class);
     }
 
     /**

@@ -38,8 +38,7 @@ class Bots extends PaginatingStore {
             $query = $this->prepareSelect("*", "LIMIT :start,:stop", "list");
             $this->doPagination($query, $this->getOffset($page));
             $query->execute();
-            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
-            return $query->fetchAll();
+            return $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
         }
         return [];
     }
@@ -54,8 +53,7 @@ class Bots extends PaginatingStore {
             $query = $this->prepareSelect("*", "LIMIT :start,:stop");
             $this->doPagination($query, $offset, $limit);
             $query->execute();
-            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
-            return $query->fetchAll();
+            return $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
         }
         return [];
     }
@@ -74,8 +72,7 @@ class Bots extends PaginatingStore {
             $this->doPagination($query, $offset, $limit, 1, 2);
             $query->execute();
 
-            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
-            $result = $query->fetchAll();
+            $result = $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
             $this->cleanUpTempTable($tempTable);
 
             return $result;
@@ -98,8 +95,7 @@ class Bots extends PaginatingStore {
             $this->doPagination($query, $offset, $limit);
             $query->bindValue(":type", $type, PDO::PARAM_INT);
             $query->execute();
-            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
-            return $query->fetchAll();
+            return $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
         }
         return [];
     }
@@ -116,8 +112,7 @@ class Bots extends PaginatingStore {
             $query = $this->prepareSelect("*", "WHERE type IS NULL ORDER BY name, channel, cdate LIMIT :start,:stop");
             $this->doPagination($query, $offset, $limit);
             $query->execute();
-            $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
-            return $query->fetchAll();
+            return $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
         }
         return [];
     }
@@ -183,8 +178,7 @@ class Bots extends PaginatingStore {
         $query = $this->prepareSelect("*", $where);
         $query->execute([ $channel ]);
 
-        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
     }
 
     /**
@@ -196,8 +190,7 @@ class Bots extends PaginatingStore {
         $query->bindValue(1, $count, PDO::PARAM_INT);
         $query->execute();
 
-        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
     }
 
     /**
@@ -212,7 +205,7 @@ class Bots extends PaginatingStore {
             $sql = "date=NOW(), ".$sql;
         }
         $query = $this->prepareUpdate($sql);
-        $query->execute(array($id));
+        $query->execute([ $id ]);
     }
 
     public function updateBot(Bot $updatedBot)
@@ -258,8 +251,7 @@ class Bots extends PaginatingStore {
         $query = $this->prepareSelect("*", $where);
         $query->execute([ $channelID ]);
 
-        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
     }
 
     /**
@@ -270,7 +262,6 @@ class Bots extends PaginatingStore {
     {
         $query = $this->prepareList($descriptor);
 
-        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
     }
 }
