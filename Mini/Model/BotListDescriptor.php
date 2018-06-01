@@ -34,10 +34,10 @@ class BotListDescriptor extends ListDescriptor
         if($this->type) {
             $where[] = 'table.type=?';
             if($this->type > 0) {
-                $this->addParam($this->type, PDO::TYPE_INT);
+                $this->addParam($this->type, PDO::PARAM_INT);
             }
             else {
-                $this->addParam(null, PDO::TYPE_NULL);
+                $this->addParam(null, PDO::PARAM_NULL);
             }
         }
 
