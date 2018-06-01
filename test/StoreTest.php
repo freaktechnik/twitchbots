@@ -71,7 +71,7 @@ class StoreTest extends DBTestCase
 
     public function testGetCount()
     {
-        $botCount = $this->store->getCount('config');
+        $botCount = $this->store->getCount();
         $this->assertEquals($this->getConnection()->getRowCount('config'), $botCount);
     }
 

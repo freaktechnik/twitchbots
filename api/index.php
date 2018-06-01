@@ -4,6 +4,8 @@
 
 use Mini\API\API;
 
+use Mini\Model\BotListDescriptor;
+
 // Load Composer's PSR-4 autoloader (necessary to load Slim, Mini etc.)
 require '../vendor/autoload.php';
 
@@ -193,7 +195,9 @@ $app->group('/v1', function ()  use ($app, $model, $returnError) {
             if(isset($_GET['type'])) {
                 $app->lastModified(max(array($lastModified, $botsModel->getLastUpdate($_GET['type']))));
                 $bots = $botsModel->getBotsByType($_GET['type'], $offset, $limit);
-                $botCount = $botsModel->getCount($_GET['type']);
+                $descriptor = new BotListDescriptor();
+                $descriptor->type = $_GET['type'];
+                $botCount = $botsModel->getCount($descriptor);
                 $typeParam = '&type='.$_GET['type'];
             }
             else {

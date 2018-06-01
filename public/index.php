@@ -2,6 +2,8 @@
 
 /******************************* LOADING & INITIALIZING BASE APPLICATION ****************************************/
 
+use Mini\Model\BotListDescriptor;
+
 // Load Composer's PSR-4 autoloader (necessary to load Slim, Mini etc.)
 require '../vendor/autoload.php';
 
@@ -305,15 +307,19 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
 
         $currentType = $_GET['type'];
         if($currentType === 'null') {
-          $pageCount = $model->bots->getPageCount(null, $model->bots->getCount(-1));
-          $currentType = null;
+            $descriptor = new BotListDescriptor();
+            $descriptor->type = -1;
+            $pageCount = $model->bots->getPageCount(null, $model->bots->getCount($descriptor));
+            $currentType = null;
         }
         else if($currentType == 0 || !isset($_GET['type'])) {
             $pageCount = $model->bots->getPageCount();
             $currentType = (int)$currentType;
         }
         else {
-            $pageCount = $model->bots->getPageCount(null, $model->bots->getCount($currentType));
+            $descriptor = new BotListDescriptor();
+            $descriptor->type = $currentType;
+            $pageCount = $model->bots->getPageCount(null, $model->bots->getCount($descriptor));
             $currentType = (int)$currentType;
         }
         $page = $_GET['page'] ?? 1;

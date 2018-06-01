@@ -31,7 +31,12 @@ class BotListDescriptor extends ListDescriptor
 
         if($this->type) {
             $where[] = 'table.type=?';
-            $this->params[] = $this->type;
+            if($this->type > 0) {
+                $this->params[] = $this->type;
+            }
+            else {
+                $this->params[] = NULL;
+            }
         }
 
         if($this->channelID) {

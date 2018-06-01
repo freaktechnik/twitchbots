@@ -32,40 +32,6 @@ class Bots extends PaginatingStore {
         return $this->getLastUpdate($condition, array($type));
     }
 
-    /**
-     * @param int|ListDescriptor $type
-     * @return int
-     */
-    public function getCount($type = null): int
-    {
-        if($type instanceof ListDescriptor) {
-            return parent::getCount($type);
-        }
-
-        $where = "";
-        $params = [];
-        $type = $type ?? 0;
-        if($type == -1) {
-            $where = "WHERE type IS NULL";
-        }
-        else if($type != 0) {
-            $where = "WHERE type=?";
-            $params[] = $type;
-        }
-
-        $query = $this->prepareSelect("count(*) as count", $where);
-        $query->execute($params);
-
-        /** @var RowCount|bool $result */
-        $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
-        $result = $query->fetch();
-        if(is_bool($result)) {
-            return 0;
-        }
-        /** @var RowCount $result */
-        return $result->count;
-    }
-
     public function getBots(int $page = 1): array
     {
         if($page <= $this->getPageCount($this->pageSize)) {
@@ -124,7 +90,10 @@ class Bots extends PaginatingStore {
     {
         $limit = $limit ?? $this->pageSize;
         //TODO should these bounds checks be in the controller?
-        if($limit > 0 && $offset < $this->getCount($type)) {
+        $descriptor = new BotListDescriptor();
+        $descriptor->type = $type;
+        $count = $this->getCount($descriptor);
+        if($limit > 0 && $offset < $count) {
             $query = $this->prepareSelect("*", "WHERE type=:type ORDER BY name, channel, cdate LIMIT :start,:stop");
             $this->doPagination($query, $offset, $limit);
             $query->bindValue(":type", $type, PDO::PARAM_INT);
@@ -141,7 +110,9 @@ class Bots extends PaginatingStore {
     public function getBotsWithoutType(int $offset = 0, int $limit = null): array
     {
         $limit = $limit ?? $this->pageSize;
-        if($limit > 0 && $offset < $this->getCount(-1)) {
+        $descriptor = new BotListDescriptor();
+        $descriptor->type = -1;
+        if($limit > 0 && $offset < $this->getCount($descriptor)) {
             $query = $this->prepareSelect("*", "WHERE type IS NULL ORDER BY name, channel, cdate LIMIT :start,:stop");
             $this->doPagination($query, $offset, $limit);
             $query->execute();

@@ -2,6 +2,8 @@
 
 require_once "DBTestCase.php";
 
+use Mini\Model\BotListDescriptor;
+
 use GuzzleHttp\Psr7\Response;
 
 /**
@@ -499,7 +501,9 @@ class ModelTest extends DBTestCase
     {
         $response = $this->model->estimateActiveChannels(22);
 
-        $expectedCount = $this->model->bots->getCount(22);
+        $descriptor = new BotListDescriptor();
+        $descriptor->type = 22;
+        $expectedCount = $this->model->bots->getCount($descriptor);
         $type = $this->model->types->getTypeOrThrow(22);
         // One duplicate channel param in fixture
         $this->assertEquals($expectedCount - 1, $type->channelsEstimate);

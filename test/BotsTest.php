@@ -1,4 +1,6 @@
 <?php
+use Mini\Model\BotListDescriptor;
+
 
 require_once "DBTestCase.php";
 
@@ -89,7 +91,9 @@ class BotsTest extends DBTestCase
         $botCount = $this->bots->getCount();
         $this->assertEquals($botCount, $this->getConnection()->getRowCount('bots'));
 
-        $botCount = $this->bots->getCount(22);
+        $descriptor = new BotListDescriptor();
+        $descriptor->type = 22;
+        $botCount = $this->bots->getCount($descriptor);
         $queryTable = $this->getConnection()->createQueryTable(
             'bots', 'SELECT name FROM bots WHERE type=22'
         );
