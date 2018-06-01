@@ -149,7 +149,7 @@ class Types extends PaginatingStore {
         $descriptor->orderBy = 'channelsEstimate';
         $descriptor->direction = ListDescriptor::DIR_DESC;
 
-        return $this->listTypes($descriptor);
+        return $this->list($descriptor);
     }
 
     /**
