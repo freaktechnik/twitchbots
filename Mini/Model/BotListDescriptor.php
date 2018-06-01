@@ -22,12 +22,12 @@ class BotListDescriptor extends ListDescriptor
         $where = parent::addWhere();
 
         if(!$this->includeDisabled) {
-            $where[] = '(types.enabled=1 OR types.enabled=null)';
+            $where[] = '(types.enabled=1 OR type=null)';
             $needsTypes = true;
         }
 
         if($this->multichannel) {
-            $where[] = 'types.multichannel=1';
+            $where[] = '(types.multichannel=1 OR type=null)';
             $needsTypes = true;
         }
 
