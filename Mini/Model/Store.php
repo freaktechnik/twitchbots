@@ -69,23 +69,11 @@ class Store {
         return $query;
     }
 
-    public function getCount(): int
+    public function getCount(ListDescriptor $descriptor = NULL): int
     {
-        $query = $this->prepareSelect("count(*) AS count");
-        $query->execute();
-
-        $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
-        /** @var RowCount|bool $result */
-        $result = $query->fetch();
-        if(is_bool($result)) {
-            return 0;
+        if(!$descriptor) {
+            $descriptor = new ListDescriptor();
         }
-        /** @var RowCount $result */
-        return $result->count;
-    }
-
-    public function getCount(ListDescriptor $descriptor): int
-    {
         $query = $this->prepareList($descriptor, "count(*) AS count");
 
         $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
