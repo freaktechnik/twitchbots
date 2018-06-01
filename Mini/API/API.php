@@ -164,6 +164,18 @@ class API {
         ];
     }
 
+    /**
+     * @param int $value
+     * @return null|bool
+     */
+    private function intToBool(int $value = null)
+    {
+        if($value === null) {
+            return $value;
+        }
+        return $value > 0;
+    }
+
     private function formatType(Type $type) : array
     {
         return [
@@ -172,16 +184,16 @@ class API {
             'multiChannel' => $type->multichannel,
             'lastUpdate' => date(\DateTime::W3C, $type->date),
             'description' => $type->description,
-            'managed' => $type->managed,
-            'customUsername' => $type->customUsername,
+            'managed' => $this->intToBool($type->managed),
+            'customUsername' => $this->intToBool($type->customUsername),
             'channelsEstimate' => $type->channelsEstimate,
             'businessModel' => $type->payment,
-            'hasFreeTier' => $type->hasFreeTier,
+            'hasFreeTier' => $this->intToBool($type->hasFreeTier),
             'apiVersion' => $type->apiVersion,
             'url' => $type->url,
             'sourceCodeURL' => $type->sourceUrl,
             'commandsURL' => $type->commandsUrl,
-            'active' => $type->enabled,
+            'active' => $this->intToBool($type->enabled),
             self::PROP_LINKS => [
                 self::LINK_SELF => $this->fullUrlFor('type', [
                     'type' => $type->id
