@@ -20,8 +20,8 @@ class ListDescriptor
 
     protected static $idField = 'id';
 
-    private $query = '';
-    private $params = [];
+    protected $query = '';
+    protected $params = [];
 
     function __constructor() {
         $this->ids = [];
