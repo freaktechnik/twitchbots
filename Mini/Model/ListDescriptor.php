@@ -101,6 +101,7 @@ class ListDescriptor
             $type = $this->paramTypes[$i] ?? PDO::PARAM_STR;
             Store::BindNullable($query, $i + 1, $value, $type);
         }
+        $this->reset();
     }
 
     public function reset()
