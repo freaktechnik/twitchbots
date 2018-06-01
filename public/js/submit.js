@@ -65,19 +65,20 @@ function checkBot(username, cbk) {
 }
 
 function checkTwitchUser(username, cbk) {
-    var url = "https://api.twitch.tv/kraken/users/" + username;
+    var url = "https://api.twitch.tv/helix/users?login" + username;
 
     var xhr = new XMLHttpRequest();
 
-    xhr.open("HEAD", url, true);
+    xhr.open("GET", url, true);
     xhr.setRequestHeader('Client-ID', form.dataset.clientid);
-    xhr.setRequestHeader('Accept', 'application/vnd.twitchtv.v3+json');
-    xhr.onreadystatechange = function(e) {
-        if(xhr.readyState === 2) {
-            // Only reject if the status is 404 not found.
-            cbk(xhr.status !== 404);
+    xhr.responseType = "json";
+    xhr.onload = function(e) {
+        var body = xhr.response;
+        if(typeof body === "string") {
+            body = JSON.parse(body);
         }
-    };
+        cbk(!body.data || !body.data.length);
+    }
 
     xhr.send();
 }
