@@ -16,7 +16,7 @@ class TypeListDescriptor extends ListDescriptor
     {
         $where = [];
 
-        if(count($this->ids)) {
+        if($this->ids && count($this->ids)) {
             foreach($this->ids as $id) {
                 $this->addParam($id, PDO::PARAM_INT);
             }

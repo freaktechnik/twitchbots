@@ -17,7 +17,7 @@ class ListDescriptor
     public $direction = self::DIR_DESC;
     /** @var string */
     public $orderBy;
-    /** @var string[] */
+    /** @var string[]|null */
     public $ids = [];
 
     protected static $idField = 'id';
@@ -73,7 +73,7 @@ class ListDescriptor
     {
         $where = [];
 
-        if(count($this->ids)) {
+        if($this->ids && count($this->ids)) {
             foreach($this->ids as $id) {
                 $this->addParam($id);
             }
