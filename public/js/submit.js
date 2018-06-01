@@ -50,8 +50,8 @@ form.addEventListener("submit", function(e) {
 });
 
 // User checking
-function checkBot(username, cbk) {
-    var url = "https://api.twitchbots.info/v1/bot/" + username;
+function checkBot(botID, cbk) {
+    var url = "https://api.twitchbots.info/v2/bot/" + botID;
 
     var xhr = new XMLHttpRequest();
 
@@ -77,7 +77,7 @@ function checkTwitchUser(username, cbk) {
         if(typeof body === "string") {
             body = JSON.parse(body);
         }
-        cbk(!body.data || !body.data.length);
+        cbk(body.data || []);
     }
 
     xhr.send();
@@ -95,15 +95,15 @@ function validateFieldContent(field, shouldExist) {
             });
         }
         else {
-            checkTwitchUser(field.value, function(exists) {
-                if(exists)
+            checkTwitchUser(field.value, function(data) {
+                if(data.length)
                     field.setCustomValidity("");
                 else
                     field.setCustomValidity("Must be an existing Twitch user.");
 
 
                 if(shouldExist & field.validity.valid) {
-                    checkBot(field.value, function(exists) {
+                    checkBot(data[0].id, function(exists) {
                         if(exists)
                             field.setCustomValidity("We already know about this bot.");
                         else
