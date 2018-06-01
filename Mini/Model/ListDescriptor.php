@@ -25,6 +25,7 @@ class ListDescriptor
     protected $query = '';
     private $params = [];
     private $paramTypes = [];
+    private $queryBuilt = false;
 
     function __constructor() {
         $this->ids = [];
@@ -80,12 +81,15 @@ class ListDescriptor
 
     public function makeSQLQuery(): string
     {
-        $where = $this->addWhere();
-        if(count($where)) {
-            $this->query .= ' WHERE '.implode(' AND ', $where);
+        if(!$this->queryBuilt) {
+            $where = $this->addWhere();
+            if(count($where)) {
+                $this->query .= ' WHERE '.implode(' AND ', $where);
+            }
+            $this->addOrder();
+            $this->addLimit();
+            $this->queryBuilt = true;
         }
-        $this->addOrder();
-        $this->addLimit();
 
         return $this->query;
     }
@@ -101,7 +105,6 @@ class ListDescriptor
             $type = $this->paramTypes[$i] ?? PDO::PARAM_STR;
             Store::BindNullable($query, $i + 1, $value, $type);
         }
-        $this->reset();
     }
 
     public function reset()
@@ -109,5 +112,6 @@ class ListDescriptor
         $this->query = '';
         $this->params = [];
         $this->paramTypes = [];
+        $this->queryBuilt = false;
     }
 }
