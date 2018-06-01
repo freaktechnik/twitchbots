@@ -320,6 +320,7 @@ class API {
         $this->lastModified($this->model->bots->getLastListUpdate($descriptor));
         $total = $this->model->bots->getCount($descriptor);
 
+        $descriptor->reset();
         $descriptor->offset = $offset;
         $descriptor->limit = $limit;
 
@@ -366,6 +367,7 @@ class API {
         $total = $this->model->types->getCount($descriptor);
 
         // Limit result set to actually get results.
+        $descriptor->reset();
         $descriptor->limit = $limit;
         $descriptor->offset = $offset;
         $types = $this->model->types->list($descriptor);
