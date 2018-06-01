@@ -65,7 +65,7 @@ function checkBot(username, cbk) {
 }
 
 function checkTwitchUser(username, cbk) {
-    var url = "https://api.twitch.tv/helix/users?login" + username;
+    var url = "https://api.twitch.tv/helix/users?login=" + username;
 
     var xhr = new XMLHttpRequest();
 
