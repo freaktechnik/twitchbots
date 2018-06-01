@@ -32,6 +32,11 @@ class ListDescriptor
         $this->reset();
     }
 
+    protected function addParam($value, int $type = PDO::PARAM_STR) {
+        $this->params[] = $value;
+        $this->paramType[count($this->params) - 1] = $type;
+    }
+
     private function addLimit()
     {
         if($this->limit) {
@@ -92,11 +97,6 @@ class ListDescriptor
         }
 
         return $this->query;
-    }
-
-    protected function addParam($value, int $type = PDO::PARAM_STR) {
-        $this->params[] = $value;
-        $this->paramType[count($this->params) - 1] = $type;
     }
 
     public function bindParams(\PDOStatement $query)
