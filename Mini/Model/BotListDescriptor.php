@@ -22,21 +22,22 @@ class BotListDescriptor extends ListDescriptor
         $where = parent::addWhere();
 
         if(!$this->includeDisabled) {
-            $where[] = '(types.enabled=1 OR type=null)';
+            $where[] = '(types.enabled=1 OR `type` IS null)';
             $needsTypes = true;
         }
 
         if($this->multichannel) {
-            $where[] = '(types.multichannel=1 OR type=null)';
+            $where[] = '(types.multichannel=1 OR `type` IS null)';
             $needsTypes = true;
         }
 
         if($this->type) {
-            $where[] = 'type=?';
             if($this->type > 0) {
+                $where[] = '`type` = ?';
                 $this->addParam($this->type, PDO::PARAM_INT);
             }
             else {
+                $where[] = '`type` IS ?';
                 $this->addParam(null, PDO::PARAM_NULL);
             }
         }
@@ -47,7 +48,7 @@ class BotListDescriptor extends ListDescriptor
         }
 
         if($needsTypes) {
-            $this->query .= ' LEFT JOIN types ON table.type = types.id';
+            $this->query .= ' LEFT JOIN types ON table.`type` = types.id';
         }
 
         return $where;

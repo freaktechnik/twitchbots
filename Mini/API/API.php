@@ -185,7 +185,7 @@ class API {
         return [
             'id' => $type->id,
             'name' => $type->name,
-            'multiChannel' => $type->multichannel,
+            'multiChannel' => $this->intToBool($type->multichannel),
             'lastUpdate' => date(\DateTime::W3C, $type->date),
             'description' => $type->description,
             'managed' => $this->intToBool($type->managed),
