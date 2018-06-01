@@ -47,7 +47,7 @@ class BotListDescriptor extends ListDescriptor
         }
 
         if($needsTypes) {
-            $this->query .= ' LEFT JOIN types ON table.`type` = types.id';
+            $this->query .= ' LEFT JOIN types ON `type` = types.id';
         }
 
         return $where;
