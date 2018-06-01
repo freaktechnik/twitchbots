@@ -99,7 +99,7 @@ class ListDescriptor
     {
         foreach($this->params as $i => $value) {
             $type = $this->paramTypes[$i] ?? PDO::PARAM_STR;
-            $query->bindParam($i, $value, $type);
+            $query->bindValue($i, $value, $type);
         }
     }
 
