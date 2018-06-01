@@ -332,12 +332,14 @@ class API {
 
         $params = [
             self::PARAM_LIMIT => $limit,
-            self::PARAM_TYPE => $type,
             self::PARAM_MULTICHANNEL => self::boolToParam($multichannel),
             self::PARAM_DISABLED => self::boolToParam($includeDisabled),
         ];
         if($ids != null) {
             $params[self::PARAM_IDS] = implode(',', $ids);
+        }
+        if($type != 0) {
+            $params[self::PARAM_TYPE] = $type;
         }
 
         $this->result = self::formatList(array_map([$this, 'formatBot'], $bots), 'bots', $total, [
