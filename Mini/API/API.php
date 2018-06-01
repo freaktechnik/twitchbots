@@ -302,7 +302,7 @@ class API {
         $descriptor->includeDisabled = $includeDisabled;
         $descriptor->ids = $ids;
 
-        $count = $this->model->bots->getCount($descriptor);
+        $total = $this->model->bots->getCount($descriptor);
 
         $descriptor->reset();
         $descriptor->offset = $offset;
