@@ -375,11 +375,11 @@ class Model
             }
             catch(Exception $e) {
                 $follows = new \stdClass();
-                $follows->_total = 0;
+                $follows->total = 0;
             }
             if($follows instanceof \stdClass) {
-                $this->submissions->setFollowing($submission->id, $follows->_total);
-                $submission->following = $follows->_total;
+                $this->submissions->setFollowing($submission->id, $follows->total);
+                $submission->following = $follows->total;
                 return true;
             }
         }

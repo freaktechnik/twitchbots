@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 
 class Twitch {
     private static $krakenBase = 'https://api.twitch.tv/kraken/';
+    private static $helixBase = 'https://api.twitch.tv/helix/';
 
     /**
      * The guzzle client
@@ -54,11 +55,11 @@ class Twitch {
 
     public function isChannelLive(string $channelId): bool
     {
-        $response = $this->client->get(self::$krakenBase.'streams/'.$channelId, $this->twitchHeadersV5);
+        $response = $this->client->get(self::$helixBase.'streams?user_id='.$channelId, $this->twitchHeaders);
 
         /** @var \stdClass $stream */
         $stream = json_decode($response->getBody());
-        return isset($stream->stream);
+        return count($stream->data);
     }
 
     public function getBio(string $channelId)//: ?string
@@ -75,16 +76,16 @@ class Twitch {
 
     public function hasVODs(string $channelId): bool
     {
-        $response = $this->client->get(self::$krakenBase.'channels/'.$channelId.'/videos?broadcast_type=archive,highlight,upload', $this->twitchHeadersV5);
+        $response = $this->client->get(self::$helixBase.'videos?user_id='.$channelId, $this->twitchHeaders);
         /** @var \stdClass $vods */
         $vods = json_decode($response->getBody());
-        return $vods->_total > 0;
+        return count($vods->data) > 0;
     }
 
     public function getFollowing(string $id): \stdClass
     {
         if(!in_array($id, $this->_followsCache)) {
-            $response = $this->client->get(self::$krakenBase.'users/'.$id.'/follows/channels', $this->twitchHeadersV5);
+            $response = $this->client->get(self::$helixBase.'users/follows?from_id='.$id, $this->twitchHeaders);
 
             if($response->getStatusCode() >= 400) {
                 throw new \Exception("Can not get followers for ".$name);
@@ -100,24 +101,23 @@ class Twitch {
         if(in_array($id, $this->_followsCache)) {
             $follows = $this->_followsCache[$id];
             if($follows instanceof \stdClass) {
-                $followsChannel = $follows->_total > 0 && in_array($channelId, array_map(function(\stdClass $chan) {
-                    /** @var \stdClass $channel */
-                    $channel = $chan->channel;
-                    return strtolower($channel->_id);
-                }, $follows->follows));
-                if($follows->_total <= count($follows->follows)) {
+                $followsChannel = $follows->total > 0 && in_array($channelId, array_map(function(\stdClass $chan) {
+                    return $chan->to_id;
+                }, $follows->data));
+                if($follows->total <= count($follows->data)) {
                     return $followsChannel;
                 }
             }
         }
-        $url = self::$krakenBase.'users/'.$id.'/follows/channels/'.$channelId;
-        $response = $this->client->head($url, $this->twitchHeadersV5);
+        $url = self::$helixBase.'users/follows?from_id='.$id.'&to_id='.$channelId;
+        $response = $this->client->get($url, $this->twitchHeaders);
+        $follows = json_decode($response->getBody(), true)['data'];
 
-        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
+        if($response->getStatusCode() >= 400) {
             throw new \Exception("Can't get following relation");
         }
 
-        return $response->getStatusCode() < 400;
+        return !!count($follows);
     }
 
     public function getBotVerified(string $id): bool {
@@ -142,32 +142,34 @@ class Twitch {
 
     public function getChannelID(string $username): string
     {
-        $url = self::$krakenBase.'users/?login='.$username;
-        $response = $this->client->get($url, $this->twitchHeadersV5);
+        $url = self::$helixBase.'users/?login='.$username;
+        $response = $this->client->get($url, $this->twitchHeaders);
 
         if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
             throw new \Exception("User could not be found");
         }
 
-        $users = json_decode($response->getBody(), true)['users'];
+        $users = json_decode($response->getBody(), true)['data'];
         if(count($users) > 0){
-            return $users[0]['_id'];
+            return $users[0]['id'];
         }
-        else {
-            throw new \Exception("User could not be found");
-        }
+        throw new \Exception("User could not be found");
     }
 
     public function getChannelName(string $id): string
     {
-        $url = self::$krakenBase.'users/'.$id;
-        $response = $this->client->get($url, $this->twitchHeadersV5);
+        $url = self::$helixBase.'users/?id='.$id;
+        $response = $this->client->get($url, $this->twitchHeaders);
 
         if($response->getStatusCode() >= 400) {
             throw new \Exception("Could not get username for ".$id, $response->getStatusCode());
         }
 
-        $user = json_decode($response->getBody(), true);
-        return $user['name'];
+        $users = json_decode($response->getBody(), true)['data'];
+
+        if(!count($users)) {
+            throw new \Exception("No Twitch users returned for ID ".$id, $response->getStatusCode());
+        }
+        return $users[0]['login'];
     }
 }
