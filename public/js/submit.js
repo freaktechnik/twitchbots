@@ -74,8 +74,8 @@ function checkTwitchUser(username, cbk) {
     xhr.responseType = "json";
     xhr.onload = function(e) {
         var body = xhr.response;
-        if(typeof body === "string") {
-            body = JSON.parse(body);
+        if(!body || typeof body === "string") {
+            body = JSON.parse(xhr.responseText);
         }
         cbk(body.data || []);
     }
@@ -96,6 +96,7 @@ function validateFieldContent(field, shouldExist) {
         }
         else {
             checkTwitchUser(field.value, function(data) {
+                console.log(data);
                 if(data.length)
                     field.setCustomValidity("");
                 else
