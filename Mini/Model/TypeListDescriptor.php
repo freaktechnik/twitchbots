@@ -2,6 +2,8 @@
 
 namespace Mini\Model;
 
+use \PDO;
+
 class TypeListDescriptor extends ListDescriptor
 {
     /** @var bool */
@@ -15,7 +17,9 @@ class TypeListDescriptor extends ListDescriptor
         $where = [];
 
         if(count($this->ids)) {
-            $this->params = array_merge($this->params, $this->ids);
+            foreach($this->ids as $id) {
+                $this->addParam($id, PDO::TYPE_STRING);
+            }
             $conditions = array_fill(0, count($this->ids), '?');
             $where[] = 'table.'.self::$idField.' IN ('.implode(',', $conditions).')';
         }

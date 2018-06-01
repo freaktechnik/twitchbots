@@ -65,7 +65,8 @@ class Store {
     public function prepareList(ListDescriptor $descriptor, string $fields = "`table`.*"): PDOStatement
     {
         $query = $this->prepareSelect($fields, $descriptor->makeSQLQuery());
-        $query->execute($descriptor->getParams());
+        $descriptor->bindParams($query);
+        $query->execute();
         return $query;
     }
 

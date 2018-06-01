@@ -2,6 +2,8 @@
 
 namespace Mini\Model;
 
+use \PDO;
+
 class BotListDescriptor extends ListDescriptor
 {
     public $type = 0;
@@ -32,16 +34,16 @@ class BotListDescriptor extends ListDescriptor
         if($this->type) {
             $where[] = 'table.type=?';
             if($this->type > 0) {
-                $this->params[] = $this->type;
+                $this->addParam($this->type, PDO::TYPE_INT);
             }
             else {
-                $this->params[] = NULL;
+                $this->addParam(null, PDO::TYPE_NULL);
             }
         }
 
         if($this->channelID) {
             $where[] = 'channel_id=?';
-            $this->params[] = $this->channelID;
+            $this->addParam($this->channelID);
         }
 
         if($needsTypes) {

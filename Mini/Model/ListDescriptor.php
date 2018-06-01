@@ -2,6 +2,8 @@
 
 namespace Mini\Model;
 
+use \PDO;
+
 class ListDescriptor
 {
     const DIR_ASC = 1;
@@ -21,7 +23,8 @@ class ListDescriptor
     protected static $idField = 'id';
 
     protected $query = '';
-    protected $params = [];
+    private $params = [];
+    private $paramTypes = [];
 
     function __constructor() {
         $this->ids = [];
@@ -34,12 +37,12 @@ class ListDescriptor
 
             if($this->offset > 0) {
                 $this->query .= ' LIMIT ?, ?';
-                $this->params[] = $this->offset;
-                $this->params[] = $this->offset + $this->limit;
+                $this->addParam($this->offset, PDO::PARAM_INT);
+                $this->addParam($this->offset + $this->limit, PDO::PARAM_INT);
             }
             else {
                 $this->query .= ' LIMIT ?';
-                $this->params[] = $this->limit;
+                $this->addParam($this->limit, PDO::PARAM_INT);
             }
         }
     }
@@ -65,7 +68,9 @@ class ListDescriptor
         $where = [];
 
         if(count($this->ids)) {
-            $this->params = array_merge($this->params, $this->ids);
+            foreach($this->ids as $id) {
+                $this->addParam($id);
+            }
             $conditions = array_fill(0, count($this->ids), 'table.'.self::$idField.' = ?');
             $where[] = '('.implode(' OR ', $conditions).')';
         }
@@ -85,13 +90,22 @@ class ListDescriptor
         return $this->query;
     }
 
-    public function getParams(): array
+    protected function addParam($value, int $type = PDO::PARAM_STR) {
+        $this->params[] = $value;
+        $this->paramType[count($this->params) - 1] = $type;
+    }
+
+    public function bindParams(\PDOStatement $query)
     {
-        return $this->params;
+        foreach($this->params as $i => $value) {
+            $type = $this->paramTypes[$i] ?? PDO::PARAM_STR;
+            $query->bindParam($i, $value, $type);
+        }
     }
 
     public function reset()
     {
         $this->params = [];
+        $this->paramTypes = [];
     }
 }
