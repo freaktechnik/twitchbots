@@ -90,12 +90,12 @@ class ListDescriptor
         return $this->query;
     }
 
-    protected function addParam($value, int $type = PDO::PARAM_STR, string $value = null) {
+    protected function addParam($value, int $type = PDO::PARAM_STR, string $name = null) {
         $this->params[] = $value;
-        if(!$value) {
-            $value = count($this->params) - 1;
+        if(!$name) {
+            $name = count($this->params) - 1;
         }
-        $this->paramType[$value] = $type;
+        $this->paramType[$name] = $type;
     }
 
     public function bindParams(\PDOStatement $query)
