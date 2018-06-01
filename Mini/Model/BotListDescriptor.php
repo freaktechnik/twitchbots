@@ -7,6 +7,7 @@ class BotListDescriptor extends ListDescriptor
     public $type = 0;
     public $multichannel = false;
     public $includeDisabled = false;
+    public $channelID = 0;
 
     protected static $idField = 'twitch_id';
 
@@ -31,6 +32,11 @@ class BotListDescriptor extends ListDescriptor
         if($this->type) {
             $where[] = 'table.type=?';
             $this->params[] = $this->type;
+        }
+
+        if($this->channelID) {
+            $where[] = 'channel_id=?';
+            $this->params[] = $this->channelID;
         }
 
         if($needsTypes) {

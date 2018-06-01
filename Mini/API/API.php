@@ -2,12 +2,15 @@
 
 namespace Mini\API;
 
+use Mini;
+
 use \Mini\Model\Model;
 use \Mini\Model\Bot;
 use \Mini\Model\Type;
 use \Slim\Slim;
 
 use Mini\Model\BotListDescriptor;
+use Mini\Model\TypeListDescriptor;
 
 //TODO update API discovery thingies.
 
@@ -269,9 +272,16 @@ class API {
         string $channelID
     )
     {
-        $this->lastModified($this->model->bots->getLastUpdate('channel_id=?', [ $channelID ]));
-        $bots = $this->model->bots->getBotsByChannelID($channelID);
-        $total = count($bots);
+        $descriptor = new BotListDescriptor();
+
+        $descriptor->channelID = $channelID;
+        $this->lastModified($this->model->bots->getLastListUpdate($descriptor));
+        $total = $this->model->bots->getCount($descriptor);
+
+        $descriptor->reset();
+        $descriptor->offset = $offset;
+        $descriptor->limit = $limit;
+        $bots = $this->model->bots->list($descriptor);
 
         $this->result = self::formatList(array_map([$this, 'formatBot'], $bots), 'bots', $total, [
             self::LINK_SELF => $this->fullUrlFor('channel', [
@@ -290,11 +300,6 @@ class API {
         array $ids = null
     )
     {
-        $bots = [];
-        $total = 0;
-
-        $this->lastModified($this->model->bots->getLastUpdateByType($type));
-
         $descriptor = new BotListDescriptor();
 
         $descriptor->type = $type;
@@ -302,6 +307,7 @@ class API {
         $descriptor->includeDisabled = $includeDisabled;
         $descriptor->ids = $ids;
 
+        $this->lastModified($this->model->bots->getLastListUpdate($descriptor));
         $total = $this->model->bots->getCount($descriptor);
 
         $descriptor->reset();
@@ -344,13 +350,10 @@ class API {
         array $ids = null
     )
     {
-        //TODO filters
-        $this->lastModified($this->model->types->getLastUpdate());
-
-        $descriptor = new \Mini\Model\TypeListDescriptor();
+        $descriptor = new TypeListDescriptor();
         $descriptor->includeDisabled = $includeDisabled;
         $descriptor->ids = $ids;
-
+        $this->lastModified($this->model->types->getLastListUpdate($descriptor));
         $total = $this->model->types->getCount($descriptor);
 
         // Limit result set to actually get results.

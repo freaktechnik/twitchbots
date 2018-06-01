@@ -113,6 +113,21 @@ class Store {
         return strtotime($result->date);
     }
 
+    public function getLastListUpdate(ListDescriptor $descriptor): int
+    {
+        $copy = clone $descriptor;
+        $copy->orderBy = 'date';
+        $copy->direction = ListDescriptor::DIR_DESC;
+        $copy->limit = 1;
+        $copy->offset = 0;
+
+        $query = $this->prepareList($copy);
+        $query->setFetchMode(PDO::FETCH_CLASS, Row::class);
+        /** @var Row $result */
+        $result = $query->fetch();
+        return strtotime($result->date);
+    }
+
     /**
      * Store the values and indexes from an array in a temporary table. Returns
      * the table name. The array indexes are in a column called "index" and the
