@@ -21,7 +21,7 @@ class TypeListDescriptor extends ListDescriptor
                 $this->addParam($id, PDO::PARAM_INT);
             }
             $conditions = array_fill(0, count($this->ids), '?');
-            $where[] = 'table.'.self::$idField.' IN ('.implode(',', $conditions).')';
+            $where[] = self::$idField.' IN ('.implode(',', $conditions).')';
         }
 
         if(!$this->includeDisabled) {

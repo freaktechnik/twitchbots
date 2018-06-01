@@ -71,7 +71,7 @@ class ListDescriptor
             foreach($this->ids as $id) {
                 $this->addParam($id);
             }
-            $conditions = array_fill(0, count($this->ids), 'table.'.self::$idField.' = ?');
+            $conditions = array_fill(0, count($this->ids), self::$idField.' = ?');
             $where[] = '('.implode(' OR ', $conditions).')';
         }
 
