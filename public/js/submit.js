@@ -87,23 +87,26 @@ function validateFieldContent(field, shouldExist) {
     field.checkValidity();
     if(field.validity.valid && field.value.length) {
         if(shouldExist && !stNew.checked) {
-            checkBot(field.value, function(exists) {
-                if(exists)
-                    field.setCustomValidity("");
-                else
-                    field.setCustomValidity("Only known bots can be corrected.");
+            checkTwitchUser(field.value, function(data) {
+                if(data.length) {
+                    checkBot(data[0].id, function(exists) {
+                        if(exists)
+                            field.setCustomValidity("");
+                        else
+                            field.setCustomValidity("Only known bots can be corrected.");
+                    });
+                }
             });
         }
         else {
             checkTwitchUser(field.value, function(data) {
-                console.log(data);
                 if(data.length)
                     field.setCustomValidity("");
                 else
                     field.setCustomValidity("Must be an existing Twitch user.");
 
 
-                if(shouldExist & field.validity.valid) {
+                if(shouldExist && field.validity.valid) {
                     checkBot(data[0].id, function(exists) {
                         if(exists)
                             field.setCustomValidity("We already know about this bot.");
