@@ -317,7 +317,7 @@ class API {
         $descriptor = new BotListDescriptor();
 
         $descriptor->type = $type;
-        $descriptor->mutlichannel = $multichannel;
+        $descriptor->multichannel = $multichannel;
         $descriptor->includeDisabled = $includeDisabled;
         $descriptor->ids = $ids;
 
