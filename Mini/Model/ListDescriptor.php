@@ -105,6 +105,7 @@ class ListDescriptor
 
     public function reset()
     {
+        $this->query = '';
         $this->params = [];
         $this->paramTypes = [];
     }
