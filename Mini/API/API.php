@@ -94,7 +94,11 @@ class API {
         if(!isset($_GET[self::PARAM_IDS])) {
             return null;
         }
-        return explode(',', urldecode($_GET[self::PARAM_IDS]));
+        $ids = explode(',', urldecode($_GET[self::PARAM_IDS]));
+        if(count($ids) > self::LIMIT) {
+            $ids = array_slice($ids, 0, self::LIMIT);
+        }
+        return $ids;
     }
 
     private static function getBooleanParam(string $name) : bool
