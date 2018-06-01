@@ -36,13 +36,13 @@ class ListDescriptor
         if($this->limit) {
 
             if($this->offset > 0) {
-                $this->query .= ' LIMIT ?, ?';
-                $this->addParam($this->offset, PDO::PARAM_INT);
-                $this->addParam($this->offset + $this->limit, PDO::PARAM_INT);
+                $this->query .= ' LIMIT :offset, :limit';
+                $this->addParam($this->offset, PDO::PARAM_INT, ':offset');
+                $this->addParam($this->limit, PDO::PARAM_INT, ':limit');
             }
             else {
-                $this->query .= ' LIMIT ?';
-                $this->addParam($this->limit, PDO::PARAM_INT);
+                $this->query .= ' LIMIT :limit';
+                $this->addParam($this->limit, PDO::PARAM_INT, ':limit');
             }
         }
     }
@@ -90,16 +90,23 @@ class ListDescriptor
         return $this->query;
     }
 
-    protected function addParam($value, int $type = PDO::PARAM_STR) {
+    protected function addParam($value, int $type = PDO::PARAM_STR, string $value = null) {
         $this->params[] = $value;
-        $this->paramType[count($this->params) - 1] = $type;
+        if(!$value) {
+            $value = count($this->params) - 1;
+        }
+        $this->paramType[$value] = $type;
     }
 
     public function bindParams(\PDOStatement $query)
     {
         foreach($this->params as $i => $value) {
             $type = $this->paramTypes[$i] ?? PDO::PARAM_STR;
-            $query->bindValue($i + 1, $value, $type);
+            $position = $i;
+            if(is_numeric($i)) {
+                $position = $i + 1;
+            }
+            Store::BindNullable($query, $position, $value, $type);
         }
     }
 

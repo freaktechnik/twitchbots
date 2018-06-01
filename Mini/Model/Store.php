@@ -21,9 +21,9 @@ class Store {
         $this->table = $table;
     }
 
-    public static function BindNullable(PDOStatement $query, $param, $value = NULL, int $type = PDO::PARAM_STR)
+    public static function BindNullable(PDOStatement $query, $param, $value = null, int $type = PDO::PARAM_STR)
     {
-        if($value === NULL) {
+        if($value === null) {
             $query->bindValue($param, $value, PDO::PARAM_NULL);
         }
         else {
