@@ -25,7 +25,7 @@ class TypeListDescriptor extends ListDescriptor
         }
 
         if(!$this->includeDisabled) {
-            $where[] = 'table.enabled=1';
+            $where[] = 'enabled=1';
         }
 
         return $where;

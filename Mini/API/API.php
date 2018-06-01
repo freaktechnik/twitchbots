@@ -2,8 +2,6 @@
 
 namespace Mini\API;
 
-use Mini;
-
 use \Mini\Model\Model;
 use \Mini\Model\Bot;
 use \Mini\Model\Type;
