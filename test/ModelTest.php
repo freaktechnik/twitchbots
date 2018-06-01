@@ -68,9 +68,9 @@ class ModelTest extends DBTestCase
 
     private function queueTwitchUser(string $id) {
         $this->httpMock->append(new Response(200, [], json_encode([
-            'users' => [
+            'data' => [
                 [
-                    '_id' => $id
+                    'id' => $id
                 ]
             ]
         ])));
