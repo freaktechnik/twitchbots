@@ -62,6 +62,13 @@ class Store {
         return $this->prepareQuery("UPDATE `".$this->table."` SET ".$set);
     }
 
+    public function prepareList(ListDescriptor $descriptor, string $fields = "`table`.*"): PDOStatement
+    {
+        $query = $this->prepareSelect($fields, $descriptor->makeSQLQuery());
+        $query->execute($descriptor->getParams());
+        return $query;
+    }
+
     public function getCount(): int
     {
         $query = $this->prepareSelect("count(*) AS count");
@@ -69,6 +76,19 @@ class Store {
 
         $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
         /** @var RowCount|bool $result */
+        $result = $query->fetch();
+        if(is_bool($result)) {
+            return 0;
+        }
+        /** @var RowCount $result */
+        return $result->count;
+    }
+
+    public function getCount(ListDescriptor $descriptor): int
+    {
+        $query = $this->prepareList($descriptor, "count(*) AS count");
+
+        $query->setFetchMode(PDO::FETCH_CLASS, RowCount::class);
         $result = $query->fetch();
         if(is_bool($result)) {
             return 0;
@@ -98,6 +118,7 @@ class Store {
      * the table name. The array indexes are in a column called "index" and the
      * values in a column called "value".
      *
+     * @param string[] $values
      * @return string
      */
     protected function createTempTable(array $values): string

@@ -241,7 +241,9 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
         $app->expires('+1 day');
         $showDisabled = $_GET['disabled'] == 1;
 
-        $pageCount = $model->types->getPageCount(null, $model->types->getCount(!$showDisabled));
+        $descriptor = new \Mini\Model\TypeListDescriptor();
+        $descriptor->includeDisabled = $showDisabled;
+        $pageCount = $model->types->getPageCount(null, $model->types->getCount($descriptor));
         $page = $_GET['page'] ?? 1;
         if(!is_numeric($page))
             $page = 1;

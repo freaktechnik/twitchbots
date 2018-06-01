@@ -7,6 +7,10 @@ use \Mini\Model\Bot;
 use \Mini\Model\Type;
 use \Slim\Slim;
 
+use Mini\Model\BotListDescriptor;
+
+//TODO update API discovery thingies.
+
 class API {
     const LIMIT = 100;
     const LAST_MODIFIED = 1525540985; // 2018-05-05T19:23:XX+0200
@@ -291,16 +295,20 @@ class API {
 
         $this->lastModified($this->model->bots->getLastUpdateByType($type));
 
-        if($type != 0) {
-            //TODO offset & limit
-            $bots = $this->model->bots->getBotsByType($type);
-            $count = $this->model->bots->getCount($type);
-        }
-        else {
-            $bots = $this->model->bots->getAllRawBots($offset, $limit);
-            $count = $this->model->bots->getCount();
-        }
-        //TODO other filters
+        $descriptor = new BotListDescriptor();
+
+        $descriptor->type = $type;
+        $descriptor->mutlichannel = $multichannel;
+        $descriptor->includeDisabled = $includeDisabled;
+        $descriptor->ids = $ids;
+
+        $count = $this->model->bots->getCount($descriptor);
+
+        $descriptor->reset();
+        $descriptor->offset = $offset;
+        $descriptor->limit = $limit;
+
+        $bots = $this->model->bots->list($descriptor);
 
         $params = [
             self::PARAM_LIMIT => $limit,
@@ -339,8 +347,17 @@ class API {
         //TODO filters
         $this->lastModified($this->model->types->getLastUpdate());
 
-        $types = $this->model->types->getAllTypes();
-        $total = 0;
+        $descriptor = new \Mini\Model\TypeListDescriptor();
+        $descriptor->includeDisabled = $includeDisabled;
+        $descriptor->ids = $ids;
+
+        $total = $this->model->types->getCount($descriptor);
+
+        // Limit result set to actually get results.
+        $descriptor->reset();
+        $descriptor->limit = $limit;
+        $descriptor->offset = $offset;
+        $types = $this->model->types->list($descriptor);
 
         $params = [
             self::PARAM_LIMIT => $limit,

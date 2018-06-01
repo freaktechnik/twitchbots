@@ -32,8 +32,16 @@ class Bots extends PaginatingStore {
         return $this->getLastUpdate($condition, array($type));
     }
 
-    public function getCount(int $type = 0): int
+    /**
+     * @param int|ListDescriptor $type
+     * @return int
+     */
+    public function getCount($type = 0): int
     {
+        if($type instanceof ListDescriptor) {
+            return parent::getCount($type);
+        }
+
         $where = "";
         $params = [];
         if($type == -1) {
@@ -277,6 +285,18 @@ class Bots extends PaginatingStore {
         $where = "WHERE channel_id=?";
         $query = $this->prepareSelect("*", $where);
         $query->execute([ $channelID ]);
+
+        $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
+        return $query->fetchAll();
+    }
+
+    /**
+     * @param BotListDescriptor $descriptor
+     * @return Bot[]
+     */
+    public function list(BotListDescriptor $descriptor): array
+    {
+        $query = $this->prepareList($descriptor);
 
         $query->setFetchMode(PDO::FETCH_CLASS, Bot::class);
         return $query->fetchAll();

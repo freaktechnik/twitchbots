@@ -159,12 +159,26 @@ class Types extends PaginatingStore {
     }
 
     /**
+     * @param int $count
      * @return Type[]
      */
     public function getTop(int $count): array
     {
-        $query = $this->prepareSelect("`table`.*", "WHERE enabled=1 ORDER BY channelsEstimate DESC, table.name ASC LIMIT ?");
-        $query->execute([ $count ]);
+        $descriptor = new TypeListDescriptor();
+        $descriptor->limit = $count;
+        $descriptor->orderBy = 'channelsEstimate';
+        $descriptor->direction = ListDescriptor::DIR_DESC;
+
+        return $this->listTypes($descriptor);
+    }
+
+    /**
+     * @param TypeListDescriptor $descriptor
+     * @return Type[]
+     */
+    public function list(TypeListDescriptor $descriptor): array
+    {
+        $query = $this->prepareList($descriptor);
 
         $query->setFetchMode(PDO::FETCH_CLASS, Type::class);
         return $query->fetchAll();
