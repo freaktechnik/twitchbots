@@ -130,14 +130,8 @@ class ListDescriptor
 
     public function makeTempTables(PingablePDO $db)
     {
-        $tableName;
         $value;
         $i;
-
-        $sql = 'INSERT INTO ? (`value`,`index`) VALUES (?,?)';
-        $query = $db->prepare($sql);
-        $query->bindParam(1, $tableName);
-        $query->bindParam(3, $i);
         foreach($this->tempTables as $name => $type) {
             $tableName = $this->getTempName($name);
 
@@ -145,7 +139,10 @@ class ListDescriptor
             $createQ = $db->prepare($sql);
             $createQ->execute();
 
-            $query->bindParam(2, $value, $type);
+            $sql = 'INSERT INTO '.$tableName.' (`value`,`index`) VALUES (?,?)';
+            $query = $db->prepare($sql);
+            $query->bindParam(1, $value, $type);
+            $query->bindParam(2, $i);
             foreach($this->{$name} as $i => $value) {
                 $query->execute();
             }
