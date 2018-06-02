@@ -84,7 +84,7 @@ class ListDescriptor
             $this->tempTables['ids'] = self::$idType;
             $tableName = $this->getTempName('ids');
 
-            $this->query .= ' INNER JOIN '.$tableName.' ON '.$tableName.'value = '.self::$idField;
+            $this->query .= ' INNER JOIN '.$tableName.' ON '.$tableName.'.value = '.self::$idField;
         }
 
         return $where;
