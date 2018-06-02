@@ -59,7 +59,7 @@ class Twitch {
 
         /** @var \stdClass $stream */
         $stream = json_decode($response->getBody());
-        return count($stream->data);
+        return $stream->data && count($stream->data);
     }
 
     public function getBio(string $channelId)//: ?string
@@ -111,11 +111,12 @@ class Twitch {
         }
         $url = self::$helixBase.'users/follows?from_id='.$id.'&to_id='.$channelId;
         $response = $this->client->get($url, $this->twitchHeaders);
-        $follows = json_decode($response->getBody(), true)['data'];
 
         if($response->getStatusCode() >= 400) {
             throw new \Exception("Can't get following relation");
         }
+
+        $follows = json_decode($response->getBody(), true)['data'];
 
         return !!count($follows);
     }
