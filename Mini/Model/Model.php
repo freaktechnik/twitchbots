@@ -505,6 +505,7 @@ class Model
                         $this->submissions->removeSubmission($submission->id);
                         continue;
                     }
+                    $apiName = $submission->name;
                 }
                 if($apiName != $submission->name) {
                     $submission->name = $apiName;
@@ -550,6 +551,7 @@ class Model
                         if($e->getCode() == 404 || $e->getCode() == 422) {
                             $this->submissions->clearChannel($submission->id);
                         }
+                        $apiName = $submission->channel;
                     }
                     if($apiName != $submission->channel) {
                         $submission->name = $apiName;
