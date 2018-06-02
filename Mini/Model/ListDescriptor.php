@@ -135,7 +135,7 @@ class ListDescriptor
         $i;
 
         $sql = 'INSERT INTO ? (`value`,`index`) VALUES (?,?)';
-        $query = $this->prepareQuery($sql);
+        $query = $db->prepare($sql);
         $query->bindParam(1, $tableName);
         $query->bindParam(3, $i);
         foreach($this->tempTables as $name => $type) {
