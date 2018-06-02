@@ -161,7 +161,7 @@ class API {
             'type' => $bot->type,
             'channelID' => $bot->channel_id,
             'channelName' => $bot->channel,
-            'lastUpdate' => date(\DateTime::W3C, $bot->date),
+            'lastUpdate' => date(\DateTime::W3C, strtotime($bot->date)),
             self::PROP_LINKS => $links,
         ];
     }
@@ -184,7 +184,7 @@ class API {
             'id' => $type->id,
             'name' => $type->name,
             'multiChannel' => $this->intToBool($type->multichannel),
-            'lastUpdate' => date(\DateTime::W3C, $type->date),
+            'lastUpdate' => date(\DateTime::W3C, strtotime($type->date)),
             'description' => $type->description,
             'managed' => $this->intToBool($type->managed),
             'customUsername' => $this->intToBool($type->customUsername),
