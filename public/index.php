@@ -676,7 +676,7 @@ $app->get('/apis.json', function () use ($app) {
         "description" => "Sadly Twitch accounts can't be marked as a bot. But many accounts are used just as a chat bot. This service provides an API to find out who's a chat bot. All bots indexed are service or moderator bots.",
         "url" => $app->config('canonicalUrl')."apis.json",
         "tags" => $tags,
-        "image" => $app->config('canonicalUrl')."/img/icon.svg",
+        "image" => $app->config('canonicalUrl')."img/icon.svg",
         "created" => "2016-02-14",
         "modified" => date('Y-m-d', $lastApiUpdate),
         "specificationVersion" => "0.15",
@@ -688,7 +688,7 @@ $app->get('/apis.json', function () use ($app) {
                 "baseURL" => $app->config('apiUrl').'/v2',
                 "version" => "v2",
                 "tags" => $tags,
-                "image" => $app->config('canonicalUrl')."/img/icon.svg",
+                "image" => $app->config('canonicalUrl')."img/icon.svg",
                 "properties" => [],
                 "contact" => [ $martin ]
             ],
@@ -698,7 +698,7 @@ $app->get('/apis.json', function () use ($app) {
                 "baseURL" => $app->config('apiUrl').'/v1',
                 "version" => "v1",
                 "tags" => $tags,
-                "image" => $app->config('canonicalUrl')."/img/icon.svg",
+                "image" => $app->config('canonicalUrl')."img/icon.svg",
                 "properties" => [],
                 "contact" => [ $martin ]
             ]
