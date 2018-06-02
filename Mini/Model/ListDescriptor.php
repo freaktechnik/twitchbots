@@ -125,7 +125,7 @@ class ListDescriptor
 
     public function hasTempTables(): bool
     {
-        return count($this->tempTables);
+        return count($this->tempTables) > 0;
     }
 
     public function makeTempTables(PDO $db)
@@ -155,7 +155,7 @@ class ListDescriptor
     public function removeTempTables(): string
     {
         $sql = '';
-        foreach($this->tempTables as $name) {
+        foreach($this->tempTables as $name => $type) {
             $sql .= "DROP TABLE IF EXISTS `".$this->getTempName($name)."`;";
         }
         return $sql;
@@ -166,6 +166,7 @@ class ListDescriptor
         $this->query = '';
         $this->params = [];
         $this->paramTypes = [];
+        $this->tempTables = [];
         $this->queryBuilt = false;
     }
 }
