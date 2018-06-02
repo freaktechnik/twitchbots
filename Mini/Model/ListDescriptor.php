@@ -21,8 +21,10 @@ class ListDescriptor
     public $ids = [];
 
     protected static $idField = 'id';
+    protected static $idType = PDO::PARAM_STR;
 
     protected $query = '';
+    protected $tempTables = [];
     private $params = [];
     private $paramTypes = [];
     private $queryBuilt = false;
@@ -66,6 +68,11 @@ class ListDescriptor
         }
     }
 
+    protected function getTempName(string $param): string
+    {
+        return 'tempvals'.$param;
+    }
+
     /**
      * @return string[]
      */
@@ -74,11 +81,10 @@ class ListDescriptor
         $where = [];
 
         if($this->ids && count($this->ids)) {
-            foreach($this->ids as $id) {
-                $this->addParam($id);
-            }
-            $conditions = array_fill(0, count($this->ids), self::$idField.' = ?');
-            $where[] = '('.implode(' OR ', $conditions).')';
+            $this->tempTables['ids'] = self::$idType;
+            $tableName = $this->getTempName($param);
+
+            $this->query .= ' INNER JOIN '.$tableName.' ON '.$tableName.'value = '.self::$idField;
         }
 
         return $where;
@@ -105,6 +111,54 @@ class ListDescriptor
             $type = $this->paramTypes[$i] ?? PDO::PARAM_STR;
             Store::BindNullable($query, $i + 1, $value, $type);
         }
+    }
+
+    private function dbTypeFromPDO(int $pdoType): string
+    {
+        switch($pdoType) {
+            case PDO::PARAM_INT:
+                return "int(10)";
+            default:
+                return "varchar(535)";
+        }
+    }
+
+    public function hasTempTables(): bool
+    {
+        return count($this->tempTables);
+    }
+
+    public function makeTempTables(PDO $db)
+    {
+        $tableName;
+        $value;
+        $i;
+
+        $sql = 'INSERT INTO ? (`value`,`index`) VALUES (?,?)';
+        $query = $this->prepareQuery($sql);
+        $query->bindParam(1, $tableName);
+        $query->bindParam(3, $i);
+        foreach($this->tempTables as $name => $type) {
+            $tableName = $this->getTempName($name);
+
+            $sql = 'CREATE TEMPORARY TABLE '.$tableName.' (`value` '.$this->dbTypeFromPDO($type).' CHARACTER SET utf8 NOT NULL, `index` varchar(535) CHARACTER SET utf8 NOT NULL)';
+            $createQ = $db->prepare($sql);
+            $createQ->execute();
+
+            $query->bindParam(2, $value, $type);
+            foreach($this->{$name} as $i => $value) {
+                $query->execute();
+            }
+        }
+    }
+
+    public function removeTempTables(): string
+    {
+        $sql = '';
+        foreach($this->tempTables as $name) {
+            $sql .= "DROP TABLE IF EXISTS `".$this->getTempName($name)."`;";
+        }
+        return $sql;
     }
 
     public function reset()

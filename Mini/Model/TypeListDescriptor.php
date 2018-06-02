@@ -9,20 +9,14 @@ class TypeListDescriptor extends ListDescriptor
     /** @var bool */
     public $includeDisabled = false;
 
+    protected static $idType = PDO::PARAM_INT;
+
     /**
      * @return string[]
      */
     protected function addWhere(): array
     {
-        $where = [];
-
-        if($this->ids && count($this->ids)) {
-            foreach($this->ids as $id) {
-                $this->addParam($id, PDO::PARAM_INT);
-            }
-            $conditions = array_fill(0, count($this->ids), '?');
-            $where[] = self::$idField.' IN ('.implode(',', $conditions).')';
-        }
+        $where = parent::addWhere();
 
         if(!$this->includeDisabled) {
             $where[] = 'enabled=1';
