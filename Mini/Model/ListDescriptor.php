@@ -82,7 +82,7 @@ class ListDescriptor
 
         if($this->ids && count($this->ids)) {
             $this->tempTables['ids'] = self::$idType;
-            $tableName = $this->getTempName($param);
+            $tableName = $this->getTempName('ids');
 
             $this->query .= ' INNER JOIN '.$tableName.' ON '.$tableName.'value = '.self::$idField;
         }
