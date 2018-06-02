@@ -64,11 +64,12 @@ class Store {
 
     public function prepareList(ListDescriptor $descriptor, string $fields = "`table`.*"): PDOStatement
     {
+        $sql = $descriptor->makeSQLQuery();
         $hasTempTables = $descriptor->hasTempTables();
         if($hasTempTables) {
             $descriptor->makeTempTables($this->db);
         }
-        $query = $this->prepareSelect($fields, $descriptor->makeSQLQuery());
+        $query = $this->prepareSelect($fields, $sql);
         $descriptor->bindParams($query);
         $query->execute();
         if($hasTempTables) {
