@@ -128,7 +128,7 @@ class ListDescriptor
         return count($this->tempTables) > 0;
     }
 
-    public function makeTempTables(PDO $db)
+    public function makeTempTables(PingablePDO $db)
     {
         $tableName;
         $value;
