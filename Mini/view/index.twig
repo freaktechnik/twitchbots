@@ -37,11 +37,11 @@
         </div>
     </section>
     <section class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-12">
+        <div class="col-lg-8 offset-lg-2 col-12">
             <h2>Popular Bot Types</h2>
             <div class="list-group">
                 {% for type in topTypes %}
-                <a href="{{ urlFor('type', { id: type.id })|e('html_attr') }}" class="list-group-item-action">{{ type.name|e }}</a>
+                <a href="{{ urlFor('type', { id: type.id })|e('html_attr') }}" class="list-group-item list-group-item-action">{{ type.name|e }}</a>
                 {% endfor %}
             </div>
         </div>
