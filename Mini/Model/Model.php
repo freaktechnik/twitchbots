@@ -250,7 +250,7 @@ class Model
         return $this->checkNBots($botsPerHour);
     }
 
-    private function checkBot(Bot $bot): void
+    private function checkBot(Bot $bot): bool
     {
         $this->bots->touchBot($bot->twitch_id);
 
