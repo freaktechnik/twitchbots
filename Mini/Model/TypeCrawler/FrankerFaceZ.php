@@ -11,11 +11,13 @@ class FrankerFaceZ extends TypeCrawler {
     /** @var int $type */
     public static $type = 165;
 
-    function __construct(TypeCrawlerStorage $storage) {
+    function __construct(TypeCrawlerStorage $storage)
+    {
         parent::__construct($storage);
     }
 
-    protected function getBot(string $name, string $channel = null): Bot {
+    protected function getBot(string $name, ?string $channel = null): Bot
+    {
         $bot = parent::getBot($name, $channel);
         $bot->type = null;
         return $bot;
@@ -24,7 +26,8 @@ class FrankerFaceZ extends TypeCrawler {
     /**
      * @inheritDoc
      */
-    protected function doCrawl(): array {
+    protected function doCrawl(): array
+    {
         $badgeId = "2";
         $url = "https://api.frankerfacez.com/v1/badge/".$badgeId;
 

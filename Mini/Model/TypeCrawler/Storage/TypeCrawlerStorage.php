@@ -8,7 +8,8 @@ class TypeCrawlerStorage {
     /** @var int $type */
     protected $type;
 
-    function __construct(int $forType) {
+    function __construct(int $forType)
+    {
         $this->type = $forType;
     }
 
@@ -16,7 +17,8 @@ class TypeCrawlerStorage {
      * @codeCoverageIgnore
      * @return mixed
      */
-    public function get(string $name) {
+    public function get(string $name)
+    {
         throw new Exception();
     }
 
@@ -25,14 +27,16 @@ class TypeCrawlerStorage {
      * @param string $name
      * @param mixed $value
      */
-    public function set(string $name, $value) {
+    public function set(string $name, $value)
+    {
         throw new Exception();
     }
 
     /**
      * @codeCoverageIgnore
      */
-    public function has(string $name) {
+    public function has(string $name): bool
+    {
         throw new Exception();
     }
 }

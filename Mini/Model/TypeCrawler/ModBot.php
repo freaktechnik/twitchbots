@@ -11,14 +11,16 @@ class ModBot extends TypeCrawler {
     /** @var int $type */
     public static $type = 28;
 
-    function __construct(TypeCrawlerStorage $storage) {
+    function __construct(TypeCrawlerStorage $storage)
+    {
         parent::__construct($storage);
     }
 
     /**
      * @inheritDoc
      */
-    protected function doCrawl(): array {
+    protected function doCrawl(): array
+    {
         $url = $this->storage->get('URL')."?from=".$this->storage->get('lastCrawl');
 
         $ch = curl_init($url);

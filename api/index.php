@@ -85,7 +85,8 @@ $model = new \Mini\Model\Model($app->config('model'), $client);
 
 $app->response->headers->set('Access-Control-Allow-Origin', '*');
 
-$returnError = function(int $code, string $msg) {
+$returnError = function(int $code, string $msg): string
+{
     return json_encode(array(
         'error' => $msg,
         'code' => $code

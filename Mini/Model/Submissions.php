@@ -33,7 +33,14 @@ class Submissions extends PaginatingStore {
         parent::__construct($db, "submissions", $pageSize);
     }
 
-    public function append(string $id, string $username, $type, int $correction = self::SUBMISSION, string $channel = NULL, string $channelId = NULL)
+    public function append(
+        string $id,
+        string $username,
+        $type,
+        int $correction = self::SUBMISSION,
+        ?string $channel = null,
+        ?string $channelId = null
+    ): void
     {
         $query = $this->prepareInsert("(twitch_id,name,description,type,channel,channel_id) VALUES (?,?,?,?,?,?)");
         $params = [ $id, $username, $type, $correction, $channel, $channelId ];
@@ -44,7 +51,7 @@ class Submissions extends PaginatingStore {
     /**
      * @return Submission[]
      */
-    public function getSubmissions(int $type = null): array
+    public function getSubmissions(?int $type = null): array
     {
         $condition = "ORDER BY score DESC, online DESC, date DESC";
         $params = [];
@@ -82,7 +89,7 @@ class Submissions extends PaginatingStore {
         return $sub;
     }
 
-    public function has(string $id, int $type = NULL, string $description = NULL): bool
+    public function has(string $id, ?int $type = null, ?string $description = null): bool
     {
         $where = "WHERE twitch_id=?";
         $params = array($id);
@@ -107,13 +114,13 @@ class Submissions extends PaginatingStore {
     }
 
 
-    public function hasCorrection(string $id,  string $description): bool
+    public function hasCorrection(string $id, string $description): bool
     {
         return $this->has($id, self::CORRECTION, $description);
     }
 
 
-    public function setInChat(int $id, bool $inChannel = null, bool $live = null)
+    public function setInChat(int $id, ?bool $inChannel = null, ?bool $live = null): void
     {
         if($live) {
             $sql = "online=? WHERE id=?";
@@ -126,28 +133,28 @@ class Submissions extends PaginatingStore {
 	    $query->execute([ $inChannel, $id ]);
     }
 
-    public function setModded(int $id, bool $isMod)
+    public function setModded(int $id, bool $isMod): void
     {
         $sql = "ismod=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $isMod, $id ]);
     }
 
-    public function setFollowing(int $id, int $followingCount = null)
+    public function setFollowing(int $id, int $followingCount = null): void
     {
         $sql = "following=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $followingCount, $id ]);
     }
 
-    public function setFollowingChannel(int $id, bool $followingChannel = null)
+    public function setFollowingChannel(int $id, bool $followingChannel = null): void
     {
         $sql = "following_channel=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $followingChannel, $id ]);
     }
 
-    public function setBio(int $id, string $bio = NULL)
+    public function setBio(int $id, string $bio = null): void
     {
         if(!empty($bio)) {
             $sql = "bio=? WHERE id=?";
@@ -156,58 +163,63 @@ class Submissions extends PaginatingStore {
         }
     }
 
-    public function setHasVODs(int $id, bool $hasVODs)
+    public function setHasVODs(int $id, bool $hasVODs): void
     {
         $sql = "vods=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $hasVODs, $id ]);
     }
 
-    public function setVerified(int $id, bool $verified) {
+    public function setVerified(int $id, bool $verified): void
+    {
         $sql = 'verified=? WHERE id=?';
         $query = $this->prepareUpdate($sql);
         $query->execute([ $verified, $id ]);
     }
 
-    public function setTwitchID(int $id, string $twitchID, string $type = "twitch")
+    public function setTwitchID(int $id, string $twitchID, string $type = "twitch"): void
     {
         $sql = $type."_id=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $twitchID, $id ]);
     }
 
-    public function updateName(int $id, string $name)
+    public function updateName(int $id, string $name): void
     {
         $sql = "name=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $name, $id ]);
     }
 
-    public function updateChannelName(int $id, string $name)
+    public function updateChannelName(int $id, string $name): void
     {
         $sql = "channel=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $name, $id ]);
     }
 
-    public function clearChannel(int $id) {
+    public function clearChannel(int $id): void
+    {
         $sql = "channel=NULL,channel_id=NULL,following_channel=NULL,offline=NULL,online=NULL,ismod=NULL WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $id ]);
     }
 
-    public function updateDescription(int $id, string $description) {
+    public function updateDescription(int $id, string $description): void
+    {
         $sql = "description=? WHERE id=?";
         $query = $this->prepareUpdate($sql);
         $query->execute([ $description, $id ]);
     }
 
-    public function removeSubmission(int $id) {
+    public function removeSubmission(int $id): void
+    {
         $query = $this->prepareDelete("WHERE id=?");
         $query->execute([ $id ]);
     }
 
-    public function removeSubmissions(string $twitchID, string $description = NULL) {
+    public function removeSubmissions(string $twitchID, ?string $description = null): void
+    {
         $condition = "WHERE twitch_id=?";
         $args = [ $twitchID ];
         if(!empty($description)) {

@@ -42,7 +42,7 @@ class PingablePDO {
         return $this->pdo;
     }
 
-    public function ping()
+    public function ping(): void
     {
         try {
             $this->pdo->query("DO 1");
@@ -51,7 +51,7 @@ class PingablePDO {
         }
     }
 
-    public function init()
+    public function init(): void
     {
         $class = new ReflectionClass('PDO');
         $this->pdo = $class->newInstanceArgs($this->params);

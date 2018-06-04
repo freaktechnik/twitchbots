@@ -35,7 +35,7 @@ class ShimStore extends Store {
         return parent::createTempTable($values);
     }
 
-    public function cleanUpTempTable(string $tempTable)
+    public function cleanUpTempTable(string $tempTable): void
     {
         return parent::cleanUpTempTable($tempTable);
     }

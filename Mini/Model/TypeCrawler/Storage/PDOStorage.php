@@ -13,7 +13,8 @@ class PDOStorage extends TypeCrawlerStorage {
     /** @var string $table */
     private $table;
 
-    function __construct(int $forType, PingablePDO $pdo, string $table) {
+    function __construct(int $forType, PingablePDO $pdo, string $table)
+    {
         parent::__construct($forType);
 
         $this->db = $pdo;
@@ -23,7 +24,8 @@ class PDOStorage extends TypeCrawlerStorage {
     /**
      * @inheritDoc
      */
-    public function get(string $name) {
+    public function get(string $name)
+    {
         $sql = "SELECT value FROM ".$this->table." WHERE name=?";
         $query = $this->db->prepare($sql);
         $query->execute(array($this->type."_".$name));
@@ -37,7 +39,8 @@ class PDOStorage extends TypeCrawlerStorage {
     /**
      * @inheritDoc
      */
-    public function set(string $name, $value) {
+    public function set(string $name, $value)
+    {
         $this->db->ping();
         if($this->has($name)) {
             $sql = "UPDATE ".$this->table." SET value=? WHERE name=?";
@@ -49,7 +52,8 @@ class PDOStorage extends TypeCrawlerStorage {
         $query->execute([ $value, $this->type."_".$name ]);
     }
 
-    public function has(string $name): bool {
+    public function has(string $name): bool
+    {
         $this->db->ping();
         $sql = "SELECT value FROM ".$this->table." WHERE name=?";
         $query = $this->db->prepare($sql);

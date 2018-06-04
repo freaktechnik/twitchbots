@@ -9,14 +9,16 @@ class DeepBot extends TypeCrawler {
     /** @var int $type */
     public static $type = 22;
 
-    function __construct(TypeCrawlerStorage $storage) {
+    function __construct(TypeCrawlerStorage $storage)
+    {
         parent::__construct($storage);
     }
 
     /**
      * @inheritDoc
      */
-    protected function doCrawl(): array {
+    protected function doCrawl(): array
+    {
         $url = "https://api.deepbot.tv/web/streamlist.php";
 
         $ch = curl_init($url);

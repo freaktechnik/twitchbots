@@ -26,7 +26,7 @@ use PDO;
 ) DEFAULT CHARSET=utf8 */
 
 class Types extends PaginatingStore {
-    const API_VERSIONS = [
+    public const API_VERSIONS = [
         'jtv',
         'kraken v1',
         'kraken v3',
@@ -34,7 +34,7 @@ class Types extends PaginatingStore {
         'helix'
     ];
 
-    const PAYMENT = [
+    public const PAYMENT = [
         'Free',
         'Lifetime license',
         'Subscription'
@@ -104,14 +104,14 @@ class Types extends PaginatingStore {
         bool $multichannel,
         bool $managed,
         bool $customUsername,
-        string $identifyableBy = null,
-        string $description = null,
-        string $url = null,
-        string $sourceUrl = null,
-        string $commandsUrl = null,
-        int $payment = null,
+        ?string $identifyableBy = null,
+        ?string $description = null,
+        ?string $url = null,
+        ?string $sourceUrl = null,
+        ?string $commandsUrl = null,
+        ?int $payment = null,
         bool $hasFreeTier = true,
-        int $apiVersion = null
+        ?int $apiVersion = null
     ): int
     {
         $sql = "(name,multichannel,managed,customUsername,identifiableby,description,url,sourceUrl,commandsUrl,payment,hasFreeTier,apiVersion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -132,7 +132,7 @@ class Types extends PaginatingStore {
         return $this->getLastInsertedId();
     }
 
-    public function setEstimate(int $id, int $count)
+    public function setEstimate(int $id, int $count): void
     {
         $query = $this->prepareUpdate('channelsEstimate=? WHERE id=?');
         $query->execute([ $count, $id ]);

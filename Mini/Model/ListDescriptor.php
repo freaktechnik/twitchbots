@@ -6,8 +6,8 @@ use \PDO;
 
 class ListDescriptor
 {
-    const DIR_ASC = 1;
-    const DIR_DESC = 2;
+    public const DIR_ASC = 1;
+    public const DIR_DESC = 2;
 
     /** @var int */
     public $offset = 0;
@@ -34,12 +34,13 @@ class ListDescriptor
         $this->reset();
     }
 
-    protected function addParam($value, int $type = PDO::PARAM_STR) {
+    protected function addParam($value, int $type = PDO::PARAM_STR): void
+    {
         $this->params[] = $value;
         $this->paramType[count($this->params) - 1] = $type;
     }
 
-    private function addLimit()
+    private function addLimit(): void
     {
         if($this->limit) {
 
@@ -55,7 +56,7 @@ class ListDescriptor
         }
     }
 
-    private function addOrder()
+    private function addOrder(): void
     {
         if($this->orderBy) {
             $this->query .= ' ORDER BY '.$this->orderBy;
@@ -105,7 +106,7 @@ class ListDescriptor
         return $this->query;
     }
 
-    public function bindParams(\PDOStatement $query)
+    public function bindParams(\PDOStatement $query): void
     {
         foreach($this->params as $i => $value) {
             $type = $this->paramTypes[$i] ?? PDO::PARAM_STR;
@@ -128,7 +129,7 @@ class ListDescriptor
         return count($this->tempTables) > 0;
     }
 
-    public function makeTempTables(PingablePDO $db)
+    public function makeTempTables(PingablePDO $db): void
     {
         $value;
         $i;
@@ -158,7 +159,7 @@ class ListDescriptor
         return $sql;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->query = '';
         $this->params = [];

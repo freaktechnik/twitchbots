@@ -74,12 +74,12 @@ class API {
         });
     }
 
-    private static function getOffset() : int
+    private static function getOffset(): int
     {
         return (int)$_GET[self::PARAM_OFFSET] ?? 0;
     }
 
-    private static function getLimit() : int
+    private static function getLimit(): int
     {
         return isset($_GET[self::PARAM_LIMIT]) ? min((int)$_GET[self::PARAM_LIMIT], self::LIMIT) : self::LIMIT;
     }
@@ -87,7 +87,7 @@ class API {
     /**
      * @return string[]|null
      */
-    private static function getIDs()
+    private static function getIDs(): ?array
     {
         if(!isset($_GET[self::PARAM_IDS])) {
             return null;
@@ -99,17 +99,17 @@ class API {
         return $ids;
     }
 
-    private static function getBooleanParam(string $name) : bool
+    private static function getBooleanParam(string $name): bool
     {
         return isset($_GET[$name]) && !!$_GET[$name];
     }
 
-    private static function getIncludeDisabled() : bool
+    private static function getIncludeDisabled(): bool
     {
         return self::getBooleanParam(self::PARAM_DISABLED);
     }
 
-    private static function buildUrlParams(array $params = []) : string
+    private static function buildUrlParams(array $params = []): string
     {
         $particles = [];
         foreach($params as $name => $value) {
@@ -135,7 +135,7 @@ class API {
         ];
     }
 
-    private function formatBot(Bot $bot) : array
+    private function formatBot(Bot $bot): array
     {
         $links = [
             self::LINK_SELF => $this->fullUrlFor('bot', [
@@ -170,7 +170,7 @@ class API {
      * @param int $value
      * @return null|bool
      */
-    private function intToBool(int $value = null)
+    private function intToBool(?int $value = null): ?bool
     {
         if($value === null) {
             return $value;
@@ -178,7 +178,7 @@ class API {
         return $value > 0;
     }
 
-    private function formatType(Type $type) : array
+    private function formatType(Type $type): array
     {
         return [
             'id' => $type->id,
@@ -207,12 +207,12 @@ class API {
         ];
     }
 
-    private static function boolToParam(bool $value) : string
+    private static function boolToParam(bool $value): string
     {
         return $value ? '1' : '0';
     }
 
-    private function sendResponse()
+    private function sendResponse(): void
     {
         if(array_key_exists(self::PROP_LINKS, $this->result)) {
             $linkHeader = [];
@@ -225,7 +225,7 @@ class API {
         $this->app->stop();
     }
 
-    private function addEndpoint(string $path, callable $cbk) : \Slim\Route
+    private function addEndpoint(string $path, callable $cbk): \Slim\Route
     {
         $boundSendResponse = function(...$args) use($cbk) {
             $cbk(...$args);
@@ -235,7 +235,7 @@ class API {
         return $this->app->get($path, $boundSendResponse);
     }
 
-    private function sendError(int $code, string $error)
+    private function sendError(int $code, string $error): void
     {
         $this->app->halt($code, json_encode([
             'error' => $error,
@@ -243,7 +243,7 @@ class API {
         ]));
     }
 
-    private function checkPagination()
+    private function checkPagination(): void
     {
         if(isset($_GET[self::PARAM_LIMIT]) &&
            (!is_numeric($_GET[self::PARAM_LIMIT]) || (int)$_GET[self::PARAM_LIMIT] <= 0))
@@ -253,22 +253,22 @@ class API {
             $this->app->halt(400, $this->sendError(400, 'Invalid offset specified'));
     }
 
-    private function fullUrlFor(string $name, array $params = []) : string
+    private function fullUrlFor(string $name, array $params = []): string
     {
         return $this->app->request->getUrl().$this->app->urlFor(self::NAME_PREFIX.$name, $params);
     }
 
-    private function webUrl() : string
+    private function webUrl(): string
     {
         return $this->app->config('webUrl');
     }
 
-    private function lastModified(int $lastModified)
+    private function lastModified(int $lastModified): void
     {
         $this->app->lastModified(max([ self::LAST_MODIFIED, $lastModified ]));
     }
 
-    public function getBot(string $id)
+    public function getBot(string $id): void
     {
         $bot = $this->model->bots->getBotByID($id);
         if(!$bot) {
@@ -282,7 +282,7 @@ class API {
         int $offset = 0,
         int $limit = self::LIMIT,
         string $channelID
-    )
+    ): void
     {
         $descriptor = new BotListDescriptor();
 
@@ -309,8 +309,8 @@ class API {
         int $type = 0,
         bool $multichannel = false,
         bool $includeDisabled = false,
-        array $ids = null
-    )
+        ?array $ids = null
+    ): void
     {
         $descriptor = new BotListDescriptor();
 
@@ -347,7 +347,7 @@ class API {
         ]);
     }
 
-    public function getType(int $id)
+    public function getType(int $id): void
     {
         $type = $this->model->types->getType($id);
         if(!$type) {
@@ -361,8 +361,8 @@ class API {
         int $offset = 0,
         int $limit = self::LIMIT,
         bool $includeDisabled,
-        array $ids = null
-    )
+        ?array $ids = null
+    ): void
     {
         $descriptor = new TypeListDescriptor();
         $descriptor->includeDisabled = $includeDisabled;

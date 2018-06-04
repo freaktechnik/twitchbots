@@ -12,7 +12,8 @@ class PaginatingStore extends Store {
      */
     protected $pageSize;
 
-    function __construct(PingablePDO $db, string $table, int $pageSize = 50) {
+    function __construct(PingablePDO $db, string $table, int $pageSize = 50)
+    {
         $this->pageSize = $pageSize;
         parent::__construct($db, $table);
     }
@@ -32,7 +33,7 @@ class PaginatingStore extends Store {
         return ($page - 1) * $this->pageSize;
     }
 
-    protected function doPagination(PDOStatement $query, int $offset = 0, int $limit = null, $start = ":start", $stop = ":stop")
+    protected function doPagination(PDOStatement $query, int $offset = 0, int $limit = null, $start = ":start", $stop = ":stop"): void
     {
         $limit = $limit ?? $this->pageSize;
         $query->bindValue($start, $offset, PDO::PARAM_INT);

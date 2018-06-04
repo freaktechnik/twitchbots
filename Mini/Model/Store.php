@@ -16,12 +16,13 @@ class Store {
      */
     private $table;
 
-    function __construct(PingablePDO $db, string $table) {
+    function __construct(PingablePDO $db, string $table)
+    {
         $this->db = $db;
         $this->table = $table;
     }
 
-    public static function BindNullable(PDOStatement $query, $param, $value = null, int $type = PDO::PARAM_STR)
+    public static function BindNullable(PDOStatement $query, $param, $value = null, int $type = PDO::PARAM_STR): void
     {
         if($value === null) {
             $query->bindValue($param, $value, PDO::PARAM_NULL);
@@ -36,7 +37,7 @@ class Store {
         return $this->db->prepare($sql);
     }
 
-    protected function prepareSelect(string $select = "*", string $where = "", string $table = null): PDOStatement
+    protected function prepareSelect(string $select = "*", string $where = "", ?string $table = null): PDOStatement
     {
         $table = $table ?? $this->table;
         if($where != "") {
@@ -78,7 +79,7 @@ class Store {
         return $query;
     }
 
-    public function getCount(ListDescriptor $descriptor = null): int
+    public function getCount(?ListDescriptor $descriptor = null): int
     {
         if(!$descriptor) {
             $descriptor = new ListDescriptor();
@@ -94,7 +95,7 @@ class Store {
         return $result->count;
     }
 
-    public function getLastUpdate(string $condition = "", array $values = array()): int
+    public function getLastUpdate(string $condition = "", array $values = []): int
     {
         $where = "ORDER BY date DESC LIMIT 1";
         if(!empty($condition)) {
@@ -153,7 +154,7 @@ class Store {
         return $tableName;
     }
 
-    protected function cleanUpTempTable(string $tableName)
+    protected function cleanUpTempTable(string $tableName): void
     {
         $this->prepareQuery("DROP TABLE IF EXISTS `".$tableName."`")->execute();
     }

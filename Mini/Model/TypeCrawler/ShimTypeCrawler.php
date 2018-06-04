@@ -9,7 +9,8 @@ class ShimTypeCrawler extends TypeCrawler
     /** @var int $type */
     public static $type = 42;
 
-    function __construct(TypeCrawlerStorage $storage) {
+    function __construct(TypeCrawlerStorage $storage)
+    {
         parent::__construct($storage);
     }
 

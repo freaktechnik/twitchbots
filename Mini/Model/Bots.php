@@ -46,7 +46,7 @@ class Bots extends PaginatingStore {
     /**
      * @return Bot[]
      */
-    public function getAllRawBots(int $offset = 0, int $limit = null): array
+    public function getAllRawBots(int $offset = 0, ?int $limit = null): array
     {
         $limit = $limit ?? $this->pageSize;
         if($limit > 0 && $offset < $this->getCount()) {
@@ -61,7 +61,7 @@ class Bots extends PaginatingStore {
     /**
      * @return Bot[]
      */
-    public function getBotsByNames(array $names, int $offset = 0, int $limit = null): array
+    public function getBotsByNames(array $names, int $offset = 0, ?int $limit = null): array
     {
         $limit = $limit ?? $this->pageSize;
         $namesCount = count($names);
@@ -83,7 +83,7 @@ class Bots extends PaginatingStore {
     /**
      * @return Bot[]
      */
-    public function getBotsByType(int $type, int $offset = 0, int $limit = null): array
+    public function getBotsByType(int $type, int $offset = 0, ?int $limit = null): array
     {
         $limit = $limit ?? $this->pageSize;
         //TODO should these bounds checks be in the controller?
@@ -103,7 +103,7 @@ class Bots extends PaginatingStore {
     /**
      * @return Bot[]
      */
-    public function getBotsWithoutType(int $offset = 0, int $limit = null): array
+    public function getBotsWithoutType(int $offset = 0, ?int $limit = null): array
     {
         $limit = $limit ?? $this->pageSize;
         $descriptor = new BotListDescriptor();
@@ -139,13 +139,13 @@ class Bots extends PaginatingStore {
     }
 
 
-    public function removeBot(string $username)
+    public function removeBot(string $username): void
     {
         $query = $this->prepareDelete("WHERE name=?");
         $query->execute(array($username));
     }
 
-    public function removeBots(array $ids)
+    public function removeBots(array $ids): void
     {
         $tempTable = $this->createTempTable($ids);
         $where = 'INNER JOIN '.$tempTable.' AS t ON t.value = `table`.twitch_id';
@@ -154,7 +154,7 @@ class Bots extends PaginatingStore {
         $this->cleanUpTempTable($tempTable);
     }
 
-    public function addBot(Bot $bot)
+    public function addBot(Bot $bot): void
     {
         if(!empty($bot->channel)) {
             $bot->channel = strtolower($bot->channel);
@@ -197,8 +197,9 @@ class Bots extends PaginatingStore {
      * @param $id: User ID of the bot to touch.
      * @param $hard: If there are content modifications of the bot this should
      *               be true.
+     * @return void
      */
-    public function touchBot(string $id, bool $hard = false)
+    public function touchBot(string $id, bool $hard = false): void
     {
         $sql = "cdate=NOW() WHERE twitch_id=?";
         if($hard) {
@@ -208,7 +209,7 @@ class Bots extends PaginatingStore {
         $query->execute([ $id ]);
     }
 
-    public function updateBot(Bot $updatedBot)
+    public function updateBot(Bot $updatedBot): void
     {
         $sql = "twitch_id=?, type=?, date=NOW(), channel=?, channel_id=? WHERE name=?";
         $query = $this->prepareUpdate($sql);

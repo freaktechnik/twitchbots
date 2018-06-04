@@ -13,12 +13,12 @@ class ShimTypeCrawlerStorage extends TypeCrawlerStorage
         $this->lastCrawl = 0;
     }
 
-    public function get(string $prop): bool
+    public function get(string $prop)
     {
         return $prop == 'lastCrawl' ? $this->lastCrawl : null;
     }
 
-    public function has(string $prop)
+    public function has(string $prop): bool
     {
         return $prop == 'lastCrawl';
     }

@@ -49,7 +49,7 @@ class Config extends Store {
         return "";
     }
 
-    public function set(string $key, string $value)
+    public function set(string $key, string $value): void
     {
         $query = $this->prepareUpdate("value=? WHERE name=?");
         $query->execute([ $value, $key ]);

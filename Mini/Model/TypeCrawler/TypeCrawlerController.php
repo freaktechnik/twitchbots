@@ -11,7 +11,8 @@ class TypeCrawlerController {
     /** @var StorageFactory */
     private $storage;
 
-    function __construct(StorageFactory $storageFactory) {
+    function __construct(StorageFactory $storageFactory)
+    {
         $this->storage = $storageFactory;
 
         $this->registerCrawler(ModBot::class);
@@ -20,14 +21,16 @@ class TypeCrawlerController {
         $this->registerCrawler(FrankerFaceZ::class);
     }
 
-    public function registerCrawler(string $crawler) {
+    public function registerCrawler(string $crawler): void
+    {
         $this->crawlers[] = new $crawler($this->storage->getStorage($crawler::$type));
     }
 
     /**
      * @return \Mini\Model\Bot[]
      */
-    public function crawl(int $type): array {
+    public function crawl(int $type): array
+    {
         foreach($this->crawlers as $c) {
             if($c::$type == $type) {
                 $crawler = $c;
@@ -43,7 +46,8 @@ class TypeCrawlerController {
     /**
      * @return \Mini\Model\Bot[]
      */
-    public function triggerCrawl(): array {
+    public function triggerCrawl(): array
+    {
         $ret = [];
         foreach($this->crawlers as $crawler) {
             try {

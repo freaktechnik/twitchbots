@@ -12,14 +12,16 @@ class Pajbot extends TypeCrawler {
     /** @var int $type */
     public static $type = 44;
 
-    function __construct(TypeCrawlerStorage $storage) {
+    function __construct(TypeCrawlerStorage $storage)
+    {
         parent::__construct($storage);
     }
 
     /**
      * @inheritDoc
      */
-    protected function doCrawl(): array {
+    protected function doCrawl(): array
+    {
         $url = "https://pajbot.com";
 
         $ch = curl_init($url);

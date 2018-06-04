@@ -19,14 +19,15 @@ class ConfirmedPeople extends Store {
     /**
      * @return ConfirmedPerson[]
      */
-    public function getAll(): array {
+    public function getAll(): array
+    {
         $query = $this->prepareSelect("`table`.twitch_id");
         $query->execute();
 
         return $query->fetchAll(PDO::FETCH_CLASS, ConfirmedPerson::class);
     }
 
-    public function has(string $id)
+    public function has(string $id): bool
     {
         $where = "WHERE twitch_id=?";
         $params = [ $id ];
@@ -37,7 +38,8 @@ class ConfirmedPeople extends Store {
         return !empty($query->fetch());
     }
 
-    public function add(string $twitch_id) {
+    public function add(string $twitch_id): void
+    {
         $sql = "(twitch_id) VALUES (?)";
         $query = $this->prepareInsert($sql);
         $query->execute([

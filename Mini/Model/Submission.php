@@ -34,7 +34,7 @@ class Submission extends Row {
     /** @var bool|null $verified */
     public $verified = null;
 
-    public function shouldApprove(Type $type = null) : bool
+    public function shouldApprove(?Type $type = null): bool
     {
         if($this->verified && $this->type == 0) {
             if(!is_numeric($this->description)) {

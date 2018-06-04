@@ -5,8 +5,8 @@ namespace Mini\Model;
 use GuzzleHttp\Client;
 
 class Twitch {
-    private static $krakenBase = 'https://api.twitch.tv/kraken/';
-    private static $helixBase = 'https://api.twitch.tv/helix/';
+    private const KRAKEN_BASE = 'https://api.twitch.tv/kraken/';
+    private const HELIX_BASE = 'https://api.twitch.tv/helix/';
 
     /**
      * The guzzle client
@@ -21,7 +21,8 @@ class Twitch {
     /** @var \stdClass[] $_followsCache */
     private $_followsCache = [];
 
-    function __construct(Client $client, string $clientID, array $requestOptions) {
+    function __construct(Client $client, string $clientID, array $requestOptions)
+    {
         $this->client = $client;
         $this->requestOptions = $requestOptions;
 
@@ -36,9 +37,9 @@ class Twitch {
         ]);
     }
 
-    public function userExists(string $id, $noJustin = false): bool
+    public function userExists(string $id, bool $noJustin = false): bool
     {
-        $response = $this->client->head(self::$krakenBase."users/".$id, $this->twitchHeadersV5);
+        $response = $this->client->head(self::KRAKEN_BASE."users/".$id, $this->twitchHeadersV5);
         $http_code = $response->getStatusCode();
         return $http_code != 404 && (!$noJustin || $http_code != 422);
     }
@@ -55,28 +56,28 @@ class Twitch {
 
     public function isChannelLive(string $channelId): bool
     {
-        $response = $this->client->get(self::$helixBase.'streams?user_id='.$channelId, $this->twitchHeaders);
+        $response = $this->client->get(self::HELIX_BASE.'streams?user_id='.$channelId, $this->twitchHeaders);
 
         /** @var \stdClass $stream */
         $stream = json_decode($response->getBody());
         return $stream->data && count($stream->data);
     }
 
-    public function getBio(string $channelId)//: ?string
+    public function getBio(string $channelId): ?string
     {
-        $response = $this->client->get(self::$krakenBase.'users/'.$channelId, $this->twitchHeadersV5);
+        $response = $this->client->get(self::KRAKEN_BASE.'users/'.$channelId, $this->twitchHeadersV5);
         /** @var \stdClass $user */
         $user = json_decode($response->getBody());
         if(isset($user->bio)) {
             return $user->bio;
         } else {
-            return NULL;
+            return null;
         }
     }
 
     public function hasVODs(string $channelId): bool
     {
-        $response = $this->client->get(self::$helixBase.'videos?user_id='.$channelId, $this->twitchHeaders);
+        $response = $this->client->get(self::HELIX_BASE.'videos?user_id='.$channelId, $this->twitchHeaders);
         /** @var \stdClass $vods */
         $vods = json_decode($response->getBody());
         return count($vods->data) > 0;
@@ -85,7 +86,7 @@ class Twitch {
     public function getFollowing(string $id): \stdClass
     {
         if(!in_array($id, $this->_followsCache)) {
-            $response = $this->client->get(self::$helixBase.'users/follows?from_id='.$id, $this->twitchHeaders);
+            $response = $this->client->get(self::HELIX_BASE.'users/follows?from_id='.$id, $this->twitchHeaders);
 
             if($response->getStatusCode() >= 400) {
                 throw new \Exception("Can not get followers for ".$name);
@@ -109,7 +110,7 @@ class Twitch {
                 }
             }
         }
-        $url = self::$helixBase.'users/follows?from_id='.$id.'&to_id='.$channelId;
+        $url = self::HELIX_BASE.'users/follows?from_id='.$id.'&to_id='.$channelId;
         $response = $this->client->get($url, $this->twitchHeaders);
 
         if($response->getStatusCode() >= 400) {
@@ -121,8 +122,9 @@ class Twitch {
         return !!count($follows);
     }
 
-    public function getBotVerified(string $id): bool {
-        $url = self::$krakenBase."users/".$id."/chat";
+    public function getBotVerified(string $id): bool
+    {
+        $url = self::KRAKEN_BASE."users/".$id."/chat";
         $response = $this->client->get($url, $this->twitchHeadersV5);
 
         if($response->getStatusCode() >= 400) {
@@ -160,7 +162,7 @@ class Twitch {
      */
     public function getChannelInfo(array $ids = [], array $names = []): array
     {
-        $url = self::$helixBase.'users/?';
+        $url = self::HELIX_BASE.'users/?';
         $params = [];
         //TODO paginate
         $idCount = count($ids);

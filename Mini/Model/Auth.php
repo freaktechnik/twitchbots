@@ -83,7 +83,7 @@ class Auth {
         return $this->auth0Client->getUser()['email'];
     }
 
-    public function logout()
+    public function logout(): void
     {
         $this->auth0Client->logout();
         session_destroy();
