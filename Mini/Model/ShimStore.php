@@ -37,6 +37,6 @@ class ShimStore extends Store {
 
     public function cleanUpTempTable(string $tempTable): void
     {
-        return parent::cleanUpTempTable($tempTable);
+        parent::cleanUpTempTable($tempTable);
     }
 }
