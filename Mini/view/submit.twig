@@ -61,28 +61,28 @@
 {{ alerts.alert(level, message) }}
 <div class="card">
     <div class="card-body">
-        <form class="form-row" method="post" action="lib/submit" id="submit-form" data-clientid="{{ clientId }}">
-            <fieldset class="form-group">
+        <form method="post" action="lib/submit" id="submit-form" data-clientid="{{ clientId }}">
+            <fieldset class="form-group row">
                 <legend class="col-md-2 col-form-label">Submission Type</legend>
                 <div class="col-md-10">
-                    <label>
-                        <input type="radio" name="submission-type" value="0" id="new-bot"{% if not correction %} checked{% endif %}>
-                        New Bot
-                    </label>
-                    <label>
-                        <input type="radio" name="submission-type" value="1" id="correction"{% if correction %} checked{% endif %}>
-                        Correction
-                    </label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="submission-type" value="0" id="new-bot"{% if not correction %} checked{% endif %}>
+                        <label class="form-check-label">New Bot</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="submission-type" value="1" id="correction"{% if correction %} checked{% endif %}>
+                        <label class="form-check-label">Correction</label>
+                    </div>
                 </div>
             </fieldset>
-            <div class="form-group">
+            <div class="form-group row">
                 <label for="username" class="col-md-2 col-form-label">Bot's Twitch Username</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="{{ username|e('html_attr') }}" required pattern="[a-zA-Z0-9_]+" autofocus spellcheck="false">
                     <p class="form-text text-muted">The username the bot uses in Twitch chat.</p>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group row">
                 <label for="existing-type" class="col-md-2 col-form-label">Bot Type</label>
                 <div class="col-md-10">
                     <select class="form-control" name="type" id="existing-type">
@@ -94,25 +94,25 @@
                     <p class="form-text text-muted">Try to select an existing type, only choose a new type if you can't find any matching type in the list. Selecting an existing type makes it easier for us to verify your submission.</p>
                 </div>
             </div>
-            <div class="form-group" id="bottype"{% if type|default(0) != 0 %} hidden{% endif %}>
+            <div class="form-group row" id="bottype"{% if type|default(0) != 0 %} hidden{% endif %}>
                 <label for="type" class="col-md-2 col-form-label">New Type Description</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control col-md-10" id="type" name="description" placeholder="Type" value="{{ description|e('html_attr') }}"{% if type|default(0) != 0 %} disabled{% else %} required{% endif %} spellcheck="false">
                     <p class="form-text text-muted">Describe the bot type, normally the name of the software that runs it and if possible a link to the website of it. In case of a bot hosted by a thirdparty this is the name and URL of their site.</p>
                 </div>
             </div>
-            <div class="form-group" id="channel-group"{% if correction %} hidden{% endif %}>
+            <div class="form-group row" id="channel-group"{% if correction %} hidden{% endif %}>
                 <label for="channel" class="col-md-2 col-form-label">Example Channel (optional)</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control col-md-10" id="channel" name="channel" placeholder="Channel Name"  value="{{ channel|e('html_attr') }}" pattern="[a-zA-Z0-9_]+" spellcheck="false">
                     <p class="form-text text-muted">A channel that uses this bot. The channel of the bot is not an example channel.</p>
                 </div>
             </div>
-            <div class="form-group" hidden>
+            <div class="form-group row" hidden>
                 <input type="hidden" value="{{ token|e('html_attr') }}" name="token">
                 <input type="hidden" value="PUT" name="_METHOD">
             </div>
-            <div class="form-group">
+            <div class="form-group row">
                 <div class="offset-md-2 col-md-10">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
