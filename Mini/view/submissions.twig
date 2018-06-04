@@ -30,7 +30,7 @@
         <a href="#corrections" role="tab" aria-controls="corrections" class="nav-link">Corrections <span class="badge">{{ corrections|length }}</span></a>
     </li>
     <li>
-        <a href="#typeeditor" data-toggle="modal" data-target="#typeeditor"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add type</a>
+        <a href="#typeeditor" data-toggle="modal" data-target="#typeeditor"><span class="fa fa-plus" aria-hidden="true"></span> Add type</a>
     </li>
     <li class="float-right">
         <form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
@@ -76,7 +76,7 @@
                         <div class="offset-md-4 col-md-8">
                             <input type="hidden" name="id">
                             <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save</button>
+                            <button type="submit" class="btn btn-success"><span class="fa fa-check" aria-hidden="true"></span> Save</button>
                         </div>
                     </div>
                 </form>

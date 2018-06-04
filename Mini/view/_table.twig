@@ -1,14 +1,14 @@
 {%- macro status(value) -%}
 {% if value -%}
-<span class="glyphicon glyphicon-ok-sign status-ok" title="Yes"></span>
+<span class="fa fa-check-circle status-ok" title="Yes"></span>
 {%- elseif value is not null -%}
-<span class="glyphicon glyphicon-remove-sign status-nok" title="No"></span>
+<span class="fa fa-minus-circle status-nok" title="No"></span>
 {%- else -%}
-<span class="glyphicon glyphicon-question-sign status-unknown" title="No data"></span>
+<span class="fa fa-question-circle status-unknown" title="No data"></span>
 {%- endif %}
 {%- endmacro -%}
 {%- macro warn() -%}
-<span class="glyphicon glyphicon-exclamation-sign status-warning" title="Warning"></span>
+<span class="fa fa-exclamation-circle status-warning" title="Warning"></span>
 {%- endmacro -%}
 {%- macro table(set, id, active, buttons, token, types) -%}
 {%- from _self import status, warn -%}
@@ -31,22 +31,22 @@
                 {% if buttons %}
                 <th class="text-center">
                     <abbr title="Approve Submission">
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <span class="fa fa-check" aria-hidden="true"></span>
                     </abbr>
                 </th>
                 <th class="text-center">
                     <abbr title="Edit Submission">
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        <span class="fa fa-edit" aria-hidden="true"></span>
                     </abbr>
                 </th>
                 <th class="text-center">
                     <abbr title="Reject Submission">
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        <span class="fa fa-times" aria-hidden="true"></span>
                     </abbr>
                 </th>
                 <th class="text-center">
                     <abbr title="Mark as Person">
-                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        <span class="fa fa-user" aria-hidden="true"></span>
                     </abbr>
                 </th>
                 {% endif %}
@@ -96,24 +96,24 @@
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="approve" value="1" type="submit" class="btn btn-success btn-xs" aria-label="Approve"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+                        <button name="approve" value="1" type="submit" class="btn btn-success btn-xs" aria-label="Approve"><span class="fa fa-check" aria-hidden="true"></span></button>
                     </form>
                 </td>
                 <td>
-                    <button data-toggle="modal" data-target="#editor" class="submission-edit btn btn-info btn-xs" aria-label="Edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                    <button data-toggle="modal" data-target="#editor" class="submission-edit btn btn-info btn-xs" aria-label="Edit"><span class="fa fa-edit" aria-hidden="true"></span></button>
                 </td>
                 <td>
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="reject" value="1" type="submit" class="btn btn-danger btn-xs" aria-label="Reject"><span class="glyphicon glyphicon-remove" aria-hidden="true"></button>
+                        <button name="reject" value="1" type="submit" class="btn btn-danger btn-xs" aria-label="Reject"><span class="fa fa-times" aria-hidden="true"></button>
                     </form>
                 </td>
                 <td>
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="person" value="1" type="submit" class="btn btn-warning btn-xs"{% if s.type == 1 %} disabled{% endif %} aria-label="Mark as Person"><span class="glyphicon glyphicon-user" aria-hidden="true"></button>
+                        <button name="person" value="1" type="submit" class="btn btn-warning btn-xs"{% if s.type == 1 %} disabled{% endif %} aria-label="Mark as Person"><span class="fa fa-user" aria-hidden="true"></button>
                     </form>
                 </td>
                 {% endif %}

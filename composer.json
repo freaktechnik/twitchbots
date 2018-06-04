@@ -16,7 +16,8 @@
         "auth0/auth0-php": "~4.0",
         "twbs/bootstrap": "4.1.1",
         "frontpack/composer-assets-plugin": "^0.9.4",
-        "components/jquery": "^3.3"
+        "components/jquery": "^3.3",
+        "fortawesome/font-awesome": "^4.7"
     },
     "autoload": {
         "psr-4": {
@@ -35,7 +36,19 @@
                 "dist/css/bootstrap.min.css",
                 "dist/js/bootstrap.min.js",
                 "assets/js/vendor/popper.min.js"
+            ],
+            "fortawesome/font-awesome": [
+                "css/font-awesome.min.css",
+                "fonts/fontawesome-webfont.eot",
+                "fonts/fontawesome-webfont.svg",
+                "fonts/fontawesome-webfont.ttf",
+                "fonts/fontawesome-webfont.woff",
+                "fonts/fontawesome-webfont.woff2",
+                "fonts/FontAwesome.otf"
             ]
+        },
+        "assets-target": {
+            "fortawesome/font-awesome": "public/fonts"
         }
     }
 }
