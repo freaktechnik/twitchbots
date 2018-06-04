@@ -75,7 +75,7 @@ $console
 
         $log('Checked bots. Removed '.count($bots), $output);
         if(count($bots) > 0) {
-          $log('Removed '.implode(', ', $bots));
+            $log('Removed '.implode(', ', $bots));
         }
     });
 
@@ -109,7 +109,7 @@ $console
 $console
     ->register('estimate')
     ->setDefinition([
-        new InputArgument('type', InputARgument::REQUIRED, 'ID of type to check')
+        new InputArgument('type', InputArgument::REQUIRED, 'ID of type to check')
     ])
     ->setDescription('Estimate usage count for a type')
     ->setCode(function(InputInterface $input, OutputInterface $output) use ($model) {

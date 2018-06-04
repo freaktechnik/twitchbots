@@ -66,13 +66,11 @@
                     </ul>
 
                     <form class="form-inline" method="GET" action="{{ urlFor('check')|e('html_attr') }}">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="text" class="form-control" required pattern="[a-zA-Z0-9_]+" spellcheck="false" id="search" name="username" placeholder="Username">
-                                <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary">Check</button>
-                                </span>
-                            </div>
+                        <div class="input-group">
+                            <input type="search" class="form-control" required pattern="[a-zA-Z0-9_]+" spellcheck="false" id="search" name="username" placeholder="Username">
+                            <span class="input-group-append">
+                                <button type="submit" class="btn btn-primary">Check</button>
+                            </span>
                         </div>
                     </form>
                 </div>
