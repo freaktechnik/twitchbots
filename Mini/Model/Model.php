@@ -31,6 +31,7 @@ include_once 'csrf.php';
 
 class Model
 {
+    private const SWORD_PAGESIZE = 500;
     /**
      * The database connection
      * @var PingablePDO $db
@@ -139,7 +140,7 @@ class Model
         return validate_token($formname, $token);
     }
 
-    public function addSubmission(string $username, int $type, string $description = NULL, string $channel = NULL)
+    public function addSubmission(string $username, int $type, string $description = NULL, string $channel = NULL): void
     {
         if(empty($channel)) {
             $channel = null;
@@ -176,7 +177,7 @@ class Model
     /**
      * @return string|null
      */
-    private function commonSubmissionChecks(string $username, $type, string $channel = null)
+    private function commonSubmissionChecks(string $username, $type, ?string $channel = null): ?string
     {
         $channelId = null;
         if($username == "" || $type == "") {
@@ -210,7 +211,7 @@ class Model
         return true;
     }
 
-    public function addCorrection(string $username, int $type, string $description = null)
+    public function addCorrection(string $username, int $type, ?string $description = null): void
     {
         if($type == 0) {
             if(empty($description)) {
@@ -244,11 +245,12 @@ class Model
      */
     public function checkBots(): array
     {
+        //TODO bulk-requests for this stuff.
         $botsPerHour = $this->bots->getCount() / (int)$this->config->get('checks_per_day');
         return $this->checkNBots($botsPerHour);
     }
 
-    private function checkBot(Bot $bot)
+    private function checkBot(Bot $bot): void
     {
         $this->bots->touchBot($bot->twitch_id);
 
@@ -324,7 +326,7 @@ class Model
         return array_key_exists('moderators', $chatters) && in_array($user, $chatters['moderators']);
     }
 
-    private function getSwords(string $username, int $page = 0, int $pageSize = 100): array
+    private function getSwords(string $username, int $page = 0, int $pageSize = self::SWORD_PAGESIZE): array
     {
         $url = "https://twitchstuff.3v.fi/modlookup/api/user/" . $username . "?limit=" . $pageSize . "&offset=" . $page * $pageSize;
 
@@ -341,7 +343,7 @@ class Model
 
     private function getModStatus(string $username, string $channel, int $page = 0): bool
     {
-        $pageSize = 100;
+        $pageSize = self::SWORD_PAGESIZE;
         $response = $this->getSwords($username, $page, $pageSize);
 
         if($response['count'] > 0 && in_array(strtolower($channel), array_column($response['channels'], 'name'))) {
@@ -354,7 +356,8 @@ class Model
         return false;
     }
 
-    private function getBTTVBots(string $channel): array {
+    private function getBTTVBots(string $channel): array
+    {
         $url = "https://api.betterttv.net/2/channels/".$channel;
         $response = $this->client->get($url);
 
@@ -438,7 +441,8 @@ class Model
         return false;
     }
 
-    private function checkVerified(Submission $submission): bool {
+    private function checkVerified(Submission $submission): bool
+    {
         if(!isset($submission->verified) || !$submission->verified) {
             try {
                 $verified = $this->twitch->getBotVerified($submission->twitch_id);
@@ -454,7 +458,8 @@ class Model
         return false;
     }
 
-    public function checkBTTVBot(Submission $submission): bool {
+    public function checkBTTVBot(Submission $submission): bool
+    {
         if(isset($submission->channel)) {
             try {
                 $bttvBots = $this->getBTTVBots($submission->channel);
@@ -808,12 +813,12 @@ class Model
         $this->submissions->removeSubmission($id);
     }
 
-    public function estimateActiveChannels(int $typeID)
+    public function estimateActiveChannels(int $typeID): void
     {
         $type = $this->types->getTypeOrThrow($typeID);
         $count = 0;
         $channels = [];
-        $pageSize = 100;
+        $pageSize = self::SWORD_PAGESIZE;
         $maxPagesPerInstance = 100;
         // Duplicates stop mattering > 10000 active channels.
         $maxCountForDetails = $pageSize * $maxPagesPerInstance;
