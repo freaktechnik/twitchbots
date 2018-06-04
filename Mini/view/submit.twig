@@ -63,27 +63,27 @@
     <div class="card-body">
         <form class="form-row" method="post" action="lib/submit" id="submit-form" data-clientid="{{ clientId }}">
             <fieldset class="form-group">
-                <legend class="col-md-2 ">Submission Type</legend>
+                <legend class="col-md-2 col-form-label">Submission Type</legend>
                 <div class="col-md-10">
-                    <label class="radio-inline">
+                    <label>
                         <input type="radio" name="submission-type" value="0" id="new-bot"{% if not correction %} checked{% endif %}>
                         New Bot
                     </label>
-                    <label class="radio-inline">
+                    <label>
                         <input type="radio" name="submission-type" value="1" id="correction"{% if correction %} checked{% endif %}>
                         Correction
                     </label>
                 </div>
             </fieldset>
             <div class="form-group">
-                <label for="username" class="col-md-2 ">Bot's Twitch Username</label>
+                <label for="username" class="col-md-2 col-form-label">Bot's Twitch Username</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="{{ username|e('html_attr') }}" required pattern="[a-zA-Z0-9_]+" autofocus spellcheck="false">
                     <p class="form-text text-muted">The username the bot uses in Twitch chat.</p>
                 </div>
             </div>
             <div class="form-group">
-                <label for="existing-type" class="col-md-2 ">Bot Type</label>
+                <label for="existing-type" class="col-md-2 col-form-label">Bot Type</label>
                 <div class="col-md-10">
                     <select class="form-control" name="type" id="existing-type">
                         <option value="0"{% if type == 0 %} selected{% endif %}>New type&hellip;</option>
@@ -95,14 +95,14 @@
                 </div>
             </div>
             <div class="form-group" id="bottype"{% if type|default(0) != 0 %} hidden{% endif %}>
-                <label for="type" class="col-md-2 ">New Type Description</label>
+                <label for="type" class="col-md-2 col-form-label">New Type Description</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control col-md-10" id="type" name="description" placeholder="Type" value="{{ description|e('html_attr') }}"{% if type|default(0) != 0 %} disabled{% else %} required{% endif %} spellcheck="false">
                     <p class="form-text text-muted">Describe the bot type, normally the name of the software that runs it and if possible a link to the website of it. In case of a bot hosted by a thirdparty this is the name and URL of their site.</p>
                 </div>
             </div>
             <div class="form-group" id="channel-group"{% if correction %} hidden{% endif %}>
-                <label for="channel" class="col-md-2 ">Example Channel (optional)</label>
+                <label for="channel" class="col-md-2 col-form-label">Example Channel (optional)</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control col-md-10" id="channel" name="channel" placeholder="Channel Name"  value="{{ channel|e('html_attr') }}" pattern="[a-zA-Z0-9_]+" spellcheck="false">
                     <p class="form-text text-muted">A channel that uses this bot. The channel of the bot is not an example channel.</p>
