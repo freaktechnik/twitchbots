@@ -61,7 +61,7 @@
                         {%- endfor -%}
                     </ul>
 
-                    <form class="form-inline" method="GET" action="{{ urlFor('check')|e('html_attr') }}">
+                    <form class="form-inline ml-md-auto" method="GET" action="{{ urlFor('check')|e('html_attr') }}">
                         <div class="input-group">
                             <input type="search" class="form-control" required pattern="[a-zA-Z0-9_]+" spellcheck="false" id="search" name="username" placeholder="Username">
                             <div class="input-group-append">

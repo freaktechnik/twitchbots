@@ -29,10 +29,10 @@
     <li role="presentation" class="nav-item">
         <a href="#corrections" role="tab" aria-controls="corrections" class="nav-link">Corrections <span class="badge badge-secondary">{{ corrections|length }}</span></a>
     </li>
-    <li>
-        <a href="#typeeditor" data-toggle="modal" data-target="#typeeditor"><span class="fa fa-plus" aria-hidden="true"></span> Add type</a>
+    <li class="nav-item">
+        <a href="#typeeditor" data-toggle="modal" data-target="#typeeditor" class="nav-link"><span class="fa fa-plus" aria-hidden="true"></span> Add type</a>
     </li>
-    <li class="float-right">
+    <li class="ml-auto">
         <form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
             <div class="form-group">
                 <label for="loginmail">Logged in as:</label>
