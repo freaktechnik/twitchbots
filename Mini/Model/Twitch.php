@@ -143,34 +143,60 @@ class Twitch {
 
     public function getChannelID(string $username): string
     {
-        $url = self::$helixBase.'users/?login='.$username;
-        $response = $this->client->get($url, $this->twitchHeaders);
-
-        if($response->getStatusCode() >= 400 && $response->getStatusCode() !== 404) {
-            throw new \Exception("User could not be found");
-        }
-
-        $users = json_decode($response->getBody(), true)['data'];
-        if(count($users) > 0){
-            return $users[0]['id'];
-        }
-        throw new \Exception("User could not be found");
+        $users = $this->getChannelInfo([], [ $username ]);
+        return $users[0]->id;
     }
 
     public function getChannelName(string $id): string
     {
-        $url = self::$helixBase.'users/?id='.$id;
+        $users = $this->getChannelInfo([ $id ]);
+        return $users[0]->login;
+    }
+
+    /**
+     * @param string[] $ids
+     * @param string[] $names
+     * @return \stdClass[]
+     */
+    public function getChannelInfo(array $ids = [], array $names = []): array
+    {
+        $url = self::$helixBase.'users/?';
+        $params = [];
+        //TODO paginate
+        $idCount = count($ids);
+        if($idCount > 100) {
+            throw new \Exception("Can not request more than 100 ids at once");
+        }
+        else if($idCount > 0) {
+            $params = array_merge($params, array_map($ids, function($id) {
+                return 'user_id='.$id;
+            }));
+        }
+        $nameCount = count($names);
+        if($nameCount > 100) {
+            throw new \Exception("Can not request more than 100 names at once");
+        }
+        else if($nameCount > 0) {
+            $params = array_merge($params, array_map($names, function($name) {
+                return 'login='.$name;
+            }));
+        }
+        if(!count($params)) {
+            return [];
+        }
+        $url .= implode('&', $params);
+
         $response = $this->client->get($url, $this->twitchHeaders);
 
         if($response->getStatusCode() >= 400) {
-            throw new \Exception("Could not get username for ".$id, $response->getStatusCode());
+            throw new \Exception("Could not fetch user info", $response->getStatusCode());
         }
 
-        $users = json_decode($response->getBody(), true)['data'];
+        $users = json_decode($response->getBody())->data;
 
         if(!count($users)) {
-            throw new \Exception("No Twitch users returned for ID ".$id, $response->getStatusCode());
+            throw new \Exception("No Twitch users returned", $response->getStatusCode());
         }
-        return $users[0]['login'];
+        return $users;
     }
 }

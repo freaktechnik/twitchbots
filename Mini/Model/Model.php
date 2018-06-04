@@ -478,41 +478,95 @@ class Model
         $submissions = $this->submissions->getSubmissions();
         $count = 0;
 
-        foreach($submissions as $submission) {
+        $requiredIds = [];
+        $requiredNames = [];
+
+        foreach($submissions as $i => $submission) {
             $this->db->ping();
             $didSomething = false;
 
             // Update bot username or get twitch id
             if(empty($submission->twitch_id)) {
-                try {
-                    $submission->twitch_id = $this->twitch->getChannelID($submission->name);
-                    $this->submissions->setTwitchID($submission->id, $submission->twitch_id);
-                    $didSomething = true;
-                }
-                catch(Exception $e) {
-                    if($e->getCode() == 404 || $e->getCode() == 422) {
-                        $this->submissions->removeSubmission($submission->id);
-                        continue;
-                    }
-                }
+                $requiredIds[$submission->name] = $i;
             }
             else {
-                try {
-                    $apiName = $this->twitch->getChannelName($submission->twitch_id);
+                $requiredNames[$submission->twitch_id] = $i;
+            }
+
+            if(!empty($submission->channel)) {
+                // Update channel username or get twitch ID of it
+                if(empty($submission->channel_id)) {
+                    $requiredIds[$submission->channel] = $i;
                 }
-                catch(Exception $e) {
-                    if($e->getCode() == 404 || $e->getCode() == 422) {
-                        $this->submissions->removeSubmission($submission->id);
-                        continue;
-                    }
-                    $apiName = $submission->name;
-                }
-                if($apiName != $submission->name) {
-                    $submission->name = $apiName;
-                    $this->submissions->updateName($submission->id, $submission->name);
-                    $didSomething = true;
+                else {
+                    $requiredNames[$submission->channel_id] = $i;
                 }
             }
+        }
+
+        $results = $this->twitch->getChannelInfo(array_keys($requiredNames), array_keys($requiredIds));
+        foreach($results as $user) {
+            if(array_key_exists($user->login, $requiredIds)) {
+                $index = $requiredIds[$user->login];
+                unset($requiredIds[$user->login]);
+                $submission = $submissions[$index];
+                if($submission->name == $user->login) {
+                    $submission->twitch_id = $user->id;
+                    $this->submissions->setTwitchId($submission->id, $user->id);
+                }
+                else if($submission->channel == $user->login) {
+                    $submission->channel_id = $user->id;
+                    $this->submissions->setTwitchID($submission->id, $user->id, 'channel');
+                }
+            }
+            else if(array_key_exists($user->id, $requiredNames)) {
+                $index = $requiredNames[$user->id];
+                unset($requiredNames[$user->id]);
+                $submission = $submissions[$index];
+                if($submission->twitch_id == $user->id) {
+                    if($submission->name != $user->login) {
+                        $submission->name = $user->login;
+                        $this->submissions->updateName($submission->id, $user->login);
+                    }
+                }
+                else if($submission->channel_id == $user->id) {
+                    if($sumbission->channel != $user->login) {
+                        $submission->channel = $user->login;
+                        $this->submissions->updateChannelName($submission->id, $user->login);
+                    }
+                }
+            }
+        }
+        // Handle queries without response.
+        foreach($requiredIds as $login => $index) {
+            if(array_key_exists($index, $submissions)) {
+                $submission = $submissions[$index];
+                if($submission->name == $login) {
+                    $this->submissions->removeSubmission($submission->id);
+                    unset($submissions[$index]);
+                }
+                else if($submission->channel == $login) {
+                    $this->submissions->clearChannel();
+                }
+            }
+        }
+        foreach($requiredNames as $id => $index) {
+            if(array_key_exists($index, $submissions)) {
+                $submission = $submissions[$index];
+                if($submission->twitch_id == $id) {
+                    $this->submissions->removeSubmission($submission->id);
+                    unset($submissions[$id]);
+                }
+                else if($submission->channel_id == $id) {
+                    $this->submissions->clearChannel($submission->id);
+                }
+            }
+        }
+        // normalize array keys.
+        $submissions = array_values($submissions);
+
+        foreach($submissions as $submission) {
+            $didSomething = false;
 
             // Check bot verification endpoints
             if($submission->type == 0 && $this->checkVerified($submission) && !$didSomething) {
@@ -529,97 +583,65 @@ class Model
             }
 
             // Update stuff that requires a channel to be set
-            if(!empty($submission->channel)) {
-                // Update channel username or get twitch ID of it
-                if(empty($submission->channel_id)) {
-                    try {
-                        $submission->channel_id = $this->twitch->getChannelID($submission->channel);
-                        $this->submissions->setTwitchID($submission->id, $submission->channel_id, "channel");
-                        $didSomething = true;
-                    }
-                    catch(Exception $e) {
-                        if($e->getCode() == 404 || $e->getCode() == 422) {
-                            $this->submissions->clearChannel($submission->id);
-                        }
-                    }
-                }
-                else {
-                    try {
-                        $apiName = $this->twitch->getChannelName($submission->channel_id);
-                    }
-                    catch(Exception $e) {
-                        if($e->getCode() == 404 || $e->getCode() == 422) {
-                            $this->submissions->clearChannel($submission->id);
-                        }
-                        $apiName = $submission->channel;
-                    }
-                    if($apiName != $submission->channel) {
-                        $submission->name = $apiName;
-                        $this->submissions->updateChannelName($submission->id, $submission->name);
-                        $didSomething = true;
-                    }
+            if(!empty($submission->channel) && !$submission->shouldApprove($type)) {
+                if($this->checkFollowingChannel($submission) && !$didSomething) {
+                    $didSomething = true;
                 }
 
-                if(!$submission->shouldApprove($type)) {
-                    if($this->checkFollowingChannel($submission) && !$didSomething) {
-                        $didSomething = true;
-                    }
-
-                    $ranModCheck = isset($submission->ismod);
-                    // Update online or offline and mod if needed
-                    if(!$submission->online || !isset($submission->offline)) {
-                        $live = $this->twitch->isChannelLive($submission->channel_id);
-                        if(($live && !$submission->online) || (!$live && !isset($submission->offline) && !$submission->verified)) {
-                            $isMod = null;
-                            try {
-                                $chatters = $this->twitch->getChatters($submission->channel);
-                                $isInChannel = $this->isInChannel($submission->name, $chatters);
-
-                                if($isInChannel && !$submission->ismod) {
-                                    $isMod = $this->isMod($submission->name, $chatters);
-                                }
-                                // Bot was not in user list and is not yet verified
-                                else if(!$ranModCheck && !$submission->verified) {
-                                    $isMod = $this->getModStatus($submission->name, $submission->channel);
-                                }
-                            }
-                            catch(Exception $e) {
-                                $isInChannel = NULL;
-                            }
-
-                            // Save the info about bot that was just acquired
-                            $this->submissions->setInChat($submission->id, $isInChannel, $live);
-                            if($live) {
-                                $submission->online = $isInChannel;
-                            }
-                            else {
-                                $submission->offline = $isInChannel;
-                            }
-
-                            if($isMod !== null) {
-                                $this->submissions->setModded($submission->id, $isMod);
-                                $submission->ismod = $isMod;
-                                $ranModCheck = true;
-                            }
-
-                            $didSomething = true;
-                        }
-                    }
-
-                    // If user wasn't in channel chat and mod not set, get mod status
-                    if(!$ranModCheck && !$submission->verified) {
+                $ranModCheck = isset($submission->ismod);
+                // Update online or offline and mod if needed
+                if(!$submission->online || !isset($submission->offline)) {
+                    $live = $this->twitch->isChannelLive($submission->channel_id);
+                    if(($live && !$submission->online) || (!$live && !isset($submission->offline) && !$submission->verified)) {
+                        $isMod = null;
                         try {
-                            $isMod = $this->getModStatus($submission->name, $submission->channel);
+                            $chatters = $this->twitch->getChatters($submission->channel);
+                            $isInChannel = $this->isInChannel($submission->name, $chatters);
+
+                            if($isInChannel && !$submission->ismod) {
+                                $isMod = $this->isMod($submission->name, $chatters);
+                            }
+                            // Bot was not in user list and is not yet verified
+                            else if(!$ranModCheck && !$submission->verified) {
+                                $isMod = $this->getModStatus($submission->name, $submission->channel);
+                            }
                         }
                         catch(Exception $e) {
-                            $isMod = null;
+                            $isInChannel = NULL;
                         }
+
+                        // Save the info about bot that was just acquired
+                        $this->submissions->setInChat($submission->id, $isInChannel, $live);
+                        if($live) {
+                            $submission->online = $isInChannel;
+                        }
+                        else {
+                            $submission->offline = $isInChannel;
+                        }
+
                         if($isMod !== null) {
                             $this->submissions->setModded($submission->id, $isMod);
                             $submission->ismod = $isMod;
+                            $ranModCheck = true;
                         }
+
                         $didSomething = true;
                     }
+                }
+
+                // If user wasn't in channel chat and mod not set, get mod status
+                if(!$ranModCheck && !$submission->verified) {
+                    try {
+                        $isMod = $this->getModStatus($submission->name, $submission->channel);
+                    }
+                    catch(Exception $e) {
+                        $isMod = null;
+                    }
+                    if($isMod !== null) {
+                        $this->submissions->setModded($submission->id, $isMod);
+                        $submission->ismod = $isMod;
+                    }
+                    $didSomething = true;
                 }
             }
 
@@ -657,26 +679,32 @@ class Model
         $this->db->ping();
 
         $count = 0;
-        $max = count($foundBots);
-        for($i = 0; $i < $max; $i += 1) {
-            $bot = $foundBots[$i];
-            try {
-                $twitchId = $this->twitch->getChannelID($bot->name);
-                if(empty($this->bots->getBotByID($twitchId))) {
-                    $channelId = NULL;
-                    if(!empty($bot->channel)) {
-                        $channelId = $this->twitch->getChannelID($bot->channel);
-                    }
-                    $bot->twitch_id = $twitchId;
-                    $bot->channel_id = $channelId;
+        $ids = $this->twitch->getChannelInfo([], array_column($foundBots, 'name'));
+        $needIds = [];
+        foreach($foundBots as $i => $bot) {
+            if(empty($this->bots->getBotByID($ids[$i]))) {
+                $bot->twitch_id = $ids[$i]->id;
+                if(!empty($bot->channel)) {
+                    $needIds[$bot->channel] = $i;
+                }
+                else {
                     $this->bots->addBot($bot);
                     $count += 1;
-
                     // Remove any matching submissions.
-                    $this->submissions->removeSubmissions($bot->name);
+                    $this->submissions->removeSubmissions($bot->twitch_id);
                 }
-            } catch(Exception $e) {
-                //TODO log error?
+            }
+        }
+        if(count($needIds)) {
+            $channelIds = $this->twitch->getChannelInfo([], array_keys($needIds));
+            foreach($channelIds as $user) {
+                $index = $needIds[$user->login];
+                $bot = $foundBots[$index];
+                $bot->channel_id = $user->id;
+                $this->bots->addBot($bot);
+                $count += 1;
+                // Remove any matching submissions.
+                $this->submissions->removeSubmissions($bot->twitch_id);
             }
         }
 
