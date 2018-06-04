@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var lock = new auth0Lock('{{ clientId }}', '{{ domain }}', {
+    var lock = new Auth0Lock('{{ clientId }}', '{{ domain }}', {
       auth: {
         redirectUrl: '{{ redirectUrl }}',
         responseType: 'code',
