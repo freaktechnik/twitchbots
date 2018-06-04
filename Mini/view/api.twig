@@ -10,6 +10,8 @@
 <h1 class="mt-3">API Access</h1>
 <p>All the API endpoints are on the base URL <code>{{apiUrl}}/v2/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service. All endpoints with a more or less static dataset send an expiration header indicating how long the data is at least expected to be valid. These will be adjusted according to real-world values. If your HTTP library does not honor the <code>Expires</code> header, please honor it manually.</p>
 <p>All <code>_links</code> are also sent in the <code>Link</code> header.</p>
+
+{{ alerts.alert('warning', 'v1 is still available but usage is highly discouraged, as it is no longer maintained and endpoints may break.') }}
 {#}<section>
     <h2 id="libraries">Libraries</h2>
     <p>For back-end JS developers there are a few pre-built packages on NPM to get data via API:</p>
@@ -300,7 +302,7 @@
     <section>
         <h2 id="example_usage">Example Usage</h2>
         <div class="list-group">
-            <a href="https://github.com/freaktechnik/twitch-provider" rel="external noopener" title="freaktechnik/twitch-provider" class="list-group-item-action">Twitch Chat Provider for Instantbird</a>
+            <a href="https://github.com/freaktechnik/twitch-provider" rel="external noopener" title="freaktechnik/twitch-provider" class="list-group-item-action list-group-item">Twitch Chat Provider for Instantbird</a>
         </div>
     </section>
 </section>
