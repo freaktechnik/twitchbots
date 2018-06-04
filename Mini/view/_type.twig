@@ -22,17 +22,17 @@
 {% if version is null %}
     {{ status(null) }}
 {% elseif version == 0 %}
-    <span class="badge bg-danger text-white">Justin.tv API</span>
+    <span class="badge badge-danger">Justin.tv API</span>
 {%- elseif version == 1 %}
-    <span class="badge bg-danger text-white">Kraken v1</span>
+    <span class="badge badge-danger">Kraken v1</span>
 {%- elseif version == 2 %}
-    <span class="badge bg-warning text-white">Kraken v3</span>
+    <span class="badge badge-warning">Kraken v3</span>
 {%- elseif version == 3 %}
-    <span class="badge bg-warning text-white">Kraken v5</span>
+    <span class="badge badge-warning">Kraken v5</span>
 {%- elseif version == 4 %}
-    <span class="badge">Helix</span>
+    <span class="badge badge-secondary">Helix</span>
 {%- elseif version == 5 %}
-    <span class="badge bg-warning text-dark">Unsupported APIs</span>
+    <span class="badge badge-warning">Unsupported APIs</span>
 {% else %}
     {{ status(null) }}
 {% endif %}
