@@ -417,7 +417,7 @@ class ModelTest extends DBTestCase
     {
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
-            'count' => 101,
+            'count' => 501,
             'channels' => [
                 [
                     'name' => 'foo',
@@ -426,7 +426,7 @@ class ModelTest extends DBTestCase
         ])));
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
-            'count' => 101,
+            'count' => 501,
             'channels' => [
                 [
                     'name' => 'bar',
