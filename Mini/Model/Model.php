@@ -556,7 +556,7 @@ class Model
                     unset($submissions[$index]);
                 }
                 else if($submission->channel == $login) {
-                    $this->submissions->clearChannel();
+                    $this->submissions->clearChannel($submission->id);
                 }
             }
         }
