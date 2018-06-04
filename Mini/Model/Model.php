@@ -159,6 +159,7 @@ class Model
             $id = $this->twitch->getChannelID($username);
         }
         catch(Exception $e) {
+            echo $e->getMessage();
             throw new Exception("Cannot add a user that doesn't exist on Twitch", 2);
         }
         if($this->hasBot($id)) {
