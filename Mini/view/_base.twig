@@ -9,15 +9,10 @@
         <title>{% block title %}{% endblock %} - Twitch Bot Directory</title>
 
         <!-- Bootstrap -->
-        <link rel="stylesheet" href="{{ siteUrl("/assets/require.css") }}" type="text/css">
-        <script data-main="assets/main.js" src="{{ siteUrl("/assets/require.js") }}"></script>
-
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+        <link rel="stylesheet" href="{{ siteUrl("/assets/twbs/bootstrap/bootstrap.min.css") }}" type="text/css">
+        <script src="{{ siteUrl("/assets/components/jquery/jquery.js") }}"></script>
+        <script src="{{ siteUrl("/assets/twbs/bootstrap/popper.min.js") }}"></script>
+        <script src="{{ siteUrl("/assets/twbs/bootstrap/bootstrap.min.js") }}"></script>
 
         <link rel="icon" href="{{ siteUrl("favicon.png")|e('html_attr') }}" type="image/png" sizes="32x32">
         <link rel="icon" href="{{ siteUrl("img/favicon-16x16.png")|e('html_attr') }}" type="image/png" sizes="16x16">
@@ -68,9 +63,9 @@
                     <form class="form-inline" method="GET" action="{{ urlFor('check')|e('html_attr') }}">
                         <div class="input-group">
                             <input type="search" class="form-control" required pattern="[a-zA-Z0-9_]+" spellcheck="false" id="search" name="username" placeholder="Username">
-                            <span class="input-group-append">
+                            <div class="input-group-append">
                                 <button type="submit" class="btn btn-primary">Check</button>
-                            </span>
+                            </div>
                         </div>
                     </form>
                 </div>
