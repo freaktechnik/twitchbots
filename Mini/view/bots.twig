@@ -56,8 +56,10 @@
     </tbody>
 </table>
 {% set filterParams = '' %}
-{% if currentType != 0 or currentType is null %}
+{% if currentType != 0 %}
     {% set filterParams = '&type=' ~ currentType %}
+{% elseif currentType is null %}
+    {% set filterParams = '&type=null' %}
 {% endif %}
 {{ pagination.print(page, pageCount, 3, 2, filterParams) }}
 
