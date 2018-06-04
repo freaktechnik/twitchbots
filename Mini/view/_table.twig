@@ -14,7 +14,7 @@
 {%- from _self import status, warn -%}
 {% set defaultVal = status(null) %}
 <div class="tab-pane{% if active %} active{% endif %}" role="tabpanel" id="{{ id|e('html_attr') }}">
-    <table class="table table-striped table-responsive">
+    <table class="table table-striped table-responsive-md">
         <thead>
             <tr>
                 <th>Username</th>
