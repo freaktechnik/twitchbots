@@ -96,24 +96,24 @@
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="approve" value="1" type="submit" class="btn btn-success btn-xs" aria-label="Approve"><span class="fa fa-check" aria-hidden="true"></span></button>
+                        <button name="approve" value="1" type="submit" class="btn btn-success btn-sm" aria-label="Approve"><span class="fa fa-check" aria-hidden="true"></span></button>
                     </form>
                 </td>
                 <td>
-                    <button data-toggle="modal" data-target="#editor" class="submission-edit btn btn-info btn-xs" aria-label="Edit"><span class="fa fa-edit" aria-hidden="true"></span></button>
+                    <button data-toggle="modal" data-target="#editor" class="submission-edit btn btn-info btn-sm" aria-label="Edit"><span class="fa fa-edit" aria-hidden="true"></span></button>
                 </td>
                 <td>
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="reject" value="1" type="submit" class="btn btn-danger btn-xs" aria-label="Reject"><span class="fa fa-times" aria-hidden="true"></button>
+                        <button name="reject" value="1" type="submit" class="btn btn-danger btn-sm" aria-label="Reject"><span class="fa fa-times" aria-hidden="true"></button>
                     </form>
                 </td>
                 <td>
                     <form method="POST" action="{{ urlFor('submission-action')|e('html_attr') }}" class="form-inline">
                         <input type="hidden" name="id" value="{{ s.id|e('html_attr') }}">
                         <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
-                        <button name="person" value="1" type="submit" class="btn btn-warning btn-xs"{% if s.type == 1 %} disabled{% endif %} aria-label="Mark as Person"><span class="fa fa-user" aria-hidden="true"></button>
+                        <button name="person" value="1" type="submit" class="btn btn-warning btn-sm"{% if s.type == 1 %} disabled{% endif %} aria-label="Mark as Person"><span class="fa fa-user" aria-hidden="true"></button>
                     </form>
                 </td>
                 {% endif %}
