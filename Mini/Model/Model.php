@@ -6,7 +6,6 @@ use PDO;
 use Exception;
 use \Mini\Model\TypeCrawler\Storage\StorageFactory;
 use \Mini\Model\TypeCrawler\TypeCrawlerController;
-use \Mini\Model\PingablePDO;
 use GuzzleHttp\Client;
 
 /**
@@ -157,13 +156,14 @@ class Model
 
         try {
             $id = $this->twitch->getChannelID($username);
-        } catch(Exception $e) {
+        }
+        catch(Exception $e) {
             throw new Exception("Cannot add a user that doesn't exist on Twitch", 2);
         }
         if($this->hasBot($id)) {
             throw new Exception("Cannot add an already existing bot", 3);
         }
-        else if(!empty($this->bots->getBotsByChannel($username))) {
+        else if(!empty($this->bots->getBotsByChannelID($id))) {
             throw new Exception("Bot cannot be the channel to an existing bot", 13);
         }
         else if($this->confirmedPeople->has($id)) {
@@ -178,21 +178,22 @@ class Model
      */
     private function commonSubmissionChecks(string $username, $type, string $channel = null)
     {
+        $channelId = null;
         if($username == "" || $type == "") {
             throw new Exception("Required fields are empty", 8);
         }
-        else if(strtolower($username) == strtolower($channel)) {
-            throw new Exception("Username of the bot and the channel it is in can not match", 7);
-        }
-        else if(!empty($channel) && !empty($this->bots->getBot($channel))) {
-            throw new Exception("Given channel is already a bot", 12);
-        }
+        else if(!empty($channel)) {
+            if(strtolower($username) == strtolower($channel)) {
+                throw new Exception("Username of the bot and the channel it is in can not match", 7);
+            }
+            else if(!empty($this->bots->getBot($channel))) {
+                throw new Exception("Given channel is already a bot", 12);
+            }
 
-        $channelId = NULL;
-        if(!empty($channel)) {
             try {
                 $channelId = $this->twitch->getChannelID($channel);
-            } catch(Exception $e) {
+            }
+            catch(Exception $e) {
                 throw new Exception("Given channel isn't a Twitch channel", 6);
             }
         }
