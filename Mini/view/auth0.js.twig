@@ -1,5 +1,5 @@
-require(["auth0Lock"], function(Auth0Lock) {
-    var lock = new Auth0Lock('{{ clientId }}', '{{ domain }}', {
+$(document).ready(function() {
+    var lock = new auth0Lock('{{ clientId }}', '{{ domain }}', {
       auth: {
         redirectUrl: '{{ redirectUrl }}',
         responseType: 'code',
