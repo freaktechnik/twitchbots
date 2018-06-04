@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="{{ siteUrl('/css/status.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
 {% block content %}
-<h1>{{ type.name|e }} and bots of this type</h1>
+<h1 class="mt-3">{{ type.name|e }} and bots of this type</h1>
 {% if type.description %}<p class="lead">{{ type.description }}</p>{% endif %}
 {% if not type.enabled -%}
 {%- import "_alerts.twig" as alerts -%}

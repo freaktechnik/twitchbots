@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{ siteUrl('/css/status.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
 {% block content %}
-<h1>Submission Queue</h1>
+<h1 class="mt-3">Submission Queue</h1>
 {% if addedtype %}
     {{ alert('success', 'Added your new type with the id #{addedtype}') }}
 {% endif %}
@@ -54,14 +54,14 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </header>
             <section class="modal-body">
-                <form class="form-row" method="POST" action="{{ urlFor('submission-edit')|e('html_attr') }}">
-                    <div class="form-group">
+                <form method="POST" action="{{ urlFor('submission-edit')|e('html_attr') }}">
+                    <div class="form-group row">
                         <label for="channel" class="col-md-4 col-form-label">Channel's Twitch Username</label>
                         <div class="col-md-8">
                             <input type="text" class="form-control" name="channel" id="channel" placeholder="Username" pattern="[a-zA-Z0-9_]+" autofocus spellcheck="false">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="type" class="col-md-4 col-form-label">Bot Type Description</label>
                         <div class="col-md-8">
                             <input type="text" class="form-control" id="type" name="description" required list="types">
@@ -72,7 +72,7 @@
                             </datalist>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <div class="offset-md-4 col-md-8">
                             <input type="hidden" name="id">
                             <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
@@ -92,62 +92,62 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </header>
             <section class="modal-body">
-                <form class="form-row" method="POST" action="{{ urlFor('add-type')|e('html_attr') }}">
-                    <div class="form-group">
+                <form method="POST" action="{{ urlFor('add-type')|e('html_attr') }}">
+                    <div class="form-group row">
                         <label for="name" class="col-md-4 ">Type Name</label>
                         <div class="col-md-8">
                             <input type="text" class="form-control" name="name" id="name" placeholder="Bot Type" required autofocus maxlength="255">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="url" class="col-md-4 ">URL</label>
                         <div class="col-md-8">
                             <input type="url" class="form-control" id="url" name="url" placeholder="https://example.com">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="sourceUrl" class="col-md-4 ">Source URL</label>
                         <div class="col-md-8">
                             <input type="url" class="form-control" id="sourceUrl" name="sourceUrl" placeholder="https://example.com">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="commandsUrl" class="col-md-4 ">Commands Documentation URL</label>
                         <div class="col-md-8">
                             <input type="url" class="form-control" id="commandsUrl" name="commandsUrl" placeholder="https://example.com">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="multichannel" class="col-md-4 ">Multi-Channel</label>
                         <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="multichannel" name="multichannel">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="managed" class="col-md-4 ">Managed</label>
                         <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="managed" name="managed">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="customUsername" class="col-dm-4 ">Custom Username Possible</label>
                         <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="customUsername" name="customUsername">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="identifyable" class="col-md-4 ">Identifyable by</label>
                         <div class="col-md-8">
                             <textarea class="form-control" id="identifyable" name="identifyableby"></textarea>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="description" class="col-md-4 ">Description</label>
                         <div class="col-md-8">
                             <textarea class="form-control" id="description" name="description"></textarea>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="payment" class="col-md-4">Business model</label>
                         <div class="col-md-8">
                             <select class="form-control" id="payment" name="payment">
@@ -159,13 +159,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="hasFreeTier" class="col-md-4">Has free tier</label>
                         <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="hasFreeTier" name="hasFreeTier">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="apiVersion" class="col-md-4">API version</label>
                         <div class="col-md-8">
                             <select class="form-control" id="apiVersion" name="apiVersion">
@@ -179,7 +179,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <div class="offset-md-4 col-md-8">
                             <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
                             <button type="submit" class="btn btn-success">Add Type</button>
