@@ -601,7 +601,12 @@ class Model
                 $ranModCheck = isset($submission->ismod);
                 // Update online or offline and mod if needed
                 if(!$submission->online || !isset($submission->offline)) {
-                    $live = $this->twitch->isChannelLive($submission->channel_id);
+                    try {
+                        $live = $this->twitch->isChannelLive($submission->channel_id);
+                    }
+                    catch(\Exception $e) {
+                        $live = false;
+                    }
                     if(($live && !$submission->online) || (!$live && !isset($submission->offline) && !$submission->verified)) {
                         $isMod = null;
                         try {

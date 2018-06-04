@@ -60,7 +60,7 @@ class Twitch {
 
         /** @var \stdClass $stream */
         $stream = json_decode($response->getBody());
-        return $stream->data && count($stream->data);
+        return isset($stream->data) && count($stream->data);
     }
 
     public function getBio(string $channelId): ?string
