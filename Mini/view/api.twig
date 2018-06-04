@@ -7,9 +7,7 @@
 <link rel="stylesheet" type="text/css" href="{{ siteUrl("/css/json.css") }}">
 {% endblock %}
 {% block content %}
-<div class="page-header">
-    <h1>API Access</h1>
-</div>
+<h1>API Access</h1>
 <p>All the API endpoints are on the base URL <code>{{apiUrl}}/v2/</code>. All endpoints only accept GET requests. The API always returns JSON. Feel free to reuse data returned by this API in your own services and APIs, however please consider contributing relevant data back to this service. All endpoints with a more or less static dataset send an expiration header indicating how long the data is at least expected to be valid. These will be adjusted according to real-world values. If your HTTP library does not honor the <code>Expires</code> header, please honor it manually.</p>
 <p>All <code>_links</code> are also sent in the <code>Link</code> header.</p>
 {#}<section>
@@ -57,19 +55,19 @@
     <p>Returns all known bots.</p>
     <section>
         <h4>Parameters</h4>
-        <dl class="dl-horizontal">
-            <dt><code>offset</code></dt>
-            <dd>Offset of items, 0 by default</dd>
-            <dt><code>limit</code></dt>
-            <dd>Maximum amount of items to return, 100 by default</dd>
-            <dt><code>type</code></dt>
-            <dd>Optionally only return bots of the given type ID. -1 returns all bots without a type.</dd>
-            <dt><code>inactive</code></dt>
-            <dd>When set to 1 or similar includes bots with inactive types in the response. Ignored when type is set.</dd>
-            <dt><code>multiChannel</code></dt>
-            <dd>When set to 1 or similar only returns bots that may be in multiple channels</dd>
-            <dt><code>ids</code></dt>
-            <dd>Comma separated list of IDs to check. At most 100 IDs are considered per request.</dd>
+        <dl class="row">
+            <dt class="col-4"><code>offset</code></dt>
+            <dd class="col-8">Offset of items, 0 by default</dd>
+            <dt class="col-4"><code>limit</code></dt>
+            <dd class="col-8">Maximum amount of items to return, 100 by default</dd>
+            <dt class="col-4"><code>type</code></dt>
+            <dd class="col-8">Optionally only return bots of the given type ID. -1 returns all bots without a type.</dd>
+            <dt class="col-4"><code>inactive</code></dt>
+            <dd class="col-8">When set to 1 or similar includes bots with inactive types in the response. Ignored when type is set.</dd>
+            <dt class="col-4"><code>multiChannel</code></dt>
+            <dd class="col-8">When set to 1 or similar only returns bots that may be in multiple channels</dd>
+            <dt class="col-4"><code>ids</code></dt>
+            <dd class="col-8">Comma separated list of IDs to check. At most 100 IDs are considered per request.</dd>
         </dl>
     </section>
     <section>
@@ -208,15 +206,15 @@
         <p>Returns a list of all active types by default.</p>
         <section>
             <h4>Parameters</h4>
-            <dl class="dl-horizontal">
-                <dt><code>offset</code></dt>
-                <dd>Offset of items, 0 by default</dd>
-                <dt><code>limit</code></dt>
-                <dd>Maximum amount of items to return, 100 by default</dd>
-                <dt><code>inactive</code></dt>
-                <dd>When set to 1 or similar includes inactive types in the response</dd>
-                <dt><code>ids</code></dt>
-                <dd>Comma separated list of IDs to get. At most 100 IDs are considered per request.</dd>
+            <dl class="row">
+                <dt class="col-4"><code>offset</code></dt>
+                <dd class="col-8">Offset of items, 0 by default</dd>
+                <dt class="col-4"><code>limit</code></dt>
+                <dd class="col-8">Maximum amount of items to return, 100 by default</dd>
+                <dt class="col-4"><code>inactive</code></dt>
+                <dd class="col-8">When set to 1 or similar includes inactive types in the response</dd>
+                <dt class="col-4"><code>ids</code></dt>
+                <dd class="col-8">Comma separated list of IDs to get. At most 100 IDs are considered per request.</dd>
             </dl>
         </section>
         <section>
@@ -263,11 +261,11 @@
         <p>Returns a list of bots active in the channel given by the <code>channelID</code>. This does not include all possible bots active in a channel and there is no full record of that in the data set. This is primarily based on the channel field of a bot, which may also be set for bots that can be in multiple channels.</p>
         <section>
             <h4>Parameters</h4>
-            <dl class="dl-horizontal">
-                <dt><code>offset</code></dt>
-                <dd>Offset of items, 0 by default</dd>
-                <dt><code>limit</code></dt>
-                <dd>Maximum amount of items to return, 100 by default</dd>
+            <dl class="row">
+                <dt class="col-4"><code>offset</code></dt>
+                <dd class="col-8">Offset of items, 0 by default</dd>
+                <dt class="col-4"><code>limit</code></dt>
+                <dd class="col-8">Maximum amount of items to return, 100 by default</dd>
             </dl>
         </section>
         <section>
@@ -302,7 +300,7 @@
     <section>
         <h2 id="example_usage">Example Usage</h2>
         <div class="list-group">
-            <a href="https://github.com/freaktechnik/twitch-provider" rel="external noopener" title="freaktechnik/twitch-provider" class="list-group-item">Twitch Chat Provider for Instantbird</a>
+            <a href="https://github.com/freaktechnik/twitch-provider" rel="external noopener" title="freaktechnik/twitch-provider" class="list-group-item-action">Twitch Chat Provider for Instantbird</a>
         </div>
     </section>
 </section>

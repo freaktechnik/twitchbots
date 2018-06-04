@@ -19,41 +19,37 @@
 <link rel="stylesheet" href="{{ siteUrl('/css/status.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
 {% block content %}
-<div class="page-header">
-    <h1>All known bot types</h1>
-</div>
+<h1>All known bot types</h1>
 <form class="form-inline" method="GET" action="">
     <div class="form-group">
-        <button type="submit" name="disabled" value="{% if showDisabled %}0{% else %}1{% endif %}" class="btn btn-default btn-sm{% if showDisabled %} active" aria-pressed="true{% endif %}">Show inactive</button>
+        <button type="submit" name="disabled" value="{% if showDisabled %}0{% else %}1{% endif %}" class="btn btn-secondary btn-sm{% if showDisabled %} active" aria-pressed="true{% endif %}">Show inactive</button>
     </div>
 </form>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <caption>Type meta data is best-effort. Please report wrong information.</caption>
-        <thead>
-            <tr>
-                <th>Type</th>
-                <th>Multi-channel</th>
-                <th><abbr title="Estimation of channels this bot is used in">Estimated active channels</abbr></th>
-                <th>Open Source</th>
-                <th>Business model</th>
-                <th><abbr title="If the bot instance is managed by the provider (BaaS) or if it requires software">Managed</abbr></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for type in types %}
-            <tr>
-                <td><a href="{{ urlFor('type', { id: type.id })|e('html_attr') }}">{{ type.name|e }}</a></td>
-                <td>{{ table.status(type.multichannel) }}</td>
-                <td>{{ type.channelsEstimate|default(type.count)|e }}</td>
-                <td>{{ table.status(type.sourceUrl is not null) }}</td>
-                <td>{{ typeUtils.businessModel(type.payment) }}</td>
-                <td>{{ table.status(type.managed) }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+<table class="table table-striped table-responsive">
+    <caption>Type meta data is best-effort. Please report wrong information.</caption>
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Multi-channel</th>
+            <th><abbr title="Estimation of channels this bot is used in">Estimated active channels</abbr></th>
+            <th>Open Source</th>
+            <th>Business model</th>
+            <th><abbr title="If the bot instance is managed by the provider (BaaS) or if it requires software">Managed</abbr></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for type in types %}
+        <tr>
+            <td><a href="{{ urlFor('type', { id: type.id })|e('html_attr') }}">{{ type.name|e }}</a></td>
+            <td>{{ table.status(type.multichannel) }}</td>
+            <td>{{ type.channelsEstimate|default(type.count)|e }}</td>
+            <td>{{ table.status(type.sourceUrl is not null) }}</td>
+            <td>{{ typeUtils.businessModel(type.payment) }}</td>
+            <td>{{ table.status(type.managed) }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% set filterParams = '' %}
 {% if showDisabled %}
     {% set filterParams = '&disabled=1' %}

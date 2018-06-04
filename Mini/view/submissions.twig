@@ -7,9 +7,7 @@
 <link rel="stylesheet" href="{{ siteUrl('/css/status.css')|e('html_attr') }}" type="text/css">
 {% endblock %}
 {% block content %}
-<div class="page-header">
-    <h1>Submission Queue</h1>
-</div>
+<h1>Submission Queue</h1>
 {% if addedtype %}
     {{ alert('success', 'Added your new type with the id #{addedtype}') }}
 {% endif %}
@@ -25,22 +23,22 @@
     {% endif %}
 {% endif %}
 <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active">
-        <a href="#submissions" role="tab" aria-controls="submissions">Submissions <span class="badge">{{ submissions|length }}</span></a>
+    <li role="presentation" class="nav-item">
+        <a href="#submissions" role="tab" aria-controls="submissions" class="nav-link active">Submissions <span class="badge">{{ submissions|length }}</span></a>
     </li>
-    <li role="presentation">
-        <a href="#corrections" role="tab" aria-controls="corrections">Corrections <span class="badge">{{ corrections|length }}</span></a>
+    <li role="presentation" class="nav-item">
+        <a href="#corrections" role="tab" aria-controls="corrections" class="nav-link">Corrections <span class="badge">{{ corrections|length }}</span></a>
     </li>
     <li>
         <a href="#typeeditor" data-toggle="modal" data-target="#typeeditor"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add type</a>
     </li>
-    <li class="pull-right">
+    <li class="float-right">
         <form class="form-inline" method="POST" action="{{ urlFor('logout')|e('html_attr') }}">
             <div class="form-group">
                 <label for="loginmail">Logged in as:</label>
                 <output class="form-control" id="loginmail">{{ login|e }}</output>
             </div>
-            <button class="btn btn-default" type="submit">Logout</button>
+            <button class="btn btn-secondary" type="submit">Logout</button>
         </form>
     </li>
 </ul>
@@ -52,20 +50,20 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <header class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h1 id="editorTitle" class="modal-title">Edit <span class="channel-name">Channel</span></h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </header>
             <section class="modal-body">
-                <form class="form-horizontal" method="POST" action="{{ urlFor('submission-edit')|e('html_attr') }}">
+                <form class="form-row" method="POST" action="{{ urlFor('submission-edit')|e('html_attr') }}">
                     <div class="form-group">
-                        <label for="channel" class="col-sm-4 control-label">Channel's Twitch Username</label>
-                        <div class="col-sm-8">
+                        <label for="channel" class="col-md-4 col-form-label">Channel's Twitch Username</label>
+                        <div class="col-md-8">
                             <input type="text" class="form-control" name="channel" id="channel" placeholder="Username" pattern="[a-zA-Z0-9_]+" autofocus spellcheck="false">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="type" class="col-sm-4 control-label">Bot Type Description</label>
-                        <div class="col-sm-8">
+                        <label for="type" class="col-md-4 col-form-label">Bot Type Description</label>
+                        <div class="col-md-8">
                             <input type="text" class="form-control" id="type" name="description" required list="types">
                             <datalist id="types">
                             {% for t in types %}
@@ -75,7 +73,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-offset-4 col-sm-8">
+                        <div class="col-md-offset-4 col-md-8">
                             <input type="hidden" name="id">
                             <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
                             <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save</button>
@@ -90,68 +88,68 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <header class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h1 id="typeEditorTitle" class="modal-title">Add Type</span></h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </header>
             <section class="modal-body">
-                <form class="form-horizontal" method="POST" action="{{ urlFor('add-type')|e('html_attr') }}">
+                <form class="form-row" method="POST" action="{{ urlFor('add-type')|e('html_attr') }}">
                     <div class="form-group">
-                        <label for="name" class="col-sm-4 control-label">Type Name</label>
-                        <div class="col-sm-8">
+                        <label for="name" class="col-md-4 ">Type Name</label>
+                        <div class="col-md-8">
                             <input type="text" class="form-control" name="name" id="name" placeholder="Bot Type" required autofocus maxlength="255">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="url" class="col-sm-4 control-label">URL</label>
-                        <div class="col-sm-8">
+                        <label for="url" class="col-md-4 ">URL</label>
+                        <div class="col-md-8">
                             <input type="url" class="form-control" id="url" name="url" placeholder="https://example.com">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="sourceUrl" class="col-sm-4 control-label">Source URL</label>
-                        <div class="col-sm-8">
+                        <label for="sourceUrl" class="col-md-4 ">Source URL</label>
+                        <div class="col-md-8">
                             <input type="url" class="form-control" id="sourceUrl" name="sourceUrl" placeholder="https://example.com">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="commandsUrl" class="col-sm-4 control-label">Commands Documentation URL</label>
-                        <div class="col-sm-8">
+                        <label for="commandsUrl" class="col-md-4 ">Commands Documentation URL</label>
+                        <div class="col-md-8">
                             <input type="url" class="form-control" id="commandsUrl" name="commandsUrl" placeholder="https://example.com">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="multichannel" class="col-sm-4 control-label">Multi-Channel</label>
-                        <div class="col-sm-8">
+                        <label for="multichannel" class="col-md-4 ">Multi-Channel</label>
+                        <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="multichannel" name="multichannel">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="managed" class="col-sm-4 control-label">Managed</label>
-                        <div class="col-sm-8">
+                        <label for="managed" class="col-md-4 ">Managed</label>
+                        <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="managed" name="managed">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="customUsername" class="col-sm-4 control-label">Custom Username Possible</label>
-                        <div class="col-sm-8">
+                        <label for="customUsername" class="col-dm-4 ">Custom Username Possible</label>
+                        <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="customUsername" name="customUsername">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="identifyable" class="col-sm-4 control-label">Identifyable by</label>
-                        <div class="col-sm-8">
+                        <label for="identifyable" class="col-md-4 ">Identifyable by</label>
+                        <div class="col-md-8">
                             <textarea class="form-control" id="identifyable" name="identifyableby"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="description" class="col-sm-4 control-label">Description</label>
-                        <div class="col-sm-8">
+                        <label for="description" class="col-md-4 ">Description</label>
+                        <div class="col-md-8">
                             <textarea class="form-control" id="description" name="description"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="payment" class="col-sm-4">Business model</label>
-                        <div class="col-sm-8">
+                        <label for="payment" class="col-md-4">Business model</label>
+                        <div class="col-md-8">
                             <select class="form-control" id="payment" name="payment">
                                 <option value="">Unknown</option>
                                 <option value="0">Free</option>
@@ -162,14 +160,14 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="hasFreeTier" class="col-sm-4">Has free tier</label>
-                        <div class="col-sm-8">
+                        <label for="hasFreeTier" class="col-md-4">Has free tier</label>
+                        <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="hasFreeTier" name="hasFreeTier">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="apiVersion" class="col-sm-4">API version</label>
-                        <div class="col-sm-8">
+                        <label for="apiVersion" class="col-md-4">API version</label>
+                        <div class="col-md-8">
                             <select class="form-control" id="apiVersion" name="apiVersion">
                                 <option value="">Unknown</option>
                                 <option value="0">JTV API</option>
@@ -182,7 +180,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-offset-4 col-sm-8">
+                        <div class="col-md-offset-4 col-md-8">
                             <input type="hidden" name="token" value="{{ token|e('html_attr') }}">
                             <button type="submit" class="btn btn-success">Add Type</button>
                         </div>

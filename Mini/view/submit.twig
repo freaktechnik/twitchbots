@@ -55,18 +55,16 @@
 <link rel="canonical" href="{{ canonicalUrl }}submit">
 {% endblock %}
 {% block content %}
-<div class="page-header">
-    <h1>Submit a new bot</h1>
-</div>
+<h1>Submit a new bot</h1>
 <p class="lead">If you know about a Twitch account that is used as a helpful chat bot, please tell us about it with the form below and we'll review the information. If we've got wrong data, please switch to "Correction" and report what's right.</p>
 <p>All fields unless marked differently are required.</p>
 {{ alerts.alert(level, message) }}
-<div class="panel panel-default">
-    <div class="panel-body">
-        <form class="form-horizontal" method="post" action="lib/submit" id="submit-form" data-clientid="{{ clientId }}">
+<div class="card">
+    <div class="card-body">
+        <form class="form-row" method="post" action="lib/submit" id="submit-form" data-clientid="{{ clientId }}">
             <fieldset class="form-group">
-                <legend class="col-sm-2 control-label">Submission Type</legend>
-                <div class="col-sm-10">
+                <legend class="col-md-2 ">Submission Type</legend>
+                <div class="col-md-10">
                     <label class="radio-inline">
                         <input type="radio" name="submission-type" value="0" id="new-bot"{% if not correction %} checked{% endif %}>
                         New Bot
@@ -78,36 +76,36 @@
                 </div>
             </fieldset>
             <div class="form-group">
-                <label for="username" class="col-sm-2 control-label">Bot's Twitch Username</label>
-                <div class="col-sm-10">
+                <label for="username" class="col-md-2 ">Bot's Twitch Username</label>
+                <div class="col-md-10">
                     <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="{{ username|e('html_attr') }}" required pattern="[a-zA-Z0-9_]+" autofocus spellcheck="false">
-                    <p class="help-block">The username the bot uses in Twitch chat.</p>
+                    <p class="form-text text-muted">The username the bot uses in Twitch chat.</p>
                 </div>
             </div>
             <div class="form-group">
-                <label for="existing-type" class="col-sm-2 control-label">Bot Type</label>
-                <div class="col-sm-10">
+                <label for="existing-type" class="col-md-2 ">Bot Type</label>
+                <div class="col-md-10">
                     <select class="form-control" name="type" id="existing-type">
                         <option value="0"{% if type == 0 %} selected{% endif %}>New type&hellip;</option>
                         {% for t in types %}
                             <option value="{{ t.id|e('html_attr') }}"{% if type == t.id %} selected{% endif %}>{{ t.name|e }}</option>
                         {% endfor %}
                     </select>
-                    <p class="help-block">Try to select an existing type, only choose a new type if you can't find any matching type in the list. Selecting an existing type makes it easier for us to verify your submission.</p>
+                    <p class="form-text text-muted">Try to select an existing type, only choose a new type if you can't find any matching type in the list. Selecting an existing type makes it easier for us to verify your submission.</p>
                 </div>
             </div>
             <div class="form-group" id="bottype"{% if type|default(0) != 0 %} hidden{% endif %}>
-                <label for="type" class="col-sm-2 control-label">New Type Description</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control col-sm-10" id="type" name="description" placeholder="Type" value="{{ description|e('html_attr') }}"{% if type|default(0) != 0 %} disabled{% else %} required{% endif %} spellcheck="false">
-                    <p class="help-block">Describe the bot type, normally the name of the software that runs it and if possible a link to the website of it. In case of a bot hosted by a thirdparty this is the name and URL of their site.</p>
+                <label for="type" class="col-md-2 ">New Type Description</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control col-md-10" id="type" name="description" placeholder="Type" value="{{ description|e('html_attr') }}"{% if type|default(0) != 0 %} disabled{% else %} required{% endif %} spellcheck="false">
+                    <p class="form-text text-muted">Describe the bot type, normally the name of the software that runs it and if possible a link to the website of it. In case of a bot hosted by a thirdparty this is the name and URL of their site.</p>
                 </div>
             </div>
             <div class="form-group" id="channel-group"{% if correction %} hidden{% endif %}>
-                <label for="channel" class="col-sm-2 control-label">Example Channel (optional)</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control col-sm-10" id="channel" name="channel" placeholder="Channel Name"  value="{{ channel|e('html_attr') }}" pattern="[a-zA-Z0-9_]+" spellcheck="false">
-                    <p class="help-block">A channel that uses this bot. The channel of the bot is not an example channel.</p>
+                <label for="channel" class="col-md-2 ">Example Channel (optional)</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control col-md-10" id="channel" name="channel" placeholder="Channel Name"  value="{{ channel|e('html_attr') }}" pattern="[a-zA-Z0-9_]+" spellcheck="false">
+                    <p class="form-text text-muted">A channel that uses this bot. The channel of the bot is not an example channel.</p>
                 </div>
             </div>
             <div class="form-group" hidden>
@@ -115,7 +113,7 @@
                 <input type="hidden" value="PUT" name="_METHOD">
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-md-offset-2 col-md-10">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>

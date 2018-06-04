@@ -5,14 +5,12 @@
 <link rel="canonical" href="{{ canonicalUrl }}check{% if username is not empty %}?username={{ username|e('html_attr') }}{% endif %}">
 {% endblock %}
 {% block content %}
-<div class="page-header">
-    <h1>Check a user</h1>
-</div>
+<h1>Check a user</h1>
 <p>Get the bot status for a specific username.</p>
 <form class="form-group" method="GET">
     <div class="input-group">
         <input type="search" class="form-control" placeholder="Username" name="username" required pattern="[a-zA-Z0-9_]+" value="{{ username|e }}" spellcheck="false" autofocus>
-        <span class="input-group-btn">
+        <span class="input-group-append">
             <button type="submit" class="btn btn-primary">Check</button>
         </span>
     </div>

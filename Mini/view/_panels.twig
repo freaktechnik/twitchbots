@@ -4,38 +4,34 @@
 {% else %}
     {% set btntext = "Report type" %}
 {% endif %}
-<section class="panel panel-success">
-    <div class="panel-heading">
-        <h{{ heading|default('2') }} class="panel-title">{{ bot.name|e }}</h{{ heading|default('2') }}>
-    </div>
-    <div class="panel-body">
-        <dl class="dl-horizontal">
-            <dt>Twitch profile</dt>
-            <dd><a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" title="{{ bot.name|e('html_attr') }} on Twitch" rel="external noopener">twitch.tv/{{ bot.name|e }}</a></dd>
-            <dt>Bot type</dt>
-            <dd>{% if bot.typename %}
+<section class="card">
+    <h{{ heading|default('2') }} class="card-header bg-success text-white">{{ bot.name|e }}</h{{ heading|default('2') }}>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-4">Twitch profile</dt>
+            <dd class="col-8"><a href="https://twitch.tv/{{ bot.name|e('url')|e('html_attr') }}" title="{{ bot.name|e('html_attr') }} on Twitch" rel="external noopener">twitch.tv/{{ bot.name|e }}</a></dd>
+            <dt class="col-4">Bot type</dt>
+            <dd class="col-8">{% if bot.typename %}
                 <a href="{{ urlFor('type', { id: bot.type }) }}">{{ bot.typename|e }}</a>
             {% else %}
                 {{ bot.typename|default("Unknown")|e }}
             {% endif %}</dd>
             {% if not bot.multichannel and bot.channel is not empty %}
-            <dt>For channel</dt>
-            <dd><a href="https://twitch.tv/{{ bot.channel|e('url')|e('html_attr') }}" rel="external nofollow noopener">twitch.tv/{{ bot.channel|e }}</a></dd>
+            <dt class="col-4">For channel</dt>
+            <dd class="col-8"><a href="https://twitch.tv/{{ bot.channel|e('url')|e('html_attr') }}" rel="external nofollow noopener">twitch.tv/{{ bot.channel|e }}</a></dd>
             {% endif %}
         </dl>
-        <a class="btn btn-default btn-sm pull-right hidden-print" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}&type={{ bot.type|default('0')|e('url')|e('html_attr') }}">{{ btntext }}</a>
+        <a class="btn btn-secondary btn-sm float-right d-print-none" href="{{ urlFor('submit')|e('html_attr') }}?correction&amp;username={{ bot.name|e('url')|e('html_attr') }}&type={{ bot.type|default('0')|e('url')|e('html_attr') }}">{{ btntext }}</a>
     </div>
 </section>
 {% endmacro %}
 {% macro nobot(name) %}
-<section class="panel panel-info">
-    <div class="panel-heading">
-        <h2 class="panel-title">{{ name |e }}</h2>
-    </div>
-    <div class="panel-body">
+<section class="card">
+    <h2 class="card-header bg-info text-white">{{ name |e }}</h2>
+    <div class="card-body">
         <a href="https://twitch.tv/{{ name|e('url')|e('html_attr') }}" title="{{ name|e('html_attr') }} on Twitch">twitch.tv/{{ name|e }}</a><br>
         {{ name|e }} is not known to be a bot.
-        <a class="btn btn-default btn-sm pull-right hidden-print" href="{{ urlFor('submit')|e('html_attr') }}?username={{ name|e('url')|e('html_attr') }}">Submit as bot</a>
+        <a class="btn btn-secondary btn-sm float-right d-print-none" href="{{ urlFor('submit')|e('html_attr') }}?username={{ name|e('url')|e('html_attr') }}">Submit as bot</a>
     </div>
 </section>
 {% endmacro %}
