@@ -241,7 +241,7 @@ class Model
     }
 
     /**
-     * @return Bot[]
+     * @return string[]
      */
     public function checkBots(): array
     {
@@ -250,60 +250,64 @@ class Model
         return $this->checkNBots($botsPerHour);
     }
 
-    private function checkBot(Bot $bot): bool
-    {
-        $this->bots->touchBot($bot->twitch_id);
-
-        $exists = $this->twitch->userExists($bot->twitch_id);
-
-        if($exists) {
-            // Set the twitch IDs in the DB
-            $modified = false;
-
-            $apiUsername = $this->twitch->getChannelName($bot->twitch_id);
-            if($apiUsername != $bot->name) {
-                $bot->name = $apiUsername;
-                $modified = true;
-            }
-
-            if(!empty($bot->channel_id)) {
-                $channelUsername = $this->twitch->getChannelName($bot->channel_id);
-                if($channelUsername != $bot->channel) {
-                    $bot->channel = $channelUsername;
-                    $modified = true;
-                }
-            }
-            if($modified) {
-                $this->bots->updateBot($bot);
-            }
-        }
-        return !$exists;
-    }
-
     /**
-     * @return Bot[]
+     * @return string[]
      */
     private function checkNBots(int $step): array
     {
-        try {
-            $bots = $this->bots->getOldestBots($step);
+        $bots = $this->bots->getOldestBots($step);
 
-            /** @var Bot[] $bots */
-            $bots = array_values(array_filter($bots, [$this, 'checkBot']));
-
-            $this->db->ping();
-            if(count($bots) > 1) {
-                $this->bots->removeBots(array_column($bots, 'twitch_id'));
+        $sliceSize = 100;
+        $i = 0;
+        $botsToRemove = [];
+        while(count($bots) > 0) {
+            $idsToRequest = [];
+            while(count($idsToRequest) < $sliceSize) {
+                $bot = $bots[$i];
+                $this->bots->touchBot($bot->twitch_id);
+                $idsToRequest[$bot->twitch_id] = $i;
+                if($bot->channel_id && count($idsToRequest) < $sliceSize) {
+                    $idsToRequest[$bot->channel_id] = $i;
+                }
+                ++$i;
             }
-            else if(count($bots) == 1) {
-                $this->bots->removeBot($bots[0]->name);
+            $users = $this->twitch->getChannelInfo(array_keys($idsToRequest));
+            foreach($users as $user) {
+                $j = $idsToRequest[$user->id];
+                $bot = $bots[$j];
+                $updated = false;
+                if($bot->twitch_id == $user->id && $bot->name != $user->login) {
+                    $bot->name = $user->login;
+                    $updated = true;
+                }
+                else if($bot->channel_id == $user->id && $bot->channel != $user->login) {
+                    $bot->channel = $user->login;
+                    $modified = true;
+                }
+                if($modified) {
+                    $this->bots->updateBot($bot);
+                }
+                unset($idsToRequest[$user->id]);
+            }
+            foreach($idsToRequest as $id => $index) {
+                $bot = $bots[$index];
+                if($bot->twitch_id == $id) {
+                    $botsToRemove[] = $id;
+                }
+                else if($bot->channel_id == $id && !in_array($bot->twitch_id, $botsToRemove)) {
+                    $bot->channel_id = null;
+                    $bot->channel = null;
+                    $this->bots->updateBot($bot);
+                }
             }
         }
-        catch(Exception $e) {
-            throw $e;
+
+        $this->db->ping();
+        if(count($botsToRemove) > 0) {
+            $this->bots->removeBots($botsToRemove);
         }
 
-        return $bots;
+        return $botsToRemove;
     }
 
     private function isInChannel(string $user, array $chatters): bool

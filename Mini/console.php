@@ -75,7 +75,7 @@ $console
 
         $log('Checked bots. Removed '.count($bots), $output);
         if(count($bots) > 0) {
-          $log('Removed '.implode(array_column($bots, 'name')));
+          $log('Removed '.implode(', ', $bots));
         }
     });
 
