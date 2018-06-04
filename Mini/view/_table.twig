@@ -2,7 +2,7 @@
 {% if value -%}
 <span class="fa fa-check-circle status-ok" title="Yes"></span>
 {%- elseif value is not null -%}
-<span class="fa fa-minus-circle status-nok" title="No"></span>
+<span class="fa fa-times-circle status-nok" title="No"></span>
 {%- else -%}
 <span class="fa fa-question-circle status-unknown" title="No data"></span>
 {%- endif %}
