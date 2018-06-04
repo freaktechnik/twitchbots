@@ -170,18 +170,18 @@ class Twitch {
             throw new \Exception("Can not request more than 100 ids at once");
         }
         else if($idCount > 0) {
-            $params = array_merge($params, array_map($ids, function($id) {
+            $params = array_merge($params, array_map(function(string $id) {
                 return 'user_id='.$id;
-            }));
+            }, $ids));
         }
         $nameCount = count($names);
         if($nameCount > 100) {
             throw new \Exception("Can not request more than 100 names at once");
         }
         else if($nameCount > 0) {
-            $params = array_merge($params, array_map($names, function($name) {
+            $params = array_merge($params, array_map(function(string $name) {
                 return 'login='.$name;
-            }));
+            }, $names));
         }
         if(!count($params)) {
             return [];
