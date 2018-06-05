@@ -56,11 +56,40 @@ class Twitch {
 
     public function isChannelLive(string $channelId): bool
     {
-        $response = $this->client->get(self::HELIX_BASE.'streams?user_id='.$channelId, $this->twitchHeaders);
+        return $this->findStreams([ $channelId ]);
+    }
 
-        /** @var \stdClass $stream */
-        $stream = json_decode($response->getBody());
-        return isset($stream->data) && count($stream->data);
+    /**
+     * @param string[] $channelIds
+     * @return bool[]
+     */
+    public function findStreams(array $channelIds): array
+    {
+        $idCount = count($channelIds);
+        if($idCount > 100) {
+            throw new \Exception("Can only check the status of up to 100 channels at once");
+        }
+        if(!$idCount) {
+            return [];
+        }
+
+        $url = self::HELIX_BASE.'streams?';
+        $idParams = array_map(function(string $id): string {
+            return 'user_id='.$id;
+        }, $channelIds);
+        $url .= implode('&', $idParams);
+
+        $response = $this->client->get($url, $this->twitchHeaders);
+        if($response->getStatusCode() >= 400) {
+            throw new \Exception("Can not get live streams");
+        }
+
+        $data = json_decode($response->getBody())->data;
+        $ids = array_column($data, 'id');
+
+        return array_map(function(string $id) use ($ids): bool {
+            return in_array($id, $ids);
+        }, $channelIds);
     }
 
     public function getBio(string $channelId): ?string

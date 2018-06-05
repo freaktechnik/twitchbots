@@ -490,6 +490,7 @@ class Model
 
         $requiredIds = [];
         $requiredNames = [];
+        $channelsToCheck = [];
 
         foreach($submissions as $i => $submission) {
             $this->db->ping();
@@ -510,6 +511,9 @@ class Model
                 }
                 else {
                     $requiredNames[$submission->channel_id] = $i;
+                    if(!$submission->online || !isset($submission->offline)) {
+                        $channelsToCheck[$submission->channel_id] = 1;
+                    }
                 }
             }
         }
@@ -527,6 +531,9 @@ class Model
                 else if($submission->channel == $user->login) {
                     $submission->channel_id = $user->id;
                     $this->submissions->setTwitchID($submission->id, $user->id, 'channel');
+                    if(!$submission->online || !isset($submission->offline)) {
+                        $channelsToCheck[$user->id] = 1;
+                    }
                 }
             }
             else if(array_key_exists($user->id, $requiredNames)) {
@@ -568,12 +575,14 @@ class Model
                     unset($submissions[$id]);
                 }
                 else if($submission->channel_id == $id) {
+                    unset($channelsToCheck[$sid]);
                     $this->submissions->clearChannel($submission->id);
                 }
             }
         }
         // normalize array keys.
         $submissions = array_values($submissions);
+        $channelStatuses = array_combine($channelsToCheck, $this->twitch->findStreams($channelsToCheck));
 
         foreach($submissions as $submission) {
             $didSomething = false;
@@ -601,12 +610,7 @@ class Model
                 $ranModCheck = isset($submission->ismod);
                 // Update online or offline and mod if needed
                 if(!$submission->online || !isset($submission->offline)) {
-                    try {
-                        $live = $this->twitch->isChannelLive($submission->channel_id);
-                    }
-                    catch(\Exception $e) {
-                        $live = false;
-                    }
+                    $live = isset($channelStatuses[$submission->channel_id]) && $channelStatuses[$submission->channel_id];
                     if(($live && !$submission->online) || (!$live && !isset($submission->offline) && !$submission->verified)) {
                         $isMod = null;
                         try {
