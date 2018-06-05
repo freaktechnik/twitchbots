@@ -43,17 +43,4 @@ class TwitchTest extends TestCase
         $this->twitch = null;
         parent::tearDown();
     }
-
-    /**
-     * @covers ::userExists
-     */
-    public function testTwitchUserExists()
-    {
-        $this->httpMock->append(new Response(200));
-        $this->assertTrue($this->twitch->userExists(4));
-        $this->httpMock->append(new Response(302));
-        $this->assertTrue($this->twitch->userExists(29));
-        $this->httpMock->append(new Response(404));
-        $this->assertFalse($this->twitch->userExists(30));
-    }
 }

@@ -37,13 +37,6 @@ class Twitch {
         ]);
     }
 
-    public function userExists(string $id, bool $noJustin = false): bool
-    {
-        $response = $this->client->head(self::KRAKEN_BASE."users/".$id, $this->twitchHeadersV5);
-        $http_code = $response->getStatusCode();
-        return $http_code != 404 && (!$noJustin || $http_code != 422);
-    }
-
     public function getChatters(string $channel): array
     {
         $response = $this->client->get("https://tmi.twitch.tv/group/user/".$channel."/chatters", [], $this->requestOptions);
