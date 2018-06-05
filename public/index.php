@@ -538,20 +538,20 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
 
     $app->post('/addtype', function() use ($app, $model) {
         $nullableParam = function(string $param) use ($app): ?string {
-            if(!$app->request->param($param)) {
+            $value = $app->request->params($param);
+            if(!$value) {
                 return null;
             }
-            return $app->request->param($param);
+            return $value;
         };
         $boolParam = function(string $param) use ($app): bool {
-            return $app->request->param($param) == '1';
+            return $app->request->params($param) == '1';
         };
         $intParam = function(string $param) use ($app): ?int {
-            $value = $app->request->param($param);
+            $value = $app->request->params($param);
             return $value == '' ? null : (int)$value;
         };
         if($model->login->isLoggedIn() && $model->checkToken('submissions', $app->request->params('token'))) {
-            $payment = $app->request->params();
             $typeId = $model->types->addType(
                 $app->request->params('name'),
                 $boolParam('multichannel'),
