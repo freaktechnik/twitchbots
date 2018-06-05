@@ -259,10 +259,11 @@ class Model
 
         $sliceSize = 100;
         $i = 0;
+        $botCount = count($bots);
         $botsToRemove = [];
-        while(count($bots) > 0) {
+        while($botCount > 0 && $i < $botCount) {
             $idsToRequest = [];
-            while(count($idsToRequest) < $sliceSize) {
+            while(count($idsToRequest) < $sliceSize && $i < $botCount) {
                 $bot = $bots[$i];
                 $this->bots->touchBot($bot->twitch_id);
                 $idsToRequest[$bot->twitch_id] = $i;
