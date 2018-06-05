@@ -54,11 +54,6 @@ class Twitch {
         return json_decode($response->getBody(), true)['chatters'];
     }
 
-    public function isChannelLive(string $channelId): bool
-    {
-        return $this->findStreams([ $channelId ]);
-    }
-
     /**
      * @param string[] $channelIds
      * @return bool[]
