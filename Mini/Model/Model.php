@@ -283,9 +283,9 @@ class Model
                 }
                 else if($bot->channel_id == $user->id && $bot->channel != $user->login) {
                     $bot->channel = $user->login;
-                    $modified = true;
+                    $updated = true;
                 }
-                if($modified) {
+                if($updated) {
                     $this->bots->updateBot($bot);
                 }
                 unset($idsToRequest[$user->id]);
