@@ -8,7 +8,10 @@ const updateEditor = (e) => {
     const currentRow = e.target.parentNode.parentNode;
     channelField.value = currentRow.cells[2].textContent;
     if(currentRow.cells[1].childElementCount > 0) {
-        typeField.value = currentRow.cells[1].querySelector("a").title;
+        const link = currentRow.cells[1].querySelector("a");
+        if(link) {
+            typeField.value = link.title;
+        }
     }
     else {
         typeField.value = currentRow.cells[1].textContent;

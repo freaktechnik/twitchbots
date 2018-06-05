@@ -55,7 +55,7 @@
         <tbody>
 {% for s in set %}
 {%- set botUrl = 'https://twitch.tv/' ~ s.name|e('url') -%}
-{% if s.description matches '/^\\d+$/' %}
+{% if s.description matches '/^[0-9]+$/' %}
     {% set isType = true %}
 {% else %}
     {% set isType = false %}
