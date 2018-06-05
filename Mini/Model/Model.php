@@ -582,7 +582,8 @@ class Model
         }
         // normalize array keys.
         $submissions = array_values($submissions);
-        $channelStatuses = array_combine($channelsToCheck, $this->twitch->findStreams($channelsToCheck));
+        $channelIds = array_keys($channelsToCheck);
+        $channelStatuses = array_combine($channelsIds, $this->twitch->findStreams($channelIds));
 
         foreach($submissions as $submission) {
             $didSomething = false;
