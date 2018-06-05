@@ -537,22 +537,34 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
     })->name('submission-edit');
 
     $app->post('/addtype', function() use ($app, $model) {
+        $nullableParam = function(string $param) use ($app): ?string {
+            if(!$app->request->param($param)) {
+                return null;
+            }
+            return $app->request->param($param);
+        };
+        $boolParam = function(string $param) use ($app): bool {
+            return $app->request->param($param) == '1';
+        };
+        $intParam = function(string $param) use ($app): ?int {
+            $value = $app->request->param($param);
+            return $value == '' ? null : (int)$value;
+        };
         if($model->login->isLoggedIn() && $model->checkToken('submissions', $app->request->params('token'))) {
-            $apiVersion = $app->request->params('apiVersion');
-            $payment = $app->request->params('payment');
+            $payment = $app->request->params();
             $typeId = $model->types->addType(
                 $app->request->params('name'),
-                $app->request->params('multichannel') == "1",
-                $app->request->params('managed') == "1",
-                $app->request->params('customUsername') == "1",
-                $app->request->params('identifyableby') ?? null,
-                $app->request->params('description') ?? null,
-                $app->request->params('url') ?? null,
-                $app->request->params('sourceUrl') ?? null,
-                $app->request->params('commandsUrl') ?? null,
-                $payment == '' ?  null: (int)$payment,
-                $app->request->params('hasFreeTier') == "1",
-                $apiVersion == '' ? null : (int)$apiVersion
+                $boolParam('multichannel'),
+                $boolParam('managed'),
+                $boolParam('customUsername'),
+                $nullableParam('identifyableby'),
+                $nullableParam('description'),
+                $nullableParam('url'),
+                $nullableParam('sourceUrl'),
+                $nullableParam('commandsUrl'),
+                $intParam('payment'),
+                $boolParam('hasFreeTier'),
+                $intParam('apiVersion'),
             );
             $app->redirect($app->request->getUrl().$app->urlFor('submissions').'?addedtype='.$typeId, 303);
         }
