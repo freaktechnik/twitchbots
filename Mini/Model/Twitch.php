@@ -171,7 +171,7 @@ class Twitch {
         }
         else if($idCount > 0) {
             $params = array_merge($params, array_map(function(string $id) {
-                return 'user_id='.$id;
+                return 'id='.$id;
             }, $ids));
         }
         $nameCount = count($names);

@@ -540,7 +540,7 @@ class Model
                     }
                 }
                 else if($submission->channel_id == $user->id) {
-                    if($sumbission->channel != $user->login) {
+                    if($submission->channel != $user->login) {
                         $submission->channel = $user->login;
                         $this->submissions->updateChannelName($submission->id, $user->login);
                     }
@@ -697,7 +697,7 @@ class Model
         $ids = $this->twitch->getChannelInfo([], array_column($foundBots, 'name'));
         $needIds = [];
         foreach($foundBots as $i => $bot) {
-            if(empty($this->bots->getBotByID($ids[$i]))) {
+            if(empty($this->bots->getBotByID($ids[$i]->id))) {
                 $bot->twitch_id = $ids[$i]->id;
                 if(!empty($bot->channel)) {
                     $needIds[$bot->channel] = $i;
