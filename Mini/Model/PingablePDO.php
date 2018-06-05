@@ -2,7 +2,6 @@
 
 namespace Mini\Model;
 
-use ReflectionClass;
 use PDO;
 use PDOStatement;
 use Exception;
@@ -13,9 +12,9 @@ class PingablePDO {
     /** @var array $params */
     private $params;
 
-    public function __construct()
+    public function __construct(...$args)
     {
-        $this->params = func_get_args();
+        $this->params = $args;
         $this->init();
     }
 
@@ -24,7 +23,7 @@ class PingablePDO {
      */
     public function __call(string $name, array $args)
     {
-        return call_user_func_array(array($this->pdo, $name), $args);
+        return $this->pdo->{$name}(...$args);
     }
 
     public function prepare(string $sql): PDOStatement
@@ -53,8 +52,7 @@ class PingablePDO {
 
     public function init(): void
     {
-        $class = new ReflectionClass('PDO');
-        $this->pdo = $class->newInstanceArgs($this->params);
+        $this->pdo = new PDO(...$this->params);
         if($this->pdo instanceof PDO) {
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
