@@ -78,6 +78,9 @@ class Twitch {
     public function hasVODs(string $channelId): bool
     {
         $response = $this->client->get(self::HELIX_BASE.'videos?user_id='.$channelId, $this->twitchHeaders);
+        if($response->getStatusCode() >= 400) {
+            throw new \Exception("Can not get vods for ".$channelId);
+        }
         /** @var \stdClass $vods */
         $vods = json_decode($response->getBody());
         return count($vods->data) > 0;
@@ -89,7 +92,7 @@ class Twitch {
             $response = $this->client->get(self::HELIX_BASE.'users/follows?from_id='.$id, $this->twitchHeaders);
 
             if($response->getStatusCode() >= 400) {
-                throw new \Exception("Can not get followers for ".$name);
+                throw new \Exception("Can not get followers for ".$id);
             }
 
             $this->_followsCache[$id] = json_decode($response->getBody());
