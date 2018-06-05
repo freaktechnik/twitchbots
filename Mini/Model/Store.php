@@ -24,12 +24,12 @@ class Store {
 
     public static function BindNullable(PDOStatement $query, $param, $value = null, int $type = PDO::PARAM_STR): void
     {
-        if($value === null) {
-            $query->bindValue($param, $value, PDO::PARAM_NULL);
-        }
-        else {
+        // if($value === null) {
+        //     $query->bindValue($param, $value, PDO::PARAM_NULL);
+        // }
+        // else {
             $query->bindValue($param, $value, $type);
-        }
+        // }
     }
 
     protected function prepareQuery(string $sql): PDOStatement
