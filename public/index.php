@@ -564,7 +564,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
                 $nullableParam('commandsUrl'),
                 $intParam('payment'),
                 $boolParam('hasFreeTier'),
-                $intParam('apiVersion'),
+                $intParam('apiVersion')
             );
             $app->redirect($app->request->getUrl().$app->urlFor('submissions').'?addedtype='.$typeId, 303);
         }
