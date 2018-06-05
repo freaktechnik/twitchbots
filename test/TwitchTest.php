@@ -43,4 +43,13 @@ class TwitchTest extends TestCase
         $this->twitch = null;
         parent::tearDown();
     }
+
+    /**
+     * @expectedException Exception
+     * @covers ::findStreams
+     */
+    public function testFindStreamsHundred()
+    {
+        $this->twitch->findStreams(array_fill(0, 101, 1));
+    }
 }
