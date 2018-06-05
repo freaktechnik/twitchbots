@@ -114,7 +114,7 @@ class Types extends PaginatingStore {
         ?int $apiVersion = null
     ): int
     {
-        $sql = "(name,multichannel,managed,customUsername,identifiableby,description,url,sourceUrl,commandsUrl,payment,hasFreeTier,apiVersion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+        $sql = "(`name`,`multichannel`,`managed`,`customUsername`,`identifiableby`,`description`,`url`,`sourceUrl`,`commandsUrl`,`payment`,`hasFreeTier`,`apiVersion`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         $query = $this->prepareInsert($sql);
         $query->bindValue(1, $name);
         $query->bindValue(2, $multichannel, PDO::PARAM_BOOL);
