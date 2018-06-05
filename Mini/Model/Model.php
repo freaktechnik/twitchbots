@@ -583,9 +583,13 @@ class Model
         // normalize array keys.
         $submissions = array_values($submissions);
         $channelIds = array_keys($channelsToCheck);
-        $channelStatuses = array_combine($channelsIds, $this->twitch->findStreams($channelIds));
+        $channelStatuses = array_combine($channelIds, $this->twitch->findStreams($channelIds));
 
         foreach($submissions as $submission) {
+            // if($this->bots->getBotByID($submission->twitch_id)) {
+            //     $this->submissions->removeSubmission($submission->id);
+            //     continue;
+            // }
             $didSomething = false;
 
             // Check bot verification endpoints
