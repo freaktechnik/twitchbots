@@ -52,4 +52,22 @@ class TwitchTest extends TestCase
     {
         $this->twitch->findStreams(array_fill(0, 101, 1));
     }
+
+    /**
+     * @expectedException Exception
+     * @covers ::getChannelInfo
+     */
+    public function testChannelInfoHundredIDs()
+    {
+        $this->twitch->getChannelInfo(array_fill(0, 101, 1));
+    }
+
+    /**
+     * @expectedException Exception
+     * @covers ::getChannelInfo
+     */
+    public function testChannelInfoHundredNames()
+    {
+        $this->twitch->getChannelInfo([], array_fill(0, 101, 1));
+    }
 }
