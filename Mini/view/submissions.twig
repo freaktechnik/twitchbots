@@ -94,61 +94,61 @@
             <section class="modal-body">
                 <form method="POST" action="{{ urlFor('add-type')|e('html_attr') }}">
                     <div class="form-group row">
-                        <label for="name" class="col-md-4 ">Type Name</label>
+                        <label for="name" class="col-md-4 col-form-label">Type Name</label>
                         <div class="col-md-8">
                             <input type="text" class="form-control" name="name" id="name" placeholder="Bot Type" required autofocus maxlength="255">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="url" class="col-md-4 ">URL</label>
+                        <label for="url" class="col-md-4 col-form-label">URL</label>
                         <div class="col-md-8">
                             <input type="url" class="form-control" id="url" name="url" placeholder="https://example.com">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="sourceUrl" class="col-md-4 ">Source URL</label>
+                        <label for="sourceUrl" class="col-md-4 col-form-label">Source URL</label>
                         <div class="col-md-8">
                             <input type="url" class="form-control" id="sourceUrl" name="sourceUrl" placeholder="https://example.com">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="commandsUrl" class="col-md-4 ">Commands Documentation URL</label>
+                        <label for="commandsUrl" class="col-md-4 col-form-label">Commands Documentation URL</label>
                         <div class="col-md-8">
                             <input type="url" class="form-control" id="commandsUrl" name="commandsUrl" placeholder="https://example.com">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="multichannel" class="col-md-4 ">Multi-Channel</label>
+                        <label for="multichannel" class="col-md-4 col-form-label">Multi-Channel</label>
                         <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="multichannel" name="multichannel">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="managed" class="col-md-4 ">Managed</label>
+                        <label for="managed" class="col-md-4 col-form-label">Managed</label>
                         <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="managed" name="managed">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="customUsername" class="col-dm-4 ">Custom Username Possible</label>
+                        <label for="customUsername" class="col-dm-4 col-form-label">Custom Username Possible</label>
                         <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="customUsername" name="customUsername">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="identifyable" class="col-md-4 ">Identifyable by</label>
+                        <label for="identifyable" class="col-md-4 col-form-label">Identifyable by</label>
                         <div class="col-md-8">
                             <textarea class="form-control" id="identifyable" name="identifyableby"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="description" class="col-md-4 ">Description</label>
+                        <label for="description" class="col-md-4 col-form-label">Description</label>
                         <div class="col-md-8">
                             <textarea class="form-control" id="description" name="description"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="payment" class="col-md-4">Business model</label>
+                        <label for="payment" class="col-md-4 col-form-label">Business model</label>
                         <div class="col-md-8">
                             <select class="form-control" id="payment" name="payment">
                                 <option value="">Unknown</option>
@@ -160,13 +160,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="hasFreeTier" class="col-md-4">Has free tier</label>
+                        <label for="hasFreeTier" class="col-md-4 col-form-label">Has free tier</label>
                         <div class="col-md-8">
                             <input type="checkbox" value="1" class="form-control" id="hasFreeTier" name="hasFreeTier">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="apiVersion" class="col-md-4">API version</label>
+                        <label for="apiVersion" class="col-md-4 col-form-label">API version</label>
                         <div class="col-md-8">
                             <select class="form-control" id="apiVersion" name="apiVersion">
                                 <option value="">Unknown</option>
