@@ -700,6 +700,9 @@ class Model
         $controller = new TypeCrawlerController($storage);
 
         $foundBots = $controller->triggerCrawl();
+        $foundBots = array_filter($foundBots, function(Bot $bot) {
+            return empty($this->bots->getBot($bot->name));
+        });
 
         $this->db->ping();
 
