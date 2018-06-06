@@ -704,19 +704,25 @@ class Model
         $this->db->ping();
 
         $count = 0;
-        $ids = $this->twitch->getChannelInfo([], array_column($foundBots, 'name'));
+        $names = array_column($foundBots, 'name');
+        $ids = $this->twitch->getChannelInfo([], $names);
+        $indexIdMap = array_flip($names);
         $needIds = [];
-        foreach($foundBots as $i => $bot) {
-            if(empty($this->bots->getBotByID($ids[$i]->id))) {
-                $bot->twitch_id = $ids[$i]->id;
+        $addBot = function($bot) use(&$count) {
+            $this->bots->addBot($bot);
+            $count += 1;
+            // Remove any matching submissions.
+            $this->submissions->removeSubmissions($bot->twitch_id);
+        };
+        foreach($ids as $user) {
+            if(empty($this->bots->getBotByID($user->id))) {
+                $bot = $foundBots[$indexIdMap[$user->name]];
+                $bot->twitch_id = $user->id;
                 if(!empty($bot->channel)) {
                     $needIds[$bot->channel] = $i;
                 }
                 else {
-                    $this->bots->addBot($bot);
-                    $count += 1;
-                    // Remove any matching submissions.
-                    $this->submissions->removeSubmissions($bot->twitch_id);
+                    $addBot($bot);
                 }
             }
         }
@@ -726,10 +732,7 @@ class Model
                 $index = $needIds[$user->login];
                 $bot = $foundBots[$index];
                 $bot->channel_id = $user->id;
-                $this->bots->addBot($bot);
-                $count += 1;
-                // Remove any matching submissions.
-                $this->submissions->removeSubmissions($bot->twitch_id);
+                $addBot($bot);
             }
         }
 
