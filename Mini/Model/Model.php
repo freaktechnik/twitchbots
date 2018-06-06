@@ -709,6 +709,9 @@ class Model
         $count = 0;
         $names = array_column($foundBots, 'name');
         $ids = $this->twitch->paginateUsersByName($names);
+
+        $this->db->ping();
+
         $indexIdMap = array_flip($names);
         $needIds = [];
         $addBot = function($bot) use(&$count) {
