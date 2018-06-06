@@ -576,7 +576,7 @@ class Model
                     unset($submissions[$id]);
                 }
                 else if($submission->channel_id == $id) {
-                    unset($channelsToCheck[$sid]);
+                    unset($channelsToCheck[$id]);
                     $this->submissions->clearChannel($submission->id);
                 }
             }
@@ -617,7 +617,7 @@ class Model
                 // Update online or offline and mod if needed
                 if(!$submission->online || !isset($submission->offline)) {
                     $live = isset($channelStatuses[$submission->channel_id]) && $channelStatuses[$submission->channel_id];
-                    if(($live && !$submission->online) || (!$live && !isset($submission->offline) && !$submission->verified)) {
+                    if(($live && !$submission->online) || (!$live && !isset($submission->offline) && !$submission->shouldApprove($type))) {
                         $isMod = null;
                         try {
                             $chatters = $this->twitch->getChatters($submission->channel);
@@ -632,7 +632,7 @@ class Model
                             }
                         }
                         catch(Exception $e) {
-                            $isInChannel = NULL;
+                            $isInChannel = null;
                         }
 
                         // Save the info about bot that was just acquired
@@ -655,7 +655,7 @@ class Model
                 }
 
                 // If user wasn't in channel chat and mod not set, get mod status
-                if(!$ranModCheck && !$submission->verified) {
+                if(!$ranModCheck && !$submission->shouldApprove($type)) {
                     try {
                         $isMod = $this->getModStatus($submission->name, $submission->channel);
                     }
