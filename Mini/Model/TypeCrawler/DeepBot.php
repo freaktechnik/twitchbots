@@ -9,6 +9,8 @@ class DeepBot extends TypeCrawler {
     /** @var int $type */
     public static $type = 22;
 
+    protected static $crawlInterval = 300;
+
     function __construct(TypeCrawlerStorage $storage)
     {
         parent::__construct($storage);
