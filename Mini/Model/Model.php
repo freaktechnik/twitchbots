@@ -716,7 +716,8 @@ class Model
         };
         foreach($ids as $user) {
             if(empty($this->bots->getBotByID($user->id))) {
-                $bot = $foundBots[$indexIdMap[$user->login]];
+                $i = $indexIdMap[$user->login];
+                $bot = $foundBots[$i];
                 $bot->twitch_id = $user->id;
                 if(!empty($bot->channel)) {
                     $needIds[$bot->channel] = $i;
