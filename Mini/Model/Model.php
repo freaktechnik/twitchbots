@@ -705,7 +705,7 @@ class Model
 
         $count = 0;
         $names = array_column($foundBots, 'name');
-        $ids = $this->twitch->getChannelInfo([], $names);
+        $ids = $this->twitch->paginateUsersByName($names);
         $indexIdMap = array_flip($names);
         $needIds = [];
         $addBot = function($bot) use(&$count) {
@@ -727,7 +727,7 @@ class Model
             }
         }
         if(count($needIds)) {
-            $channelIds = $this->twitch->getChannelInfo([], array_keys($needIds));
+            $channelIds = $this->twitch->paginateUsersByName(array_keys($needIds));
             foreach($channelIds as $user) {
                 $index = $needIds[$user->login];
                 $bot = $foundBots[$index];

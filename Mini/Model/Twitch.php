@@ -221,4 +221,19 @@ class Twitch {
         }
         return $users;
     }
+
+    public function paginateUsersByName(array $names): array {
+        $slice = 0;
+        $nameCount = count($names);
+        $sliceSize = 100;
+        $result = [];
+        while($slice * $sliceSize < $nameCount) {
+            $nameSlice = array_slice($names, $slice * $sliceSize, $sliceSize);
+            $sliceResult = $this->getChannelInfo([], $nameSlice);
+            $result = array_merge($result, $sliceResult);
+            $slice += 1;
+        }
+
+        return $result;
+    }
 }
