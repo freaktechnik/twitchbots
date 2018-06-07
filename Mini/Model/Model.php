@@ -245,7 +245,6 @@ class Model
      */
     public function checkBots(): array
     {
-        //TODO bulk-requests for this stuff.
         $botsPerHour = $this->bots->getCount() / (int)$this->config->get('checks_per_day');
         return $this->checkNBots($botsPerHour);
     }
@@ -870,7 +869,12 @@ class Model
 
                     if($response['count'] > 0) {
                         if($response['count'] > $maxCountForDetails || $instCount === 1) {
-                            $count += $response['count'];
+                            if($response['count'] > 0) {
+                                $count += $response['count'];
+                            }
+                            else if(isset($bot->channel_id)) {
+                                $count += 1;
+                            }
                             $estimated = true;
                             break;
                         }
