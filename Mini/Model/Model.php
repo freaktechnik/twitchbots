@@ -703,6 +703,8 @@ class Model
         $foundBots = array_filter($foundBots, function(Bot $bot) {
             return empty($this->bots->getBot($bot->name));
         });
+        // re-key array.
+        $foundBots = array_values($foundBots);
 
         $this->db->ping();
 
