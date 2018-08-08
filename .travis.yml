@@ -26,5 +26,5 @@ deploy:
   - provider: script
     script: .travis/stage.sh
     on:
-      php: 7.1
+      php: '7.1'
       repo: freaktechnik/twitchbots
