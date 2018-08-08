@@ -16,6 +16,7 @@ script:
   - phpunit test
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - rm clover.xml
 deploy:
   - provider: script
     script: .travis/deploy.sh

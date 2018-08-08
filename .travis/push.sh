@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 if [ -z ${DEPLOY_HOST+x} ]
 then
     echo "No deploy config found"
