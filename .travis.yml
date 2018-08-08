@@ -16,11 +16,15 @@ script:
   - phpunit test
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - .travis/stage.sh
 deploy:
-  provider: script
-  script: .travis/deploy.sh
-  on:
-    tags: true
-    php: '7.1'
-    repo: freaktechnik/twitchbots
+  - provider: script
+    script: .travis/deploy.sh
+    on:
+      tags: true
+      php: '7.1'
+      repo: freaktechnik/twitchbots
+  - provider: script
+    script: .travis/stage.sh
+    on:
+      php: 7.1
+      repo: freaktechnik/twitchbots
