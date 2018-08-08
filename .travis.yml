@@ -16,7 +16,7 @@ script:
   - phpunit test
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - source .travis/stage.sh
+  - .travis/stage.sh
 deploy:
   provider: script
   script: .travis/deploy.sh
