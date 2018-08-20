@@ -205,7 +205,7 @@ class BotsTest extends DBTestCase
         $incativeTable = $this->getConnection()->createQueryTable(
             'inactiveTable0', "SELECT * FROM inactive_bots WHERE twitch_id=1"
         );
-        $this->assertEquals(1, $queryTable->getRowCount());
+        $this->assertEquals(1, $incativeTable->getRowCount());
     }
 
     /**
@@ -226,6 +226,6 @@ class BotsTest extends DBTestCase
         $incativeTable = $this->getConnection()->createQueryTable(
             'inactiveTable', "SELECT * FROM inactive_bots WHERE twitch_id IN (1,15)"
         );
-        $this->assertEquals(2, $queryTable->getRowCount());
+        $this->assertEquals(2, $incativeTable->getRowCount());
     }
 }
