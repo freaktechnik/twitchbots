@@ -201,6 +201,11 @@ class BotsTest extends DBTestCase
             'bots0', "SELECT * FROM bots WHERE name='ackbot'"
         );
         $this->assertEquals(0, $queryTable->getRowCount());
+
+        $incativeTable = $this->getConnection()->createQueryTable(
+            'inactiveTable0', "SELECT * FROM inactive_bots WHERE twitch_id=1"
+        );
+        $this->assertEquals(1, $queryTable->getRowCount());
     }
 
     /**
@@ -217,5 +222,10 @@ class BotsTest extends DBTestCase
             'bots', "SELECT * FROM bots WHERE twitch_id IN (1,15)"
         );
         $this->assertEquals(0, $queryTable->getRowCount());
+
+        $incativeTable = $this->getConnection()->createQueryTable(
+            'inactiveTable', "SELECT * FROM inactive_bots WHERE twitch_id IN (1,15)"
+        );
+        $this->assertEquals(2, $queryTable->getRowCount());
     }
 }

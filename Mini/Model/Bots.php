@@ -141,17 +141,23 @@ class Bots extends PaginatingStore {
 
     public function removeBot(string $username): void
     {
+        $bot = $this->getBot($username);
         $query = $this->prepareDelete("WHERE name=?");
         $query->execute(array($username));
+        $this->addInactive([ $bot ]);
     }
 
     public function removeBots(array $ids): void
     {
         $tempTable = $this->createTempTable($ids);
         $where = 'INNER JOIN '.$tempTable.' AS t ON t.value = `table`.twitch_id';
+        $desc = new BotListDescriptor();
+        $desc->ids = $ids;
+        $bots = $this->list($desc);
         $query = $this->prepareDelete($where);
         $query->execute();
         $this->cleanUpTempTable($tempTable);
+        $this->addInactive($bots);
     }
 
     public function addBot(Bot $bot): void
@@ -264,5 +270,22 @@ class Bots extends PaginatingStore {
         $query = $this->prepareList($descriptor);
 
         return $query->fetchAll(PDO::FETCH_CLASS, Bot::class);
+    }
+
+    /**
+     * @param Bot[] $bots
+     */
+    private function addInactive(array $bots)
+    {
+        $structure = "(twitch_id,name,type,channel,channel_id,date) VALUES (?,?,?,?,?,NOW())";
+        $query = $this->prepareQuery("INSERT INTO `inactive_bots` ".$structure);
+        foreach($bots as $bot) {
+            $query->bindValue(1, $bot->twitch_id, PDO::PARAM_INT);
+            $query->bindValue(2, strtolower($bot->name), PDO::PARAM_STR);
+            $query->bindValue(3, $bot->type, PDO::PARAM_INT);
+            $query->bindValue(4, $bot->channel, PDO::PARAM_STR);
+            $query->bindValue(5, $bot->channel_id, PDO::PARAM_INT);
+            $query->execute();
+        }
     }
 }

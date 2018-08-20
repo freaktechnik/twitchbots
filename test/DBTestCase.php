@@ -79,6 +79,16 @@ class DBTestCase extends TestCase {
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (twitch_id)',
             ''
+        ],
+        "inactive_bots" => [
+            'twitch_id varchar(20) NOT NULL,
+            type int(11) NOT NULL,
+            date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            channel_id varchar(20) DEFAULT NULL,
+            discard_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY(twitch_id),
+            FOREIGN KEY (type) REFERENCES type(id)',
+            ''
         ]
     ];
 
