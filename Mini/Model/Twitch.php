@@ -73,7 +73,7 @@ class Twitch {
         }
 
         $data = json_decode($response->getBody())->data;
-        $ids = array_column($data, 'id');
+        $ids = array_column($data, 'user_id');
 
         return array_map(function(string $id) use ($ids): bool {
             return in_array($id, $ids);
