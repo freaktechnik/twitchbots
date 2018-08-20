@@ -277,14 +277,12 @@ class Bots extends PaginatingStore {
      */
     private function addInactive(array $bots)
     {
-        $structure = "(twitch_id,name,type,channel,channel_id,date) VALUES (?,?,?,?,?,NOW())";
+        $structure = "(twitch_id,type,channel_id,date) VALUES (?,?,?,NOW())";
         $query = $this->prepareQuery("INSERT INTO `inactive_bots` ".$structure);
         foreach($bots as $bot) {
             $query->bindValue(1, $bot->twitch_id, PDO::PARAM_INT);
-            $query->bindValue(2, strtolower($bot->name), PDO::PARAM_STR);
-            $query->bindValue(3, $bot->type, PDO::PARAM_INT);
-            $query->bindValue(4, $bot->channel, PDO::PARAM_STR);
-            $query->bindValue(5, $bot->channel_id, PDO::PARAM_INT);
+            $query->bindValue(2, $bot->type, PDO::PARAM_INT);
+            $query->bindValue(3, $bot->channel_id, PDO::PARAM_INT);
             $query->execute();
         }
     }
