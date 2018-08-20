@@ -473,4 +473,6 @@
             <value>100</value>
         </row>
     </table>
+    <table name="inactive_bots">
+    </table>
 </dataset>
