@@ -87,7 +87,7 @@ class DBTestCase extends TestCase {
             channel_id varchar(20) DEFAULT NULL,
             discard_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY(twitch_id),
-            FOREIGN KEY (type) REFERENCES type(id)',
+            FOREIGN KEY (type) REFERENCES types(id)',
             ''
         ]
     ];
