@@ -23,7 +23,6 @@ jobs:
     - stage: test
       php:
         - '7.1'
-        - '7.2'
       services:
         - mysql
       install:
@@ -34,24 +33,17 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
         - rm clover.xml
     - stage: deploy
-      if: branch = master
+      if: branch = master AND repo = freaktechnik/twitchbots
       name: "Deploy to stage"
       script: skip
       install: skip
       deploy:
         provider: script
         script: .travis/stage.sh
-        on:
-          php: '7.1'
-          repo: freaktechnik/twitchbots
     - script: skip
-      if: branch = master
+      if: tag IS present AND repo = freaktechnik/twitchbots
       name: "Deploy to prod"
       install: skip
       deploy:
         provider: script
         script: .travis/deploy.sh
-        on:
-          tags: true
-          php: '7.1'
-          repo: freaktechnik/twitchbots
