@@ -182,43 +182,49 @@ class Twitch {
      */
     public function getChannelInfo(array $ids = [], array $names = []): array
     {
-        $url = self::HELIX_BASE.'users/?';
-        $params = [];
-        //TODO paginate
+        $baseURL = self::HELIX_BASE.'users/?';
         $idCount = count($ids);
-        if($idCount > 100) {
-            throw new \Exception("Can not request more than 100 ids at once");
-        }
-        else if($idCount > 0) {
-            $params = array_merge($params, array_map(function(string $id) {
-                return 'id='.$id;
-            }, $ids));
-        }
         $nameCount = count($names);
-        if($nameCount > 100) {
-            throw new \Exception("Can not request more than 100 names at once");
-        }
-        else if($nameCount > 0) {
-            $params = array_merge($params, array_map(function(string $name) {
-                return 'login='.$name;
-            }, $names));
-        }
-        if(!count($params)) {
-            return [];
-        }
-        $url .= implode('&', $params);
+        $maxCount = max($idCount, $nameCount);
+        $perPage = 100;
+        $pages = ceil($maxCount / $perPage);
+        $page = 0;
+        $users = [];
+        while($page < $pages) {
+            $params = [];
+            $paramsOffset = $page * $perPage;
+            $url = $baseURL;
+            ++$page;
 
-        $response = $this->client->get($url, $this->twitchHeaders);
+            if($idCount > $paramsOffset) {
+                $params = array_merge($params, array_map(function(string $id) {
+                    return 'id='.urlencode($id);
+                }, array_slice($ids, $paramsOffset, $perPage)));
+            }
+            if($nameCount > $paramsOffset) {
+                $params = array_merge($params, array_map(function(string $name) {
+                    return 'login='.urlencode($name);
+                }, array_slice($names, $paramsOffset, $perPage)));
+            }
+            if(!count($params)) {
+                continue;
+            }
 
-        if($response->getStatusCode() >= 400) {
-            throw new \Exception("Could not fetch user info", $response->getStatusCode());
+            $url .= implode('&', $params);
+
+            $response = $this->client->get($url, $this->twitchHeaders);
+
+            if($response->getStatusCode() >= 400) {
+                throw new \Exception("Could not fetch user info", $response->getStatusCode());
+            }
+
+            $users = array_merge($users, json_decode($response->getBody())->data);
         }
-
-        $users = json_decode($response->getBody())->data;
 
         if(!count($users)) {
-            throw new \Exception("No Twitch users returned", $response->getStatusCode());
+            throw new \Exception("No Twitch users returned");
         }
+
         return $users;
     }
 
