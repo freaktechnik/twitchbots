@@ -40,7 +40,8 @@ jobs:
       deploy:
         provider: script
         script: .travis/stage.sh
-    - script: skip
+    - stage: deploy
+      script: skip
       if: tag IS present AND repo = freaktechnik/twitchbots
       name: "Deploy to prod"
       install: skip
