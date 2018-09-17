@@ -65,6 +65,7 @@ class Twitch {
 
         while($page < $pageCount) {
             $paramsOffset = $page * $perPage;
+            ++$page;
 
             $url = $baseURL;
             $idParams = array_map(function(string $id): string {

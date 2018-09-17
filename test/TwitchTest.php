@@ -49,7 +49,7 @@ class TwitchTest extends TestCase
         $this->httpMock->append(new Response(200, [], json_encode([
             'data' => [
                 [
-                    'id' => 0
+                    'id' => 1
                 ]
             ]
         ])));
@@ -62,7 +62,8 @@ class TwitchTest extends TestCase
     {
         $this->queueSuccessfulRequest();
         $this->queueSuccessfulRequest();
-        $this->twitch->findStreams(array_fill(0, 101, 1));
+        $res = $this->twitch->findStreams(array_fill(0, 101, 1));
+        $this->assertTrue($res[0]);
     }
 
     /**
@@ -72,7 +73,8 @@ class TwitchTest extends TestCase
     {
         $this->queueSuccessfulRequest();
         $this->queueSuccessfulRequest();
-        $this->twitch->getChannelInfo(array_fill(0, 101, 1));
+        $res = $this->twitch->getChannelInfo(array_fill(0, 101, 1));
+        $this->assertCount(2, $res);
     }
 
     /**
@@ -82,6 +84,7 @@ class TwitchTest extends TestCase
     {
         $this->queueSuccessfulRequest();
         $this->queueSuccessfulRequest();
-        $this->twitch->getChannelInfo([], array_fill(0, 101, 1));
+        $res = $this->twitch->getChannelInfo([], array_fill(0, 101, 1));
+        $this->assertCount(2, $res);
     }
 }
