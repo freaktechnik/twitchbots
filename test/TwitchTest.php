@@ -44,30 +44,44 @@ class TwitchTest extends TestCase
         parent::tearDown();
     }
 
+    private function queueSuccessfulRequest()
+    {
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'data' => [
+                [
+                    'id' => 0
+                ]
+            ]
+        ])));
+    }
+
     /**
-     * @expectedException Exception
      * @covers ::findStreams
      */
     public function testFindStreamsHundred()
     {
+        $this->queueSuccessfulRequest();
+        $this->queueSuccessfulRequest();
         $this->twitch->findStreams(array_fill(0, 101, 1));
     }
 
     /**
-     * @expectedException Exception
      * @covers ::getChannelInfo
      */
     public function testChannelInfoHundredIDs()
     {
+        $this->queueSuccessfulRequest();
+        $this->queueSuccessfulRequest();
         $this->twitch->getChannelInfo(array_fill(0, 101, 1));
     }
 
     /**
-     * @expectedException Exception
      * @covers ::getChannelInfo
      */
     public function testChannelInfoHundredNames()
     {
+        $this->queueSuccessfulRequest();
+        $this->queueSuccessfulRequest();
         $this->twitch->getChannelInfo([], array_fill(0, 101, 1));
     }
 }

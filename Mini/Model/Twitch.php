@@ -54,26 +54,32 @@ class Twitch {
     public function findStreams(array $channelIds): array
     {
         $idCount = count($channelIds);
-        if($idCount > 100) {
-            throw new \Exception("Can only check the status of up to 100 channels at once");
-        }
         if(!$idCount) {
             return [];
         }
+        $page = 0;
+        $perPage = 100;
+        $pageCount = ceil($idCount / $perPage);
+        $baseURL = self::HELIX_BASE.'streams?';
+        $ids = [];
 
-        $url = self::HELIX_BASE.'streams?';
-        $idParams = array_map(function(string $id): string {
-            return 'user_id='.$id;
-        }, $channelIds);
-        $url .= implode('&', $idParams);
+        while($page < $pageCount) {
+            $paramsOffset = $page * $perPage;
 
-        $response = $this->client->get($url, $this->twitchHeaders);
-        if($response->getStatusCode() >= 400) {
-            throw new \Exception("Can not get live streams");
+            $url = $baseURL;
+            $idParams = array_map(function(string $id): string {
+                return 'user_id='.urlencode($id);
+            }, array_slice($channelIds, $paramsOffset, $perPage));
+            $url .= implode('&', $idParams);
+
+            $response = $this->client->get($url, $this->twitchHeaders);
+            if($response->getStatusCode() >= 400) {
+                throw new \Exception("Can not get live streams");
+            }
+
+            $data = json_decode($response->getBody())->data;
+            $ids = array_merge($ids, array_column($data, 'user_id'));
         }
-
-        $data = json_decode($response->getBody())->data;
-        $ids = array_column($data, 'user_id');
 
         return array_map(function(string $id) use ($ids): bool {
             return in_array($id, $ids);
