@@ -49,7 +49,7 @@ class TwitchTest extends TestCase
         $this->httpMock->append(new Response(200, [], json_encode([
             'data' => [
                 [
-                    'id' => 1
+                    'user_id' => 1
                 ]
             ]
         ])));
