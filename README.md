@@ -1,5 +1,6 @@
 # Twitch Bot Directory
 [![Build Status](https://travis-ci.org/freaktechnik/twitchbots.svg?branch=mini)](https://travis-ci.org/freaktechnik/twitchbots) [![codecov](https://codecov.io/gh/freaktechnik/twitchbots/branch/master/graph/badge.svg)](https://codecov.io/gh/freaktechnik/twitchbots)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffreaktechnik%2Ftwitchbots.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffreaktechnik%2Ftwitchbots?ref=badge_shield)
 
 A directory of Twitch chat bot accounts.
 
@@ -9,6 +10,9 @@ Thanks to [Mini2](https://github.com/panique/mini2) for the great base template.
 
 ## License
 The code in this repo is licensed under the MIT license.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffreaktechnik%2Ftwitchbots.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffreaktechnik%2Ftwitchbots?ref=badge_large)
 
 ## Used APIs
 Thanks to the following APIs, the service can try to curate the list as best as it can on its own:
