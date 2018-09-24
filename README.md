@@ -64,3 +64,15 @@ php vendor/bin/phpunit --bootstrap vendor/autload.php test
 
 You might want to customize the `phpunit.xml` to match the database credentials
 of your system. The unit tests expect a database called `twitchbots`.
+
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars0.githubusercontent.com/u/640949?v=4" width="100px;"/><br /><sub><b>Martin Giger</b></sub>](https://humanoids.be)<br />[💻](https://github.com/freaktechnik/twitchbots/commits?author=freaktechnik "Code") [🐛](https://github.com/freaktechnik/twitchbots/issues?q=author%3Afreaktechnik "Bug reports") |
+| :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
