@@ -71,8 +71,8 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars0.githubusercontent.com/u/640949?v=4" width="100px;"/><br /><sub><b>Martin Giger</b></sub>](https://humanoids.be)<br />[💻](https://github.com/freaktechnik/twitchbots/commits?author=freaktechnik "Code") [🐛](https://github.com/freaktechnik/twitchbots/issues?q=author%3Afreaktechnik "Bug reports") [🚇](#infra-freaktechnik "Infrastructure (Hosting, Build-Tools, etc)") [📖](https://github.com/freaktechnik/twitchbots/commits?author=freaktechnik "Documentation") [💡](#example-freaktechnik "Examples") |
-| :---: |
+| [<img src="https://avatars0.githubusercontent.com/u/640949?v=4" width="100px;"/><br /><sub><b>Martin Giger</b></sub>](https://humanoids.be)<br />[💻](https://github.com/freaktechnik/twitchbots/commits?author=freaktechnik "Code") [🐛](https://github.com/freaktechnik/twitchbots/issues?q=author%3Afreaktechnik "Bug reports") [🚇](#infra-freaktechnik "Infrastructure (Hosting, Build-Tools, etc)") [📖](https://github.com/freaktechnik/twitchbots/commits?author=freaktechnik "Documentation") [💡](#example-freaktechnik "Examples") | [<img src="https://avatars3.githubusercontent.com/u/8625450?v=4" width="100px;"/><br /><sub><b>nD00rn</b></sub>](https://github.com/nD00rn)<br />[📖](https://github.com/freaktechnik/twitchbots/commits?author=nD00rn "Documentation") |
+| :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
