@@ -16,7 +16,10 @@
       "profile": "https://humanoids.be",
       "contributions": [
         "code",
-        "bug"
+        "bug",
+        "infra",
+        "doc",
+        "example"
       ]
     }
   ]
