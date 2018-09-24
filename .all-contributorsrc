@@ -30,6 +30,24 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "luism03",
+      "name": "Luis Muñiz",
+      "avatar_url": "https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/attachments/profile/photo/7430d3f11c372d8fcae51674276bfa51-1503422143339/9ea8d44f-b3d4-41c4-ac8b-cd4038d95adc.jpg",
+      "profile": "https://www.linkedin.com/in/luismuniz1",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "CBenni",
+      "name": "CBenni",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/3787686?v=4",
+      "profile": "https://github.com/CBenni",
+      "contributions": [
+        "ideas"
+      ]
     }
   ]
 }
