@@ -27,7 +27,7 @@ class Twitch {
         $this->requestOptions = $requestOptions;
 
         $this->twitchHeaders = array_merge($requestOptions, array(
-            'headers' => array('Client-ID' => $clientID, 'Accept' => 'application/vnd.twitchtv.v3+json')
+            'headers' => array('Client-ID' => $clientID)
         ));
         $this->twitchHeadersV5 = array_merge($requestOptions, [
             'headers' => [
