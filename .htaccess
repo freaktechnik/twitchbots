@@ -6,3 +6,4 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} ^humanoids\.be$ [OR]
 RewriteCond %{HTTP_HOST} ^www\.humanoids\.be$
 RewriteRule ([a-zA-Z0-9_]*)$ "https://twitchbots.info/$1" [R=301,L,QSA]
+AddHandler application/x-httpd-php71 .php

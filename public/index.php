@@ -273,7 +273,10 @@ $app->group('/types', function () use ($app, $model, $getTemplateLastMod, $getLa
         $botLastUpdate = $model->bots->getLastUpdate();
         $typeLastUpdate = $model->types->getLastUpdate();
         $app->lastModified(max($botLastUpdate, $typeLastUpdate));
-        $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+        $sitemap = new SimpleXMLElement(<<<XML
+<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>
+XML
+        );
 
         $types = $model->types->getAllTypes();
         $typeLastMod = $getTemplateLastMod('type.twig');
@@ -372,7 +375,10 @@ $app->group('/bots', function () use ($app, $model, $getTemplateLastMod, $getLas
     $app->get('/sitemap.xml', function () use ($app, $model, $getTemplateLastMod, $getLastMod) {
         $app->contentType('application/xml;charset=utf8');
         $app->lastModified($model->bots->getLastUpdate());
-        $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+        $sitemap = new SimpleXMLElement(<<<XML
+<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>
+XML
+        );
 
         $bots = $model->bots->getAllRawBots(0, $model->bots->getCount());
         $botLastMod = $getTemplateLastMod('bot.twig');
@@ -589,7 +595,10 @@ $app->get('/pages_map.xml', function () use ($app, $model, $getTemplateLastMod, 
         "about" => $getTemplateLastMod('about.twig')
     );
     $app->lastModified(max(max($templateUpdates), $subLastUpdate, $botLastUpdate, $typeLastUpdate));
-    $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+    $sitemap = new SimpleXMLElement(<<<XML
+<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>
+XML
+    );
 
     /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('url');
@@ -649,7 +658,10 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getTemplateLastMod, $ge
         "pages" => max(array_map("filemtime", glob('../Mini/view/*.twig')))
     );
     $app->lastModified(max($botLastUpdate, $typeLastUpdate, $subLastUpdate, $templateUpdates['pages']));
-    $sitemap = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></sitemapindex>');
+    $sitemap = new SimpleXMLElement(<<<XML
+<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></sitemapindex>
+XML
+    );
 
     /** @var SimpleXMLElement $url */
     $url = $sitemap->addChild('sitemap');
