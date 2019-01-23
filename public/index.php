@@ -670,7 +670,7 @@ $app->get('/sitemap.xml', function() use ($app, $model, $getTemplateLastMod, $ge
 });
 
 $app->get('/apis.json', function () use ($app) {
-    $lastApiUpdate = 1527896657;
+    $lastApiUpdate = 1547463829;
     $app->lastModified($lastApiUpdate);
     $app->expires('+1 week');
 
@@ -695,6 +695,12 @@ $app->get('/apis.json', function () use ($app) {
         "created" => "2016-02-14",
         "modified" => date('Y-m-d', $lastApiUpdate),
         "specificationVersion" => "0.15",
+        "x-common" => [
+            [
+                "type" => "x-github-repo",
+                "url" => "https://github.com/freaktechnik/twitchbots"
+            ]
+        ],
         "apis" => [
             [
                 "name" => "Twitch Bots API",
