@@ -332,7 +332,7 @@ class Model
 
     private function getSwords(string $username, int $page = 0, int $pageSize = self::SWORD_PAGESIZE): array
     {
-        $url = "https://twitchstuff.3v.fi/modlookup/api/user/" . $username . "?limit=" . $pageSize . "&offset=" . $page * $pageSize;
+        $url = "https://t.3v.fi/modlookup/api/user/" . $username . "?limit=" . $pageSize . "&offset=" . $page * $pageSize;
 
         $response = $this->client->get($url, $this->venticHeaders);
 

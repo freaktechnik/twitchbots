@@ -88,7 +88,7 @@
                 <td><a href="https://www.twitch.tv/{{ s.name|e('url')|e('html_attr') }}/videos/all" rel="external nofollow noopener">{{ status(s.vods) }}</a></td>
                 <td>{{ status(s.offline) }}</td>
                 <td>{{ status(s.online) }}</td>
-                <td><a href="https://twitchstuff.3v.fi/modlookup/u/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow noopener">{{ status(s.ismod) }}</a></td>
+                <td><a href="https://t.3v.fi/modlookup/u/{{ s.name|e('url')|e('html_attr') }}" rel="external nofollow noopener">{{ status(s.ismod) }}</a></td>
                 <td>{{ status(s.following_channel) }}</td>
                 <td>{{ s.score }}</td>
                 {% if buttons %}

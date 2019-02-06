@@ -14,7 +14,7 @@ The code in this repo is licensed under the MIT license.
 Thanks to the following APIs, the service can try to curate the list as best as it can on its own:
 
  - [Twitch API](https://github.com/justintv/Twitch-API) *needs a Client-ID saved as `client-ID` in the config table*
- - [3v.fi Twitch Mod Check API](https://twitchstuff.3v.fi/modlookup/docs) *Needs a 3v-ua from the config table*
+ - [3v.fi Twitch Mod Check API](https://t.3v.fi/modlookup/docs) *needs a 3v-ua from the config table*
 
 ## Set up
 
