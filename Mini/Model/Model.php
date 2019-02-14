@@ -31,7 +31,7 @@ include_once 'csrf.php';
 
 class Model
 {
-    private const SWORD_PAGESIZE = 500;
+    private const SWORD_PAGESIZE = 1000;
     /**
      * The database connection
      * @var PingablePDO $db
@@ -330,9 +330,12 @@ class Model
         return array_key_exists('moderators', $chatters) && in_array($user, $chatters['moderators']);
     }
 
-    private function getSwords(string $username, int $page = 0, int $pageSize = self::SWORD_PAGESIZE): array
+    private function getSwords(string $username, string $cursor = null, int $pageSize = self::SWORD_PAGESIZE): array
     {
-        $url = "https://t.3v.fi/modlookup/api/user/" . $username . "?limit=" . $pageSize . "&offset=" . $page * $pageSize;
+        $url = "https://modlookup.3v.fi/api/user-v3/" . $username . "?limit=" . $pageSize;
+        if($cursor) {
+            $url .= "&cursor=" . $cursor;
+        }
 
         $response = $this->client->get($url, $this->venticHeaders);
 
@@ -345,17 +348,30 @@ class Model
         return $response;
     }
 
-    private function getModStatus(string $username, string $channel, int $page = 0): bool
+    private function getSwordCount(string $username): int
     {
-        $pageSize = self::SWORD_PAGESIZE;
-        $response = $this->getSwords($username, $page, $pageSize);
+        $url = "https://modlookup.3v.fi/api/user-totals/" . $username;
 
-        if($response['count'] > 0 && in_array(strtolower($channel), array_column($response['channels'], 'name'))) {
+        $response = $this->client->get($url, $this->venticHeaders);
+
+        if($response->getStatusCode() >= 400) {
+            throw new Exception("Could not get mod count");
+        }
+
+        $resp = json_decode($response->getBody());
+        return $resp->total;
+    }
+
+    private function getModStatus(string $username, string $channel, string $cursor = null): bool
+    {
+        $response = $this->getSwords($username, $cursor);
+
+        if(in_array(strtolower($channel), array_column($response['channels'], 'name'))) {
             return true;
         }
 
-        if($response['count'] > ($page + 1) * $pageSize) {
-            return $this->getModStatus($username, $channel, $page + 1);
+        if($response['cursor'] != '') {
+            return $this->getModStatus($username, $channel, $response['cursor']);
         }
         return false;
     }
@@ -863,34 +879,27 @@ class Model
                 $estimated = true;
             }
             if($type->multichannel) {
-                $page = 0;
-                do {
-                    $response = $this->getSwords($bot->name, $page, $instCount === 1 ? 1 : $pageSize);
-
-                    if($response['count'] > 0) {
-                        if($response['count'] > $maxCountForDetails || $instCount === 1) {
-                            if($response['count'] > 0) {
-                                $count += $response['count'];
-                            }
-                            else if(isset($bot->channel_id)) {
-                                $count += 1;
-                            }
-                            $estimated = true;
-                            break;
-                        }
-                        else {
+                if($instCount < 100) {
+                    $swordCount = $this->getSwordCount($bot->name);
+                    if($instCount === 1 || $swordCount > $maxCountForDetails) {
+                        $count += $swordCount;
+                        $estimated = true;
+                    }
+                }
+                if(!$estimated) {
+                    $cursor = null;
+                    while($instCount > 1 && $cursor !== "")
+                    {
+                        $response = $this->getSwords($bot->name, $cursor);
+                        if(!empty($response['channels'])) {
                             foreach($response['channels'] as $channel) {
                                 $channels[$channel['name']] = true;
-                                $estimated = true;
                             }
+                            $estimated = true;
                         }
+                        $cursor = $response['cursor'];
                     }
-                    else {
-                        break;
-                    }
-
-                    $page += 1;
-                } while($instCount > 1 && $response['count'] > $page * $pageSize && $response['count'] <= $maxCountForDetails);
+                }
             }
 
             if(!$estimated) {
