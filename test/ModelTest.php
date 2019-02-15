@@ -459,7 +459,7 @@ class ModelTest extends DBTestCase
         $type = $this->model->types->getTypeOrThrow(37);
         $this->assertEquals(2, $type->channelsEstimate);
 
-        $this->assertEquals($preCount + 3, count($this->httpHistory));
+        $this->assertEquals($preCount + 5, count($this->httpHistory));
 
         // The requests in reverse.
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
