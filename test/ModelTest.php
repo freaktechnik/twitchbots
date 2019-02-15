@@ -465,27 +465,27 @@ class ModelTest extends DBTestCase
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals('/modlookup/api/user-v3/foo?limit=1000', $latestRequest['request']->getRequestTarget());
+        $this->assertEquals('/api/user-v3/foo?limit=1000', $latestRequest['request']->getRequestTarget());
 
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals('/modlookup/api/user-totals/foo', $latestRequest['request']->getRequestTarget());
+        $this->assertEquals('/api/user-totals/foo', $latestRequest['request']->getRequestTarget());
 
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals('/modlookup/api/user-v3/bar?limit=1000&cursor=a', $latestRequest['request']->getRequestTarget());
+        $this->assertEquals('/api/user-v3/bar?limit=1000&cursor=a', $latestRequest['request']->getRequestTarget());
 
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals('/modlookup/api/user-v3/bar?limit=1000', $latestRequest['request']->getRequestTarget());
+        $this->assertEquals('/api/user-v3/bar?limit=1000', $latestRequest['request']->getRequestTarget());
 
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals('/modlookup/api/user-totals/bar', $latestRequest['request']->getRequestTarget());
+        $this->assertEquals('/api/user-totals/bar', $latestRequest['request']->getRequestTarget());
     }
 
     /**
