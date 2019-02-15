@@ -388,8 +388,7 @@ class ModelTest extends DBTestCase
     {
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
-            'count' => 5,
-            'channels' => []
+            'total' => 5
         ])));
         $preCount = count($this->httpHistory);
 
@@ -402,7 +401,7 @@ class ModelTest extends DBTestCase
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals('/modlookup/api/user/nightbot?limit=1&offset=0', $latestRequest['request']->getRequestTarget());
+        $this->assertEquals('/api/user-totals/nightbot', $latestRequest['request']->getRequestTarget());
     }
 
     /**
@@ -417,7 +416,11 @@ class ModelTest extends DBTestCase
     {
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
-            'count' => 501,
+            'total' => 2
+        ])));
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'status' => 200,
+            'cursor' => 'a',
             'channels' => [
                 [
                     'name' => 'foo',
@@ -426,7 +429,7 @@ class ModelTest extends DBTestCase
         ])));
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
-            'count' => 501,
+            'cursor' => '',
             'channels' => [
                 [
                     'name' => 'bar',
@@ -435,7 +438,11 @@ class ModelTest extends DBTestCase
         ])));
         $this->httpMock->append(new Response(200, [], json_encode([
             'status' => 200,
-            'count' => 5,
+            'total' => 2
+        ])));
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'status' => 200,
+            'cursor' => '',
             'channels' => [
                 [
                     'name' => 'bar',
@@ -458,17 +465,27 @@ class ModelTest extends DBTestCase
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals('/modlookup/api/user/foo?limit=500&offset=0', $latestRequest['request']->getRequestTarget());
+        $this->assertEquals('/modlookup/api/user-v3/foo?limit=1000', $latestRequest['request']->getRequestTarget());
 
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals('/modlookup/api/user/bar?limit=500&offset=500', $latestRequest['request']->getRequestTarget());
+        $this->assertEquals('/modlookup/api/user-totals/foo', $latestRequest['request']->getRequestTarget());
 
         /** @var \GuzzleHttp\Psr7\Request $latestRequest */
         $latestRequest = array_pop($this->httpHistory);
 
-        $this->assertEquals('/modlookup/api/user/bar?limit=500&offset=0', $latestRequest['request']->getRequestTarget());
+        $this->assertEquals('/modlookup/api/user-v3/bar?limit=1000&cursor=a', $latestRequest['request']->getRequestTarget());
+
+        /** @var \GuzzleHttp\Psr7\Request $latestRequest */
+        $latestRequest = array_pop($this->httpHistory);
+
+        $this->assertEquals('/modlookup/api/user-v3/bar?limit=1000', $latestRequest['request']->getRequestTarget());
+
+        /** @var \GuzzleHttp\Psr7\Request $latestRequest */
+        $latestRequest = array_pop($this->httpHistory);
+
+        $this->assertEquals('/modlookup/api/user-totals/bar', $latestRequest['request']->getRequestTarget());
     }
 
     /**
