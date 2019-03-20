@@ -44,6 +44,7 @@ You should manually set the following:
  - checks_per_day: Number of bot pruning runs per day. Needs to be at least 1,
    recommended are at least one per hour.
  - client-ID: [Twitch Client-ID](https://dev.twitch.tv/docs#client-id)
+ - client-secret: Twitch client secret
  - 3v-ua: User Agent for the Mod Checker API
  - auth0_domain, auth0_redirectUrl, auth0_clientId, auth0_clientSecret: auth0 configuration
 
