@@ -106,7 +106,7 @@ class Model
         $this->config = new Config($this->db);
         $this->submissions = new Submissions($this->db, $this->pageSize);
         $this->confirmedPeople = new ConfirmedPeople($this->db);
-        $this->twitch = new Twitch($client, $this->config->get('client-ID'), self::$requestOptions);
+        $this->twitch = new Twitch($client, $this->config, self::$requestOptions);
 
         $this->venticHeaders = array_merge(self::$requestOptions, [
             'headers' => [
@@ -127,7 +127,7 @@ class Model
 
     public function getClientID(): string
     {
-        return $this->config->get('client-ID');
+        return $this->config->get(Twitch::CLIENT_ID);
     }
 
     public function getToken(string $formname): string

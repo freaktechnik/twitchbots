@@ -8,6 +8,13 @@ class Twitch {
     private const KRAKEN_BASE = 'https://api.twitch.tv/kraken/';
     private const HELIX_BASE = 'https://api.twitch.tv/helix/';
 
+    public const CLIENT_ID = 'client-ID';
+    private const CLIENT_SECRET = 'client-secret';
+    private const REFRESH_TOKEN = 'refresh-token';
+    private const TOKEN = 'token';
+    private const EXPIRES_IN = 'token-expires-in';
+    private const GRANT_TIME = 'token-grant-time';
+
     /**
      * The guzzle client
      * @var Client $client
@@ -21,25 +28,110 @@ class Twitch {
     /** @var \stdClass[] $_followsCache */
     private $_followsCache = [];
 
-    function __construct(Client $client, string $clientID, array $requestOptions)
+    private $clientID;
+    private $clientSecret;
+    private $refreshToken;
+    private $token;
+    private $expiresIn;
+    private $grantTime;
+
+    /** @var Config $config */
+    private $config;
+
+    function __construct(Client $client, Config $config, array $requestOptions)
     {
         $this->client = $client;
         $this->requestOptions = $requestOptions;
 
+        $this->config = $config;
+        $this->clientID = $config->get(self::CLIENT_ID);
+        $this->clientSecret = $config->get(self::CLIENT_SECRET);
+        $this->refreshToken = $config->get(self::REFRESH_TOKEN);
+        $this->token = $config->get(self::TOKEN);
+        $this->expiresIn = (int)$config->get(self::EXPIRES_IN);
+        $this->grantTime = (int)$config->get(self::GRANT_TIME);
+
         $this->twitchHeaders = array_merge($requestOptions, array(
-            'headers' => array('Client-ID' => $clientID)
+            'headers' => array('Client-ID' => $this->clientID)
         ));
         $this->twitchHeadersV5 = array_merge($requestOptions, [
             'headers' => [
-                'Client-ID' => $clientID,
+                'Client-ID' => $this->clientID,
                 'Accept' => 'application/vnd.twitchtv.v5+json'
             ]
         ]);
     }
 
+    private function isTokenValid(): bool
+    {
+        return !empty($this->token) && $this->grantTime + $this->$expires > time();
+    }
+
+    private function getToken()
+    {
+        if(empty($this->refreshToken)) {
+            $response = $this->client->post("https://id.twitch.tv/oauth2/token?client_id".urlencode($this->clientID)."&client_secret=".urlencode($this->clientSecret)."grant_type=client_credentials");
+            if($response->getStatusCode() >= 400) {
+                throw new \Exception("Could not get access token");
+            }
+
+            $data = json_decode($response->getBody());
+
+            $this->token = $data->access_token;
+            $this->refreshToken = $data->refresh_token;
+            $this->expiresIn = $data->expires_in;
+            $this->grantTime = time();
+
+            $this->config->set(self::TOKEN, $this->token);
+            $this->config->set(self::REFRESH_TOKEN, $this->refreshToken);
+            $this->config->set(self::EXPIRES_IN, $this->expiresIn);
+            $this->config->set(self::GRANT_TIME, $this->grantTime);
+        }
+        else {
+            $response = $this->client->post("https://id.twitch.tv/oauth2/token", [
+                'body' => '?grant_type=refresh_token&refresh_token='.urlencode($this->refreshToken).'&client_id='.urlencode($this->clientID).'&client_secret='.urlencode($this->clientSecret)
+            ]);
+            if($response->getStatusCode() > 500) {
+                throw new \Exception("Twitch could not refresh the token");
+            }
+            else if($response->getStatusCode() >= 400) {
+                $this->refreshToken = null;
+                return $this->getToken();
+            }
+
+            $data = json_decode($response->getBody());
+
+            $this->token = $data->access_token;
+            $this->refreshToken = $data->refresh_token;
+            $this->grantTime = time();
+
+            $this->config->set(self::TOKEN, $this->token);
+            $this->config->set(self::REFRESH_TOKEN, $this->refreshToken);
+            $this->config->set(self::GRANT_TIME, $this->grantTime);
+        }
+    }
+
+    private function makeHelixOptions(): array
+    {
+        if(!$this->isTokenValid()) {
+            $this->getToken();
+        }
+
+        return [
+            'headers' => array_merge($this->twitchHeaders['headers'], [
+                'Authorization' => 'Bearer '.$this->token
+            ])
+        ];
+    }
+
+    private function shouldRefresh(GuzzleHttp\Response $response): bool
+    {
+        return $response->getStatusCode() === 401 && $response->hasHeader('WWW-Authenticate');
+    }
+
     public function getChatters(string $channel): array
     {
-        $response = $this->client->get("https://tmi.twitch.tv/group/user/".$channel."/chatters", [], $this->requestOptions);
+        $response = $this->client->get("https://tmi.twitch.tv/group/user/".$channel."/chatters", $this->requestOptions);
         if($response->getStatusCode() >= 400) {
             throw new \Exception("No chatters returned");
         }
@@ -73,8 +165,13 @@ class Twitch {
             }, array_slice($channelIds, $paramsOffset, $perPage));
             $url .= implode('&', $idParams);
 
-            $response = $this->client->get($url, $this->twitchHeaders);
-            if($response->getStatusCode() >= 400) {
+            $response = $this->client->get($url, $this->makeHelixOptions());
+            if($this->shouldRefresh($response)) {
+                $this->getToken();
+                --$page;
+                continue;
+            }
+            else if($response->getStatusCode() >= 400) {
                 throw new \Exception("Can not get live streams");
             }
 
@@ -101,8 +198,12 @@ class Twitch {
 
     public function hasVODs(string $channelId): bool
     {
-        $response = $this->client->get(self::HELIX_BASE.'videos?user_id='.$channelId, $this->twitchHeaders);
-        if($response->getStatusCode() >= 400) {
+        $response = $this->client->get(self::HELIX_BASE.'videos?user_id='.$channelId, $this->makeHelixOptions());
+        if($this->shouldRefresh($response)) {
+            $this->getToken();
+            return $this->hasVODs($channelId);
+        }
+        else if($response->getStatusCode() >= 400) {
             throw new \Exception("Can not get vods for ".$channelId);
         }
         /** @var \stdClass $vods */
@@ -113,9 +214,12 @@ class Twitch {
     public function getFollowing(string $id): \stdClass
     {
         if(!in_array($id, $this->_followsCache)) {
-            $response = $this->client->get(self::HELIX_BASE.'users/follows?from_id='.$id, $this->twitchHeaders);
-
-            if($response->getStatusCode() >= 400) {
+            $response = $this->client->get(self::HELIX_BASE.'users/follows?from_id='.$id, $this->makeHelixOptions());
+            if($this->shouldRefresh($response)) {
+                $this->getToken();
+                return $this->getFollowing($id);
+            }
+            else if($response->getStatusCode() >= 400) {
                 throw new \Exception("Can not get followers for ".$id);
             }
 
@@ -138,9 +242,12 @@ class Twitch {
             }
         }
         $url = self::HELIX_BASE.'users/follows?from_id='.$id.'&to_id='.$channelId;
-        $response = $this->client->get($url, $this->twitchHeaders);
-
-        if($response->getStatusCode() >= 400) {
+        $response = $this->client->get($url, $this->makeHelixOptions());
+        if($this->shouldRefresh($response)) {
+            $this->getToken();
+            return $this->getFollowingChannel($id, $channelId);
+        }
+        else if($response->getStatusCode() >= 400) {
             throw new \Exception("Can't get following relation");
         }
 
@@ -219,9 +326,14 @@ class Twitch {
 
             $url .= implode('&', $params);
 
-            $response = $this->client->get($url, $this->twitchHeaders);
+            $response = $this->client->get($url, $this->makeHelixOptions());
 
-            if($response->getStatusCode() >= 400) {
+            if($this->shouldRefresh($response)) {
+                $this->getToken();
+                --$page;
+                continue;
+            }
+            else if($response->getStatusCode() >= 400) {
                 throw new \Exception("Could not fetch user info", $response->getStatusCode());
             }
 
