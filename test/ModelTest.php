@@ -56,6 +56,13 @@ class ModelTest extends DBTestCase
             'page_size' => self::pageSize,
             'testing' => true,
         ), $client);
+
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'access_token' => 'asdf',
+            'refresh_token' => 'asdfasdf',
+            'expires_in' => 6000
+        ])));
+
         parent::setUp();
     }
 

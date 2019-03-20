@@ -3,12 +3,11 @@
 require_once "DBTestCase.php";
 
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Mini\Model\Twitch
  */
-class TwitchTest extends TestCase
+class TwitchTest extends DBTestCase
 {
     /**
      * @var \Mini\Model\Twitch
@@ -33,7 +32,12 @@ class TwitchTest extends TestCase
         $client = new \GuzzleHttp\Client(array(
             'handler' => \GuzzleHttp\HandlerStack::create($this->httpMock)
         ));
-        $this->twitch = new \Mini\Model\Twitch($client, 'test', ['http_errors' => false]);
+        $this->twitch = new \Mini\Model\Twitch($client, new \Mini\Model\Config(self::$pdo), ['http_errors' => false]);
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'access_token' => 'asdf',
+            'refresh_token' => 'asdfasdf',
+            'expires_in' => 6000
+        ])));
         parent::setUp();
     }
 
