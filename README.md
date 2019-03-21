@@ -16,8 +16,12 @@ The code in this repo is licensed under the MIT license.
 
 Thanks to the following APIs, the service can try to curate the list as best as it can on its own:
 
-- [Twitch API](https://github.com/justintv/Twitch-API) *needs a Client-ID saved as `client-ID` in the config table*
-- [3v.fi Twitch Mod Check API](https://t.3v.fi/modlookup/docs) *needs a 3v-ua from the config table*
+- [Twitch API](https://github.com/justintv/Twitch-API)
+- [3v.fi Twitch Mod Check API](https://t.3v.fi/modlookup/docs)
+- FrankerFaceZ bots list
+- BetterTTV channel bots list
+
+See [Configuration](#configuration) for details on required credentials for the respective APIs.
 
 ## Set up
 
