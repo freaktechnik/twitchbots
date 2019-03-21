@@ -43,7 +43,7 @@ class Config extends Store {
         $query->setFetchMode(PDO::FETCH_CLASS, ConfigItem::class);
         /** @var ConfigItem $result */
         $result = $query->fetch();
-        if(isset($result)) {
+        if($result && isset($result->value)) {
             return $result->value;
         }
         return $default;
