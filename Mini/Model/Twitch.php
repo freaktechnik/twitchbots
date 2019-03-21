@@ -70,7 +70,7 @@ class Twitch {
     private function getToken()
     {
         if(empty($this->refreshToken)) {
-            $response = $this->client->post("https://id.twitch.tv/oauth2/token?client_id=".urlencode($this->clientID)."&client_secret=".urlencode($this->clientSecret)."grant_type=client_credentials");
+            $response = $this->client->post("https://id.twitch.tv/oauth2/token?client_id=".urlencode($this->clientID)."&client_secret=".urlencode($this->clientSecret)."&grant_type=client_credentials");
             if($response->getStatusCode() >= 400) {
                 throw new \Exception("Could not get access token");
             }
