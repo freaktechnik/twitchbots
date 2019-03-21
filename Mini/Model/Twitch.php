@@ -48,8 +48,8 @@ class Twitch {
         $this->clientSecret = $config->get(self::CLIENT_SECRET);
         $this->refreshToken = $config->get(self::REFRESH_TOKEN);
         $this->token = $config->get(self::TOKEN);
-        $this->expiresIn = (int)$config->get(self::EXPIRES_IN, '0');
-        $this->grantTime = (int)$config->get(self::GRANT_TIME, '0');
+        $this->expiresIn = (int)$config->get(self::EXPIRES_IN, '-1');
+        $this->grantTime = (int)$config->get(self::GRANT_TIME, '-1');
 
         $this->twitchHeaders = array_merge($requestOptions, array(
             'headers' => array('Client-ID' => $this->clientID)
@@ -64,12 +64,12 @@ class Twitch {
 
     private function isTokenValid(): bool
     {
-        return !empty($this->token) && $this->grantTime + $this->expiresIn > time();
+        return !empty($this->token) && ($this->expiresIn === 0 || $this->grantTime + $this->expiresIn > time());
     }
 
     private function getToken()
     {
-        if(empty($this->refreshToken)) {
+        if($this->expiresIn < 0) {
             $response = $this->client->post("https://id.twitch.tv/oauth2/token?client_id=".urlencode($this->clientID)."&client_secret=".urlencode($this->clientSecret)."&grant_type=client_credentials");
             if($response->getStatusCode() >= 400) {
                 throw new \Exception("Could not get access token");
@@ -78,12 +78,17 @@ class Twitch {
             $data = json_decode($response->getBody());
 
             $this->token = $data->access_token;
-            $this->refreshToken = $data->refresh_token;
-            $this->expiresIn = $data->expires_in;
+            if(isset($data->refresh_token)) {
+                $this->refreshToken = $data->refresh_token;
+                $this->expiresIn = $data->expires_in;
+                $this->config->set(self::REFRESH_TOKEN, $this->refreshToken);
+            }
+            else {
+                $this->expiresIn = 0;
+            }
             $this->grantTime = time();
 
             $this->config->set(self::TOKEN, $this->token);
-            $this->config->set(self::REFRESH_TOKEN, $this->refreshToken);
             $this->config->set(self::EXPIRES_IN, $this->expiresIn);
             $this->config->set(self::GRANT_TIME, $this->grantTime);
         }
@@ -95,7 +100,7 @@ class Twitch {
                 throw new \Exception("Twitch could not refresh the token");
             }
             else if($response->getStatusCode() >= 400) {
-                $this->refreshToken = null;
+                $this->expiresIn = -1;
                 return $this->getToken();
             }
 
