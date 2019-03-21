@@ -69,7 +69,7 @@ class Twitch {
 
     private function getToken()
     {
-        if($this->expiresIn < 0) {
+        if(empty($this->refreshToken)) {
             $response = $this->client->post("https://id.twitch.tv/oauth2/token?client_id=".urlencode($this->clientID)."&client_secret=".urlencode($this->clientSecret)."&grant_type=client_credentials");
             if($response->getStatusCode() >= 400) {
                 throw new \Exception("Could not get access token");
@@ -80,8 +80,10 @@ class Twitch {
             $this->token = $data->access_token;
             if(isset($data->refresh_token)) {
                 $this->refreshToken = $data->refresh_token;
-                $this->expiresIn = $data->expires_in;
                 $this->config->set(self::REFRESH_TOKEN, $this->refreshToken);
+            }
+            if(isset($data->expires_in)) {
+                $this->expiresIn = $data->expires_in;
             }
             else {
                 $this->expiresIn = 0;
@@ -100,7 +102,7 @@ class Twitch {
                 throw new \Exception("Twitch could not refresh the token");
             }
             else if($response->getStatusCode() >= 400) {
-                $this->expiresIn = -1;
+                $this->refreshToken = null;
                 return $this->getToken();
             }
 
