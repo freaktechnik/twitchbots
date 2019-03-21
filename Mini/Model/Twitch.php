@@ -64,7 +64,7 @@ class Twitch {
 
     private function isTokenValid(): bool
     {
-        return !empty($this->token) && $this->grantTime + $this->$expires > time();
+        return !empty($this->token) && $this->grantTime + $this->$expiresIn > time();
     }
 
     private function getToken()

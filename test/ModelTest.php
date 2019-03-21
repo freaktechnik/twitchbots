@@ -57,12 +57,6 @@ class ModelTest extends DBTestCase
             'testing' => true,
         ), $client);
 
-        $this->httpMock->append(new Response(200, [], json_encode([
-            'access_token' => 'asdf',
-            'refresh_token' => 'asdfasdf',
-            'expires_in' => 6000
-        ])));
-
         parent::setUp();
     }
 
@@ -129,6 +123,13 @@ class ModelTest extends DBTestCase
     public function testAddSubmission()
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
+
+
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'access_token' => 'asdf',
+            'refresh_token' => 'asdfasdf',
+            'expires_in' => 6000
+        ])));
 
         $this->queueTwitchUser("33");
 
