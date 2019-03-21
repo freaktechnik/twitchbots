@@ -82,7 +82,7 @@ class DBTestCase extends TestCase {
         ],
         "inactive_bots" => [
             'twitch_id varchar(20) NOT NULL,
-            type int(10) unsigned NOT NULL,
+            type int(10) unsigned DEFAULT NULL,
             date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             channel_id varchar(20) DEFAULT NULL,
             discard_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
