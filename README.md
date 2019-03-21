@@ -1,4 +1,4 @@
-# ![](public/img/favicon.png) Twitch Bot Directory
+# ![](public/favicon.png) Twitch Bot Directory
 
 [![Build Status](https://travis-ci.com/freaktechnik/twitchbots.svg?branch=mini)](https://travis-ci.com/freaktechnik/twitchbots) [![codecov](https://codecov.io/gh/freaktechnik/twitchbots/branch/master/graph/badge.svg)](https://codecov.io/gh/freaktechnik/twitchbots)
 
