@@ -130,6 +130,11 @@ class ModelTest extends DBTestCase
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
 
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'access_token' => 'asdf',
+            'refresh_token' => 'asdfasdf',
+            'expires_in' => 6000
+        ])));
         $this->queueTwitchUser("33");
 
         $this->model->addSubmission("test", 0, "lorem ipsum");
@@ -192,6 +197,11 @@ class ModelTest extends DBTestCase
      */
     public function testAddExistingSubmissionThrows()
     {
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'access_token' => 'asdf',
+            'refresh_token' => 'asdfasdf',
+            'expires_in' => 6000
+        ])));
         $this->queueTwitchUser("31");
         $this->model->addSubmission("test", 1);
         $this->queueTwitchUser("31");
@@ -208,6 +218,11 @@ class ModelTest extends DBTestCase
      */
     public function testAddSubmissionExistingBotThrows()
     {
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'access_token' => 'asdf',
+            'refresh_token' => 'asdfasdf',
+            'expires_in' => 6000
+        ])));
         $this->queueTwitchUser("15");
         $this->model->addSubmission("nightbot", 2);
     }
@@ -235,6 +250,11 @@ class ModelTest extends DBTestCase
      */
     public function testAddSubmissionBotIsChannelThrows()
     {
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'access_token' => 'asdf',
+            'refresh_token' => 'asdfasdf',
+            'expires_in' => 6000
+        ])));
         $this->queueTwitchUser("5");
         $this->model->addSubmission("ec0ke", 2);
     }
@@ -279,6 +299,11 @@ class ModelTest extends DBTestCase
      */
     public function testAddSubmissionConfirmedPersonThrows()
     {
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'access_token' => 'asdf',
+            'refresh_token' => 'asdfasdf',
+            'expires_in' => 6000
+        ])));
         $this->queueTwitchUser('100');
         $this->model->addSubmission("bot", 22);
     }
