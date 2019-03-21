@@ -48,8 +48,8 @@ class Twitch {
         $this->clientSecret = $config->get(self::CLIENT_SECRET);
         $this->refreshToken = $config->get(self::REFRESH_TOKEN);
         $this->token = $config->get(self::TOKEN);
-        $this->expiresIn = (int)$config->get(self::EXPIRES_IN);
-        $this->grantTime = (int)$config->get(self::GRANT_TIME);
+        $this->expiresIn = (int)$config->get(self::EXPIRES_IN, '0');
+        $this->grantTime = (int)$config->get(self::GRANT_TIME, '0');
 
         $this->twitchHeaders = array_merge($requestOptions, array(
             'headers' => array('Client-ID' => $this->clientID)
@@ -64,7 +64,7 @@ class Twitch {
 
     private function isTokenValid(): bool
     {
-        return !empty($this->token) && $this->grantTime + $this->$expiresIn > time();
+        return !empty($this->token) && $this->grantTime + $this->expiresIn > time();
     }
 
     private function getToken()

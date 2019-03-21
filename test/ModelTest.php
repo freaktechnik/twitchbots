@@ -105,6 +105,12 @@ class ModelTest extends DBTestCase
     {
         $this->assertTrue($this->model->hasBot(4));
         $this->assertFalse($this->model->hasBot(33));
+
+        $this->httpMock->append(new Response(200, [], json_encode([
+            'access_token' => 'asdf',
+            'refresh_token' => 'asdfasdf',
+            'expires_in' => 6000
+        ])));
         $this->queueTwitchUser(33);
         $this->model->addSubmission('freaktechnik', 1);
         $this->assertTrue($this->model->hasBot(33));
@@ -123,13 +129,6 @@ class ModelTest extends DBTestCase
     public function testAddSubmission()
     {
         $this->assertEquals(0, $this->getConnection()->getRowCount('submissions'), "Pre-Condition");
-
-
-        $this->httpMock->append(new Response(200, [], json_encode([
-            'access_token' => 'asdf',
-            'refresh_token' => 'asdfasdf',
-            'expires_in' => 6000
-        ])));
 
         $this->queueTwitchUser("33");
 

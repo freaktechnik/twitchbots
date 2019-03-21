@@ -36,7 +36,7 @@ class Config extends Store {
         parent::__construct($db, "config");
     }
 
-    public function get(string $key): string
+    public function get(string $key, $default = ""): string
     {
         $query = $this->prepareSelect("value", "WHERE name=?");
         $query->execute([ $key ]);
@@ -46,7 +46,7 @@ class Config extends Store {
         if($result) {
             return $result->value;
         }
-        return "";
+        return $default;
     }
 
     public function set(string $key, string $value): void
