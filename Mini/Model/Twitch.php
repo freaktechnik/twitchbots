@@ -124,7 +124,7 @@ class Twitch {
         ];
     }
 
-    private function shouldRefresh(GuzzleHttp\Psr7\Response $response): bool
+    private function shouldRefresh(\GuzzleHttp\Psr7\Response $response): bool
     {
         return $response->getStatusCode() === 401 && $response->hasHeader('WWW-Authenticate');
     }
