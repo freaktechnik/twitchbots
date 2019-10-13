@@ -1,7 +1,7 @@
 <?php
 namespace Mini\Model;
 
-use Auth0\SDK\API\Authentication;
+use Auth0\SDK\Auth0;
 
 /* CREATE TABLE IF NOT EXISTS authorized_users (
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -10,10 +10,8 @@ use Auth0\SDK\API\Authentication;
 ) DEFAULT CHARSET=ascii */
 
 class Auth {
-    /** @var Authentication $auth0 */
+    /** @var \Auth0\SDK\Auth0 $auth0 */
     private $auth0;
-    /** @var \Auth0\SDK\API\Oauth2Client $auth0Client */
-    private $auth0Client;
 
     /** @var string $clientId */
     private $clientId;
@@ -28,9 +26,12 @@ class Auth {
     function __construct(string $clientId, string $clientSecret, string $cbk, string $domain, PingablePDO $db)
     {
         if(!empty($clientId)) {
-            $this->auth0 = new Authentication($domain, $clientId);
-
-            $this->auth0Client = $this->auth0->get_oauth_client($clientSecret, $cbk);
+            $this->auth0 = new Auth0([
+                'domain' => $domain,
+                'client_id' => $clientId,
+                'client_secret' => $clientSecret,
+                'redirect_uri' => $cbk,
+            ]);
         }
 
         $this->clientId = $clientId;
@@ -64,7 +65,7 @@ class Auth {
 
     public function isLoggedIn(): bool
     {
-        $userInfo = $this->auth0Client->getUser();
+        $userInfo = $this->auth0->getUser();
 
         if (!$userInfo) {
             return false;
@@ -80,12 +81,12 @@ class Auth {
 
     public function getIdentifier(): string
     {
-        return $this->auth0Client->getUser()['email'];
+        return $this->auth0->getUser()['email'];
     }
 
     public function logout(): void
     {
-        $this->auth0Client->logout();
+        $this->auth0->logout();
         session_destroy();
     }
 }

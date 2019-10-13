@@ -11,13 +11,14 @@
         "symfony/console": "^3.0",
         "geshi/geshi": "dev-master",
         "kevinrob/guzzle-cache-middleware": "^1.4",
-        "Doctrine/Cache": "^1.6",
+        "doctrine/cache": "^1.6",
         "guzzlehttp/guzzle": "^6.2",
-        "auth0/auth0-php": "~4.0",
-        "twbs/bootstrap": "4.1.1",
+        "auth0/auth0-php": "~5.0",
+        "twbs/bootstrap": "^4.1.1",
         "frontpack/composer-assets-plugin": "^0.9.4",
         "components/jquery": "^3.3",
-        "fortawesome/font-awesome": "^4.7"
+        "fortawesome/font-awesome": "^4.7",
+        "alexandermatveev/popper-bundle": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -34,8 +35,7 @@
         "assets-files": {
             "twbs/bootstrap": [
                 "dist/css/bootstrap.min.css",
-                "dist/js/bootstrap.min.js",
-                "assets/js/vendor/popper.min.js"
+                "dist/js/bootstrap.min.js"
             ],
             "fortawesome/font-awesome": [
                 "css/font-awesome.min.css",
@@ -45,6 +45,9 @@
                 "fonts/fontawesome-webfont.woff",
                 "fonts/fontawesome-webfont.woff2",
                 "fonts/FontAwesome.otf"
+            ],
+            "alexandermatveev/popper-bundle": [
+                "Resources/public/popper.min.js"
             ]
         },
         "assets-target": {
