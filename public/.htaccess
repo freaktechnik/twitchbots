@@ -2,6 +2,7 @@ Header set X-Content-Type-Options "nosniff"
 Header set X-XSS-Protection "1; mode=block"
 Header set X-Frame-Options "DENY"
 Header set Referrer-Policy "no-referrer-when-downgrade"
+Header set Cross-Origin-Resource-Policy "same-origin"
 
 SetEnvIf Host ^(www\.)?twitchbots\.info$ MODE=production
 Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; preload" "expr=%{MODE} == 'production'"
@@ -15,6 +16,10 @@ Header set Strict-Transport-Security "max-age=10886400; includeSubDomains; prelo
   CacheDisable public /twitchbots/public/submissions
   CacheEnable private /twitchbots/public/submissions
 </IfModule>
+
+<Files "*.html">
+    Header set Feature-Policy "accelerometer 'none'; ambient-light-sensor 'none'; autoplay 'none'; battery 'none'; camera 'none'; display-capture 'none'; document-domain 'none'; encrypted-media 'none'; execution-while-not-rendered 'none'; execution-while-out-of-viewport 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; layout-animations 'none'; legacy-image-formats 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; navigation-override 'none'; payment 'none'; picture-in-picture 'none; publickey-credentials 'none'; sync-xhr 'none'; usb 'none'; wake-lock 'none'; xr-spatial-tracking 'none'"
+</Files>
 
 RewriteEngine On
 
