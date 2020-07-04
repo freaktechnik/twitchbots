@@ -85,38 +85,25 @@ function checkTwitchUser(username, cbk) {
 
 function validateFieldContent(field, shouldExist) {
     field.checkValidity();
-    if(field.validity.valid && field.value.length) {
-        if(shouldExist && !stNew.checked) {
-            checkTwitchUser(field.value, function(data) {
-                if(data.length) {
-                    checkBot(data[0].id, function(exists) {
-                        if(exists)
-                            field.setCustomValidity("");
-                        else
-                            field.setCustomValidity("Only known bots can be corrected.");
-                    });
-                }
-            });
-        }
-        else {
-            checkTwitchUser(field.value, function(data) {
-                if(data.length)
-                    field.setCustomValidity("");
-                else
-                    field.setCustomValidity("Must be an existing Twitch user.");
-
-
-                if(shouldExist && field.validity.valid) {
-                    checkBot(data[0].id, function(exists) {
-                        if(exists)
-                            field.setCustomValidity("We already know about this bot.");
-                        else
-                            field.setCustomValidity("");
-                    });
-                }
-            });
-        }
-    }
+    //TODO add validation API endpoint?
+    // if(field.validity.valid && field.value.length) {
+    //     if(shouldExist && !stNew.checked) {
+    //         checkBot(data[0].id, function(exists) {
+    //             if(exists)
+    //                 field.setCustomValidity("");
+    //             else
+    //                 field.setCustomValidity("Only known bots can be corrected.");
+    //         });
+    //     }
+    //     else if(shouldExist) {
+    //         checkBot(data[0].id, function(exists) {
+    //             if(exists)
+    //                 field.setCustomValidity("We already know about this bot.");
+    //             else
+    //                 field.setCustomValidity("");
+    //         });
+    //     }
+    // }
 }
 
 function stListener() {
