@@ -199,11 +199,9 @@ class Twitch {
 
     public function getBio(string $channelId): ?string
     {
-        $response = $this->client->get(self::KRAKEN_BASE.'users/'.$channelId, $this->twitchHeadersV5);
-        /** @var \stdClass $user */
-        $user = json_decode($response->getBody());
-        if(isset($user->bio)) {
-            return $user->bio;
+        $users = $this->getChannelInfo([ $channelId ]);
+        if(isset($users[0]->description)) {
+            return $users[0]->description;
         } else {
             return null;
         }
