@@ -482,7 +482,7 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
 
     $app->get('/login', function () use ($app, $model) {
         if(!$model->login->isLoggedIn()) {
-            $app->render('login.twig');
+            $model->login->redirectToLogin();
         }
         else {
             $app->redirect($app->request->getUrl().$app->urlFor('submissions'), 303);

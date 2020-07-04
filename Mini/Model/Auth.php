@@ -1,6 +1,8 @@
 <?php
 namespace Mini\Model;
 
+include_once 'csrf.php';
+
 use Auth0\SDK\Auth0;
 
 /* CREATE TABLE IF NOT EXISTS authorized_users (
@@ -61,6 +63,11 @@ class Auth {
             'redirectUrl' => $this->redirectUrl,
             'domain' => $this->domain
         ];
+    }
+
+    public function redirectToLogin()
+    {
+        $this->auth0->login(generate_token('auth0'), 'github');
     }
 
     public function isLoggedIn(): bool
