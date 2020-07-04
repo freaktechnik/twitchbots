@@ -13,7 +13,7 @@
         "kevinrob/guzzle-cache-middleware": "^1.4",
         "doctrine/cache": "^1.6",
         "guzzlehttp/guzzle": "^6.2",
-        "auth0/auth0-php": "~5.0",
+        "auth0/auth0-php": "^7.2",
         "twbs/bootstrap": "^4.1.1",
         "frontpack/composer-assets-plugin": "^0.9.4",
         "components/jquery": "^3.3",
