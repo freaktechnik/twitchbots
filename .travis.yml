@@ -20,18 +20,18 @@ jobs:
     - script: php vendor/bin/twig-lint lint Mini/view/
       name: "Lint twig"
       install: composer install
-    - stage: test
-      php:
-        - '7.2'
-      services:
-        - mysql
-      install:
-        - composer install
-        - mysql -e "CREATE DATABASE twitchbots"
-      script: phpunit test
-      after_success:
-        - bash <(curl -s https://codecov.io/bash)
-        - rm clover.xml
+    # - stage: test
+    #   php:
+    #     - '7.2'
+    #   services:
+    #     - mysql
+    #   install:
+    #     - composer install
+    #     - mysql -e "CREATE DATABASE twitchbots"
+    #   script: phpunit test
+    #   after_success:
+    #     - bash <(curl -s https://codecov.io/bash)
+    #     - rm clover.xml
     - stage: deploy
       if: branch = master AND repo = freaktechnik/twitchbots
       name: "Deploy to stage"
