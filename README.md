@@ -1,6 +1,6 @@
 # ![](public/favicon.png) Twitch Bot Directory
 
-[![Build Status](https://travis-ci.com/freaktechnik/twitchbots.svg?branch=mini)](https://travis-ci.com/freaktechnik/twitchbots) [![codecov](https://codecov.io/gh/freaktechnik/twitchbots/branch/master/graph/badge.svg)](https://codecov.io/gh/freaktechnik/twitchbots)
+[![Build Status](https://travis-ci.com/freaktechnik/twitchbots.svg?branch=master)](https://travis-ci.com/freaktechnik/twitchbots) [![codecov](https://codecov.io/gh/freaktechnik/twitchbots/branch/master/graph/badge.svg)](https://codecov.io/gh/freaktechnik/twitchbots)
 
 A directory of Twitch chat bot accounts.
 
