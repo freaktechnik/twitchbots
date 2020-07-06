@@ -108,8 +108,9 @@ $getLastMod = function(int $timestamp = 0) use ($lastUpdate): string
     return date('c', max($lastUpdate, $timestamp));
 };
 
-$piwikEvent = function(string $event, array $opts) use ($piwik_token, $app, $client): void
+$piwikEvent = function(string $event, array $opts) use ($app, $client): void
 {
+    include_once __DIR__.'/../lib/config.php';
     $url = "https://humanoids.be/stats/piwik.php?idsite=5&rec=1&action_name=Submit/".urlencode($event)."&url=".urlencode($app->config('canonicalUrl'))."lib/submit&apiv=1&token_auth=".$piwik_token."&send_image=0&idgoal=1&rand=".random_int(0, 10000000);
     foreach($opts as $i => $val) {
         $url .=  "&dimension".$i."=".urlencode($val);
