@@ -285,7 +285,7 @@ class Model
                     $updated = true;
                 }
                 if($updated) {
-                    $this->bots->updateBot($bot);
+                    $this->bots->updateBotByID($bot);
                 }
                 unset($idsToRequest[$user->id]);
             }
@@ -297,7 +297,7 @@ class Model
                 else if($bot->channel_id == $id && !in_array($bot->twitch_id, $botsToRemove)) {
                     $bot->channel_id = null;
                     $bot->channel = null;
-                    $this->bots->updateBot($bot);
+                    $this->bots->updateBotByID($bot);
                 }
             }
         }
@@ -789,7 +789,7 @@ class Model
             else {
                 $bot->type = null;
             }
-            $this->bots->updateBot($bot);
+            $this->bots->updateBotByID($bot);
         }
         else {
             $channelId = null;
