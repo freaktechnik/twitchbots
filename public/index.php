@@ -40,7 +40,7 @@ $stack->push(new \Kevinrob\GuzzleCache\CacheMiddleware(
 $client = new \GuzzleHttp\Client(array('handler' => $stack));
 
 /******************************************* THE CONFIGS *******************************************************/
-$cspBase = "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' https://humanoids.be; font-src 'self'; connect-src https://api.twitchbots.info https://api.twitch.tv 'self'; form-action 'self'; frame-ancestors 'none'; reflected-xss block; child-src https://humanoids.be; frame-src https://humanoids.be; img-src https://humanoids.be 'self' data:";
+$cspBase = "default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src https://api.twitchbots.info https://api.twitch.tv 'self'; form-action 'self'; frame-ancestors 'none'; reflected-xss block; child-src 'none'; frame-src 'none'; img-src 'self' data:";
 
 // Configs for mode "development" (Slim's default), see the GitHub readme for details on setting the environment
 $app->configureMode('development', function () use ($app, $cspBase) {
