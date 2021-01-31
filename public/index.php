@@ -108,23 +108,6 @@ $getLastMod = function(int $timestamp = 0) use ($lastUpdate): string
     return date('c', max($lastUpdate, $timestamp));
 };
 
-$piwikEvent = function(string $event, array $opts) use ($app, $client): void
-{
-    include_once __DIR__.'/../lib/config.php';
-    $url = "https://humanoids.be/stats/piwik.php?idsite=5&rec=1&action_name=Submit/".urlencode($event)."&apiv=1&token_auth=".$piwik_token."&send_image=0&idgoal=1&rand=".random_int(0, 10000000)."&url=".urlencode($app->config('canonicalUrl'))."lib/submit";
-    foreach($opts as $i => $val) {
-        $url .=  "&dimension".$i."=".urlencode($val);
-    }
-    // Respect Do not track.
-    if($_SERVER['HTTP_DNT'] != 1) {
-        $url .= "&ua=".urlencode($_SERVER['HTTP_USER_AGENT'])."&lang=".urlencode($_SERVER['HTTP_ACCEPT_LANGUAGE'])."&cip=".urlencode($_SERVER['REMOTE_ADDR'])."&urlref=".urlencode($_SERVER['HTTP_REFERER'])."&_id=".substr(session_id(), 16);
-    }
-    $client->request('GET', $url, [
-        'http_errors' => false,
-        'synchronous' => false
-    ]);
-};
-
 $app->response->headers->set('Content-Security-Policy', $app->config('csp'));
 
 $app->notFound(function () use ($app) {
@@ -414,7 +397,7 @@ XML
     })->conditions(array('name' => '[a-zA-Z0-9_]+'))->name('bot');
 });
 
-$app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
+$app->group('/lib', function ()  use ($app, $model) {
     $app->get('/check', function ()  use ($app, $model) {
         if(!$model->login->isLoggedIn()) {
             $app->halt(401, 'Not logged in');
@@ -427,18 +410,12 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
         }
     });
 
-    $app->put('/submit', function () use ($app, $model, $piwikEvent) {
+    $app->put('/submit', function () use ($app, $model) {
         $echoParam = function (string $name, $first = false) use ($app) {
             return ($first?'?':'&').$name.'='.$app->request->params($name);
         };
 
         $correction = $app->request->params('submission-type') == "0" ? "" : "&correction";
-        $piwikParams = [
-            "1" => $app->request->params('username'),
-            "2" => $app->request->params('type'),
-            "3" => $app->request->params('description'),
-            "4" => $app->request->params('channel')
-        ];
         try {
             if(!$model->checkToken("submit", $app->request->params('token'))) {
                 throw new Exception("CSRF token mismatch", 1);
@@ -465,11 +442,8 @@ $app->group('/lib', function ()  use ($app, $model, $piwikEvent) {
             }
         }
         catch(Exception $e) {
-            $piwikParams['5'] = $e->getCode();
-            $piwikEvent("Error", $piwikParams);
             $app->redirect($app->request->getUrl().$app->urlFor('submit').'?error='.$e->getCode().$echoParam('username').$echoParam('type').$echoParam('channel').$echoParam('description').$correction, 303);
         }
-        $piwikEvent($event, $piwikParams);
         $app->redirect($app->request->getUrl().$app->urlFor('submit').'?success=1'.$correction, 303);
     });
 
