@@ -67,11 +67,6 @@ You should manually set the following:
 All TypeCrawlers currently rely on the type ID. This means your DeepBots have to
 have id 22, ModBots 28 and Pajbots 44. I hope to fix this in the future.
 
-#### Submissions
-
-Submissions may fail if you do not have an attached piwik instance. The code is
-currently not very well optimized toward a dynamic piwik instance or omitting it.
-
 ### Run tests
 
 After installing Composer you can run the unit tests:

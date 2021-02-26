@@ -5,7 +5,7 @@ const typeField = editor.querySelector("#type");
 const idField = editor.querySelector('input[name="id"]');
 
 const updateEditor = (e) => {
-    const currentRow = e.target.parentNode.parentNode;
+    const currentRow = e.target.closest('tr');
     channelField.value = currentRow.cells[2].textContent;
     if(currentRow.cells[1].childElementCount > 0) {
         const link = currentRow.cells[1].querySelector("a");
