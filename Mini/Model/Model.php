@@ -330,6 +330,13 @@ class Model
         return array_key_exists('moderators', $chatters) && in_array($user, $chatters['moderators']);
     }
 
+    private function isVip(string $user, array $chatters): bool
+    {
+        $user = strtolower($user);
+
+        return array_key_exists('vips', $chatters) && in_array($user, $chatters['vips']);
+    }
+
     private function getSwords(string $username, string $cursor = null, int $pageSize = self::SWORD_PAGESIZE): array
     {
         $url = "https://modlookup.3v.fi/api/user-v3/" . $username . "?limit=" . $pageSize;
@@ -615,15 +622,17 @@ class Model
                     if(($live && !$submission->online) || (!$live && !isset($submission->offline) && !$submission->shouldApprove($type))) {
                         $isMod = null;
                         try {
+                            //TODO allow users to verify the status of their bot via oauth + /helix/moderation/moderators?
                             $chatters = $this->twitch->getChatters($submission->channel);
                             $isInChannel = $this->isInChannel($submission->name, $chatters);
 
                             if($isInChannel && !$submission->ismod) {
-                                $isMod = $this->isMod($submission->name, $chatters);
+                                $isMod = $this->isMod($submission->name, $chatters) || $this->isVip($submission->name, $chatters);
                             }
                             // Bot was not in user list and is not yet verified
                             else if(!$ranModCheck && !$submission->verified) {
                                 $isMod = $this->getModStatus($submission->name, $submission->channel);
+                                //TODO is there a static VIP lookup available?
                             }
                         }
                         catch(Exception $e) {
