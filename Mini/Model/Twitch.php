@@ -5,7 +5,6 @@ namespace Mini\Model;
 use GuzzleHttp\Client;
 
 class Twitch {
-    private const KRAKEN_BASE = 'https://api.twitch.tv/kraken/';
     private const HELIX_BASE = 'https://api.twitch.tv/helix/';
 
     public const CLIENT_ID = 'client-ID';
@@ -265,27 +264,6 @@ class Twitch {
         $follows = json_decode($response->getBody(), true)['data'];
 
         return !!count($follows);
-    }
-
-    public function getBotVerified(string $id): bool
-    {
-        $url = self::KRAKEN_BASE."users/".$id."/chat";
-        $response = $this->client->get($url, $this->twitchHeadersV5);
-
-        if($response->getStatusCode() >= 400) {
-            throw new \Exception("Could not get verified status");
-        }
-
-        $json = json_decode($response->getBody(), true);
-
-        if($json['is_known_bot']) {
-            return true;
-        }
-        // Legacy, so handle its presence gracefully
-        else if(isset($json['is_verified_bot'])) {
-            return $json['is_verified_bot'];
-        }
-        return false;
     }
 
     public function getChannelID(string $username): string

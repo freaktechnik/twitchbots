@@ -461,23 +461,6 @@ class Model
         return false;
     }
 
-    private function checkVerified(Submission $submission): bool
-    {
-        if(!isset($submission->verified) || !$submission->verified) {
-            try {
-                $verified = $this->twitch->getBotVerified($submission->twitch_id);
-            }
-            catch(Exception $e) {
-                return false;
-            }
-
-            $this->submissions->setVerified($submission->id, $verified);
-            $submission->verified = $verified;
-            return true;
-        }
-        return false;
-    }
-
     public function checkBTTVBot(Submission $submission): bool
     {
         if(isset($submission->channel)) {
@@ -609,9 +592,6 @@ class Model
             $didSomething = false;
 
             // Check bot verification endpoints
-            if($submission->type == 0 && $this->checkVerified($submission) && !$didSomething) {
-                $didSomething = true;
-            }
             if($submission->type == 0 && $this->checkBTTVBot($submission) && !$didSomething) {
                 $didSomething = true;
             }
