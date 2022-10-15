@@ -44,7 +44,7 @@ class API {
         $this->model = $model;
         $this->app = $app;
 
-        $this->app->contentType('application/json;charset=utf8');
+        $this->app->contentType('application/json;charset=utf-8');
         $this->app->expires('+1 day');
 
         $this->app->group('/v2', function() {
