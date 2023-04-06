@@ -623,14 +623,15 @@ class Model
                         $isMod = null;
                         try {
                             //TODO allow users to verify the status of their bot via oauth + /helix/moderation/moderators?
-                            $chatters = $this->twitch->getChatters($submission->channel);
-                            $isInChannel = $this->isInChannel($submission->name, $chatters);
+                            //$chatters = $this->twitch->getChatters($submission->channel);
+                            //$isInChannel = $this->isInChannel($submission->name, $chatters);
 
-                            if($isInChannel && !$submission->ismod) {
-                                $isMod = $this->isMod($submission->name, $chatters) || $this->isVip($submission->name, $chatters);
-                            }
+                            //if($isInChannel && !$submission->ismod) {
+                            //    $isMod = $this->isMod($submission->name, $chatters) || $this->isVip($submission->name, $chatters);
+                            //}
                             // Bot was not in user list and is not yet verified
-                            else if(!$ranModCheck && !$submission->verified) {
+                            // else ...
+                            if(!$ranModCheck && !$submission->verified) {
                                 $isMod = $this->getModStatus($submission->name, $submission->channel);
                                 //TODO is there a static VIP lookup available?
                             }
