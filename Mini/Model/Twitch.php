@@ -143,12 +143,7 @@ class Twitch {
 
     public function getChatters(string $channel): array
     {
-        $response = $this->client->get("https://tmi.twitch.tv/group/user/".$channel."/chatters", $this->requestOptions);
-        if($response->getStatusCode() >= 400) {
-            throw new \Exception("No chatters returned");
-        }
-
-        return json_decode($response->getBody(), true)['chatters'];
+        return [];
     }
 
     /**
