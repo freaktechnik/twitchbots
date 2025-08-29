@@ -1,6 +1,13 @@
 # ![](public/favicon.png) Twitch Bot Directory
 
-[![Build Status](https://travis-ci.com/freaktechnik/twitchbots.svg?branch=master)](https://travis-ci.com/freaktechnik/twitchbots) [![codecov](https://codecov.io/gh/freaktechnik/twitchbots/branch/master/graph/badge.svg)](https://codecov.io/gh/freaktechnik/twitchbots)
+> [!IMPORTANT]
+> **Project deprecation notice**:
+> Twitch now offers native chat bot identification in their chat product:
+> https://dev.twitch.tv/docs/chat/#chatbot-badge-and-chat-identity
+>
+> As such this service should no longer be needed and thus only minimal maintenance will continue and new data will no longer be added.
+
+[![codecov](https://codecov.io/gh/freaktechnik/twitchbots/branch/master/graph/badge.svg)](https://codecov.io/gh/freaktechnik/twitchbots)
 
 A directory of Twitch chat bot accounts.
 
